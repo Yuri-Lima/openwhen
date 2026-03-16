@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393943450881",
+    "project_id": "openwhen-923f5",
+    "storage_bucket": "openwhen-923f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393943450881:android:d59614a57968e7bcf78700",
+        "android_client_info": {
+          "package_name": "com.example.openwhen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHKuny9dRSaNUs2Yr30PWAZfMRP9jGyxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
