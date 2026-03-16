@@ -1,0 +1,41 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Comment {
+  final String id;
+  final String letterId;
+  final String userUid;
+  final String userName;
+  final String message;
+  final DateTime createdAt;
+
+  Comment({
+    required this.id,
+    required this.letterId,
+    required this.userUid,
+    required this.userName,
+    required this.message,
+    required this.createdAt,
+  });
+
+  factory Comment.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Comment(
+      id: doc.id,
+      letterId: data['letterId'] ?? '',
+      userUid: data['userUid'] ?? '',
+      userName: data['userName'] ?? '',
+      message: data['message'] ?? '',
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'letterId': letterId,
+      'userUid': userUid,
+      'userName': userName,
+      'message': message,
+      'createdAt': Timestamp.fromDate(createdAt),
+    };
+  }
+}
