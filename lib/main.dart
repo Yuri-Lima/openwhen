@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
+import 'features/letters/presentation/screens/write_letter_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/register': (context) => const RegisterScreen(),
+        '/write': (context) => const WriteLetterScreen(),
       },
       home: const AuthWrapper(),
     );
@@ -69,15 +71,28 @@ class AuthWrapper extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Bem vindo! ${user.email}',
+                    'Olá, ${user.email}!',
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'O OpenWhen está pronto! 🚀',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
+                    'O que você quer fazer?',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 32),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/write');
+                    },
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Escrever carta'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E7D32),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
                     ),
                   ),
                 ],

@@ -25,18 +25,24 @@ class AuthRepository {
     final user = credential.user!;
     final username = email.split('@')[0];
 
-    final appUser = AppUser(
-      uid: user.uid,
-      name: name,
-      username: username,
-      email: email,
-      createdAt: DateTime.now(),
-    );
-
     await _firestore
         .collection(FirestoreCollections.users)
         .doc(user.uid)
-        .set(appUser.toFirestore());
+        .set({
+      'uid': user.uid,
+      'name': name,
+      'username': username,
+      'email': email,
+      'photoUrl': null,
+      'bio': null,
+      'createdAt': Timestamp.now(),
+      'lettersSentCount': 0,
+      'lettersReceivedCount': 0,
+      'lockedLettersCount': 0,
+      'openedLettersCount': 0,
+      'language': 'pt-BR',
+      'country': null,
+    });
   }
 
   Future<void> login({
