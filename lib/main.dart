@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/letters/presentation/screens/write_letter_screen.dart';
+import 'features/letters/presentation/screens/vault_screen.dart';
 import 'shared/theme/app_theme.dart';
 
 void main() async {
@@ -61,81 +63,158 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
 
     return authState.when(
       data: (user) {
-        if (user != null) {
-          return Scaffold(
-            backgroundColor: AppColors.bg,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: AppColors.white,
-                      border: Border(
-                        bottom: BorderSide(color: AppColors.border),
-                      ),
-                    ),
-                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'OpenWhen',
-                          style: AppTheme.theme.textTheme.titleLarge,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.logout, color: AppColors.inkSoft),
-                          onPressed: () {
-                            ref.read(authNotifierProvider.notifier).signOut();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: AppColors.accentWarm,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Icon(
-                              Icons.mail_outline,
-                              size: 36,
-                              color: AppColors.accent,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            'O que você quer fazer?',
-                            style: AppTheme.theme.textTheme.bodyMedium,
-                          ),
-                          const SizedBox(height: 32),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/write');
-                            },
-                            icon: const Icon(Icons.edit_outlined),
-                            label: const Text('Escrever carta'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+        if (user != null) return const HomeScreen();
         return const LoginScreen();
       },
       loading: () => const SplashScreen(),
       error: (e, _) => Scaffold(
         body: Center(child: Text('Erro: $e')),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    const _FeedPlaceholder(),
+    const VaultScreen(),
+    const _ProfilePlaceholder(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: _screens[_currentIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const WriteLetterScreen()),
+          );
+        },
+        child: const Icon(Icons.edit_outlined),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.border)),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (i) => setState(() => _currentIndex = i),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.auto_awesome_outlined),
+              activeIcon: Icon(Icons.auto_awesome),
+              label: 'Feed',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.lock_outline),
+              activeIcon: Icon(Icons.lock),
+              label: 'Cofre',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Perfil',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FeedPlaceholder extends StatelessWidget {
+  const _FeedPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('✨', style: TextStyle(fontSize: 48)),
+              const SizedBox(height: 16),
+              Text(
+                'Feed público',
+                style: GoogleFonts.dmSerifDisplay(
+                  fontSize: 20,
+                  color: AppColors.ink,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Em breve',
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  color: AppColors.inkSoft,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePlaceholder extends ConsumerWidget {
+  const _ProfilePlaceholder();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('👤', style: TextStyle(fontSize: 48)),
+              const SizedBox(height: 16),
+              Text(
+                'Perfil',
+                style: GoogleFonts.dmSerifDisplay(
+                  fontSize: 20,
+                  color: AppColors.ink,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  ref.read(authNotifierProvider.notifier).signOut();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accent,
+                ),
+                child: Text(
+                  'Sair',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
