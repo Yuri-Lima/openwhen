@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../shared/theme/app_theme.dart';
 
 class WriteLetterScreen extends ConsumerStatefulWidget {
   const WriteLetterScreen({super.key});
@@ -34,9 +36,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
     );
-    if (picked != null) {
-      setState(() => _openDate = picked);
-    }
+    if (picked != null) setState(() => _openDate = picked);
   }
 
   Future<void> _saveLetter() async {
@@ -55,7 +55,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       final currentUser = FirebaseAuth.instance.currentUser!;
       final firestore = FirebaseFirestore.instance;
 
-      // Busca o destinatário pelo email
       final receiverQuery = await firestore
           .collection(FirestoreCollections.users)
           .where('email', isEqualTo: _receiverEmailController.text.trim())
@@ -73,7 +72,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
       final receiver = receiverQuery.docs.first;
 
-      // Salva a carta no Firestore
       await firestore.collection(FirestoreCollections.letters).add({
         'senderUid': currentUser.uid,
         'senderName': currentUser.email ?? '',
@@ -109,105 +107,167 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     if (mounted) setState(() => _isLoading = false);
   }
 
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
+      filled: true,
+      fillColor: AppColors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.cardBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.cardBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.ink),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Escrever carta'),
-        backgroundColor: const Color(0xFF2E7D32),
-        foregroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      backgroundColor: AppColors.bg,
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              '💌 Nova carta',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2E7D32),
-              ),
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Título',
-                hintText: 'Ex: Open when you miss me',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _receiverEmailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email do destinatário',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _messageController,
-              maxLines: 8,
-              decoration: const InputDecoration(
-                labelText: 'Sua mensagem',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(4),
+            Container(
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                border: Border(
+                  bottom: BorderSide(color: AppColors.cardBorder),
                 ),
-                child: Row(
+              ),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(Icons.arrow_back, color: AppColors.ink),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    'Escrever carta',
+                    style: GoogleFonts.dmSerifDisplay(
+                      fontSize: 20,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Icon(Icons.calendar_today, color: Color(0xFF2E7D32)),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Data de abertura',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                    TextField(
+                      controller: _titleController,
+                      style: GoogleFonts.dmSans(color: AppColors.ink),
+                      decoration: _inputDecoration('Título — ex: Open when you miss me'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _receiverEmailController,
+                      keyboardType: TextInputType.emailAddress,
+                      style: GoogleFonts.dmSans(color: AppColors.ink),
+                      decoration: _inputDecoration('Email do destinatário'),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _messageController,
+                      maxLines: 8,
+                      style: GoogleFonts.dmSerifDisplay(
+                        color: AppColors.ink,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      decoration: _inputDecoration('Sua mensagem...').copyWith(
+                        alignLabelWithHint: true,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: _pickDate,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.cardBorder),
                         ),
-                        Text(
-                          '${_openDate.day}/${_openDate.month}/${_openDate.year}',
-                          style: const TextStyle(fontSize: 16),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.calendar_today, color: AppColors.accent),
+                            const SizedBox(width: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Data de abertura',
+                                  style: GoogleFonts.dmSans(
+                                    color: AppColors.inkSoft,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Text(
+                                  '${_openDate.day}/${_openDate.month}/${_openDate.year}',
+                                  style: GoogleFonts.dmSans(
+                                    color: AppColors.ink,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.cardBorder),
+                      ),
+                      child: SwitchListTile(
+                        title: Text(
+                          'Carta pública',
+                          style: GoogleFonts.dmSans(color: AppColors.ink),
+                        ),
+                        subtitle: Text(
+                          'Pode aparecer no feed após ser aberta',
+                          style: GoogleFonts.dmSans(
+                            color: AppColors.inkSoft,
+                            fontSize: 12,
+                          ),
+                        ),
+                        value: _isPublic,
+                        activeColor: AppColors.accent,
+                        onChanged: (value) => setState(() => _isPublic = value),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: _isLoading ? null : _saveLetter,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: AppColors.white)
+                          : Text(
+                              'Enviar carta 💌',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Carta pública'),
-              subtitle: const Text('Pode aparecer no feed após ser aberta'),
-              value: _isPublic,
-              activeColor: const Color(0xFF2E7D32),
-              onChanged: (value) => setState(() => _isPublic = value),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _saveLetter,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2E7D32),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Enviar carta 💌', style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
