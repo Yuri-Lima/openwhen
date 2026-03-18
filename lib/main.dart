@@ -9,6 +9,7 @@ import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/letters/presentation/screens/write_letter_screen.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
+import 'features/profile/presentation/screens/profile_screen.dart';
 import 'shared/theme/app_theme.dart';
 
 void main() async {
@@ -87,7 +88,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final List<Widget> _screens = [
     const _FeedPlaceholder(),
     const VaultScreen(),
-    const _ProfilePlaceholder(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -163,53 +164,6 @@ class _FeedPlaceholder extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 13,
                   color: AppColors.inkSoft,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfilePlaceholder extends ConsumerWidget {
-  const _ProfilePlaceholder();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('👤', style: TextStyle(fontSize: 48)),
-              const SizedBox(height: 16),
-              Text(
-                'Perfil',
-                style: GoogleFonts.dmSerifDisplay(
-                  fontSize: 20,
-                  color: AppColors.ink,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(authNotifierProvider.notifier).signOut();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
-                ),
-                child: Text(
-                  'Sair',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.white,
-                  ),
                 ),
               ),
             ],

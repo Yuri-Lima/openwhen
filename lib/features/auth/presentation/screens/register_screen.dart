@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../shared/theme/app_theme.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -14,6 +16,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _showPassword = false;
 
   @override
   void dispose() {
@@ -41,10 +44,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Conta criada com sucesso!')),
+          const SnackBar(content: Text('Conta criada com sucesso! 🎉')),
         );
       }
     } catch (e) {
@@ -58,83 +60,307 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (mounted) setState(() => _isLoading = false);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xFF2E7D32)),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget _buildField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+    required String label,
+    bool obscure = false,
+    bool hasToggle = false,
+    TextInputType keyboard = TextInputType.text,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.dmSans(
+            fontSize: 10,
+            color: AppColors.inkFaint,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1.5,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.bg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.border, width: 1.5),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+          child: Row(
             children: [
-              const Text(
-                'Criar conta',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E7D32),
+              Icon(icon, size: 18, color: AppColors.inkFaint.withOpacity(0.6)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  obscureText: obscure && !_showPassword,
+                  keyboardType: keyboard,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: AppColors.ink,
+                  ),
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: hint,
+                    hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
                 ),
               ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Nome',
-                  border: OutlineInputBorder(),
+              if (hasToggle)
+                GestureDetector(
+                  onTap: () => setState(() => _showPassword = !_showPassword),
+                  child: Icon(
+                    _showPassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 18,
+                    color: AppColors.inkFaint.withOpacity(0.6),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Senha',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _register,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E7D32),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Cadastrar', style: TextStyle(fontSize: 16)),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Já tem conta? Entre',
-                  style: TextStyle(color: Color(0xFF2E7D32)),
-                ),
-              ),
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: Column(
+        children: [
+          // Hero escuro
+          Container(
+            height: 310,
+            color: AppColors.ink,
+            child: Stack(
+              children: [
+                Center(
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColors.accent.withOpacity(0.12),
+                          AppColors.accent.withOpacity(0.03),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: 160,
+                        height: 110,
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: 160,
+                              height: 110,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1F1B18),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.07),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.4),
+                                    blurRadius: 32,
+                                    offset: const Offset(0, 16),
+                                  ),
+                                  BoxShadow(
+                                    color: AppColors.accent.withOpacity(0.2),
+                                    blurRadius: 30,
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: CustomPaint(
+                                  painter: _EnvelopePainter(),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 18,
+                              left: 0,
+                              right: 0,
+                              child: Center(
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.accent,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.accent.withOpacity(0.4),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFA93226),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'OW',
+                                        style: GoogleFonts.dmSerifDisplay(
+                                          fontSize: 14,
+                                          color: AppColors.white,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'OpenWhen',
+                        style: GoogleFonts.dmSerifDisplay(
+                          fontSize: 26,
+                          color: AppColors.white,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'CRIE SUA CONTA GRÁTIS',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 11,
+                          color: Colors.white.withOpacity(0.2),
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Formulário
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 26, 24, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildField(
+                    controller: _nameController,
+                    icon: Icons.person_outline,
+                    hint: 'seu nome',
+                    label: 'Nome',
+                  ),
+                  const SizedBox(height: 16),
+                  _buildField(
+                    controller: _emailController,
+                    icon: Icons.mail_outline,
+                    hint: 'seu@email.com',
+                    label: 'E-mail',
+                    keyboard: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildField(
+                    controller: _passwordController,
+                    icon: Icons.lock_outline,
+                    hint: 'crie uma senha',
+                    label: 'Senha',
+                    obscure: true,
+                    hasToggle: true,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _register,
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: AppColors.white)
+                        : Text(
+                            'Criar minha conta',
+                            style: GoogleFonts.dmSans(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      'Já tenho uma conta',
+                      style: GoogleFonts.dmSans(fontSize: 15),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Ao criar sua conta você aceita os Termos de Uso e a Política de Privacidade.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      color: AppColors.inkFaint,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _EnvelopePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF171411)
+      ..style = PaintingStyle.fill;
+
+    final abPath = Path();
+    abPath.moveTo(0, 0);
+    abPath.lineTo(size.width / 2, size.height * 0.48);
+    abPath.lineTo(size.width, 0);
+    abPath.close();
+    canvas.drawPath(abPath, paint);
+
+    final linePaint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawLine(const Offset(0, 0),
+        Offset(size.width / 2, size.height * 0.48), linePaint);
+    canvas.drawLine(Offset(size.width, 0),
+        Offset(size.width / 2, size.height * 0.48), linePaint);
+    canvas.drawLine(Offset(0, size.height),
+        Offset(size.width / 2, size.height * 0.55), linePaint);
+    canvas.drawLine(Offset(size.width, size.height),
+        Offset(size.width / 2, size.height * 0.55), linePaint);
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }
