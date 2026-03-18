@@ -9,6 +9,7 @@ import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/letters/presentation/screens/write_letter_screen.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
+import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -86,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    const _FeedPlaceholder(),
+    const FeedScreen(),
     const VaultScreen(),
     const ProfileScreen(),
   ];
@@ -130,44 +131,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               label: 'Perfil',
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FeedPlaceholder extends StatelessWidget {
-  const _FeedPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('✨', style: TextStyle(fontSize: 48)),
-              const SizedBox(height: 16),
-              Text(
-                'Feed público',
-                style: GoogleFonts.dmSerifDisplay(
-                  fontSize: 20,
-                  color: AppColors.ink,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Em breve',
-                style: GoogleFonts.dmSans(
-                  fontSize: 13,
-                  color: AppColors.inkSoft,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
