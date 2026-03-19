@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
+import 'features/auth/presentation/screens/onboarding_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/letters/presentation/screens/write_letter_screen.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
@@ -48,30 +50,44 @@ class AuthWrapper extends ConsumerStatefulWidget {
 
 class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   bool _showSplash = true;
+  bool _onboardingDone = true;
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _showSplash = false);
-    });
+    _init();
+  }
+
+  Future<void> _init() async {
+    // Splash por 2 segundos
+    await Future.delayed(const Duration(seconds: 2));
+    // Verifica onboarding
+    final prefs = await SharedPreferences.getInstance();
+    final done = prefs.getBool('onboarding_done') ?? false;
+    if (mounted) {
+      setState(() {
+        _showSplash = false;
+        _onboardingDone = done;
+        _loading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_showSplash) return const SplashScreen();
+    if (_showSplash || _loading) return const SplashScreen();
 
     final authState = ref.watch(authStateProvider);
 
     return authState.when(
       data: (user) {
         if (user != null) return const HomeScreen();
+        if (!_onboardingDone) return const OnboardingScreen();
         return const LoginScreen();
       },
       loading: () => const SplashScreen(),
-      error: (e, _) => Scaffold(
-        body: Center(child: Text('Erro: $e')),
-      ),
+      error: (e, _) => Scaffold(body: Center(child: Text('Erro: $e'))),
     );
   }
 }
@@ -98,38 +114,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: AppColors.bg,
       body: _screens[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const WriteLetterScreen()),
-          );
-        },
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WriteLetterScreen())),
         child: const Icon(Icons.edit_outlined),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.border)),
-        ),
+        decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.border))),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (i) => setState(() => _currentIndex = i),
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.auto_awesome_outlined),
-              activeIcon: Icon(Icons.auto_awesome),
-              label: 'Feed',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.lock_outline),
-              activeIcon: Icon(Icons.lock),
-              label: 'Cofre',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Perfil',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_outlined), activeIcon: Icon(Icons.auto_awesome), label: 'Feed'),
+            BottomNavigationBarItem(icon: Icon(Icons.lock_outline), activeIcon: Icon(Icons.lock), label: 'Cofre'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),
       ),
