@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../shared/theme/app_theme.dart';
-import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final VoidCallback onFinish;
+
+  const OnboardingScreen({super.key, required this.onFinish});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -57,26 +57,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     super.dispose();
   }
 
-  Future<void> _finish() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarding_done', true);
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const LoginScreen(),
-          transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
-          transitionDuration: const Duration(milliseconds: 600),
-        ),
-      );
-    }
-  }
-
   void _next() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     } else {
-      _finish();
+      widget.onFinish();
     }
   }
 
@@ -88,7 +73,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         opacity: _fadeAnim,
         child: Stack(
           children: [
-            // Brilho de fundo
             AnimatedContainer(
               duration: const Duration(milliseconds: 500),
               decoration: BoxDecoration(
@@ -102,14 +86,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
               ),
             ),
-            // Páginas
             PageView.builder(
               controller: _pageController,
               onPageChanged: (i) => setState(() => _currentPage = i),
               itemCount: _pages.length,
               itemBuilder: (_, i) => _buildPage(_pages[i]),
             ),
-            // Botões e indicadores no fundo
             Positioned(
               bottom: 0, left: 0, right: 0,
               child: SafeArea(
@@ -117,7 +99,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
                   child: Column(
                     children: [
-                      // Indicadores
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -135,7 +116,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                       ),
                       const SizedBox(height: 32),
-                      // Botão principal
                       SizedBox(
                         width: double.infinity,
                         child: GestureDetector(
@@ -145,9 +125,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             decoration: BoxDecoration(
                               color: AppColors.accent,
                               borderRadius: BorderRadius.circular(18),
-                              boxShadow: [
-                                BoxShadow(color: AppColors.accent.withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 8)),
-                              ],
+                              boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 8))],
                             ),
                             child: Text(
                               _currentPage == _pages.length - 1 ? 'Criar minha primeira carta' : 'Continuar',
@@ -158,13 +136,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                       ),
                       const SizedBox(height: 12),
-                      // Pular
                       GestureDetector(
-                        onTap: _finish,
-                        child: Text(
-                          'Já tenho uma conta',
-                          style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.3)),
-                        ),
+                        onTap: widget.onFinish,
+                        child: Text('Já tenho uma conta',
+                          style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.3))),
                       ),
                     ],
                   ),
@@ -184,7 +159,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Emoji grande com brilho
             Stack(
               alignment: Alignment.center,
               children: [
@@ -192,13 +166,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   width: 160, height: 160,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        AppColors.accent.withOpacity(0.15),
-                        AppColors.accent.withOpacity(0.05),
-                        Colors.transparent,
-                      ],
-                    ),
+                    gradient: RadialGradient(colors: [
+                      AppColors.accent.withOpacity(0.15),
+                      AppColors.accent.withOpacity(0.05),
+                      Colors.transparent,
+                    ]),
                   ),
                 ),
                 Container(
@@ -208,14 +180,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     color: Colors.white.withOpacity(0.05),
                     border: Border.all(color: Colors.white.withOpacity(0.08)),
                   ),
-                  child: Center(
-                    child: Text(page.emoji, style: const TextStyle(fontSize: 44)),
-                  ),
+                  child: Center(child: Text(page.emoji, style: const TextStyle(fontSize: 44))),
                 ),
               ],
             ),
             const SizedBox(height: 40),
-            // Tag
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
@@ -223,40 +192,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: AppColors.accent.withOpacity(0.3)),
               ),
-              child: Text(
-                page.tag,
-                style: GoogleFonts.dmSans(
-                  fontSize: 10,
-                  color: AppColors.accent,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 2,
-                ),
-              ),
+              child: Text(page.tag, style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.accent, fontWeight: FontWeight.w500, letterSpacing: 2)),
             ),
             const SizedBox(height: 20),
-            // Título
-            Text(
-              page.title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.dmSerifDisplay(
-                fontSize: 30,
-                color: AppColors.white,
-                fontStyle: FontStyle.italic,
-                height: 1.3,
-              ),
-            ),
+            Text(page.title, textAlign: TextAlign.center,
+              style: GoogleFonts.dmSerifDisplay(fontSize: 30, color: AppColors.white, fontStyle: FontStyle.italic, height: 1.3)),
             const SizedBox(height: 16),
-            // Subtítulo
-            Text(
-              page.subtitle,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.dmSans(
-                fontSize: 15,
-                color: Colors.white.withOpacity(0.4),
-                fontWeight: FontWeight.w300,
-                height: 1.7,
-              ),
-            ),
+            Text(page.subtitle, textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 15, color: Colors.white.withOpacity(0.4), fontWeight: FontWeight.w300, height: 1.7)),
           ],
         ),
       ),

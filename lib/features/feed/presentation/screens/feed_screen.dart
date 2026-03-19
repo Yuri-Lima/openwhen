@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import 'comments_screen.dart';
+import '../../../profile/presentation/screens/user_profile_screen.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -88,14 +89,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: _selectedFilter == i ? AppColors.accent : Colors.white.withOpacity(0.08)),
                               ),
-                              child: Text(
-                                _filters[i],
-                                style: GoogleFonts.dmSans(
-                                  fontSize: 12,
-                                  color: _selectedFilter == i ? AppColors.white : Colors.white.withOpacity(0.4),
-                                  fontWeight: _selectedFilter == i ? FontWeight.w500 : FontWeight.w400,
-                                ),
-                              ),
+                              child: Text(_filters[i], style: GoogleFonts.dmSans(fontSize: 12, color: _selectedFilter == i ? AppColors.white : Colors.white.withOpacity(0.4), fontWeight: _selectedFilter == i ? FontWeight.w500 : FontWeight.w400)),
                             ),
                           ),
                         ),
@@ -150,6 +144,12 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
+  void _openProfile(BuildContext context, String senderUid, String senderName) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (_) => UserProfileScreen(userId: senderUid, userName: senderName),
+    ));
+  }
+
   Widget _buildFeaturedCard({required Map<String, dynamic> data, required String docId}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -174,7 +174,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 child: Text('✦ Em destaque', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.accent, fontWeight: FontWeight.w500)),
               ),
               const Spacer(),
-              Text(data['senderName'] ?? '', style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.35))),
+              GestureDetector(
+                onTap: () => _openProfile(context, data['senderUid'] ?? '', data['senderName'] ?? ''),
+                child: Text(data['senderName'] ?? '', style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.5))),
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -221,23 +224,30 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         children: [
           Row(
             children: [
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(color: AppColors.accentWarm, borderRadius: BorderRadius.circular(12)),
-                child: Center(
-                  child: Text(
-                    (data['senderName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                    style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.accent, fontStyle: FontStyle.italic),
-                  ),
+              GestureDetector(
+                onTap: () => _openProfile(context, data['senderUid'] ?? '', data['senderName'] ?? ''),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(color: AppColors.accentWarm, borderRadius: BorderRadius.circular(12)),
+                      child: Center(
+                        child: Text(
+                          (data['senderName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
+                          style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.accent, fontStyle: FontStyle.italic),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(data['senderName'] ?? '', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.ink, fontWeight: FontWeight.w500)),
+                        Text('Para: ${data['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(data['senderName'] ?? '', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.ink, fontWeight: FontWeight.w500)),
-                  Text('Para: ${data['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
-                ],
               ),
             ],
           ),
@@ -292,8 +302,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
           },
           child: Row(
             children: [
-              Icon(liked ? Icons.favorite : Icons.favorite_border, size: 16,
-                color: liked ? AppColors.accent : isDark ? Colors.white.withOpacity(0.4) : AppColors.inkFaint),
+              Icon(liked ? Icons.favorite : Icons.favorite_border, size: 16, color: liked ? AppColors.accent : isDark ? Colors.white.withOpacity(0.4) : AppColors.inkFaint),
               const SizedBox(width: 4),
               Text('$likeCount', style: GoogleFonts.dmSans(fontSize: 12, color: isDark ? Colors.white.withOpacity(0.4) : AppColors.inkFaint)),
             ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
@@ -14,6 +13,9 @@ import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'shared/theme/app_theme.dart';
+
+// Controla se o onboarding já foi visto nessa sessão
+bool _onboardingShown = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,40 +52,33 @@ class AuthWrapper extends ConsumerStatefulWidget {
 
 class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   bool _showSplash = true;
-  bool _onboardingDone = true;
-  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    // Splash por 2 segundos
-    await Future.delayed(const Duration(seconds: 2));
-    // Verifica onboarding
-    final prefs = await SharedPreferences.getInstance();
-    final done = prefs.getBool('onboarding_done') ?? false;
-    if (mounted) {
-      setState(() {
-        _showSplash = false;
-        _onboardingDone = done;
-        _loading = false;
-      });
-    }
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _showSplash = false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_showSplash || _loading) return const SplashScreen();
+    if (_showSplash) return const SplashScreen();
 
     final authState = ref.watch(authStateProvider);
 
     return authState.when(
       data: (user) {
         if (user != null) return const HomeScreen();
-        if (!_onboardingDone) return const OnboardingScreen();
+        // Mostra onboarding só na primeira vez por sessão
+        if (!_onboardingShown) {
+          return OnboardingScreen(
+            onFinish: () {
+              _onboardingShown = true;
+              if (mounted) setState(() {});
+            },
+          );
+        }
         return const LoginScreen();
       },
       loading: () => const SplashScreen(),
