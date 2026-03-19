@@ -55,6 +55,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       final currentUser = FirebaseAuth.instance.currentUser!;
       final firestore = FirebaseFirestore.instance;
 
+      // Busca o nome do remetente no Firestore
+      final senderDoc = await firestore
+          .collection(FirestoreCollections.users)
+          .doc(currentUser.uid)
+          .get();
+      final senderName = senderDoc.data()?['name'] ?? currentUser.email ?? '';
+
+      // Busca o destinatário pelo email
       final receiverQuery = await firestore
           .collection(FirestoreCollections.users)
           .where('email', isEqualTo: _receiverEmailController.text.trim())
@@ -74,7 +82,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
       await firestore.collection(FirestoreCollections.letters).add({
         'senderUid': currentUser.uid,
-        'senderName': currentUser.email ?? '',
+        'senderName': senderName,
         'receiverUid': receiver.id,
         'receiverName': receiver.data()['name'] ?? '',
         'title': _titleController.text.trim(),
@@ -138,9 +146,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             Container(
               decoration: const BoxDecoration(
                 color: AppColors.white,
-                border: Border(
-                  bottom: BorderSide(color: AppColors.cardBorder),
-                ),
+                border: Border(bottom: BorderSide(color: AppColors.cardBorder)),
               ),
               padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
               child: Row(
@@ -152,10 +158,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   const SizedBox(width: 16),
                   Text(
                     'Escrever carta',
-                    style: GoogleFonts.dmSerifDisplay(
-                      fontSize: 20,
-                      color: AppColors.ink,
-                    ),
+                    style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink),
                   ),
                 ],
               ),
@@ -207,21 +210,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Data de abertura',
-                                  style: GoogleFonts.dmSans(
-                                    color: AppColors.inkSoft,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                Text(
-                                  '${_openDate.day}/${_openDate.month}/${_openDate.year}',
-                                  style: GoogleFonts.dmSans(
-                                    color: AppColors.ink,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                                Text('Data de abertura', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 12)),
+                                Text('${_openDate.day}/${_openDate.month}/${_openDate.year}', style: GoogleFonts.dmSans(color: AppColors.ink, fontSize: 16, fontWeight: FontWeight.w500)),
                               ],
                             ),
                           ],
@@ -236,17 +226,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                         border: Border.all(color: AppColors.cardBorder),
                       ),
                       child: SwitchListTile(
-                        title: Text(
-                          'Carta pública',
-                          style: GoogleFonts.dmSans(color: AppColors.ink),
-                        ),
-                        subtitle: Text(
-                          'Pode aparecer no feed após ser aberta',
-                          style: GoogleFonts.dmSans(
-                            color: AppColors.inkSoft,
-                            fontSize: 12,
-                          ),
-                        ),
+                        title: Text('Carta pública', style: GoogleFonts.dmSans(color: AppColors.ink)),
+                        subtitle: Text('Pode aparecer no feed após ser aberta', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 12)),
                         value: _isPublic,
                         activeColor: AppColors.accent,
                         onChanged: (value) => setState(() => _isPublic = value),
@@ -257,13 +238,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       onPressed: _isLoading ? null : _saveLetter,
                       child: _isLoading
                           ? const CircularProgressIndicator(color: AppColors.white)
-                          : Text(
-                              'Enviar carta 💌',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          : Text('Enviar carta 💌', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
                     ),
                   ],
                 ),
