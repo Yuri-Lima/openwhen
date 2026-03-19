@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import 'letter_detail_screen.dart';
+import 'letter_opening_screen.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
@@ -69,19 +70,12 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                   Stack(
                     children: [
                       Positioned(
-                        top: -20,
-                        right: -20,
+                        top: -20, right: -20,
                         child: Container(
-                          width: 150,
-                          height: 150,
+                          width: 150, height: 150,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                AppColors.accent.withOpacity(0.1),
-                                Colors.transparent,
-                              ],
-                            ),
+                            gradient: RadialGradient(colors: [AppColors.accent.withOpacity(0.1), Colors.transparent]),
                           ),
                         ),
                       ),
@@ -93,29 +87,13 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Meu Cofre',
-                                  style: GoogleFonts.dmSerifDisplay(
-                                    fontSize: 26,
-                                    color: AppColors.white,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
+                                Text('Meu Cofre', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
                                 const SizedBox(height: 4),
-                                Text(
-                                  'SUAS CARTAS',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 10,
-                                    color: Colors.white.withOpacity(0.25),
-                                    fontWeight: FontWeight.w300,
-                                    letterSpacing: 2,
-                                  ),
-                                ),
+                                Text('SUAS CARTAS', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                               ],
                             ),
                             Container(
-                              width: 36,
-                              height: 36,
+                              width: 36, height: 36,
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.08),
                                 borderRadius: BorderRadius.circular(12),
@@ -170,13 +148,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                         final openDate = (data['openDate'] as Timestamp).toDate();
                         final createdAt = (data['createdAt'] as Timestamp).toDate();
                         final canOpen = DateTime.now().isAfter(openDate);
-                        return _buildLockedCard(
-                          data: data,
-                          docId: docs[i].id,
-                          openDate: openDate,
-                          createdAt: createdAt,
-                          canOpen: canOpen,
-                        );
+                        return _buildLockedCard(data: data, docId: docs[i].id, openDate: openDate, createdAt: createdAt, canOpen: canOpen);
                       },
                     );
                   },
@@ -211,13 +183,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildLockedCard({
-    required Map<String, dynamic> data,
-    required String docId,
-    required DateTime openDate,
-    required DateTime createdAt,
-    required bool canOpen,
-  }) {
+  Widget _buildLockedCard({required Map<String, dynamic> data, required String docId, required DateTime openDate, required DateTime createdAt, required bool canOpen}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(20),
@@ -234,14 +200,8 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: canOpen ? AppColors.accentWarm : AppColors.bg,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  canOpen ? '✨ Pronta!' : '🔒 Bloqueada',
-                  style: GoogleFonts.dmSans(fontSize: 10, color: canOpen ? AppColors.accent : AppColors.inkSoft, fontWeight: FontWeight.w500),
-                ),
+                decoration: BoxDecoration(color: canOpen ? AppColors.accentWarm : AppColors.bg, borderRadius: BorderRadius.circular(20)),
+                child: Text(canOpen ? '✨ Pronta!' : '🔒 Bloqueada', style: GoogleFonts.dmSans(fontSize: 10, color: canOpen ? AppColors.accent : AppColors.inkSoft, fontWeight: FontWeight.w500)),
               ),
               const Spacer(),
               Text('De: ${data['senderName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
@@ -272,11 +232,13 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection(FirestoreCollections.letters)
-                      .doc(docId)
-                      .update({'status': 'opened', 'openedAt': Timestamp.now()});
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LetterOpeningScreen(data: data, docId: docId),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accent,
@@ -294,19 +256,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildOpenedCard({
-    required Map<String, dynamic> data,
-    required String docId,
-  }) {
+  Widget _buildOpenedCard({required Map<String, dynamic> data, required String docId}) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LetterDetailScreen(data: data, docId: docId),
-          ),
-        );
-      },
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(20),
@@ -322,11 +274,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.08)),
-                  ),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withOpacity(0.08))),
                   child: Text('💌 Carta aberta', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w500, letterSpacing: 0.5)),
                 ),
                 const Spacer(),
@@ -341,14 +289,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LetterDetailScreen(data: data, docId: docId),
-                    ),
-                  );
-                },
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.white.withOpacity(0.15)),
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -370,16 +311,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         children: [
           Text(isLocked ? '🔒' : '💌', style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 16),
-          Text(
-            isLocked ? 'Nenhuma carta esperando' : 'Nenhuma carta aberta ainda',
-            style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic),
-          ),
+          Text(isLocked ? 'Nenhuma carta esperando' : 'Nenhuma carta aberta ainda', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
           const SizedBox(height: 8),
-          Text(
-            isLocked ? 'Quando alguém te enviar uma carta\nela aparecerá aqui' : 'Suas cartas abertas\naparecerão aqui',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6),
-          ),
+          Text(isLocked ? 'Quando alguém te enviar uma carta\nela aparecerá aqui' : 'Suas cartas abertas\naparecerão aqui', textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
         ],
       ),
     );
