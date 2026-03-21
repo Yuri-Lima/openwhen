@@ -49,7 +49,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return Scaffold(
       backgroundColor: AppColors.bg,
@@ -128,6 +128,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
+                // Aba locked — mostra cartas recebidas bloqueadas
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection(FirestoreCollections.letters)
@@ -153,24 +154,42 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                     );
                   },
                 ),
+                // Aba opened — mostra cartas recebidas E enviadas abertas
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection(FirestoreCollections.letters)
                       .where('receiverUid', isEqualTo: uid)
                       .where('status', isEqualTo: 'opened')
                       .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    final docs = snapshot.data?.docs ?? [];
-                    if (docs.isEmpty) return _buildEmpty(isLocked: false);
-                    return ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                      itemCount: docs.length,
-                      itemBuilder: (context, i) {
-                        final data = docs[i].data() as Map<String, dynamic>;
-                        return _buildOpenedCard(data: data, docId: docs[i].id);
+                  builder: (context, receivedSnap) {
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection(FirestoreCollections.letters)
+                          .where('senderUid', isEqualTo: uid)
+                          .where('status', isEqualTo: 'opened')
+                          .snapshots(),
+                      builder: (context, sentSnap) {
+                        if (receivedSnap.connectionState == ConnectionState.waiting ||
+                            sentSnap.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        // Combina e deduplica
+                        final allDocs = <String, QueryDocumentSnapshot>{};
+                        for (final doc in [...(receivedSnap.data?.docs ?? []), ...(sentSnap.data?.docs ?? [])]) {
+                          allDocs[doc.id] = doc;
+                        }
+                        final docs = allDocs.values.toList();
+
+                        if (docs.isEmpty) return _buildEmpty(isLocked: false);
+                        return ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                          itemCount: docs.length,
+                          itemBuilder: (context, i) {
+                            final data = docs[i].data() as Map<String, dynamic>;
+                            return _buildOpenedCard(data: data, docId: docs[i].id, uid: uid);
+                          },
+                        );
                       },
                     );
                   },
@@ -183,7 +202,16 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildLockedCard({required Map<String, dynamic> data, required String docId, required DateTime openDate, required DateTime createdAt, required bool canOpen}) {
+  Widget _buildLockedCard({
+    required Map<String, dynamic> data,
+    required String docId,
+    required DateTime openDate,
+    required DateTime createdAt,
+    required bool canOpen,
+  }) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final isReceiver = data['receiverUid'] == uid;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(20),
@@ -200,11 +228,20 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: canOpen ? AppColors.accentWarm : AppColors.bg, borderRadius: BorderRadius.circular(20)),
-                child: Text(canOpen ? '✨ Pronta!' : '🔒 Bloqueada', style: GoogleFonts.dmSans(fontSize: 10, color: canOpen ? AppColors.accent : AppColors.inkSoft, fontWeight: FontWeight.w500)),
+                decoration: BoxDecoration(
+                  color: canOpen ? AppColors.accentWarm : AppColors.bg,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  canOpen ? '✨ Pronta!' : '🔒 Bloqueada',
+                  style: GoogleFonts.dmSans(fontSize: 10, color: canOpen ? AppColors.accent : AppColors.inkSoft, fontWeight: FontWeight.w500),
+                ),
               ),
               const Spacer(),
-              Text('De: ${data['senderName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+              Text(
+                isReceiver ? 'De: ${data['senderName'] ?? ''}' : 'Para: ${data['receiverName'] ?? ''}',
+                style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -227,18 +264,15 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               Text('${openDate.day}/${openDate.month}/${openDate.year}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
             ],
           ),
-          if (canOpen) ...[
+          if (canOpen && isReceiver) ...[
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LetterOpeningScreen(data: data, docId: docId),
-                    ),
-                  );
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => LetterOpeningScreen(data: data, docId: docId),
+                  ));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accent,
@@ -256,9 +290,13 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildOpenedCard({required Map<String, dynamic> data, required String docId}) {
+  Widget _buildOpenedCard({required Map<String, dynamic> data, required String docId, required String uid}) {
+    final isReceiver = data['receiverUid'] == uid;
+
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
+      onTap: () => Navigator.push(context, MaterialPageRoute(
+        builder: (_) => LetterDetailScreen(data: data, docId: docId),
+      )),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(20),
@@ -274,22 +312,32 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withOpacity(0.08))),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  ),
                   child: Text('💌 Carta aberta', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w500, letterSpacing: 0.5)),
                 ),
                 const Spacer(),
-                Text('De: ${data['senderName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.35))),
+                Text(
+                  isReceiver ? 'De: ${data['senderName'] ?? ''}' : 'Para: ${data['receiverName'] ?? ''}',
+                  style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.35)),
+                ),
               ],
             ),
             const SizedBox(height: 12),
             Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.white, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
-            Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.5), height: 1.6)),
+            Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.5), height: 1.6)),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => LetterDetailScreen(data: data, docId: docId),
+                )),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.white.withOpacity(0.15)),
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -311,9 +359,16 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         children: [
           Text(isLocked ? '🔒' : '💌', style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 16),
-          Text(isLocked ? 'Nenhuma carta esperando' : 'Nenhuma carta aberta ainda', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+          Text(
+            isLocked ? 'Nenhuma carta esperando' : 'Nenhuma carta aberta ainda',
+            style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic),
+          ),
           const SizedBox(height: 8),
-          Text(isLocked ? 'Quando alguém te enviar uma carta\nela aparecerá aqui' : 'Suas cartas abertas\naparecerão aqui', textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
+          Text(
+            isLocked ? 'Quando alguém te enviar uma carta\nela aparecerá aqui' : 'Suas cartas abertas\naparecerão aqui',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6),
+          ),
         ],
       ),
     );
