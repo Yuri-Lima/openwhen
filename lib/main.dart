@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
@@ -12,9 +11,9 @@ import 'features/letters/presentation/screens/write_letter_screen.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
+import 'features/profile/presentation/screens/search_screen.dart';
 import 'shared/theme/app_theme.dart';
 
-// Controla se o onboarding já foi visto nessa sessão
 bool _onboardingShown = false;
 
 void main() async {
@@ -37,6 +36,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/register': (context) => const RegisterScreen(),
         '/write': (context) => const WriteLetterScreen(),
+        '/search': (context) => const SearchScreen(),
       },
       home: const AuthWrapper(),
     );
@@ -70,14 +70,11 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     return authState.when(
       data: (user) {
         if (user != null) return const HomeScreen();
-        // Mostra onboarding só na primeira vez por sessão
         if (!_onboardingShown) {
-          return OnboardingScreen(
-            onFinish: () {
-              _onboardingShown = true;
-              if (mounted) setState(() {});
-            },
-          );
+          return OnboardingScreen(onFinish: () {
+            _onboardingShown = true;
+            if (mounted) setState(() {});
+          });
         }
         return const LoginScreen();
       },
@@ -114,12 +111,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(border: Border(top: BorderSide(color: AppColors.border))),
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.border)),
+        ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (i) => setState(() => _currentIndex = i),
+          onTap: (i) {
+            if (i == 1) {
+              // Ícone de busca abre SearchScreen
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
+              return;
+            }
+            setState(() => _currentIndex = i == 2 ? 1 : i == 3 ? 2 : i);
+          },
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_outlined), activeIcon: Icon(Icons.auto_awesome), label: 'Feed'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), activeIcon: Icon(Icons.search), label: 'Buscar'),
             BottomNavigationBarItem(icon: Icon(Icons.lock_outline), activeIcon: Icon(Icons.lock), label: 'Cofre'),
             BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Perfil'),
           ],
