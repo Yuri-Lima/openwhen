@@ -1,5 +1,7 @@
 <div align="center">
 
+**English** · <a href="README.pt-BR.md" target="_blank" rel="noopener noreferrer">Português (Brasil)</a>
+
 # OpenWhen
 
 **Write today. Feel tomorrow.** · *Escreva hoje. Sinta amanhã.*
