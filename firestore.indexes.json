@@ -40,6 +40,14 @@
         { "fieldPath": "followerUid", "order": "ASCENDING" },
         { "fieldPath": "followingUid", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "capsules",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "senderUid", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
