@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -61,7 +62,6 @@ class ProfileScreen extends ConsumerWidget {
                                   children: [
                                     Text('Perfil', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
                                     const SizedBox(width: 8),
-                                    // Badge conta privada/pública
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                       decoration: BoxDecoration(
@@ -83,16 +83,17 @@ class ProfileScreen extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
+                                // Botão configurações
                                 GestureDetector(
-                                  onTap: () => ref.read(authNotifierProvider.notifier).signOut(),
+                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                    width: 36, height: 36,
                                     decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.08),
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(12),
                                       border: Border.all(color: Colors.white.withOpacity(0.08)),
                                     ),
-                                    child: Text('Sair', style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.6))),
+                                    child: Icon(Icons.settings_outlined, size: 18, color: Colors.white.withOpacity(0.6)),
                                   ),
                                 ),
                               ],
@@ -124,6 +125,11 @@ class ProfileScreen extends ConsumerWidget {
                                     const SizedBox(height: 4),
                                     Text('@${data?['username'] ?? ''}',
                                       style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
+                                    if (data?['bio'] != null && (data?['bio'] as String).isNotEmpty) ...[
+                                      const SizedBox(height: 4),
+                                      Text(data?['bio'] ?? '',
+                                        style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.5))),
+                                    ],
                                   ],
                                 ),
                               ],
@@ -160,89 +166,70 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              // Conteúdo
+              // Cartas públicas
               Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Toggle conta privada/pública
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: SwitchListTile(
-                          title: Text('Conta privada',
-                            style: GoogleFonts.dmSans(fontSize: 15, color: AppColors.ink)),
-                          subtitle: Text(
-                            isPrivate
-                                ? 'Suas cartas não aparecem no feed público'
-                                : 'Suas cartas podem aparecer no feed público',
-                            style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkSoft)),
-                          secondary: Container(
-                            width: 36, height: 36,
-                            decoration: BoxDecoration(
-                              color: isPrivate ? AppColors.bg : AppColors.accentWarm,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(isPrivate ? Icons.lock_outline : Icons.public,
-                              size: 18, color: isPrivate ? AppColors.inkSoft : AppColors.accent),
-                          ),
-                          value: isPrivate,
-                          activeColor: AppColors.accent,
-                          onChanged: (value) async {
-                            await FirebaseFirestore.instance
-                                .collection(FirestoreCollections.users)
-                                .doc(user?.uid)
-                                .update({'isPrivate': value});
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Sobre
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: AppColors.border),
-                        ),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection(FirestoreCollections.letters)
+                      .where('senderUid', isEqualTo: user?.uid)
+                      .where('isPublic', isEqualTo: true)
+                      .where('status', isEqualTo: 'opened')
+                      .snapshots(),
+                  builder: (context, snap) {
+                    final docs = snap.data?.docs ?? [];
+                    if (docs.isEmpty) {
+                      return Center(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Sobre', style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.ink)),
+                            const Text('💌', style: TextStyle(fontSize: 40)),
                             const SizedBox(height: 12),
-                            _buildInfoRow(Icons.mail_outline, user?.email ?? ''),
+                            Text('Nenhuma carta pública ainda',
+                              style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.ink, fontStyle: FontStyle.italic)),
                             const SizedBox(height: 8),
-                            _buildInfoRow(Icons.language, data?['language'] ?? 'pt-BR'),
+                            Text('Suas cartas públicas abertas\naparecerão aqui',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      // Menu
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: Column(
-                          children: [
-                            _buildMenuItem(Icons.notifications_outlined, 'Notificações', () {}),
-                            Divider(height: 1, color: AppColors.border),
-                            _buildMenuItem(Icons.help_outline, 'Ajuda', () {}),
-                            Divider(height: 1, color: AppColors.border),
-                            _buildMenuItem(Icons.logout, 'Sair', () {
-                              ref.read(authNotifierProvider.notifier).signOut();
-                            }, color: AppColors.accent),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                      );
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                      itemCount: docs.length,
+                      itemBuilder: (context, i) {
+                        final d = docs[i].data() as Map<String, dynamic>;
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(d['title'] ?? '',
+                                style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                              const SizedBox(height: 8),
+                              Text(d['message'] ?? '', maxLines: 2, overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.5)),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Icon(Icons.favorite_border, size: 14, color: AppColors.inkFaint),
+                                  const SizedBox(width: 4),
+                                  Text('${d['likeCount'] ?? 0}',
+                                    style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkFaint)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],
@@ -265,32 +252,4 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildDividerVertical() => Container(width: 1, height: 32, color: Colors.white.withOpacity(0.08));
-
-  Widget _buildInfoRow(IconData icon, String label) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: AppColors.inkFaint),
-        const SizedBox(width: 10),
-        Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.inkSoft)),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem(IconData icon, String label, VoidCallback onTap, {Color? color}) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(
-          children: [
-            Icon(icon, size: 20, color: color ?? AppColors.inkSoft),
-            const SizedBox(width: 14),
-            Text(label, style: GoogleFonts.dmSans(fontSize: 15, color: color ?? AppColors.ink)),
-            const Spacer(),
-            if (color == null) Icon(Icons.chevron_right, size: 18, color: AppColors.inkFaint),
-          ],
-        ),
-      ),
-    );
-  }
 }
