@@ -12,6 +12,7 @@ import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/profile/presentation/screens/search_screen.dart';
+import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
 
 bool _onboardingShown = false;
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/write': (context) => const WriteLetterScreen(),
         '/search': (context) => const SearchScreen(),
+        '/create-capsule': (context) => const CreateCapsuleScreen(),
       },
       home: const AuthWrapper(),
     );
@@ -64,9 +66,7 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_showSplash) return const SplashScreen();
-
     final authState = ref.watch(authStateProvider);
-
     return authState.when(
       data: (user) {
         if (user != null) return const HomeScreen();
@@ -100,13 +100,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     const ProfileScreen(),
   ];
 
+  void _showCreateOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF7F4F0),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 40, height: 4, decoration: BoxDecoration(color: const Color(0xFFC4BFB9), borderRadius: BorderRadius.circular(2))),
+          const SizedBox(height: 20),
+          ListTile(
+            leading: Container(
+              width: 44, height: 44,
+              decoration: BoxDecoration(color: const Color(0xFFF0EAE4), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.mail_outline_rounded, color: Color(0xFFC0392B)),
+            ),
+            title: const Text('Escrever Carta', style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: const Text('Para alguem especial'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const WriteLetterScreen()));
+            },
+          ),
+          ListTile(
+            leading: Container(
+              width: 44, height: 44,
+              decoration: BoxDecoration(color: const Color(0xFFF0EAE4), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.hourglass_empty_rounded, color: Color(0xFFC0392B)),
+            ),
+            title: const Text('Nova Capsula do Tempo', style: TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: const Text('Para voce mesmo ou um grupo'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateCapsuleScreen()));
+            },
+          ),
+          const SizedBox(height: 8),
+        ]),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: _screens[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WriteLetterScreen())),
+        onPressed: () => _showCreateOptions(context),
         child: const Icon(Icons.edit_outlined),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -118,7 +163,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           currentIndex: _currentIndex,
           onTap: (i) {
             if (i == 1) {
-              // Ícone de busca abre SearchScreen
               Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
               return;
             }
