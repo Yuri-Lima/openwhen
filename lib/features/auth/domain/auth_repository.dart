@@ -24,23 +24,25 @@ class AuthRepository {
     );
 
     final user = credential.user!;
-    final username = email.split('@')[0];
+    final username = email.split('@')[0].toLowerCase();
 
-    await _firestore
-        .collection(FirestoreCollections.users)
-        .doc(user.uid)
-        .set({
+    await _firestore.collection(FirestoreCollections.users).doc(user.uid).set({
       'uid': user.uid,
       'name': name,
+      'displayName': name,
       'username': username,
       'email': email,
       'photoUrl': null,
       'bio': null,
+      'isPrivate': false,
       'createdAt': Timestamp.now(),
       'lettersSentCount': 0,
       'lettersReceivedCount': 0,
       'lockedLettersCount': 0,
       'openedLettersCount': 0,
+      'followersCount': 0,
+      'followingCount': 0,
+      'lettersCount': 0,
       'language': 'pt-BR',
       'country': null,
     });
@@ -50,10 +52,7 @@ class AuthRepository {
     required String email,
     required String password,
   }) async {
-    await _authService.loginWithEmail(
-      email: email,
-      password: password,
-    );
+    await _authService.loginWithEmail(email: email, password: password);
   }
 
   Future<void> signOut() async {
@@ -62,11 +61,7 @@ class AuthRepository {
   }
 
   Future<AppUser?> getUser(String uid) async {
-    final doc = await _firestore
-        .collection(FirestoreCollections.users)
-        .doc(uid)
-        .get();
-
+    final doc = await _firestore.collection(FirestoreCollections.users).doc(uid).get();
     if (!doc.exists) return null;
     return AppUser.fromFirestore(doc);
   }
