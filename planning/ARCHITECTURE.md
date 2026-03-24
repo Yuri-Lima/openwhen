@@ -70,7 +70,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 
 ## Coleções Firestore
 
-Constantes centralizadas em [`lib/core/constants/firestore_collections.dart`](../lib/core/constants/firestore_collections.dart): `users`, `letters`, `comments`, `likes`, `reports`.
+Constantes centralizadas em [`lib/core/constants/firestore_collections.dart`](../lib/core/constants/firestore_collections.dart): `users`, `letters`, `comments`, `likes`, `reports`, `capsules`.
 
 Coleções também usadas no código (strings / queries):
 

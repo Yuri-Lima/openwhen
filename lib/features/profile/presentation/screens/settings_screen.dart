@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
-import 'legal_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../data/avatar_upload_helper.dart';
+import '../../../../core/services/notification_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -82,6 +84,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _buildSectionTitle('MINHA CONTA'),
                     _buildMenuCard([
                       _buildMenuItem(
+                        icon: Icons.photo_camera_outlined,
+                        iconColor: const Color(0xFFEC4899),
+                        iconBg: const Color(0xFFFCE7F3),
+                        label: 'Foto de perfil',
+                        subtitle: 'Galeria ou remover',
+                        onTap: () {
+                          final uid = _user?.uid;
+                          if (uid != null) {
+                            AvatarUploadHelper.showAvatarOptions(context, uid);
+                          }
+                        },
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
                         icon: Icons.person_outline,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
@@ -133,6 +149,41 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     // ── Notificações ──
                     _buildSectionTitle('NOTIFICAÇÕES'),
                     _buildMenuCard([
+                      _buildMenuItem(
+                        icon: Icons.notifications_active_outlined,
+                        iconColor: const Color(0xFFF59E0B),
+                        iconBg: const Color(0xFFFEF3C7),
+                        label: 'Permissões de alerta (sistema)',
+                        subtitle: 'Necessário para receber push no celular',
+                        onTap: () async {
+                          await NotificationService.requestPermissionAndSync();
+                          if (!context.mounted) return;
+                          try {
+                            final s = await FirebaseMessaging.instance.getNotificationSettings();
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Status: ${s.authorizationStatus}',
+                                  style: GoogleFonts.dmSans(fontSize: 13),
+                                ),
+                              ),
+                            );
+                          } catch (_) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Permissões de notificação atualizadas.',
+                                    style: GoogleFonts.dmSans(fontSize: 13),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                      _buildDivider(),
                       _buildToggleItem(
                         icon: Icons.favorite_outline,
                         iconColor: const Color(0xFFE91E8C),

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 
 // Lista de palavras proibidas
 const List<String> _palavrasProibidas = [
@@ -195,18 +196,22 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 36, height: 36,
-                            decoration: BoxDecoration(
-                              color: isMe ? AppColors.accent : AppColors.accentWarm,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Text(
-                                (data['userName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                                style: GoogleFonts.dmSerifDisplay(fontSize: 14, color: isMe ? AppColors.white : AppColors.accent, fontStyle: FontStyle.italic),
-                              ),
-                            ),
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection(FirestoreCollections.users)
+                                .doc(data['userUid'] as String? ?? '')
+                                .snapshots(),
+                            builder: (context, userSnap) {
+                              final map = userSnap.data?.data() as Map<String, dynamic>?;
+                              final photoUrl = map?['photoUrl'] as String?;
+                              return UserAvatar(
+                                photoUrl: photoUrl,
+                                name: data['userName'] as String? ?? 'U',
+                                size: 36,
+                                backgroundColor: isMe ? AppColors.accent : AppColors.accentWarm,
+                                textColor: isMe ? AppColors.white : AppColors.accent,
+                              );
+                            },
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -248,9 +253,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
               color: AppColors.white,
               border: Border(top: BorderSide(color: AppColors.border)),
             ),
-            padding: EdgeInsets.only(
-              left: 16, right: 16, top: 12,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+            padding: EdgeInsets.fromLTRB(
+              16,
+              12,
+              16,
+              12 + MediaQuery.of(context).padding.bottom,
             ),
             child: Row(
               children: [

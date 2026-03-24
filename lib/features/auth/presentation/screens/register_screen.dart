@@ -44,10 +44,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );
-      if (mounted) {
+      if (!mounted) return;
+      final registerState = ref.read(authNotifierProvider);
+      if (registerState.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Conta criada com sucesso! 🎉')),
+          SnackBar(content: Text('Erro: ${registerState.error}')),
         );
+      } else {
+        // createUserWithEmailAndPassword já entra na sessão; encerramos para ir ao login
+        await ref.read(authRepositoryProvider).signOut();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Conta criada com sucesso! Faça login para continuar.')),
+        );
+        Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
@@ -55,9 +65,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           SnackBar(content: Text('Erro: $e')),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-
-    if (mounted) setState(() => _isLoading = false);
   }
 
   Widget _buildField({
@@ -96,6 +106,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               Expanded(
                 child: TextField(
                   controller: controller,
+                  enableInteractiveSelection: false,
                   obscureText: obscure && !_showPassword,
                   keyboardType: keyboard,
                   style: GoogleFonts.dmSans(

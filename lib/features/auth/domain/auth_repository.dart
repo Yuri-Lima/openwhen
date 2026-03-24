@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data/auth_service.dart';
 import '../models/app_user.dart';
 import '../../../core/constants/firestore_collections.dart';
+import '../../../core/services/fcm_token_manager.dart';
 
 class AuthRepository {
   final AuthService _authService = AuthService();
@@ -56,6 +57,7 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
+    await FcmTokenManager.clearToken();
     await _authService.signOut();
   }
 

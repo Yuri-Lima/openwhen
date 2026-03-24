@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
 
@@ -207,19 +208,34 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   )),
                   child: Row(
                     children: [
-                      Container(
-                        width: 38, height: 38,
-                        decoration: BoxDecoration(
-                          color: widget.isFeatured ? AppColors.accent.withOpacity(0.3) : AppColors.accentWarm,
-                          shape: BoxShape.circle,
-                          border: widget.isFeatured ? Border.all(color: AppColors.accent.withOpacity(0.4)) : null,
-                        ),
-                        child: Center(
-                          child: Text(
-                            (data['senderName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                            style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: widget.isFeatured ? AppColors.white : AppColors.accent, fontStyle: FontStyle.italic),
-                          ),
-                        ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection(FirestoreCollections.users)
+                            .doc(data['senderUid'] as String? ?? '')
+                            .snapshots(),
+                        builder: (context, userSnap) {
+                          final map = userSnap.data?.data() as Map<String, dynamic>?;
+                          final photoUrl = map?['photoUrl'] as String?;
+                          return Container(
+                            decoration: widget.isFeatured
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: AppColors.accent.withOpacity(0.4)),
+                                  )
+                                : null,
+                            child: ClipOval(
+                              child: UserAvatar(
+                                photoUrl: photoUrl,
+                                name: data['senderName'] as String? ?? 'U',
+                                size: 38,
+                                backgroundColor: widget.isFeatured
+                                    ? AppColors.accent.withOpacity(0.35)
+                                    : AppColors.accentWarm,
+                                textColor: widget.isFeatured ? AppColors.white : AppColors.accent,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 10),
                       Column(

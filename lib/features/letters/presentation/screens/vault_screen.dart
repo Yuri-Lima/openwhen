@@ -8,6 +8,8 @@ import '../../../../shared/theme/app_theme.dart';
 import 'letter_detail_screen.dart';
 import 'letter_opening_screen.dart';
 import '../../../capsules/presentation/screens/create_capsule_screen.dart';
+import '../../../capsules/presentation/screens/capsule_opening_screen.dart';
+import '../../../capsules/presentation/screens/capsule_detail_screen.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
@@ -211,7 +213,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   Widget _buildCapsulesTab(String uid) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('capsules')
+          .collection(FirestoreCollections.capsules)
           .where('senderUid', isEqualTo: uid)
           .orderBy('createdAt', descending: true)
           .snapshots(),
@@ -323,8 +325,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tela de abertura de capsula em breve!')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CapsuleOpeningScreen(data: data, docId: docId),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -334,6 +339,29 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                 elevation: 0,
               ),
               child: Text('Abrir Capsula', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.white)),
+            ),
+          ),
+        ],
+        if (isOpen) ...[
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CapsuleDetailScreen(data: data, docId: docId),
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: Text(
+                'Ver capsula completa',
+                style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withOpacity(0.85)),
+              ),
             ),
           ),
         ],

@@ -5,14 +5,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../../shared/widgets/user_avatar.dart';
+import '../../data/avatar_upload_helper.dart';
 import 'settings_screen.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  bool _uploadingAvatar = false;
+
+  @override
+  Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -102,18 +110,67 @@ class ProfileScreen extends ConsumerWidget {
                             // Avatar
                             Row(
                               children: [
-                                Container(
-                                  width: 72, height: 72,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.accent,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      (data?['name'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                                      style: GoogleFonts.dmSerifDisplay(fontSize: 28, color: AppColors.white, fontStyle: FontStyle.italic),
-                                    ),
+                                GestureDetector(
+                                  onTap: user?.uid == null || _uploadingAvatar
+                                      ? null
+                                      : () async {
+                                          setState(() => _uploadingAvatar = true);
+                                          try {
+                                            await AvatarUploadHelper.showAvatarOptions(context, user!.uid);
+                                          } finally {
+                                            if (mounted) setState(() => _uploadingAvatar = false);
+                                          }
+                                        },
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Container(
+                                        width: 72,
+                                        height: 72,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
+                                        ),
+                                        child: ClipOval(
+                                          child: UserAvatar(
+                                            photoUrl: data?['photoUrl'] as String?,
+                                            name: data?['name'] as String? ?? 'U',
+                                            size: 72,
+                                            backgroundColor: AppColors.accent,
+                                            textColor: AppColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      if (_uploadingAvatar)
+                                        Positioned.fill(
+                                          child: Container(
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.black38,
+                                            ),
+                                            child: const Center(
+                                              child: SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      Positioned(
+                                        right: -2,
+                                        bottom: -2,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.accent,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(color: const Color(0xFF1A1714), width: 2),
+                                          ),
+                                          child: Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white.withOpacity(0.95)),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(width: 16),

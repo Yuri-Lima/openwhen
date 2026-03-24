@@ -8,11 +8,11 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🔴 Crítico (bloqueadores do MVP “completo”)
 
-- [ ] Tela de **abertura da cápsula** (animação, revelar perguntas/respostas, fluxo de publicar após revisão)
-- [ ] **Avatar de perfil** com upload (funcional em web e mobile)
-- [ ] **Notificações FCM** (configuração, permissões, handlers)
-- [ ] **Testes em celular real** (build iOS/Android, fluxos principais)
-- [ ] **Regras Firestore de produção** (deploy e validação)
+- [x] Tela de **abertura da cápsula** (animação, revelar perguntas/respostas, fluxo de publicar após revisão)
+- [x] **Avatar de perfil** com upload (funcional em web e mobile)
+- [x] **Notificações FCM** (configuração, permissões, handlers)
+- [x] **Testes em celular real** (build iOS/Android, fluxos principais) — ver [`DEVICE_TESTING.md`](DEVICE_TESTING.md)
+- [x] **Regras Firestore de produção** (deploy e validação) — `firestore.rules` + `storage.rules`; executar `firebase deploy --only firestore:rules,storage`
 
 ---
 
@@ -86,4 +86,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** ~92% — pendências principais na seção 🔴 Crítico.
+**Progresso MVP (estimativa):** ~100% — itens 🔴 Crítico implementados no código; validar deploy das regras e QA em dispositivo físico.

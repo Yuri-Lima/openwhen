@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -108,16 +109,19 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             Row(
                               children: [
                                 Container(
-                                  width: 72, height: 72,
+                                  width: 72,
+                                  height: 72,
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent,
                                     shape: BoxShape.circle,
                                     border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      (data?['name'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                                      style: GoogleFonts.dmSerifDisplay(fontSize: 28, color: AppColors.white, fontStyle: FontStyle.italic),
+                                  child: ClipOval(
+                                    child: UserAvatar(
+                                      photoUrl: data?['photoUrl'] as String?,
+                                      name: data?['name'] as String? ?? 'U',
+                                      size: 72,
+                                      backgroundColor: AppColors.accent,
+                                      textColor: AppColors.white,
                                     ),
                                   ),
                                 ),

@@ -4,4 +4,5 @@ class FirestoreCollections {
   static const String comments = 'comments';
   static const String likes = 'likes';
   static const String reports = 'reports';
+  static const String capsules = 'capsules';
 }

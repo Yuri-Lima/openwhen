@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import 'user_profile_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -194,15 +195,12 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             child: Row(
               children: [
-                Container(
-                  width: 48, height: 48,
-                  decoration: const BoxDecoration(color: AppColors.accentWarm, shape: BoxShape.circle),
-                  child: Center(
-                    child: Text(
-                      (data['name'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                      style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.accent, fontStyle: FontStyle.italic),
-                    ),
-                  ),
+                UserAvatar(
+                  photoUrl: data['photoUrl'] as String?,
+                  name: data['name'] as String? ?? 'U',
+                  size: 48,
+                  backgroundColor: AppColors.accentWarm,
+                  textColor: AppColors.accent,
                 ),
                 const SizedBox(width: 12),
                 Expanded(

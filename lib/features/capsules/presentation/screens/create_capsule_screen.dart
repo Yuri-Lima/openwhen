@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/constants/firestore_collections.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 
 class _C {
   static const bg         = Color(0xFFF7F4F0);
@@ -105,7 +107,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       if (_openEventType == 'event' || _openEventType == 'both') {
         eventLabel = _selectedPresetEvent ?? _customEventCtrl.text.trim();
       }
-      await FirebaseFirestore.instance.collection('capsules').doc(docId).set({
+      await FirebaseFirestore.instance.collection(FirestoreCollections.capsules).doc(docId).set({
         'id': docId,
         'senderUid': uid,
         'receiverUid': _receiverUid ?? uid,
@@ -539,12 +541,19 @@ class _ReceiverSearchState extends State<_ReceiverSearch> {
           decoration: BoxDecoration(color: _C.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: _C.border)),
           child: Column(children: _results.map((u) => ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-            leading: CircleAvatar(backgroundColor: _C.accentWarm, radius: 18, child: Text((u['displayName'] as String? ?? 'U').substring(0, 1).toUpperCase(), style: GoogleFonts.dmSans(color: _C.accent, fontWeight: FontWeight.bold))),
-            title: Text(u['displayName'] ?? '', style: GoogleFonts.dmSans(fontSize: 14, color: _C.ink)),
+            leading: UserAvatar(
+              photoUrl: u['photoUrl'] as String?,
+              name: (u['name'] as String? ?? u['displayName'] as String? ?? 'U'),
+              size: 36,
+              backgroundColor: _C.accentWarm,
+              textColor: _C.accent,
+            ),
+            title: Text(u['name'] as String? ?? u['displayName'] as String? ?? '', style: GoogleFonts.dmSans(fontSize: 14, color: _C.ink)),
             subtitle: Text('@${u['username'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 12, color: _C.inkSoft)),
             onTap: () {
-              setState(() { _selectedName = u['displayName']; _results = []; });
-              widget.onFound(u['uid'], u['displayName'] ?? '');
+              final name = u['name'] as String? ?? u['displayName'] as String? ?? '';
+              setState(() { _selectedName = name; _results = []; });
+              widget.onFound(u['uid'] as String, name);
             },
           )).toList()),
         ),
