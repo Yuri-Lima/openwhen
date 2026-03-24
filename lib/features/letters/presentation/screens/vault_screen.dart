@@ -24,7 +24,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -85,15 +85,22 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               unselectedLabelColor: Colors.white.withOpacity(0.3),
               indicatorColor: AppColors.accent,
               indicatorWeight: 2,
+              isScrollable: true,
               labelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500),
               unselectedLabelStyle: GoogleFonts.dmSans(fontSize: 13),
-              tabs: const [Tab(text: 'Aguardando'), Tab(text: 'Abertas'), Tab(text: 'Capsulas')],
+              tabs: const [
+                Tab(text: 'Aguardando'),
+                Tab(text: 'Abertas'),
+                Tab(text: 'Enviadas'),
+                Tab(text: 'Capsulas'),
+              ],
             ),
           ])),
         ),
         Expanded(child: TabBarView(controller: _tabController, children: [
           _buildLockedTab(uid),
           _buildOpenedTab(uid),
+          _buildSentTab(uid),
           _buildCapsulesTab(uid),
         ])),
       ]),
@@ -148,6 +155,31 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
+  Widget _buildSentTab(String uid) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection(FirestoreCollections.letters)
+          .where('senderUid', isEqualTo: uid)
+          .where('status', isEqualTo: 'locked')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+        final docs = snapshot.data?.docs ?? [];
+        if (docs.isEmpty) return _buildEmpty(emoji: '✉️', title: 'Nenhuma carta enviada', subtitle: 'As cartas que voce enviar\naparecera aqui');
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          itemCount: docs.length,
+          itemBuilder: (context, i) {
+            final data = docs[i].data() as Map<String, dynamic>;
+            final openDate = (data['openDate'] as Timestamp).toDate();
+            final createdAt = (data['createdAt'] as Timestamp).toDate();
+            return _buildSentCard(context: context, data: data, docId: docs[i].id, openDate: openDate, createdAt: createdAt);
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildCapsulesTab(String uid) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('capsules').where('senderUid', isEqualTo: uid).orderBy('createdAt', descending: true).snapshots(),
@@ -164,6 +196,81 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           },
         );
       },
+    );
+  }
+
+  Widget _buildSentCard({required BuildContext context, required Map<String, dynamic> data, required String docId, required DateTime openDate, required DateTime createdAt}) {
+    final status = data['status'] ?? 'locked';
+    final requestStatus = data['requestStatus'] ?? 'accepted';
+    final isOpened = status == 'opened';
+    final isPending = requestStatus == 'pending';
+    final canOpen = DateTime.now().isAfter(openDate);
+
+    Color statusColor = AppColors.inkSoft;
+    String statusLabel = 'Aguardando';
+    String statusEmoji = '🔒';
+
+    if (isPending) {
+      statusColor = const Color(0xFFF59E0B);
+      statusLabel = 'Pendente';
+      statusEmoji = '⏳';
+    } else if (isOpened) {
+      statusColor = const Color(0xFF10B981);
+      statusLabel = 'Aberta';
+      statusEmoji = '💌';
+    } else if (canOpen) {
+      statusColor = AppColors.accent;
+      statusLabel = 'Pronta!';
+      statusEmoji = '✨';
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            child: Text('$statusEmoji $statusLabel', style: GoogleFonts.dmSans(fontSize: 11, color: statusColor, fontWeight: FontWeight.w500)),
+          ),
+          const Spacer(),
+          Text('Para: ${data['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+        ]),
+        const SizedBox(height: 12),
+        Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(value: _progress(createdAt, openDate), backgroundColor: const Color(0xFFF0EBE6), valueColor: AlwaysStoppedAnimation<Color>(isOpened ? const Color(0xFF10B981) : canOpen ? AppColors.accent : AppColors.inkFaint), minHeight: 4),
+        ),
+        const SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(
+            isOpened ? 'Ja foi aberta!' : _countdown(openDate),
+            style: GoogleFonts.dmSans(fontSize: 12, color: isOpened ? const Color(0xFF10B981) : canOpen ? AppColors.accent : AppColors.inkSoft, fontWeight: FontWeight.w500),
+          ),
+          Text('${openDate.day}/${openDate.month}/${openDate.year}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+        ]),
+        if (isPending) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(10)),
+            child: Row(children: [
+              const Icon(Icons.info_outline_rounded, color: Color(0xFFF59E0B), size: 14),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Aguardando o destinatario aceitar a carta', style: GoogleFonts.dmSans(fontSize: 11, color: const Color(0xFFF59E0B)))),
+            ]),
+          ),
+        ],
+      ]),
     );
   }
 
