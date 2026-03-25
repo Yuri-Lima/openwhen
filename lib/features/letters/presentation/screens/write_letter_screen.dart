@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 
 class EmotionalState {
   final String key;
@@ -209,7 +211,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             child: Row(children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back, color: AppColors.ink)),
               const SizedBox(width: 16),
-              Text('Escrever carta', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink)),
+              Row(children: [Text('Escrever carta', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22, color: AppColors.ink)]),
             ]),
           ),
           Expanded(

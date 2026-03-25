@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import 'legal_screen.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -65,8 +66,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Text('Configurações',
-                          style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)),
+                        Row(children: [Text('Configurações', style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22)]),
                       ],
                     ),
                   ),

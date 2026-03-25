@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import 'settings_screen.dart';
 
@@ -94,7 +95,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(children: [
                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Row(children: [
-                        Text('Perfil', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
+                        Text('Perfil', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 20, height: 24),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

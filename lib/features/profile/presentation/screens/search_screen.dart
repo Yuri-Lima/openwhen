@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import 'user_profile_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -100,8 +101,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Text('Buscar pessoas',
-                          style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)),
+                        Row(children: [Text('Buscar pessoas', style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22)]),
                       ],
                     ),
                     const SizedBox(height: 16),

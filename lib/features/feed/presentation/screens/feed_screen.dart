@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
 
@@ -46,13 +47,14 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('OpenWhen', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
+                            Row(children: [Text('OpenWhen', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 20, height: 24)]),
                             const SizedBox(height: 4),
                             Text('FEED PÚBLICO', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                           ],
                         ),
                         Row(
                           children: [
+                            
                             _iconBtn(Icons.search),
                             const SizedBox(width: 8),
                             _iconBtn(Icons.notifications_outlined),
