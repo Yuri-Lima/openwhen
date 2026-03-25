@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import 'letter_detail_screen.dart';
 import 'letter_opening_screen.dart';
 import '../../../capsules/presentation/screens/create_capsule_screen.dart';
@@ -90,7 +91,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Meu Cofre', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
+                                Row(children: [
+                                  Text('Meu Cofre', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)),
+                                  const SizedBox(width: 6),
+                                  const OwlWatermark(width: 20, height: 24),
+                                ]),
                                 const SizedBox(height: 4),
                                 Text('SUAS CARTAS E CAPSULAS', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                               ],

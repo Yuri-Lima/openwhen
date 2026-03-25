@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -102,6 +103,8 @@ class _SplashScreenState extends State<SplashScreen>
                       fontStyle: FontStyle.italic,
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  const OwlWatermark(width: 24, height: 28),
                   const SizedBox(height: 8),
                   Text(
                     'Cartas para o futuro',

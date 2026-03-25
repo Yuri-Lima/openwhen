@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onFinish;
@@ -85,6 +86,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ],
                 ),
               ),
+            ),
+            Positioned(
+              top: 12, right: 16,
+              child: SafeArea(child: OwlWatermark()),
             ),
             PageView.builder(
               controller: _pageController,

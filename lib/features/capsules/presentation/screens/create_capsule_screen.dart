@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 
 class _C {
   static const bg         = Color(0xFFF7F4F0);
@@ -171,7 +172,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
                 ),
                 const SizedBox(width: 16),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Nova Capsula do Tempo', style: GoogleFonts.dmSerifDisplay(color: Colors.white, fontSize: 18, fontStyle: FontStyle.italic)),
+                  Row(children: [Text('Nova Capsula do Tempo', style: GoogleFonts.dmSerifDisplay(color: Colors.white, fontSize: 18, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22)]),
                   Text('Passo ${_step + 1} de 3 - ${stepLabels[_step]}', style: GoogleFonts.dmSans(color: Colors.white54, fontSize: 12)),
                 ])),
               ]),

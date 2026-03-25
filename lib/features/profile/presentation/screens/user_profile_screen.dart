@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -74,6 +75,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   bottom: false,
                   child: Stack(
                     children: [
+                      Positioned(
+                        top: 12, right: 16,
+                        child: const OwlWatermark(),
+                      ),
                       Positioned(
                         top: -30, right: -30,
                         child: Container(

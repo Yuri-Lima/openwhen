@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_watermark.dart';
 import '../providers/auth_provider.dart';
 import 'register_screen.dart';
 
@@ -240,6 +241,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           letterSpacing: -0.3,
                         ),
                       ),
+                      const SizedBox(height: 4),
+                      const OwlWatermark(width: 22, height: 26),
                       const SizedBox(height: 6),
                       Text(
                         _selectedTab == 0
