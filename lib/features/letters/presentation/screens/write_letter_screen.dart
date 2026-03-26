@@ -312,17 +312,24 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         margin: const EdgeInsets.symmetric(horizontal: 3),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: isSelected ? e.bgColor : AppColors.white,
+                          color: isSelected ? e.color : AppColors.white,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: isSelected ? e.color : AppColors.border, width: isSelected ? 2 : 1),
                         ),
-                        child: Column(children: [
-                          Text(e.emoji, style: const TextStyle(fontSize: 20)),
-                          const SizedBox(height: 4),
-                          Text(e.label, style: GoogleFonts.dmSans(fontSize: 9, color: isSelected ? e.color : AppColors.inkFaint, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
-                        ]),
+                        child: Center(
+                          child: Text(
+                            e.label,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.dmSerifDisplay(
+                              fontSize: e.label.length > 8 ? 11 : e.label.length > 6 ? 13 : 15,
+                              color: isSelected ? Colors.white : e.color,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
                       ),
                     ));
                   }).toList()),

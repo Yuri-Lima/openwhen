@@ -27,9 +27,9 @@ class CapsuleTheme {
 const List<CapsuleTheme> kCapsuleThemes = [
   CapsuleTheme(id: 'memories',      emoji: '🧠', label: 'Memórias',        subtitle: 'Guarde o que não quer esquecer',   color: Color(0xFF6B6560)),
   CapsuleTheme(id: 'goals',         emoji: '🎯', label: 'Metas',           subtitle: 'Uma promessa para o futuro',       color: Color(0xFFC0392B)),
-  CapsuleTheme(id: 'feelings',      emoji: '💛', label: 'Sentimentos',     subtitle: 'O que está dentro de você agora',  color: Color(0xFFC9A84C)),
-  CapsuleTheme(id: 'relationships', emoji: '👥', label: 'Relacionamentos', subtitle: 'As pessoas que importam',          color: Color(0xFF5B8DB8)),
-  CapsuleTheme(id: 'growth',        emoji: '🌱', label: 'Crescimento',     subtitle: 'Quem você está se tornando',       color: Color(0xFF4A8C6F)),
+  CapsuleTheme(id: 'feelings',      emoji: '💛', label: 'Emoções',         subtitle: 'O que está dentro de você agora',  color: Color(0xFFC9A84C)),
+  CapsuleTheme(id: 'relationships', emoji: '👥', label: 'Vínculos',        subtitle: 'As pessoas que importam',          color: Color(0xFF5B8DB8)),
+  CapsuleTheme(id: 'growth',        emoji: '🌱', label: 'Evolução',        subtitle: 'Quem você está se tornando',       color: Color(0xFF4A8C6F)),
 ];
 
 const kPresetEvents = ['Meu aniversário', 'Nosso aniversário', 'Minha formatura', 'Nascimento do bebê', 'Nossa mudança', 'Fim da viagem', 'Nova fase profissional', 'Natal', 'Ano Novo'];
@@ -268,20 +268,37 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isSelected ? t.color.withOpacity(0.08) : _C.white,
+              color: isSelected ? t.color : _C.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: isSelected ? t.color : _C.border, width: isSelected ? 2 : 1),
             ),
             child: Row(children: [
-              Container(width: 48, height: 48, decoration: BoxDecoration(color: t.color.withOpacity(0.12), borderRadius: BorderRadius.circular(12)), child: Center(child: Text(t.emoji, style: const TextStyle(fontSize: 22)))),
+              Container(
+                width: 52, height: 52,
+                decoration: BoxDecoration(
+                  color: isSelected ? Colors.white.withOpacity(0.15) : t.color.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    t.label,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.dmSerifDisplay(
+                      fontSize: t.label.length > 10 ? 9 : t.label.length > 6 ? 11 : 14,
+                      color: isSelected ? Colors.white : t.color,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(width: 14),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(t.label, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w600, color: _C.ink)),
-                Text(t.subtitle, style: GoogleFonts.dmSans(fontSize: 13, color: _C.inkSoft)),
+                Text(t.label, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : _C.ink)),
+                Text(t.subtitle, style: GoogleFonts.dmSans(fontSize: 13, color: isSelected ? Colors.white.withOpacity(0.7) : _C.inkSoft)),
               ])),
-              if (isSelected) Icon(Icons.check_circle_rounded, color: t.color, size: 22),
+              if (isSelected) Icon(Icons.check_circle_rounded, color: Colors.white, size: 22),
             ]),
           ),
         );

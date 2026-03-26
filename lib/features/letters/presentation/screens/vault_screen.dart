@@ -289,9 +289,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     final themeMap = {
       'memories':      ('🧠', 'Memorias',       const Color(0xFF6B6560)),
       'goals':         ('🎯', 'Metas',           const Color(0xFFC0392B)),
-      'feelings':      ('💛', 'Sentimentos',     const Color(0xFFC9A84C)),
-      'relationships': ('👥', 'Relacionamentos', const Color(0xFF5B8DB8)),
-      'growth':        ('🌱', 'Crescimento',     const Color(0xFF4A8C6F)),
+      'feelings':      ('💛', 'Emoções',         const Color(0xFFC9A84C)),
+      'relationships': ('👥', 'Vínculos',        const Color(0xFF5B8DB8)),
+      'growth':        ('🌱', 'Evolução',        const Color(0xFF4A8C6F)),
     };
     final td = themeMap[theme] ?? ('⏳', 'Capsula', const Color(0xFF6B6560));
 
