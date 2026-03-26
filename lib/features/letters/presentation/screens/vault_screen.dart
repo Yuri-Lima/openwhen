@@ -290,7 +290,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-            child: Text('$statusEmoji $statusLabel', style: GoogleFonts.dmSans(fontSize: 11, color: statusColor, fontWeight: FontWeight.w500)),
+            child: Text('$statusEmoji $statusLabel', style: GoogleFonts.dmSans(fontSize: 11, color: statusColor == AppColors.inkSoft ? AppColors.ink : statusColor, fontWeight: FontWeight.w500)),
           ),
           const Spacer(),
           Text('Para: ${data['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
@@ -400,12 +400,20 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: canOpen ? AppColors.accentWarm : (isOpen ? Colors.white.withOpacity(0.08) : AppColors.bg),
+              color: canOpen ? AppColors.accentWarm : (isOpen ? Colors.white.withOpacity(0.08) : AppColors.border),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isOpen ? Colors.white.withOpacity(0.15) : (canOpen ? AppColors.accent : AppColors.inkFaint),
+                width: 1,
+              ),
             ),
             child: Text(
               isOpen ? 'Aberta' : (canOpen ? 'Pronta!' : 'Selada'),
-              style: GoogleFonts.dmSans(fontSize: 10, color: isOpen ? Colors.white.withOpacity(0.5) : (canOpen ? AppColors.accent : AppColors.inkSoft), fontWeight: FontWeight.w500),
+              style: GoogleFonts.dmSans(
+                fontSize: 10,
+                color: isOpen ? AppColors.white : (canOpen ? AppColors.accent : AppColors.ink),
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ]),
@@ -556,7 +564,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         decoration: BoxDecoration(color: AppColors.ink, borderRadius: BorderRadius.circular(18), boxShadow: [BoxShadow(color: AppColors.ink.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8))]),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withOpacity(0.08))), child: Text('Carta aberta', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w500, letterSpacing: 0.5))),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withOpacity(0.08))), child: Text('Carta aberta', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.white, fontWeight: FontWeight.w500, letterSpacing: 0.5))),
             const Spacer(),
             Text(isReceiver ? 'De: ${data['senderName'] ?? ''}' : 'Para: ${data['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.35))),
           ]),
