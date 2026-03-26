@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/owl_logo.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
@@ -349,7 +350,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                         margin: const EdgeInsets.all(4),
                                         decoration: BoxDecoration(shape: BoxShape.circle, color: glowColor.withOpacity(0.7)),
                                         child: Center(
-                                          child: Text('OW', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: Colors.white, fontStyle: FontStyle.italic)),
+                                          child: const OwlLogo(size: 56),
                                         ),
                                       ),
                                     ),

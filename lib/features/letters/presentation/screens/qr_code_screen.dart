@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -169,7 +170,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                     margin: const EdgeInsets.all(4),
                                     decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFA93226)),
                                     child: Center(
-                                      child: Text('OW', style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: Colors.white, fontStyle: FontStyle.italic)),
+                                      child: const OwlLogo(size: 44),
                                     ),
                                   ),
                                 ),
