@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/owl_logo.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 
@@ -141,7 +142,7 @@ class LegalScreen extends StatelessWidget {
                   boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.3), blurRadius: 20)],
                 ),
                 child: Center(
-                  child: Text('OW', style: GoogleFonts.dmSerifDisplay(fontSize: 28, color: Colors.white, fontStyle: FontStyle.italic)),
+                  child: const OwlLogo(size: 64),
                 ),
               ),
               const SizedBox(height: 16),
