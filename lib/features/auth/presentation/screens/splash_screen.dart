@@ -3,6 +3,7 @@ import '../../../../shared/widgets/owl_logo.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,8 +36,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.ink,
+      backgroundColor: context.pal.headerGradient.first,
       body: Stack(
         children: [
           // Brilho radial vermelho
@@ -48,8 +50,8 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.accent.withOpacity(0.15),
-                    AppColors.accent.withOpacity(0.05),
+                    context.pal.accent.withOpacity(0.15),
+                    context.pal.accent.withOpacity(0.05),
                     Colors.transparent,
                   ],
                 ),
@@ -64,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.accent.withOpacity(0.08),
+                  color: context.pal.accent.withOpacity(0.08),
                 ),
               ),
             ),
@@ -82,15 +84,15 @@ class _SplashScreenState extends State<SplashScreen>
                     'OpenWhen',
                     style: GoogleFonts.dmSerifDisplay(
                       fontSize: 32,
-                      color: AppColors.white,
+                      color: context.pal.white,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const OwlWatermark(width: 24, height: 28),
+                  const OwlWatermark(width: 24, height: 28, opacity: 1.8),
                   const SizedBox(height: 8),
                   Text(
-                    'Cartas para o futuro',
+                    l10n.splashTagline,
                     style: GoogleFonts.dmSans(
                       fontSize: 13,
                       color: Colors.white.withOpacity(0.35),

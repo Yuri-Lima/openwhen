@@ -7,6 +7,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -25,11 +26,20 @@ class UserProfileScreen extends ConsumerStatefulWidget {
 class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   final _currentUid = FirebaseAuth.instance.currentUser?.uid;
 
+  static int _asInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
   Future<void> _toggleFollow(bool isFollowing) async {
+    if (_currentUid == null || _currentUid == widget.userId) return;
+
     final firestore = FirebaseFirestore.instance;
 
     if (isFollowing) {
-      // Deixar de seguir
       final snap = await firestore
           .collection('follows')
           .where('followerUid', isEqualTo: _currentUid)
@@ -39,7 +49,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
         await doc.reference.delete();
       }
     } else {
-      // Seguir
       await firestore.collection('follows').add({
         'followerUid': _currentUid,
         'followingUid': widget.userId,
@@ -50,8 +59,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection(FirestoreCollections.users)
@@ -62,13 +72,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
 
           return Column(
             children: [
-              // Header escuro
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                    colors: context.pal.headerGradient,
                   ),
                 ),
                 child: SafeArea(
@@ -77,7 +86,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                     children: [
                       Positioned(
                         top: 12, right: 16,
-                        child: const OwlWatermark(),
+                        child: const OwlWatermark(opacity: 2.2),
                       ),
                       Positioned(
                         top: -30, right: -30,
@@ -85,7 +94,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           width: 180, height: 180,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: RadialGradient(colors: [AppColors.accent.withOpacity(0.1), Colors.transparent]),
+                            gradient: RadialGradient(colors: [context.pal.accent.withOpacity(0.1), Colors.transparent]),
                           ),
                         ),
                       ),
@@ -93,7 +102,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                         padding: const EdgeInsets.fromLTRB(24, 16, 24, 28),
                         child: Column(
                           children: [
-                            // Voltar
                             Row(
                               children: [
                                 GestureDetector(
@@ -110,7 +118,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 20),
-                            // Avatar + info
                             Row(
                               children: [
                                 Container(
@@ -125,8 +132,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       photoUrl: data?['photoUrl'] as String?,
                                       name: data?['name'] as String? ?? 'U',
                                       size: 72,
-                                      backgroundColor: AppColors.accent,
-                                      textColor: AppColors.white,
+                                      backgroundColor: context.pal.accent,
+                                      textColor: context.pal.white,
                                     ),
                                   ),
                                 ),
@@ -136,14 +143,13 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(data?['name'] ?? widget.userName,
-                                        style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.white)),
+                                        style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white)),
                                       const SizedBox(height: 4),
                                       Text('@${data?['username'] ?? ''}',
                                         style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
                                     ],
                                   ),
                                 ),
-                                // Botão seguir
                                 if (_currentUid != widget.userId)
                                   StreamBuilder<QuerySnapshot>(
                                     stream: FirebaseFirestore.instance
@@ -159,21 +165,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                           duration: const Duration(milliseconds: 200),
                                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                           decoration: BoxDecoration(
-                                            color: isFollowing ? Colors.transparent : AppColors.accent,
+                                            color: isFollowing ? Colors.transparent : context.pal.accent,
                                             borderRadius: BorderRadius.circular(20),
                                             border: Border.all(
-                                              color: isFollowing ? Colors.white.withOpacity(0.2) : AppColors.accent,
+                                              color: isFollowing ? Colors.white.withOpacity(0.2) : context.pal.accent,
                                             ),
                                             boxShadow: isFollowing ? null : [
-                                              BoxShadow(color: AppColors.accent.withOpacity(0.3), blurRadius: 12),
+                                              BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12),
                                             ],
                                           ),
                                           child: Text(
-                                            isFollowing ? 'Seguindo' : 'Seguir',
+                                            isFollowing ? l10n.userProfileFollowing : l10n.userProfileFollow,
                                             style: GoogleFonts.dmSans(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w500,
-                                              color: isFollowing ? Colors.white.withOpacity(0.6) : AppColors.white,
+                                              color: isFollowing ? Colors.white.withOpacity(0.6) : context.pal.white,
                                             ),
                                           ),
                                         ),
@@ -183,7 +189,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 24),
-                            // Contadores
                             StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
                                   .collection('follows')
@@ -200,11 +205,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                     final following = followingSnap.data?.docs.length ?? 0;
                                     return Row(
                                       children: [
-                                        _buildCounter('Seguidores', followers),
+                                        _buildCounter(l10n.profileStatFollowers, followers),
                                         _buildDivider(),
-                                        _buildCounter('Seguindo', following),
+                                        _buildCounter(l10n.profileStatFollowing, following),
                                         _buildDivider(),
-                                        _buildCounter('Cartas', data?['lettersSentCount'] ?? 0),
+                                        _buildCounter(l10n.profileStatLetters, _asInt(data?['lettersSentCount'])),
                                       ],
                                     );
                                   },
@@ -218,7 +223,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   ),
                 ),
               ),
-              // Cartas públicas do usuário
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -236,8 +240,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           children: [
                             const Text('💌', style: TextStyle(fontSize: 40)),
                             const SizedBox(height: 12),
-                            Text('Nenhuma carta pública ainda',
-                              style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                            Text(l10n.userProfileEmptyLetters,
+                              style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: context.pal.ink, fontStyle: FontStyle.italic)),
                           ],
                         ),
                       );
@@ -251,26 +255,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: context.pal.card,
                             borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: AppColors.border),
+                            border: Border.all(color: context.pal.border),
                             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(data['title'] ?? '',
-                                style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                                style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
                               const SizedBox(height: 8),
                               Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
+                                style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
                               const SizedBox(height: 12),
                               Row(
                                 children: [
-                                  Icon(Icons.favorite_border, size: 14, color: AppColors.inkFaint),
+                                  Icon(Icons.favorite_border, size: 14, color: context.pal.inkFaint),
                                   const SizedBox(width: 4),
                                   Text('${data['likeCount'] ?? 0}',
-                                    style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkFaint)),
+                                    style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint)),
                                 ],
                               ),
                             ],
@@ -292,7 +296,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     return Expanded(
       child: Column(
         children: [
-          Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white)),
+          Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
           const SizedBox(height: 2),
           Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
         ],

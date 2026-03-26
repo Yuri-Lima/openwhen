@@ -8,6 +8,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
 
 class EmotionalState {
   final String key;
@@ -25,6 +27,17 @@ const List<EmotionalState> emotionalStates = [
   EmotionalState(key: 'nostalgia', label: 'Saudade', emoji: '🍂', color: Color(0xFFD97706), bgColor: Color(0xFFFEF3C7)),
   EmotionalState(key: 'farewell', label: 'Despedida', emoji: '🦋', color: Color(0xFF8B5CF6), bgColor: Color(0xFFEDE9FE)),
 ];
+
+String emotionalStateLabel(AppLocalizations l10n, String key) {
+  switch (key) {
+    case 'love': return l10n.writeLetterEmotionLove;
+    case 'achievement': return l10n.writeLetterEmotionAchievement;
+    case 'advice': return l10n.writeLetterEmotionAdvice;
+    case 'nostalgia': return l10n.writeLetterEmotionNostalgia;
+    case 'farewell': return l10n.writeLetterEmotionFarewell;
+    default: return key;
+  }
+}
 
 class WriteLetterScreen extends ConsumerStatefulWidget {
   const WriteLetterScreen({super.key});
@@ -121,10 +134,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   void _selectByEmail() {
+    final l10n = AppLocalizations.of(context)!;
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Digite um email válido!')),
+        SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
       );
       return;
     }
@@ -168,10 +182,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       setState(() => _handwrittenImageUrl = url);
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Ative o Firebase Storage para usar esta função'),
-            backgroundColor: AppColors.accent,
+            content: Text(l10n.writeLetterSnackStorageError),
+            backgroundColor: context.pal.accent,
           ),
         );
       }
@@ -180,13 +195,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _pickDate() async {
+    final accent = context.pal.accent;
     final picked = await showDatePicker(
       context: context,
       initialDate: _openDate,
       firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(colorScheme: const ColorScheme.light(primary: AppColors.accent)),
+        data: Theme.of(ctx).copyWith(colorScheme: ColorScheme.light(primary: accent)),
         child: child!,
       ),
     );
@@ -194,24 +210,25 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _saveLetter() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_titleController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preencha o título!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackTitle)));
       return;
     }
     if (!_isHandwritten && _messageController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escreva sua mensagem!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMessage)));
       return;
     }
     if (_isHandwritten && _handwrittenImageUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Adicione a foto da carta!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackPhoto)));
       return;
     }
     if (_receiverName == null || _receiverName!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escolha o destinatário!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
       return;
     }
     if (_selectedEmotion == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escolha o estado emocional!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
       return;
     }
 
@@ -260,38 +277,40 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_receiverHasAccount
-              ? (areFriends ? 'Carta enviada! 💌' : 'Carta enviada! Aguardando aprovação. 💌')
-              : 'Carta criada! Compartilhe o link com o destinatário. 💌'),
-          backgroundColor: AppColors.accent,
+              ? (areFriends ? l10n.writeLetterSnackSentFriend : l10n.writeLetterSnackSentPending)
+              : l10n.writeLetterSnackSentExternal),
+          backgroundColor: context.pal.accent,
         ));
         Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.errorGeneric(e.toString()))));
     }
     if (mounted) setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: SafeArea(
         child: Column(children: [
           // Header
           Container(
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-              border: Border(bottom: BorderSide(color: AppColors.border)),
+            decoration: BoxDecoration(
+              color: context.pal.card,
+              border: Border(bottom: BorderSide(color: context.pal.border)),
             ),
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
             child: Row(children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back, color: AppColors.ink)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back, color: context.pal.ink)),
               const SizedBox(width: 16),
               Row(children: [
-                Text('Escrever carta', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink)),
+                Text(l10n.writeLetterTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink)),
                 const SizedBox(width: 6),
-                const OwlWatermark(width: 18, height: 22, color: AppColors.ink),
+                OwlWatermark(width: 18, height: 22, color: context.pal.ink),
               ]),
             ]),
           ),
@@ -303,7 +322,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
 
                   // Estado emocional
-                  Text('COMO VOCÊ ESTÁ SE SENTINDO?', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterFeeling, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 12),
                   Row(children: emotionalStates.map((e) {
                     final isSelected = _selectedEmotion?.key == e.key;
@@ -314,14 +333,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 3),
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                          color: isSelected ? e.bgColor : AppColors.white,
+                          color: isSelected ? e.bgColor : context.pal.card,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: isSelected ? e.color : AppColors.border, width: isSelected ? 2 : 1),
+                          border: Border.all(color: isSelected ? e.color : context.pal.border, width: isSelected ? 2 : 1),
                         ),
                         child: Column(children: [
                           Text(e.emoji, style: const TextStyle(fontSize: 20)),
                           const SizedBox(height: 4),
-                          Text(e.label, style: GoogleFonts.dmSans(fontSize: 9, color: isSelected ? e.color : AppColors.inkFaint, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
+                          Text(emotionalStateLabel(l10n, e.key), style: GoogleFonts.dmSans(fontSize: 9, color: isSelected ? e.color : context.pal.inkFaint, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
                         ]),
                       ),
                     ));
@@ -329,11 +348,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   const SizedBox(height: 20),
 
                   // Titulo
-                  _buildField(controller: _titleController, label: 'Título', hint: 'Ex: Abra quando sentir saudade'),
+                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
                   const SizedBox(height: 20),
 
                   // TIPO DE CARTA
-                  Text('TIPO DE CARTA', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterTypeSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 10),
                   Row(children: [
                     Expanded(
@@ -343,14 +362,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: !_isHandwritten ? AppColors.accentWarm : AppColors.white,
+                            color: !_isHandwritten ? context.pal.accentWarm : context.pal.card,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: !_isHandwritten ? AppColors.accent : AppColors.border, width: !_isHandwritten ? 2 : 1),
+                            border: Border.all(color: !_isHandwritten ? context.pal.accent : context.pal.border, width: !_isHandwritten ? 2 : 1),
                           ),
                           child: Column(children: [
                             Text('⌨️', style: const TextStyle(fontSize: 22)),
                             const SizedBox(height: 4),
-                            Text('Digitada', style: GoogleFonts.dmSans(fontSize: 12, color: !_isHandwritten ? AppColors.accent : AppColors.inkSoft, fontWeight: !_isHandwritten ? FontWeight.w600 : FontWeight.w400)),
+                            Text(l10n.writeLetterTypeTyped, style: GoogleFonts.dmSans(fontSize: 12, color: !_isHandwritten ? context.pal.accent : context.pal.inkSoft, fontWeight: !_isHandwritten ? FontWeight.w600 : FontWeight.w400)),
                           ]),
                         ),
                       ),
@@ -363,14 +382,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: _isHandwritten ? AppColors.accentWarm : AppColors.white,
+                            color: _isHandwritten ? context.pal.accentWarm : context.pal.card,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: _isHandwritten ? AppColors.accent : AppColors.border, width: _isHandwritten ? 2 : 1),
+                            border: Border.all(color: _isHandwritten ? context.pal.accent : context.pal.border, width: _isHandwritten ? 2 : 1),
                           ),
                           child: Column(children: [
                             Text('✍️', style: const TextStyle(fontSize: 22)),
                             const SizedBox(height: 4),
-                            Text('Manuscrita', style: GoogleFonts.dmSans(fontSize: 12, color: _isHandwritten ? AppColors.accent : AppColors.inkSoft, fontWeight: _isHandwritten ? FontWeight.w600 : FontWeight.w400)),
+                            Text(l10n.writeLetterTypeHandwritten, style: GoogleFonts.dmSans(fontSize: 12, color: _isHandwritten ? context.pal.accent : context.pal.inkSoft, fontWeight: _isHandwritten ? FontWeight.w600 : FontWeight.w400)),
                           ]),
                         ),
                       ),
@@ -381,14 +400,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   // CONTEUDO DA CARTA
                   if (!_isHandwritten)
                     Container(
-                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                       child: TextField(
                         controller: _messageController,
                         maxLines: 8,
-                        style: GoogleFonts.dmSerifDisplay(color: AppColors.ink, fontStyle: FontStyle.italic, fontSize: 15, height: 1.8),
+                        style: GoogleFonts.dmSerifDisplay(color: context.pal.ink, fontStyle: FontStyle.italic, fontSize: 15, height: 1.8),
                         decoration: InputDecoration(
-                          labelText: 'Sua mensagem',
-                          labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
+                          labelText: l10n.writeLetterFieldMessage,
+                          labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
                           alignLabelWithHint: true,
@@ -402,17 +421,17 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                         duration: const Duration(milliseconds: 200),
                         height: _handwrittenImageUrl != null ? null : 180,
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: context.pal.card,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: _handwrittenImageUrl != null ? AppColors.accent : AppColors.border,
+                            color: _handwrittenImageUrl != null ? context.pal.accent : context.pal.border,
                             width: _handwrittenImageUrl != null ? 2 : 1,
                           ),
                         ),
                         child: _uploadingImage
-                            ? const Center(child: Padding(
-                                padding: EdgeInsets.all(40),
-                                child: CircularProgressIndicator(color: AppColors.accent),
+                            ? Center(child: Padding(
+                                padding: const EdgeInsets.all(40),
+                                child: CircularProgressIndicator(color: context.pal.accent),
                               ))
                             : _handwrittenImageUrl != null
                                 ? Stack(children: [
@@ -426,78 +445,78 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                                         onTap: () => setState(() => _handwrittenImageUrl = null),
                                         child: Container(
                                           padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+                                          decoration: BoxDecoration(color: context.pal.accent, shape: BoxShape.circle),
                                           child: const Icon(Icons.close, size: 14, color: Colors.white),
                                         ),
                                       ),
                                     ),
                                   ])
                                 : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                    const Icon(Icons.add_photo_alternate_outlined, size: 40, color: AppColors.inkFaint),
+                                    Icon(Icons.add_photo_alternate_outlined, size: 40, color: context.pal.inkFaint),
                                     const SizedBox(height: 10),
-                                    Text('Toque para adicionar a foto da carta', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft)),
+                                    Text(l10n.writeLetterPhotoTap, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
                                     const SizedBox(height: 4),
-                                    Text('Tire uma foto da sua carta escrita à mão', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                                    Text(l10n.writeLetterPhotoHint, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                                   ]),
                       ),
                     ),
                   const SizedBox(height: 20),
 
                   // DESTINATARIO
-                  Text('PARA QUEM?', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterRecipientSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
 
                   if (_receiverName != null)
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: context.pal.card,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.accent),
+                        border: Border.all(color: context.pal.accent),
                       ),
                       child: Row(children: [
                         Container(
                           width: 40, height: 40,
                           decoration: BoxDecoration(
-                            color: _receiverHasAccount ? AppColors.accentWarm : const Color(0xFFEEF2FF),
+                            color: _receiverHasAccount ? context.pal.accentWarm : const Color(0xFFEEF2FF),
                             shape: BoxShape.circle,
                           ),
                           child: Center(child: _receiverHasAccount
-                              ? Text((_receiverName ?? 'U').substring(0, 1).toUpperCase(), style: GoogleFonts.dmSans(color: AppColors.accent, fontWeight: FontWeight.bold))
+                              ? Text((_receiverName ?? 'U').substring(0, 1).toUpperCase(), style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold))
                               : const Icon(Icons.email_outlined, color: Color(0xFF6366F1), size: 18)),
                         ),
                         const SizedBox(width: 12),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(_receiverName ?? '', style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                          Text(_receiverName ?? '', style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
                           Text(
-                            _receiverHasAccount ? '@${_receiverUsername ?? ''}' : 'Receberá um link para criar conta',
-                            style: GoogleFonts.dmSans(fontSize: 12, color: _receiverHasAccount ? AppColors.inkSoft : const Color(0xFF6366F1)),
+                            _receiverHasAccount ? '@${_receiverUsername ?? ''}' : l10n.writeLetterReceiverLink,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: _receiverHasAccount ? context.pal.inkSoft : const Color(0xFF6366F1)),
                           ),
                         ])),
-                        GestureDetector(onTap: _clearReceiver, child: const Icon(Icons.close, color: AppColors.accent, size: 20)),
+                        GestureDetector(onTap: _clearReceiver, child: Icon(Icons.close, color: context.pal.accent, size: 20)),
                       ]),
                     )
                   else
                     Column(children: [
                       // Busca por usuario
                       Container(
-                        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         child: Row(children: [
-                          const Icon(Icons.search, color: AppColors.inkFaint, size: 20),
+                          Icon(Icons.search, color: context.pal.inkFaint, size: 20),
                           const SizedBox(width: 8),
                           Expanded(child: TextField(
                             controller: _searchController,
                             onChanged: _searchUsers,
-                            style: GoogleFonts.dmSans(color: AppColors.ink),
+                            style: GoogleFonts.dmSans(color: context.pal.ink),
                             decoration: InputDecoration(
-                              hintText: 'Buscar por @usuario ou nome...',
-                              hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                              hintText: l10n.writeLetterSearchHint,
+                              hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                           )),
-                          if (_searching) const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent)),
+                          if (_searching) SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: context.pal.accent)),
                         ]),
                       ),
 
@@ -505,7 +524,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       if (_showResults && _searchResults.isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 4),
-                          decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
+                          decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
                           child: Column(children: _searchResults.map((u) {
                             final nome = u['displayName'] ?? u['name'] ?? '';
                             final foto = u['photoUrl'];
@@ -514,12 +533,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                               leading: CircleAvatar(
                                 radius: 20,
-                                backgroundColor: AppColors.accentWarm,
+                                backgroundColor: context.pal.accentWarm,
                                 backgroundImage: foto != null ? NetworkImage(foto) : null,
-                                child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: AppColors.accent, fontWeight: FontWeight.bold)) : null,
+                                child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold)) : null,
                               ),
-                              title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                              subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkSoft)),
+                              title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
+                              subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft)),
                               onTap: () => _selectUser(u),
                             );
                           }).toList()),
@@ -529,12 +548,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Row(children: [
-                          const Expanded(child: Divider(color: AppColors.border)),
+                          Expanded(child: Divider(color: context.pal.border)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('ou envie para quem não tem conta', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                            child: Text(l10n.writeLetterOrSendExternal, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                           ),
-                          const Expanded(child: Divider(color: AppColors.border)),
+                          Expanded(child: Divider(color: context.pal.border)),
                         ]),
                       ),
 
@@ -542,15 +561,15 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       Row(children: [
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                            decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             child: TextField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              style: GoogleFonts.dmSans(color: AppColors.ink),
+                              style: GoogleFonts.dmSans(color: context.pal.ink),
                               decoration: InputDecoration(
-                                hintText: 'email@exemplo.com',
-                                hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                                hintText: l10n.writeLetterEmailHint,
+                                hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                               ),
@@ -562,7 +581,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           onTap: _selectByEmail,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(14)),
+                            decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(14)),
                             child: Text('OK', style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
                           ),
                         ),
@@ -575,13 +594,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     onTap: _pickDate,
                     child: Container(
                       padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                       child: Row(children: [
-                        const Icon(Icons.calendar_today, color: AppColors.accent, size: 20),
+                        Icon(Icons.calendar_today, color: context.pal.accent, size: 20),
                         const SizedBox(width: 12),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Data de abertura', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 11)),
-                          Text('${_openDate.day}/${_openDate.month}/${_openDate.year}', style: GoogleFonts.dmSans(color: AppColors.ink, fontSize: 15, fontWeight: FontWeight.w500)),
+                          Text(l10n.writeLetterOpenDateLabel, style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 11)),
+                          Text(formatShortDate(_openDate, locale), style: GoogleFonts.dmSans(color: context.pal.ink, fontSize: 15, fontWeight: FontWeight.w500)),
                         ]),
                       ]),
                     ),
@@ -590,12 +609,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
                   // Toggle publico
                   Container(
-                    decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                     child: SwitchListTile(
-                      title: Text('Carta pública', style: GoogleFonts.dmSans(color: AppColors.ink)),
-                      subtitle: Text('Pode aparecer no feed após ser aberta', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 12)),
+                      title: Text(l10n.writeLetterPublicToggle, style: GoogleFonts.dmSans(color: context.pal.ink)),
+                      subtitle: Text(l10n.writeLetterPublicHint, style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12)),
                       value: _isPublic,
-                      activeColor: AppColors.accent,
+                      activeColor: context.pal.accent,
                       onChanged: (value) => setState(() => _isPublic = value),
                     ),
                   ),
@@ -605,8 +624,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _saveLetter,
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: AppColors.white)
-                        : Text('Enviar carta 💌', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+                        ? CircularProgressIndicator(color: context.pal.white)
+                        : Text(l10n.writeLetterSend, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
                   ),
                   const SizedBox(height: 24),
                 ]),
@@ -620,17 +639,17 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   Widget _buildField({required TextEditingController controller, required String label, required String hint, TextInputType keyboard = TextInputType.text}) {
     return Container(
-      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: TextField(
         controller: controller,
         keyboardType: keyboard,
-        style: GoogleFonts.dmSans(color: AppColors.ink),
+        style: GoogleFonts.dmSans(color: context.pal.ink),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
-          hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+          labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
+          hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
         ),

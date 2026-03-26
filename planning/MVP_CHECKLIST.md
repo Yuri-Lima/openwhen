@@ -6,7 +6,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-## 🔴 Crítico (bloqueadores do MVP “completo”)
+## 🔴 Crítico (bloqueadores do MVP "completo")
 
 - [x] Tela de **abertura da cápsula** (animação, revelar perguntas/respostas, fluxo de publicar após revisão)
 - [x] **Avatar de perfil** com upload (funcional em web e mobile)
@@ -22,9 +22,15 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [ ] Compartilhamento Stories/Reels
 - [ ] Tela **Cartas recebidas** dedicada
 - [ ] Badges / gamificação leve
-- [ ] Toggle **tema claro/escuro**
+- [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
 - [ ] Feed em **3 camadas**
 - [ ] Exportar cartas (PDF / ZIP)
+- [x] **Multilíngue (pt-BR, en, es)**
+  - [x] `flutter_localizations` + `gen-l10n` (ARB `app_pt_BR`, `app_en`, `app_es`)
+  - [x] **Idioma padrão:** detectar locale do sistema (`PlatformDispatcher`); mapear `pt*` → pt-BR, `es*` → es, `en*` → en; demais → fallback pt-BR
+  - [x] **Override:** usuário escolhe em Configurações; persistir (`shared_preferences`); prioridade sobre o sistema
+  - [x] Opção **"Automático (sistema)"** no seletor de idioma
+  - [x] Review e migração de **todos** os textos hardcoded nas telas para `AppLocalizations`
 
 ---
 
@@ -33,7 +39,6 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [ ] Cápsula coletiva
 - [ ] Música de fundo
 - [ ] Voz gravada
-- [ ] Multilíngue (ex.: en-US)
 - [ ] Moderação por IA
 - [ ] Premium pay-per-feature (após ~10k usuários)
 
@@ -78,6 +83,12 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Comentários com moderação
 - [x] Configurações
 - [x] Termos, Privacidade, Sobre, Ajuda
+
+### Bugfixes recentes
+
+- [x] **Sair da conta** não redirecionava (popUntil até raiz após signOut em `settings_screen.dart`)
+- [x] **Contraste em temas escuros** — splash, onboarding e hero do login usavam `context.pal.ink` (cor de texto) como fundo, ficando claro em midnight/dark; corrigido para `context.pal.headerGradient.first`
+- [x] **Contraste (acessibilidade)** — fluxo **criar cápsula** usa `OpenWhenPalette` em vez de cores fixas; botão desabilitado sem `AnimatedOpacity` (cores `inkFaint`/`inkSoft`); **Configurações** com subtítulos em `inkSoft`; **bottom sheet da foto de perfil** (`avatar_upload_helper.dart`) com fundo e texto do tema
 
 ### Infra
 

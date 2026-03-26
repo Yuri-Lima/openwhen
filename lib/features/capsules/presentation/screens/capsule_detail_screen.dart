@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -11,13 +13,32 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   const CapsuleDetailScreen({super.key, required this.data, required this.docId});
 
-  static Map<String, (String, String, Color)> get themeLabels => {
-        'memories': ('🧠', 'Memorias', const Color(0xFF6B6560)),
-        'goals': ('🎯', 'Metas', const Color(0xFFC0392B)),
-        'feelings': ('💛', 'Sentimentos', const Color(0xFFC9A84C)),
-        'relationships': ('👥', 'Relacionamentos', const Color(0xFF5B8DB8)),
-        'growth': ('🌱', 'Crescimento', const Color(0xFF4A8C6F)),
-      };
+  static const _themeEmojis = {
+    'memories': '🧠',
+    'goals': '🎯',
+    'feelings': '💛',
+    'relationships': '👥',
+    'growth': '🌱',
+  };
+
+  static const _themeColors = {
+    'memories': Color(0xFF6B6560),
+    'goals': Color(0xFFC0392B),
+    'feelings': Color(0xFFC9A84C),
+    'relationships': Color(0xFF5B8DB8),
+    'growth': Color(0xFF4A8C6F),
+  };
+
+  static String _themeLabel(AppLocalizations l10n, String id) {
+    switch (id) {
+      case 'memories':      return l10n.capsuleThemeMemories;
+      case 'goals':         return l10n.capsuleThemeGoals;
+      case 'feelings':      return l10n.capsuleThemeFeelings;
+      case 'relationships': return l10n.capsuleThemeRelationships;
+      case 'growth':        return l10n.capsuleThemeGrowth;
+      default:              return l10n.capsuleThemeDefault;
+    }
+  }
 
   List<Map<String, String>> _qaPairs() {
     final raw = data['questions'];
@@ -35,16 +56,17 @@ class CapsuleDetailScreen extends StatelessWidget {
   }
 
   Future<void> _deleteCapsule(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Excluir capsula?'),
-        content: const Text('Esta acao nao pode ser desfeita.'),
+        title: Text(l10n.capsuleDetailDeleteConfirm),
+        content: Text(l10n.capsuleDetailDeleteBody),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.actionCancel)),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Excluir', style: TextStyle(color: AppColors.accent)),
+            child: Text(l10n.actionDelete, style: TextStyle(color: context.pal.accent)),
           ),
         ],
       ),
@@ -56,8 +78,12 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     final themeId = data['theme'] as String? ?? 'memories';
-    final td = themeLabels[themeId] ?? ('⏳', 'Capsula', const Color(0xFF6B6560));
+    final emoji = _themeEmojis[themeId] ?? '⏳';
+    final themeLabel = _themeLabel(l10n, themeId);
+    final themeColor = _themeColors[themeId] ?? const Color(0xFF6B6560);
     final title = data['title'] as String? ?? '';
     final openedAt = data['openedAt'] != null ? (data['openedAt'] as Timestamp).toDate() : DateTime.now();
     final createdAt = data['createdAt'] != null ? (data['createdAt'] as Timestamp).toDate() : DateTime.now();
@@ -69,11 +95,11 @@ class CapsuleDetailScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -105,7 +131,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.dmSerifDisplay(
                               fontSize: 18,
-                              color: AppColors.white,
+                              color: context.pal.white,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -113,7 +139,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '${td.$1} ${td.$2}',
+                                '$emoji $themeLabel',
                                 style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.45)),
                               ),
                               if (isPublic) ...[
@@ -121,12 +147,12 @@ class CapsuleDetailScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent.withOpacity(0.2),
+                                    color: context.pal.accent.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
-                                    'No feed',
-                                    style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.accent),
+                                    l10n.capsuleDetailOnFeed,
+                                    style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent),
                                   ),
                                 ),
                               ],
@@ -162,17 +188,17 @@ class CapsuleDetailScreen extends StatelessWidget {
                         Container(
                           height: 4,
                           decoration: BoxDecoration(
-                            color: td.$3,
+                            color: themeColor,
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Sua capsula',
+                          l10n.capsuleDetailYourCapsule,
                           style: TextStyle(
                             fontSize: 9,
                             letterSpacing: 3,
-                            color: td.$3.withOpacity(0.9),
+                            color: themeColor.withOpacity(0.9),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -186,7 +212,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Criada em ${createdAt.day}/${createdAt.month}/${createdAt.year}  ·  Aberta em ${openedAt.day}/${openedAt.month}/${openedAt.year}',
+                          l10n.capsuleDetailDates(formatShortDate(createdAt, locale), formatShortDate(openedAt, locale)),
                           style: GoogleFonts.dmSans(
                             fontSize: 11,
                             color: const Color(0xFF7A5C3A),
@@ -221,8 +247,8 @@ class CapsuleDetailScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   _actionTile(
                     icon: Icons.share_outlined,
-                    title: 'Compartilhar',
-                    subtitle: 'Texto resumido da capsula',
+                    title: l10n.actionShare,
+                    subtitle: l10n.capsuleDetailShareSubtitle,
                     onTap: () {
                       final buffer = StringBuffer('$title\n\n');
                       for (final p in qa) {
@@ -234,8 +260,8 @@ class CapsuleDetailScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   _actionTile(
                     icon: Icons.delete_outline,
-                    title: 'Excluir capsula',
-                    subtitle: 'Remove do cofre permanentemente',
+                    title: l10n.capsuleDetailDeleteTitle,
+                    subtitle: l10n.capsuleDetailDeleteSubtitle,
                     destructive: true,
                     onTap: () => _deleteCapsule(context),
                   ),

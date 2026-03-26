@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
 
 class LetterRequestsScreen extends StatelessWidget {
   const LetterRequestsScreen({super.key});
@@ -24,6 +26,7 @@ class LetterRequestsScreen extends StatelessWidget {
   }
 
   Future<void> _block(BuildContext context, String docId, String senderUid) async {
+    final l10n = AppLocalizations.of(context)!;
     final currentUid = FirebaseAuth.instance.currentUser?.uid;
     await FirebaseFirestore.instance.collection('blocks').add({
       'blockedBy': currentUid,
@@ -37,18 +40,19 @@ class LetterRequestsScreen extends StatelessWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Usuário bloqueado.',
+          content: Text(l10n.requestsSnackBlocked,
             style: GoogleFonts.dmSans(fontSize: 13)),
-          backgroundColor: AppColors.ink,
+          backgroundColor: context.pal.ink,
         ),
       );
     }
   }
 
   void _showOptions(BuildContext context, String docId, String senderUid, String senderName) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -62,19 +66,18 @@ class LetterRequestsScreen extends StatelessWidget {
               child: Container(
                 width: 36, height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.pal.border,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            Text('O que deseja fazer?',
-              style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+            Text(l10n.requestsSheetTitle,
+              style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
             const SizedBox(height: 6),
-            Text('Carta de $senderName',
-              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft)),
+            Text(l10n.requestsSheetLetterFrom(senderName),
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
             const SizedBox(height: 24),
-            // Aceitar
             GestureDetector(
               onTap: () async {
                 Navigator.pop(context);
@@ -82,9 +85,9 @@ class LetterRequestsScreen extends StatelessWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Carta aceita! Ela aparecerá no seu cofre. 💌',
+                      content: Text(l10n.requestsSnackAccepted,
                         style: GoogleFonts.dmSans(fontSize: 13)),
-                      backgroundColor: AppColors.accent,
+                      backgroundColor: context.pal.accent,
                     ),
                   );
                 }
@@ -92,22 +95,21 @@ class LetterRequestsScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.accent,
+                  color: context.pal.accent,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                  boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.check_rounded, color: Colors.white, size: 20),
                     const SizedBox(width: 8),
-                    Text('Aceitar carta', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white)),
+                    Text(l10n.requestsAccept, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white)),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 12),
-            // Recusar
             GestureDetector(
               onTap: () async {
                 Navigator.pop(context);
@@ -115,9 +117,9 @@ class LetterRequestsScreen extends StatelessWidget {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Carta recusada.',
+                      content: Text(l10n.requestsSnackDeclined,
                         style: GoogleFonts.dmSans(fontSize: 13)),
-                      backgroundColor: AppColors.ink,
+                      backgroundColor: context.pal.ink,
                     ),
                   );
                 }
@@ -125,22 +127,21 @@ class LetterRequestsScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.bg,
+                  color: context.pal.bg,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: context.pal.border),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.close_rounded, color: AppColors.inkSoft, size: 20),
+                    Icon(Icons.close_rounded, color: context.pal.inkSoft, size: 20),
                     const SizedBox(width: 8),
-                    Text('Recusar carta', style: GoogleFonts.dmSans(fontSize: 15, color: AppColors.inkSoft)),
+                    Text(l10n.requestsDecline, style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.inkSoft)),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 12),
-            // Bloquear
             GestureDetector(
               onTap: () async {
                 Navigator.pop(context);
@@ -149,16 +150,16 @@ class LetterRequestsScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.bg,
+                  color: context.pal.bg,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: context.pal.border),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.block_rounded, color: AppColors.accent, size: 20),
+                    Icon(Icons.block_rounded, color: context.pal.accent, size: 20),
                     const SizedBox(width: 8),
-                    Text('Bloquear $senderName', style: GoogleFonts.dmSans(fontSize: 15, color: AppColors.accent)),
+                    Text(l10n.requestsBlockUser(senderName), style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.accent)),
                   ],
                 ),
               ),
@@ -172,18 +173,18 @@ class LetterRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: Column(
         children: [
-          // Header escuro
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -207,9 +208,9 @@ class LetterRequestsScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Pedidos de carta',
-                          style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)),
-                        Text('De pessoas que você não segue',
+                        Text(l10n.requestsTitle,
+                          style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
+                        Text(l10n.requestsSubtitle,
                           style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
                       ],
                     ),
@@ -218,7 +219,6 @@ class LetterRequestsScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Lista
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -227,6 +227,8 @@ class LetterRequestsScreen extends StatelessWidget {
                   .where('requestStatus', isEqualTo: 'pending')
                   .snapshots(),
               builder: (context, snapshot) {
+                final l10n = AppLocalizations.of(context)!;
+                final locale = Localizations.localeOf(context).toString();
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -238,12 +240,12 @@ class LetterRequestsScreen extends StatelessWidget {
                       children: [
                         const Text('💌', style: TextStyle(fontSize: 48)),
                         const SizedBox(height: 16),
-                        Text('Nenhum pedido pendente',
-                          style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                        Text(l10n.requestsEmptyTitle,
+                          style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
                         const SizedBox(height: 8),
-                        Text('Quando alguém que você não segue\nte enviar uma carta, aparecerá aqui.',
+                        Text(l10n.requestsEmptySubtitle,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
+                          style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
                       ],
                     ),
                   );
@@ -258,9 +260,9 @@ class LetterRequestsScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: context.pal.card,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: context.pal.border),
                         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
                       ),
                       child: Column(
@@ -280,8 +282,8 @@ class LetterRequestsScreen extends StatelessWidget {
                                     photoUrl: photoUrl,
                                     name: data['senderName'] as String? ?? 'U',
                                     size: 40,
-                                    backgroundColor: AppColors.accentWarm,
-                                    textColor: AppColors.accent,
+                                    backgroundColor: context.pal.accentWarm,
+                                    textColor: context.pal.accent,
                                   );
                                 },
                               ),
@@ -290,35 +292,34 @@ class LetterRequestsScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(data['senderName'] ?? '',
-                                    style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.ink)),
-                                  Text('Pessoa que você não segue',
-                                    style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                                    style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: context.pal.ink)),
+                                  Text(l10n.requestsSenderNotFollowing,
+                                    style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                                 ],
                               ),
                               const Spacer(),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: AppColors.accentWarm,
+                                  color: context.pal.accentWarm,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: Text('Pendente',
-                                  style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.accent, fontWeight: FontWeight.w500)),
+                                child: Text(l10n.requestsBadgePending,
+                                  style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500)),
                               ),
                             ],
                           ),
                           const SizedBox(height: 14),
                           Text(data['title'] ?? '',
-                            style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                            style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: context.pal.ink, fontStyle: FontStyle.italic)),
                           const SizedBox(height: 6),
-                          // Mensagem desfocada
                           Stack(
                             children: [
                               Text(
                                 data['message'] ?? '',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.5),
+                                style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5),
                               ),
                               Positioned.fill(
                                 child: ClipRect(
@@ -329,22 +330,22 @@ class LetterRequestsScreen extends StatelessWidget {
                                       0, 0, 0, 0, 1,
                                       0, 0, 0, 0.08, 0,
                                     ]),
-                                    child: Container(color: AppColors.white.withOpacity(0.85)),
+                                    child: Container(color: context.pal.card.withOpacity(0.85)),
                                   ),
                                 ),
                               ),
                               Positioned.fill(
                                 child: Center(
-                                  child: Text('Aceite para revelar a mensagem',
-                                    style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkFaint, fontStyle: FontStyle.italic)),
+                                  child: Text(l10n.requestsRevealHint,
+                                    style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint, fontStyle: FontStyle.italic)),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Abre em ${openDate.day}/${openDate.month}/${openDate.year}',
-                            style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint),
+                            l10n.requestsOpensOn(formatShortDate(openDate, locale)),
+                            style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint),
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -355,10 +356,10 @@ class LetterRequestsScreen extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(vertical: 12),
                                     decoration: BoxDecoration(
-                                      color: AppColors.accent,
+                                      color: context.pal.accent,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: Text('Ver opções', textAlign: TextAlign.center,
+                                    child: Text(l10n.requestsViewOptions, textAlign: TextAlign.center,
                                       style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white)),
                                   ),
                                 ),

@@ -11,6 +11,9 @@ import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/theme/theme_provider.dart';
+import '../../../../shared/locale/locale_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -22,10 +25,32 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _user = FirebaseAuth.instance.currentUser;
 
+  Widget _activePill(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: context.pal.accentWarm,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        l10n.activeLabel,
+        style: GoogleFonts.dmSans(
+          fontSize: 11,
+          color: context.pal.accent,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final themeMode = ref.watch(themeModeProvider);
+    final localePref = ref.watch(localePreferenceProvider);
+
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection(FirestoreCollections.users)
@@ -41,13 +66,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           return Column(
             children: [
-              // Header escuro
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                    colors: context.pal.headerGradient,
                   ),
                 ),
                 child: SafeArea(
@@ -68,27 +92,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Row(children: [Text('Configurações', style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22)]),
+                        Row(children: [Text(l10n.settingsTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22, opacity: 2.2)]),
                       ],
                     ),
                   ),
                 ),
               ),
-              // Conteúdo
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
 
-                    // ── Minha Conta ──
-                    _buildSectionTitle('MINHA CONTA'),
+                    _buildSectionTitle(l10n.settingsMyAccount),
                     _buildMenuCard([
                       _buildMenuItem(
                         icon: Icons.photo_camera_outlined,
                         iconColor: const Color(0xFFEC4899),
                         iconBg: const Color(0xFFFCE7F3),
-                        label: 'Foto de perfil',
-                        subtitle: 'Galeria ou remover',
+                        label: l10n.settingsProfilePhoto,
+                        subtitle: l10n.settingsProfilePhotoSubtitle,
                         onTap: () {
                           final uid = _user?.uid;
                           if (uid != null) {
@@ -101,7 +123,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.person_outline,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
-                        label: 'Editar perfil',
+                        label: l10n.settingsEditProfile,
                         onTap: () => _showEditProfile(context, data),
                       ),
                       _buildDivider(),
@@ -109,20 +131,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.lock_outline,
                         iconColor: const Color(0xFF8B5CF6),
                         iconBg: const Color(0xFFF5F3FF),
-                        label: 'Alterar senha',
+                        label: l10n.settingsChangePassword,
                         onTap: () => _showChangePassword(context),
                       ),
                     ]),
 
-                    // ── Privacidade ──
-                    _buildSectionTitle('PRIVACIDADE E SEGURANÇA'),
+                    _buildSectionTitle(l10n.settingsPrivacySection),
                     _buildMenuCard([
                       _buildToggleItem(
                         icon: isPrivate ? Icons.lock_outline : Icons.public,
                         iconColor: isPrivate ? const Color(0xFFF59E0B) : const Color(0xFF10B981),
                         iconBg: isPrivate ? const Color(0xFFFEF3C7) : const Color(0xFFD1FAE5),
-                        label: 'Conta privada',
-                        subtitle: isPrivate ? 'Suas cartas não aparecem no feed' : 'Suas cartas podem aparecer no feed',
+                        label: l10n.settingsPrivateAccount,
+                        subtitle: isPrivate ? l10n.settingsPrivateAccountOn : l10n.settingsPrivateAccountOff,
                         value: isPrivate,
                         onChanged: (v) => _updateField('isPrivate', v),
                       ),
@@ -131,7 +152,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.block_outlined,
                         iconColor: const Color(0xFFEF4444),
                         iconBg: const Color(0xFFFEF2F2),
-                        label: 'Usuários bloqueados',
+                        label: l10n.settingsBlockedUsers,
                         onTap: () => _showBlockedUsers(context),
                       ),
                       _buildDivider(),
@@ -139,22 +160,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.mail_outline,
                         iconColor: const Color(0xFF6366F1),
                         iconBg: const Color(0xFFEEF2FF),
-                        label: 'Quem pode me enviar cartas',
-                        subtitle: 'Todos',
+                        label: l10n.settingsWhoCanSend,
+                        subtitle: l10n.settingsWhoCanSendValue,
                         onTap: () {},
                         showArrow: true,
                       ),
                     ]),
 
-                    // ── Notificações ──
-                    _buildSectionTitle('NOTIFICAÇÕES'),
+                    _buildSectionTitle(l10n.settingsNotificationsSection),
                     _buildMenuCard([
                       _buildMenuItem(
                         icon: Icons.notifications_active_outlined,
                         iconColor: const Color(0xFFF59E0B),
                         iconBg: const Color(0xFFFEF3C7),
-                        label: 'Permissões de alerta (sistema)',
-                        subtitle: 'Necessário para receber push no celular',
+                        label: l10n.settingsNotifSystemAlert,
+                        subtitle: l10n.settingsNotifSystemAlertSubtitle,
                         onTap: () async {
                           await NotificationService.requestPermissionAndSync();
                           if (!context.mounted) return;
@@ -171,10 +191,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             );
                           } catch (_) {
                             if (context.mounted) {
+                              final snackL10n = AppLocalizations.of(context)!;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Permissões de notificação atualizadas.',
+                                    snackL10n.settingsNotifUpdated,
                                     style: GoogleFonts.dmSans(fontSize: 13),
                                   ),
                                 ),
@@ -188,8 +209,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.favorite_outline,
                         iconColor: const Color(0xFFE91E8C),
                         iconBg: const Color(0xFFFCE4F3),
-                        label: 'Curtidas',
-                        subtitle: 'Quando alguém curtir sua carta',
+                        label: l10n.settingsNotifLikes,
+                        subtitle: l10n.settingsNotifLikesSubtitle,
                         value: notifLike,
                         onChanged: (v) => _updateField('notifLike', v),
                       ),
@@ -198,8 +219,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.chat_bubble_outline,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
-                        label: 'Comentários',
-                        subtitle: 'Quando alguém comentar sua carta',
+                        label: l10n.settingsNotifComments,
+                        subtitle: l10n.settingsNotifCommentsSubtitle,
                         value: notifComment,
                         onChanged: (v) => _updateField('notifComment', v),
                       ),
@@ -208,8 +229,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.person_add_outlined,
                         iconColor: const Color(0xFF10B981),
                         iconBg: const Color(0xFFD1FAE5),
-                        label: 'Novos seguidores',
-                        subtitle: 'Quando alguém começar a te seguir',
+                        label: l10n.settingsNotifFollowers,
+                        subtitle: l10n.settingsNotifFollowersSubtitle,
                         value: notifFollow,
                         onChanged: (v) => _updateField('notifFollow', v),
                       ),
@@ -218,80 +239,114 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.lock_open_outlined,
                         iconColor: const Color(0xFFF59E0B),
                         iconBg: const Color(0xFFFEF3C7),
-                        label: 'Carta desbloqueada',
-                        subtitle: 'Quando uma carta estiver pronta para abrir',
+                        label: l10n.settingsNotifLetterUnlocked,
+                        subtitle: l10n.settingsNotifLetterUnlockedSubtitle,
                         value: notifLetter,
                         onChanged: (v) => _updateField('notifLetter', v),
                       ),
                     ]),
 
-                    // ── Tema ──
-                    _buildSectionTitle('TEMA DO APP'),
+                    _buildSectionTitle(l10n.themeSection),
                     _buildMenuCard([
                       _buildMenuItem(
                         icon: Icons.brightness_auto_outlined,
                         iconColor: const Color(0xFF6366F1),
                         iconBg: const Color(0xFFEEF2FF),
-                        label: 'Automático',
-                        subtitle: 'Segue o sistema',
-                        trailing: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.accentWarm,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text('Ativo', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.accent, fontWeight: FontWeight.w500)),
-                        ),
-                        onTap: () {},
-                      ),
-                    ]),
-
-                    // ── Idioma ──
-                    _buildSectionTitle('IDIOMA'),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.language,
-                        iconColor: const Color(0xFF10B981),
-                        iconBg: const Color(0xFFD1FAE5),
-                        label: 'Português',
-                        trailing: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.accentWarm,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text('Ativo', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.accent, fontWeight: FontWeight.w500)),
-                        ),
-                        onTap: () {},
+                        label: l10n.themeSystem,
+                        subtitle: l10n.themeSystemSubtitle,
+                        trailing: themeMode == AppThemeMode.system ? _activePill(l10n) : null,
+                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.system),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
-                        icon: Icons.language,
-                        iconColor: AppColors.inkFaint,
-                        iconBg: AppColors.bg,
-                        label: 'English',
-                        trailing: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.bg,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: AppColors.border),
-                          ),
-                          child: Text('Em breve 🌍', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
-                        ),
-                        onTap: () {},
+                        icon: Icons.wb_sunny_outlined,
+                        iconColor: const Color(0xFFF59E0B),
+                        iconBg: const Color(0xFFFEF3C7),
+                        label: l10n.themeClassic,
+                        subtitle: l10n.themeClassicSubtitle,
+                        trailing: themeMode == AppThemeMode.classic ? _activePill(l10n) : null,
+                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.classic),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.dark_mode_outlined,
+                        iconColor: const Color(0xFF64748B),
+                        iconBg: const Color(0xFFE2E8F0),
+                        label: l10n.themeDark,
+                        subtitle: l10n.themeDarkSubtitle,
+                        trailing: themeMode == AppThemeMode.dark ? _activePill(l10n) : null,
+                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.dark),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.nights_stay_outlined,
+                        iconColor: const Color(0xFF3B82F6),
+                        iconBg: const Color(0xFFEFF6FF),
+                        label: l10n.themeMidnight,
+                        subtitle: l10n.themeMidnightSubtitle,
+                        trailing: themeMode == AppThemeMode.midnight ? _activePill(l10n) : null,
+                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.midnight),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.menu_book_outlined,
+                        iconColor: const Color(0xFFB8860B),
+                        iconBg: const Color(0xFFF5E6D3),
+                        label: l10n.themeSepia,
+                        subtitle: l10n.themeSepiaSubtitle,
+                        trailing: themeMode == AppThemeMode.sepia ? _activePill(l10n) : null,
+                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.sepia),
                       ),
                     ]),
 
-                    // ── Dados ──
-                    _buildSectionTitle('DADOS E PRIVACIDADE'),
+                    _buildSectionTitle(l10n.languageSection),
+                    _buildMenuCard([
+                      _buildMenuItem(
+                        icon: Icons.translate,
+                        iconColor: const Color(0xFF6366F1),
+                        iconBg: const Color(0xFFEEF2FF),
+                        label: l10n.languageSystem,
+                        subtitle: l10n.languageSystemSubtitle,
+                        trailing: localePref == AppLocalePreference.system ? _activePill(l10n) : null,
+                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.system),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.flag,
+                        iconColor: const Color(0xFF10B981),
+                        iconBg: const Color(0xFFD1FAE5),
+                        label: l10n.languagePt,
+                        trailing: localePref == AppLocalePreference.ptBr ? _activePill(l10n) : null,
+                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.ptBr),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.flag_outlined,
+                        iconColor: const Color(0xFF3B82F6),
+                        iconBg: const Color(0xFFEFF6FF),
+                        label: l10n.languageEn,
+                        trailing: localePref == AppLocalePreference.en ? _activePill(l10n) : null,
+                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.en),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.flag_outlined,
+                        iconColor: const Color(0xFFF59E0B),
+                        iconBg: const Color(0xFFFEF3C7),
+                        label: l10n.languageEs,
+                        trailing: localePref == AppLocalePreference.es ? _activePill(l10n) : null,
+                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.es),
+                      ),
+                    ]),
+
+                    _buildSectionTitle(l10n.settingsDataSection),
                     _buildMenuCard([
                       _buildMenuItem(
                         icon: Icons.download_outlined,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
-                        label: 'Exportar minhas cartas',
-                        subtitle: 'PDF ou zip com todas as cartas abertas',
+                        label: l10n.settingsExportLetters,
+                        subtitle: l10n.settingsExportLettersSubtitle,
                         onTap: () => _showExportDialog(context),
                       ),
                       _buildDivider(),
@@ -299,69 +354,72 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.delete_outline,
                         iconColor: const Color(0xFFEF4444),
                         iconBg: const Color(0xFFFEF2F2),
-                        label: 'Deletar conta',
-                        subtitle: 'Esta ação é irreversível',
+                        label: l10n.settingsDeleteAccount,
+                        subtitle: l10n.settingsDeleteAccountSubtitle,
                         onTap: () => _showDeleteAccount(context),
                         labelColor: const Color(0xFFEF4444),
                       ),
                     ]),
 
-                    // ── Legal ──
-                    _buildSectionTitle('LEGAL E SUPORTE'),
+                    _buildSectionTitle(l10n.settingsLegalSection),
                     _buildMenuCard([
                       _buildMenuItem(
                         icon: Icons.description_outlined,
                         iconColor: const Color(0xFF6B7280),
-                        iconBg: AppColors.bg,
-                        label: 'Termos de uso',
+                        iconBg: context.pal.bg,
+                        label: l10n.settingsTerms,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.terms))),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
                         icon: Icons.privacy_tip_outlined,
                         iconColor: const Color(0xFF6B7280),
-                        iconBg: AppColors.bg,
-                        label: 'Política de privacidade',
+                        iconBg: context.pal.bg,
+                        label: l10n.settingsPrivacy,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.privacy))),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
                         icon: Icons.help_outline,
                         iconColor: const Color(0xFF6B7280),
-                        iconBg: AppColors.bg,
-                        label: 'Ajuda e suporte',
+                        iconBg: context.pal.bg,
+                        label: l10n.settingsHelp,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.help))),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
                         icon: Icons.info_outline,
                         iconColor: const Color(0xFF6B7280),
-                        iconBg: AppColors.bg,
-                        label: 'Sobre o OpenWhen',
-                        subtitle: 'Versão 1.0.0',
+                        iconBg: context.pal.bg,
+                        label: l10n.settingsAbout,
+                        subtitle: l10n.settingsAboutVersion,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.about))),
                       ),
                     ]),
 
                     const SizedBox(height: 16),
 
-                    // Botão sair
                     GestureDetector(
-                      onTap: () => ref.read(authNotifierProvider.notifier).signOut(),
+                      onTap: () async {
+                        await ref.read(authNotifierProvider.notifier).signOut();
+                        if (context.mounted) {
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+                        }
+                      },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: context.pal.card,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.border),
+                          border: Border.all(color: context.pal.border),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.logout, size: 18, color: AppColors.accent),
+                            Icon(Icons.logout, size: 18, color: context.pal.accent),
                             const SizedBox(width: 8),
-                            Text('Sair da conta',
-                              style: GoogleFonts.dmSans(fontSize: 15, color: AppColors.accent, fontWeight: FontWeight.w500)),
+                            Text(l10n.settingsLogout,
+                              style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.accent, fontWeight: FontWeight.w500)),
                           ],
                         ),
                       ),
@@ -377,8 +435,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  // ── Helpers ──────────────────────────────────────────────
-
   Future<void> _updateField(String field, dynamic value) async {
     await FirebaseFirestore.instance
         .collection(FirestoreCollections.users)
@@ -390,22 +446,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
       child: Text(title,
-        style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+        style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
     );
   }
 
   Widget _buildMenuCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.pal.card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.pal.border),
       ),
       child: Column(children: children),
     );
   }
 
-  Widget _buildDivider() => Divider(height: 1, indent: 56, color: AppColors.border);
+  Widget _buildDivider() => Divider(height: 1, indent: 56, color: context.pal.border);
 
   Widget _buildMenuItem({
     required IconData icon,
@@ -435,17 +491,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: labelColor ?? AppColors.ink)),
+                  Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: labelColor ?? context.pal.ink)),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
-                    Text(subtitle, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                    Text(subtitle, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft)),
                   ],
                 ],
               ),
             ),
             if (trailing != null) trailing,
             if (showArrow || trailing == null)
-              Icon(Icons.chevron_right, size: 18, color: AppColors.inkFaint),
+              Icon(Icons.chevron_right, size: 18, color: context.pal.inkFaint),
           ],
         ),
       ),
@@ -475,23 +531,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink)),
+                Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
-                  Text(subtitle, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                  Text(subtitle, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft)),
                 ],
               ],
             ),
           ),
-          Switch(value: value, onChanged: onChanged, activeColor: AppColors.accent),
+          Switch(value: value, onChanged: onChanged, activeColor: context.pal.accent),
         ],
       ),
     );
   }
 
-  // ── Dialogs ──────────────────────────────────────────────
-
   void _showEditProfile(BuildContext context, Map<String, dynamic>? data) {
+    final l10n = AppLocalizations.of(context)!;
     final nameCtrl = TextEditingController(text: data?['name'] ?? '');
     final usernameCtrl = TextEditingController(text: data?['username'] ?? '');
     final bioCtrl = TextEditingController(text: data?['bio'] ?? '');
@@ -499,7 +554,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
@@ -507,15 +562,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)))),
+            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 20),
-            Text('Editar perfil', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink, fontStyle: FontStyle.italic)),
+            Text(l10n.settingsEditProfileSheetTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
             const SizedBox(height: 20),
-            _buildSheetField(nameCtrl, 'Nome'),
+            _buildSheetField(nameCtrl, l10n.settingsEditProfileFieldName),
             const SizedBox(height: 12),
-            _buildSheetField(usernameCtrl, '@Username'),
+            _buildSheetField(usernameCtrl, l10n.settingsEditProfileFieldUsername),
             const SizedBox(height: 12),
-            _buildSheetField(bioCtrl, 'Bio', maxLines: 3),
+            _buildSheetField(bioCtrl, l10n.settingsEditProfileFieldBio, maxLines: 3),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
@@ -524,7 +579,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 await _updateField('bio', bioCtrl.text.trim());
                 if (context.mounted) Navigator.pop(context);
               },
-              child: Text('Salvar', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+              child: Text(l10n.actionSave, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
             ),
           ],
         ),
@@ -533,11 +588,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showChangePassword(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final ctrl = TextEditingController();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
@@ -545,11 +601,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)))),
+            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 20),
-            Text('Alterar senha', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink, fontStyle: FontStyle.italic)),
+            Text(l10n.settingsChangePasswordTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
-            Text('Enviaremos um link para seu email.', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft)),
+            Text(l10n.settingsChangePasswordBody, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
@@ -557,11 +613,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Email enviado para ${_user?.email}', style: GoogleFonts.dmSans(fontSize: 13))),
+                    SnackBar(content: Text(l10n.settingsChangePasswordSent(_user?.email ?? ''), style: GoogleFonts.dmSans(fontSize: 13))),
                   );
                 }
               },
-              child: Text('Enviar email de redefinição', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+              child: Text(l10n.settingsChangePasswordButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
             ),
           ],
         ),
@@ -570,9 +626,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showExportDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
@@ -580,21 +637,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)))),
+            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 20),
-            Text('Exportar cartas', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink, fontStyle: FontStyle.italic)),
+            Text(l10n.settingsExportTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
-            Text('Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.',
-              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.5)),
+            Text(l10n.settingsExportBody,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Exportação em breve! 📦', style: GoogleFonts.dmSans(fontSize: 13))),
+                  SnackBar(content: Text(l10n.settingsExportSnack, style: GoogleFonts.dmSans(fontSize: 13))),
                 );
               },
-              child: Text('Exportar como PDF', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+              child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
             ),
           ],
         ),
@@ -603,9 +660,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showDeleteAccount(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
@@ -613,27 +671,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)))),
+            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 20),
-            Text('Deletar conta', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFFEF4444), fontStyle: FontStyle.italic)),
+            Text(l10n.settingsDeleteTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFFEF4444), fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
-            Text('Esta ação é irreversível. Todas as suas cartas, seguidores e dados serão deletados permanentemente.',
-              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.5)),
+            Text(l10n.settingsDeleteBody,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context);
                 await FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(_user?.uid).delete();
                 await _user?.delete();
-                if (context.mounted) ref.read(authNotifierProvider.notifier).signOut();
+                if (context.mounted) {
+                  await ref.read(authNotifierProvider.notifier).signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
-              child: Text('Confirmar exclusão', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white)),
+              child: Text(l10n.settingsDeleteConfirm, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white)),
             ),
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar', style: GoogleFonts.dmSans(fontSize: 15, color: AppColors.inkSoft)),
+              child: Text(l10n.actionCancel, style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.inkSoft)),
             ),
           ],
         ),
@@ -642,9 +705,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showBlockedUsers(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -659,23 +723,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2)))),
+                Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
                 const SizedBox(height: 20),
-                Text('Usuários bloqueados', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                Text(l10n.settingsBlockedTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
                 const SizedBox(height: 16),
                 if (docs.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text('Nenhum usuário bloqueado.', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft), textAlign: TextAlign.center),
+                    child: Text(l10n.settingsBlockedEmpty, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft), textAlign: TextAlign.center),
                   )
                 else
                   ...docs.map((doc) {
                     final d = doc.data() as Map<String, dynamic>;
                     return ListTile(
-                      title: Text(d['blockedUid'] ?? '', style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink)),
+                      title: Text(d['blockedUid'] ?? '', style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
                       trailing: TextButton(
                         onPressed: () async => await doc.reference.delete(),
-                        child: Text('Desbloquear', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.accent)),
+                        child: Text(l10n.settingsBlockedUnblock, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.accent)),
                       ),
                     );
                   }),
@@ -690,18 +754,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _buildSheetField(TextEditingController ctrl, String label, {int maxLines = 1}) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.bg,
+        color: context.pal.bg,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.pal.border),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: TextField(
         controller: ctrl,
         maxLines: maxLines,
-        style: GoogleFonts.dmSans(color: AppColors.ink),
+        style: GoogleFonts.dmSans(color: context.pal.ink),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
+          labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),

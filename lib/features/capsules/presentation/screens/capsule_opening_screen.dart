@@ -4,17 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'capsule_detail_screen.dart';
 
 class _CapsuleThemeVisual {
   final List<Color> particleColors;
   final List<Color> glowColors;
-  final String openText;
 
   const _CapsuleThemeVisual({
     required this.particleColors,
     required this.glowColors,
-    required this.openText,
   });
 }
 
@@ -22,29 +21,35 @@ const Map<String, _CapsuleThemeVisual> _capsuleThemeVisuals = {
   'memories': _CapsuleThemeVisual(
     particleColors: [Color(0xFF6B6560), Color(0xFFA8A29E), Color(0xFFD6D3D1), Colors.white, Color(0xFF57534E)],
     glowColors: [Color(0xFF6B6560), Color(0xFF78716C)],
-    openText: 'Memorias guardadas para o futuro',
   ),
   'goals': _CapsuleThemeVisual(
     particleColors: [Color(0xFFC0392B), Color(0xFFE11D48), Color(0xFFF97316), Colors.white, Color(0xFF991B1B)],
     glowColors: [Color(0xFFC0392B), Color(0xFFE11D48)],
-    openText: 'Suas metas esperam por voce',
   ),
   'feelings': _CapsuleThemeVisual(
     particleColors: [Color(0xFFC9A84C), Color(0xFFFBBF24), Color(0xFFFDE68A), Colors.white, Color(0xFFB45309)],
     glowColors: [Color(0xFFC9A84C), Color(0xFFF59E0B)],
-    openText: 'O que voce sentiu, guardado aqui',
   ),
   'relationships': _CapsuleThemeVisual(
     particleColors: [Color(0xFF5B8DB8), Color(0xFF60A5FA), Color(0xFF93C5FD), Colors.white, Color(0xFF1D4ED8)],
     glowColors: [Color(0xFF5B8DB8), Color(0xFF3B82F6)],
-    openText: 'Conexoes que importam',
   ),
   'growth': _CapsuleThemeVisual(
     particleColors: [Color(0xFF4A8C6F), Color(0xFF34D399), Color(0xFF6EE7B7), Colors.white, Color(0xFF047857)],
     glowColors: [Color(0xFF4A8C6F), Color(0xFF10B981)],
-    openText: 'Quem voce esta se tornando',
   ),
 };
+
+String _getOpenText(String? themeId, AppLocalizations l10n) {
+  switch (themeId) {
+    case 'memories':      return l10n.capsuleOpeningThemeMemories;
+    case 'goals':         return l10n.capsuleOpeningThemeGoals;
+    case 'feelings':      return l10n.capsuleOpeningThemeFeelings;
+    case 'relationships': return l10n.capsuleOpeningThemeRelationships;
+    case 'growth':        return l10n.capsuleOpeningThemeGrowth;
+    default:              return l10n.capsuleOpeningThemeMemories;
+  }
+}
 
 _CapsuleThemeVisual _visualForTheme(String? themeId) {
   return _capsuleThemeVisuals[themeId] ?? _capsuleThemeVisuals['memories']!;
@@ -232,6 +237,7 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final glowColor = _visual.glowColors[0];
     final title = widget.data['title'] as String? ?? '';
@@ -276,7 +282,7 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'CAPSULA DO TEMPO',
+                          l10n.capsuleOpeningHeader,
                           style: TextStyle(
                             fontSize: 9,
                             letterSpacing: 4,
@@ -358,12 +364,12 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
                             child: ElevatedButton(
                               onPressed: _publishAndGo,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.accent,
+                                backgroundColor: context.pal.accent,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                               ),
                               child: Text(
-                                'Publicar no feed',
+                                l10n.capsuleOpeningPublishFeed,
                                 style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white),
                               ),
                             ),
@@ -380,7 +386,7 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                             ),
                             child: Text(
-                              'Guardar so para mim',
+                              l10n.capsuleOpeningKeepPrivate,
                               style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withOpacity(0.75)),
                             ),
                           ),
@@ -428,12 +434,12 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
                               border: Border.all(color: glowColor.withOpacity(0.35)),
                             ),
                             child: Text(
-                              _visual.openText,
+                              _getOpenText(widget.data['theme'] as String?, l10n),
                               style: GoogleFonts.dmSans(fontSize: 11, color: glowColor, fontWeight: FontWeight.w500),
                             ),
                           ),
                           const SizedBox(height: 28),
-                          if (!_tapped) _PulsingHint(color: glowColor),
+                          if (!_tapped) _PulsingHint(color: glowColor, text: l10n.capsuleOpeningTapToOpen),
                         ],
                       ),
                     ),
@@ -590,8 +596,9 @@ class _ParticlePainter extends CustomPainter {
 
 class _PulsingHint extends StatefulWidget {
   final Color color;
+  final String text;
 
-  const _PulsingHint({required this.color});
+  const _PulsingHint({required this.color, required this.text});
 
   @override
   State<_PulsingHint> createState() => _PulsingHintState();
@@ -612,7 +619,7 @@ class _PulsingHintState extends State<_PulsingHint> with SingleTickerProviderSta
     return FadeTransition(
       opacity: _opacity,
       child: Text(
-        'TOQUE PARA ABRIR',
+        widget.text,
         style: TextStyle(fontSize: 10, letterSpacing: 3.5, color: widget.color.withOpacity(0.55)),
       ),
     );
