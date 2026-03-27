@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 
 class LetterRequestsScreen extends StatelessWidget {
   const LetterRequestsScreen({super.key});
@@ -267,15 +268,22 @@ class LetterRequestsScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Container(
-                                width: 40, height: 40,
-                                decoration: const BoxDecoration(color: AppColors.accentWarm, shape: BoxShape.circle),
-                                child: Center(
-                                  child: Text(
-                                    (data['senderName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                                    style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.accent, fontStyle: FontStyle.italic),
-                                  ),
-                                ),
+                              StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection(FirestoreCollections.users)
+                                    .doc(data['senderUid'] as String? ?? '')
+                                    .snapshots(),
+                                builder: (context, userSnap) {
+                                  final map = userSnap.data?.data() as Map<String, dynamic>?;
+                                  final photoUrl = map?['photoUrl'] as String?;
+                                  return UserAvatar(
+                                    photoUrl: photoUrl,
+                                    name: data['senderName'] as String? ?? 'U',
+                                    size: 40,
+                                    backgroundColor: AppColors.accentWarm,
+                                    textColor: AppColors.accent,
+                                  );
+                                },
                               ),
                               const SizedBox(width: 10),
                               Column(

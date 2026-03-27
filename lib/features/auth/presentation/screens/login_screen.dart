@@ -88,6 +88,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Expanded(
                 child: TextField(
                   controller: controller,
+                  enableInteractiveSelection: false,
                   obscureText: obscure && !_showPassword,
                   keyboardType: keyboard,
                   style: GoogleFonts.dmSans(

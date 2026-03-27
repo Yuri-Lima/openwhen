@@ -57,4 +57,18 @@ class Letter {
           ? LetterStatus.opened
           : LetterStatus.locked,
       isPublic: data['isPublic'] ?? false,
-      canBeShared: 
+      canBeShared: data['canBeShared'] ?? false,
+      createdAt: data['createdAt'] != null
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      openedAt: data['openedAt'] != null
+          ? (data['openedAt'] as Timestamp).toDate()
+          : null,
+      publishedAt: data['publishedAt'] != null
+          ? (data['publishedAt'] as Timestamp).toDate()
+          : null,
+      likeCount: (data['likeCount'] as num?)?.toInt() ?? 0,
+      commentCount: (data['commentCount'] as num?)?.toInt() ?? 0,
+    );
+  }
+}

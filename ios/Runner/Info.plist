@@ -24,8 +24,26 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MKDirectionsApplicationSupportedModes</key>
+	<array/>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>O OpenWhen precisa acessar suas fotos para definir a imagem de perfil.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -49,10 +67,26 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>bluetooth-peripheral</string>
+		<string>audio</string>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>external-accessory</string>
+		<string>location</string>
+		<string>push-to-talk</string>
+		<string>bluetooth-central</string>
+		<string>nearby-interaction</string>
+		<string>voip</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDarkContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
