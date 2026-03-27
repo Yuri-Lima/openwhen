@@ -438,24 +438,42 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(color: context.pal.ink, borderRadius: BorderRadius.circular(18), boxShadow: [BoxShadow(color: context.pal.ink.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 8))]),
+        decoration: BoxDecoration(
+          color: context.pal.card,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: context.pal.border),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white.withOpacity(0.08))), child: Text(l10n.vaultLetterOpened, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.white, fontWeight: FontWeight.w500, letterSpacing: 0.5))),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: context.pal.accentWarm,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: context.pal.border),
+              ),
+              child: Text(l10n.vaultLetterOpened, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
+            ),
             const Spacer(),
-            Text(isReceiver ? l10n.vaultFrom(data['senderName'] ?? '') : l10n.vaultTo(data['receiverName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.35))),
+            Text(isReceiver ? l10n.vaultFrom(data['senderName'] ?? '') : l10n.vaultTo(data['receiverName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
           ]),
           const SizedBox(height: 12),
-          Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.white, fontStyle: FontStyle.italic)),
+          Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
           const SizedBox(height: 8),
-          Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.5), height: 1.6)),
+          Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
-              style: OutlinedButton.styleFrom(side: BorderSide(color: Colors.white.withOpacity(0.15)), padding: const EdgeInsets.symmetric(vertical: 12), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-              child: Text(l10n.vaultReadFullLetter, style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withOpacity(0.7))),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: context.pal.border),
+                foregroundColor: context.pal.accent,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+              child: Text(l10n.vaultReadFullLetter, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: context.pal.accent)),
             ),
           ),
         ]),

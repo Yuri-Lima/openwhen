@@ -1,5 +1,4 @@
 import 'dart:ui' as ui;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter/rendering.dart';
@@ -166,18 +165,19 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                             child: Column(
                               children: [
                                 Container(
-                                  width: 52, height: 52,
+                                  padding: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: context.pal.accent,
-                                    boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.4), blurRadius: 16)],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: context.pal.accent.withOpacity(0.45),
+                                        blurRadius: 18,
+                                      ),
+                                    ],
                                   ),
-                                  child: Container(
-                                    margin: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFA93226)),
-                                    child: Center(
-                                      child: const OwlLogo(size: 44),
-                                    ),
+                                  child: const OwlLogo(
+                                    size: 52,
+                                    mode: OwlLogoMode.sealOnly,
                                   ),
                                 ),
                                 const SizedBox(height: 12),

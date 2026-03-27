@@ -1,11 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/owl_logo.dart';
+import '../../../../shared/widgets/owl_logo.dart' show OwlLogo, OwlLogoMode;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
-import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'letter_detail_screen.dart';
@@ -317,40 +315,48 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 260, height: 175,
+                            width: 280, height: 182,
                             decoration: BoxDecoration(
                               color: const Color(0xFF1A1714),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white.withOpacity(0.08)),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.white.withOpacity(0.1)),
                               boxShadow: [
-                                BoxShadow(color: glowColor.withOpacity(0.3), blurRadius: 40, offset: const Offset(0, 12)),
-                                BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
+                                BoxShadow(color: glowColor.withOpacity(0.28), blurRadius: 44, offset: const Offset(0, 14)),
+                                BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 22),
                               ],
                             ),
                             child: Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CustomPaint(size: const Size(260, 175), painter: _EnvelopePainter()),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: CustomPaint(size: const Size(280, 182), painter: _EnvelopePainter()),
                                 ),
                                 Center(
                                   child: AnimatedBuilder(
                                     animation: _glowAnim,
                                     builder: (_, __) => Container(
-                                      width: 56, height: 56,
+                                      width: 86,
+                                      height: 86,
+                                      alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: glowColor,
                                         boxShadow: [
-                                          BoxShadow(color: glowColor.withOpacity(0.7), blurRadius: _glowAnim.value * 50, spreadRadius: 2),
+                                          BoxShadow(
+                                            color: glowColor.withOpacity(0.42),
+                                            blurRadius: 28 + _glowAnim.value * 28,
+                                            spreadRadius: 0,
+                                          ),
                                         ],
                                       ),
                                       child: Container(
-                                        margin: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: glowColor.withOpacity(0.7)),
-                                        child: Center(
-                                          child: const OwlLogo(size: 56),
+                                        width: 80,
+                                        height: 80,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: glowColor.withOpacity(0.12),
                                         ),
+                                        child: const OwlLogo(size: 72, mode: OwlLogoMode.sealOnly),
                                       ),
                                     ),
                                   ),
@@ -536,18 +542,44 @@ class _ParticlePainter extends CustomPainter {
 class _EnvelopePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final w = size.width, h = size.height;
-    final line = Paint()..color = Colors.white.withOpacity(0.06)..strokeWidth = 1;
-    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = const Color(0xFF221E1A));
-    canvas.drawPath(Path()..moveTo(0,0)..lineTo(w/2,h*0.52)..lineTo(0,h)..close(), Paint()..color = const Color(0xFF1E1A16));
-    canvas.drawPath(Path()..moveTo(w,0)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = const Color(0xFF1C1814));
-    canvas.drawPath(Path()..moveTo(0,0)..lineTo(w/2,h*0.48)..lineTo(w,0)..close(), Paint()..color = const Color(0xFF221E1A));
-    canvas.drawLine(Offset(0,0), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(w,0), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(0,h), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(w,h), Offset(w/2,h*0.52), line);
+    final w = size.width;
+    final h = size.height;
+    final line = Paint()
+      ..color = Colors.white.withOpacity(0.07)
+      ..strokeWidth = 1;
+
+    final texture = Paint()
+      ..color = Colors.black.withOpacity(0.07)
+      ..strokeWidth = 0.35;
+    for (double y = 4; y < h * 0.5; y += 4.2) {
+      canvas.drawLine(Offset(6, y), Offset(w - 6, y), texture);
+    }
+
+    canvas.drawPath(
+      Path()..moveTo(0, h)..lineTo(w / 2, h * 0.52)..lineTo(w, h)..close(),
+      Paint()..color = const Color(0xFF2E2820),
+    );
+    canvas.drawPath(
+      Path()..moveTo(0, 0)..lineTo(w / 2, h * 0.52)..lineTo(0, h)..close(),
+      Paint()..color = const Color(0xFF2A241C),
+    );
+    canvas.drawPath(
+      Path()..moveTo(w, 0)..lineTo(w / 2, h * 0.52)..lineTo(w, h)..close(),
+      Paint()..color = const Color(0xFF262018),
+    );
+    canvas.drawPath(
+      Path()..moveTo(0, 0)..lineTo(w / 2, h * 0.48)..lineTo(w, 0)..close(),
+      Paint()..color = const Color(0xFF322A22),
+    );
+
+    canvas.drawLine(Offset.zero, Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(w, 0), Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(0, h), Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(w, h), Offset(w / 2, h * 0.52), line);
   }
-  @override bool shouldRepaint(_) => false;
+
+  @override
+  bool shouldRepaint(_) => false;
 }
 
 class _PaperPainter extends CustomPainter {
