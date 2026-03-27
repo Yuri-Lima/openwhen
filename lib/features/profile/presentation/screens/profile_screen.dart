@@ -7,6 +7,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/avatar_upload_helper.dart';
 import 'settings_screen.dart';
@@ -72,7 +73,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   children: [
                                     Text(l10n.profileTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: context.pal.white, fontStyle: FontStyle.italic)),
                                     const SizedBox(width: 6),
-                                    const OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                                    const OwlFeedbackAffordance(
+                                      forDarkHeader: true,
+                                      child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                                    ),
                                     const SizedBox(width: 8),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

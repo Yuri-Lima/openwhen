@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 
@@ -164,20 +165,25 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                             ),
                             child: Column(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: context.pal.accent.withOpacity(0.45),
-                                        blurRadius: 18,
+                                Center(
+                                  child: OwlFeedbackAffordance(
+                                    forDarkHeader: true,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: context.pal.accent.withOpacity(0.45),
+                                            blurRadius: 18,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  child: const OwlLogo(
-                                    size: 52,
-                                    mode: OwlLogoMode.sealOnly,
+                                      child: const OwlLogo(
+                                        size: 52,
+                                        mode: OwlLogoMode.sealOnly,
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 12),
@@ -186,6 +192,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                   style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: Colors.white, fontStyle: FontStyle.italic)),
                                 const SizedBox(height: 4),
                                 Text(l10n.qrCardMeta(widget.senderName, formatShortDate(widget.openDate, locale)),
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.4))),
                               ],
                             ),

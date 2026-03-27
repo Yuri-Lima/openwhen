@@ -38,6 +38,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
 | **Cofre** | Abas: aguardando, abertas e **cápsulas** |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
+| **Feedback** | Toque na coruja do header para enviar feedback (mesmo bottom sheet); animação idle (oscilação + vibração) em intervalos aleatórios por visita ao ecrã. Utilizadores sem sessão também têm o FAB global. |
 
 ---
 

@@ -12,6 +12,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 ### Added
 
 - **Selo animado (coruja)** na abertura da carta e no hero do login: olhos, revelação de asas/corpo, voo, lacre só em vermelho, reaparição do rosto completo **sem asas**; detalhe dos olhos (sobrancelha/cílios), tufts e penas; `OwlSealArt` / `OwlSealOpeningAnimation` em `lib/shared/widgets/owl_logo.dart`.
+- **Feedback pela coruja nos headers:** `OwlFeedbackAffordance` envolve o glifo da coruja (`OwlWatermark` / `OwlLogo`); toque abre o mesmo bottom sheet que `FeedbackEntryButton` via `showFeedbackSheet`. Animação idle: oscilação + fase de “vibração” rápida, repetida em intervalos aleatórios por visita ao ecrã. FAB global de feedback permanece para utilizadores sem sessão (`main.dart`).
 
 ### Changed
 

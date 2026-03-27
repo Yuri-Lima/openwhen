@@ -1345,6 +1345,60 @@ class AppLocalizationsPt extends AppLocalizations {
   String get helpResponseTimeValue => 'até 2 dias úteis';
 
   @override
+  String get feedbackTooltip => 'Enviar feedback';
+
+  @override
+  String get feedbackSemanticsLabel => 'Enviar feedback ou pedido de recurso';
+
+  @override
+  String get feedbackSheetTitle => 'Feedback';
+
+  @override
+  String get feedbackCategoryLabel => 'Categoria';
+
+  @override
+  String get feedbackTypeFeature => 'Recurso';
+
+  @override
+  String get feedbackTypeRecommendation => 'Ideia';
+
+  @override
+  String get feedbackTypeGeneral => 'Geral';
+
+  @override
+  String get feedbackMessageHint => 'O que você gostaria de compartilhar?';
+
+  @override
+  String feedbackCharCount(int current, int max) {
+    return '$current / $max';
+  }
+
+  @override
+  String get feedbackSubmit => 'Enviar';
+
+  @override
+  String get feedbackEmptyError => 'Digite uma mensagem.';
+
+  @override
+  String get feedbackTooLongError => 'Mensagem muito longa.';
+
+  @override
+  String get feedbackSuccess => 'Obrigado — recebemos seu feedback.';
+
+  @override
+  String get feedbackSignedOutHint =>
+      'Você não está conectado. Vamos abrir o app de e-mail para você enviar para a nossa equipe.';
+
+  @override
+  String get feedbackCouldNotOpenEmail =>
+      'Não foi possível abrir o e-mail. Contate suporte@openwhen.app.';
+
+  @override
+  String feedbackEmailBodyPrefix(String category) {
+    return 'Categoria: $category';
+  }
+
+  @override
   String get termsIntro =>
       'Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo OpenWhen (\"Plataforma\"), desenvolvido e operado pela OpenWhen Tecnologia Ltda. (\"Empresa\"), inscrita no CNPJ sob o nº [XX.XXX.XXX/0001-XX], com sede no Brasil. A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, nos termos do art. 8º da Lei nº 12.965/2014 (Marco Civil da Internet) e da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).';
 
@@ -2800,6 +2854,60 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get helpResponseTimeValue => 'até 2 dias úteis';
+
+  @override
+  String get feedbackTooltip => 'Enviar feedback';
+
+  @override
+  String get feedbackSemanticsLabel => 'Enviar feedback ou pedido de recurso';
+
+  @override
+  String get feedbackSheetTitle => 'Feedback';
+
+  @override
+  String get feedbackCategoryLabel => 'Categoria';
+
+  @override
+  String get feedbackTypeFeature => 'Recurso';
+
+  @override
+  String get feedbackTypeRecommendation => 'Ideia';
+
+  @override
+  String get feedbackTypeGeneral => 'Geral';
+
+  @override
+  String get feedbackMessageHint => 'O que você gostaria de compartilhar?';
+
+  @override
+  String feedbackCharCount(int current, int max) {
+    return '$current / $max';
+  }
+
+  @override
+  String get feedbackSubmit => 'Enviar';
+
+  @override
+  String get feedbackEmptyError => 'Digite uma mensagem.';
+
+  @override
+  String get feedbackTooLongError => 'Mensagem muito longa.';
+
+  @override
+  String get feedbackSuccess => 'Obrigado — recebemos seu feedback.';
+
+  @override
+  String get feedbackSignedOutHint =>
+      'Você não está conectado. Vamos abrir o app de e-mail para você enviar para a nossa equipe.';
+
+  @override
+  String get feedbackCouldNotOpenEmail =>
+      'Não foi possível abrir o e-mail. Contate suporte@openwhen.app.';
+
+  @override
+  String feedbackEmailBodyPrefix(String category) {
+    return 'Categoria: $category';
+  }
 
   @override
   String get termsIntro =>

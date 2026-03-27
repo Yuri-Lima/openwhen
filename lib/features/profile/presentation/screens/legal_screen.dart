@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -121,15 +122,20 @@ class LegalScreen extends StatelessWidget {
         Center(
           child: Column(
             children: [
-              Container(
-                width: 80, height: 80,
-                decoration: BoxDecoration(
-                  color: context.pal.accent,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 20)],
-                ),
-                child: Center(
-                  child: const OwlLogo(size: 64),
+              Center(
+                child: OwlFeedbackAffordance(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: context.pal.accent,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 20)],
+                    ),
+                    child: const Center(
+                      child: OwlLogo(size: 64),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

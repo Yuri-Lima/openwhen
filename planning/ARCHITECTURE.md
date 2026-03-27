@@ -39,7 +39,9 @@ lib/
     ├── theme/
     │   └── app_theme.dart
     └── widgets/
-        └── owl_logo.dart   # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
+        ├── owl_logo.dart              # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
+        ├── owl_feedback_affordance.dart  # Coruja tocável + animação idle; abre feedback sheet
+        └── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.

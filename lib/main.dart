@@ -22,6 +22,7 @@ import 'features/profile/presentation/screens/search_screen.dart';
 import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
+import 'shared/widgets/feedback_entry_button.dart';
 
 bool _onboardingShown = false;
 
@@ -43,6 +44,8 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
+  final GlobalKey<NavigatorState> _appNavigatorKey = GlobalKey<NavigatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -71,13 +74,37 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
         WidgetsBinding.instance.platformDispatcher.locale;
     final appLocale = resolveAppLocale(localePref, platformLocale);
 
+    // Logged-in users get feedback next to each owl; global FAB only when signed out.
+    final hideGlobalFeedbackFab = ref.watch(authStateProvider).maybeWhen(
+      data: (user) => user != null,
+      orElse: () => false,
+    );
+
     return MaterialApp(
+      navigatorKey: _appNavigatorKey,
       title: 'OpenWhen',
       debugShowCheckedModeBanner: false,
       locale: appLocale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.themeFromPalette(palette),
+      builder: (context, child) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            child ?? const SizedBox.shrink(),
+            if (!hideGlobalFeedbackFab)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: SafeArea(
+                  minimum: const EdgeInsets.only(top: 8, right: 8),
+                  child: FeedbackEntryButton(navigatorKey: _appNavigatorKey),
+                ),
+              ),
+          ],
+        );
+      },
       routes: {
         '/register': (context) => const RegisterScreen(),
         '/write': (context) => const WriteLetterScreen(),

@@ -38,6 +38,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
 | **Vault** | Tabs for waiting, opened, and **capsules** |
 | **Profile** | Own profile, other users, search by @username, settings, legal pages |
+| **Feedback** | Tap the header owl to send feedback (shared bottom sheet); idle wobble + buzz on random intervals per screen visit. Logged-out users also get the global FAB. |
 
 ---
 

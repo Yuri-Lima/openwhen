@@ -8,6 +8,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_logo.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 
@@ -170,7 +171,9 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const OwlLogo(size: 80),
+            const OwlFeedbackAffordance(
+              child: OwlLogo(size: 80),
+            ),
             const SizedBox(height: 20),
             Text(l10n.createCapsuleSuccessTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 24, color: p.ink, fontStyle: FontStyle.italic)),
             const SizedBox(height: 8),
@@ -226,7 +229,10 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
                   Row(children: [
                     Text(l10n.createCapsuleTitle, style: GoogleFonts.dmSerifDisplay(color: Colors.white, fontSize: 18, fontStyle: FontStyle.italic)),
                     const SizedBox(width: 6),
-                    const OwlWatermark(width: 18, height: 22, opacity: 2.2),
+                    const OwlFeedbackAffordance(
+                      forDarkHeader: true,
+                      child: OwlWatermark(width: 18, height: 22, opacity: 2.2),
+                    ),
                   ]),
                   Text(l10n.createCapsuleStepProgress(_step + 1, stepLabels[_step]), style: GoogleFonts.dmSans(color: Colors.white54, fontSize: 12)),
                 ])),

@@ -7,6 +7,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
@@ -92,7 +93,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Row(children: [Text(l10n.settingsTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22, opacity: 2.2)]),
+                        Row(children: [
+                          Text(l10n.settingsTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
+                          const SizedBox(width: 6),
+                          const OwlFeedbackAffordance(
+                            forDarkHeader: true,
+                            child: OwlWatermark(width: 18, height: 22, opacity: 2.2),
+                          ),
+                        ]),
                       ],
                     ),
                   ),

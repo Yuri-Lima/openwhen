@@ -2555,6 +2555,102 @@ abstract class AppLocalizations {
   /// **'até 2 dias úteis'**
   String get helpResponseTimeValue;
 
+  /// No description provided for @feedbackTooltip.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar feedback'**
+  String get feedbackTooltip;
+
+  /// No description provided for @feedbackSemanticsLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar feedback ou pedido de recurso'**
+  String get feedbackSemanticsLabel;
+
+  /// No description provided for @feedbackSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Feedback'**
+  String get feedbackSheetTitle;
+
+  /// No description provided for @feedbackCategoryLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Categoria'**
+  String get feedbackCategoryLabel;
+
+  /// No description provided for @feedbackTypeFeature.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Recurso'**
+  String get feedbackTypeFeature;
+
+  /// No description provided for @feedbackTypeRecommendation.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ideia'**
+  String get feedbackTypeRecommendation;
+
+  /// No description provided for @feedbackTypeGeneral.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Geral'**
+  String get feedbackTypeGeneral;
+
+  /// No description provided for @feedbackMessageHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O que você gostaria de compartilhar?'**
+  String get feedbackMessageHint;
+
+  /// No description provided for @feedbackCharCount.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{current} / {max}'**
+  String feedbackCharCount(int current, int max);
+
+  /// No description provided for @feedbackSubmit.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar'**
+  String get feedbackSubmit;
+
+  /// No description provided for @feedbackEmptyError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Digite uma mensagem.'**
+  String get feedbackEmptyError;
+
+  /// No description provided for @feedbackTooLongError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mensagem muito longa.'**
+  String get feedbackTooLongError;
+
+  /// No description provided for @feedbackSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Obrigado — recebemos seu feedback.'**
+  String get feedbackSuccess;
+
+  /// No description provided for @feedbackSignedOutHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você não está conectado. Vamos abrir o app de e-mail para você enviar para a nossa equipe.'**
+  String get feedbackSignedOutHint;
+
+  /// No description provided for @feedbackCouldNotOpenEmail.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir o e-mail. Contate suporte@openwhen.app.'**
+  String get feedbackCouldNotOpenEmail;
+
+  /// No description provided for @feedbackEmailBodyPrefix.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Categoria: {category}'**
+  String feedbackEmailBodyPrefix(String category);
+
   /// No description provided for @termsIntro.
   ///
   /// In pt_BR, this message translates to:

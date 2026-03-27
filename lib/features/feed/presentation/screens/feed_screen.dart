@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
@@ -57,7 +58,23 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(children: [Text('OpenWhen', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: context.pal.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 20, height: 24, opacity: 2.2)]),
+                            Row(
+                              children: [
+                                Text(
+                                  'OpenWhen',
+                                  style: GoogleFonts.dmSerifDisplay(
+                                    fontSize: 26,
+                                    color: context.pal.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const OwlFeedbackAffordance(
+                                  forDarkHeader: true,
+                                  child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 4),
                             Text(l10n.feedPublicHeader, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                           ],

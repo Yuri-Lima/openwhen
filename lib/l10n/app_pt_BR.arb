@@ -470,6 +470,34 @@
   "helpResponseTime": "Tempo de resposta",
   "helpResponseTimeValue": "até 2 dias úteis",
 
+  "feedbackTooltip": "Enviar feedback",
+  "feedbackSemanticsLabel": "Enviar feedback ou pedido de recurso",
+  "feedbackSheetTitle": "Feedback",
+  "feedbackCategoryLabel": "Categoria",
+  "feedbackTypeFeature": "Recurso",
+  "feedbackTypeRecommendation": "Ideia",
+  "feedbackTypeGeneral": "Geral",
+  "feedbackMessageHint": "O que você gostaria de compartilhar?",
+  "feedbackCharCount": "{current} / {max}",
+  "@feedbackCharCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "feedbackSubmit": "Enviar",
+  "feedbackEmptyError": "Digite uma mensagem.",
+  "feedbackTooLongError": "Mensagem muito longa.",
+  "feedbackSuccess": "Obrigado — recebemos seu feedback.",
+  "feedbackSignedOutHint": "Você não está conectado. Vamos abrir o app de e-mail para você enviar para a nossa equipe.",
+  "feedbackCouldNotOpenEmail": "Não foi possível abrir o e-mail. Contate suporte@openwhen.app.",
+  "feedbackEmailBodyPrefix": "Categoria: {category}",
+  "@feedbackEmailBodyPrefix": {
+    "placeholders": {
+      "category": { "type": "String" }
+    }
+  },
+
   "termsIntro": "Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo OpenWhen (\"Plataforma\"), desenvolvido e operado pela OpenWhen Tecnologia Ltda. (\"Empresa\"), inscrita no CNPJ sob o nº [XX.XXX.XXX/0001-XX], com sede no Brasil. A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, nos termos do art. 8º da Lei nº 12.965/2014 (Marco Civil da Internet) e da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).",
   "termsSection1Title": "1. DO OBJETO E NATUREZA DO SERVIÇO",
   "termsSection1Body": "O OpenWhen é uma plataforma digital de comunicação temporal que permite aos usuários criar, enviar, receber e armazenar mensagens eletrônicas (\"Cartas\") programadas para abertura em data futura determinada pelo remetente. O serviço possui natureza de intermediação digital de comunicação privada e, quando autorizado pelo usuário, de publicação em ambiente de rede social (\"Feed Público\"). A Empresa atua como provedora de aplicação, nos termos do art. 5º, inciso VII, do Marco Civil da Internet.",

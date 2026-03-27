@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 
@@ -305,7 +306,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
               Row(children: [
                 Text(l10n.writeLetterTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink)),
                 const SizedBox(width: 6),
-                OwlWatermark(width: 18, height: 22, color: context.pal.ink),
+                OwlFeedbackAffordance(
+                  child: OwlWatermark(width: 18, height: 22, color: context.pal.ink),
+                ),
               ]),
             ]),
           ),

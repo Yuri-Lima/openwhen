@@ -442,6 +442,34 @@
   "helpResponseTime": "Response time",
   "helpResponseTimeValue": "up to 2 business days",
 
+  "feedbackTooltip": "Send feedback",
+  "feedbackSemanticsLabel": "Send feedback or feature request",
+  "feedbackSheetTitle": "Feedback",
+  "feedbackCategoryLabel": "Category",
+  "feedbackTypeFeature": "Feature",
+  "feedbackTypeRecommendation": "Idea",
+  "feedbackTypeGeneral": "General",
+  "feedbackMessageHint": "What would you like to share?",
+  "feedbackCharCount": "{current} / {max}",
+  "@feedbackCharCount": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "feedbackSubmit": "Send",
+  "feedbackEmptyError": "Please enter a message.",
+  "feedbackTooLongError": "Message is too long.",
+  "feedbackSuccess": "Thanks — we received your feedback.",
+  "feedbackSignedOutHint": "You are not signed in. We will open your email app so you can send this to our team.",
+  "feedbackCouldNotOpenEmail": "Could not open email. Please contact suporte@openwhen.app.",
+  "feedbackEmailBodyPrefix": "Category: {category}",
+  "@feedbackEmailBodyPrefix": {
+    "placeholders": {
+      "category": { "type": "String" }
+    }
+  },
+
   "termsIntro": "These Terms of Use (\"Terms\") govern access to and use of the OpenWhen application (\"Platform\"), developed and operated by OpenWhen Tecnologia Ltda. (\"Company\"), registered under CNPJ No. [XX.XXX.XXX/0001-XX], headquartered in Brazil. Use of the Platform implies full and unconditional acceptance of these Terms, pursuant to Article 8 of Law No. 12,965/2014 (Internet Civil Framework) and Law No. 13,709/2018 (General Data Protection Law — LGPD).",
   "termsSection1Title": "1. PURPOSE AND NATURE OF THE SERVICE",
   "termsSection1Body": "OpenWhen is a digital platform for time-based communication that allows users to create, send, receive, and store electronic messages (\"Letters\") scheduled to be opened on a future date determined by the sender. The service is a digital communication intermediary and, when authorized by the user, a social network publication environment (\"Public Feed\"). The Company acts as an application provider, pursuant to Article 5, Clause VII, of the Internet Civil Framework.",

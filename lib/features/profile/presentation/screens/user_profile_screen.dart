@@ -7,6 +7,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -85,8 +86,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: 12, right: 16,
-                        child: const OwlWatermark(opacity: 2.2),
+                        top: 12,
+                        right: 16,
+                        child: const OwlFeedbackAffordance(
+                          forDarkHeader: true,
+                          child: OwlWatermark(opacity: 2.2),
+                        ),
                       ),
                       Positioned(
                         top: -30, right: -30,

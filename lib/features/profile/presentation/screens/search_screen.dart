@@ -6,6 +6,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'user_profile_screen.dart';
 
@@ -110,7 +111,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        Row(children: [Text(l10n.searchTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 18, height: 22, opacity: 2.2)]),
+                        Row(children: [
+                          Text(l10n.searchTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
+                          const SizedBox(width: 6),
+                          const OwlFeedbackAffordance(
+                            forDarkHeader: true,
+                            child: OwlWatermark(width: 18, height: 22, opacity: 2.2),
+                          ),
+                        ]),
                       ],
                     ),
                     const SizedBox(height: 16),

@@ -1353,6 +1353,61 @@ class AppLocalizationsEs extends AppLocalizations {
   String get helpResponseTimeValue => 'hasta 2 días hábiles';
 
   @override
+  String get feedbackTooltip => 'Enviar comentarios';
+
+  @override
+  String get feedbackSemanticsLabel =>
+      'Enviar comentarios o solicitud de función';
+
+  @override
+  String get feedbackSheetTitle => 'Comentarios';
+
+  @override
+  String get feedbackCategoryLabel => 'Categoría';
+
+  @override
+  String get feedbackTypeFeature => 'Función';
+
+  @override
+  String get feedbackTypeRecommendation => 'Idea';
+
+  @override
+  String get feedbackTypeGeneral => 'General';
+
+  @override
+  String get feedbackMessageHint => '¿Qué te gustaría compartir?';
+
+  @override
+  String feedbackCharCount(int current, int max) {
+    return '$current / $max';
+  }
+
+  @override
+  String get feedbackSubmit => 'Enviar';
+
+  @override
+  String get feedbackEmptyError => 'Escribe un mensaje.';
+
+  @override
+  String get feedbackTooLongError => 'El mensaje es demasiado largo.';
+
+  @override
+  String get feedbackSuccess => 'Gracias — recibimos tus comentarios.';
+
+  @override
+  String get feedbackSignedOutHint =>
+      'No has iniciado sesión. Abriremos tu correo para que envíes esto a nuestro equipo.';
+
+  @override
+  String get feedbackCouldNotOpenEmail =>
+      'No se pudo abrir el correo. Contacta suporte@openwhen.app.';
+
+  @override
+  String feedbackEmailBodyPrefix(String category) {
+    return 'Categoría: $category';
+  }
+
+  @override
   String get termsIntro =>
       'Estos Términos de Uso (\"Términos\") regulan el acceso y la utilización de la aplicación OpenWhen (\"Plataforma\"), desarrollada y operada por OpenWhen Tecnologia Ltda. (\"Empresa\"), inscrita en el CNPJ bajo el nº [XX.XXX.XXX/0001-XX], con sede en Brasil. La utilización de la Plataforma implica la aceptación integral e irrestricta de estos Términos, en los términos del art. 8º de la Ley nº 12.965/2014 (Marco Civil de Internet) y la Ley nº 13.709/2018 (Ley General de Protección de Datos — LGPD).';
 

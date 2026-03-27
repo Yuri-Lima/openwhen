@@ -1351,6 +1351,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpResponseTimeValue => 'up to 2 business days';
 
   @override
+  String get feedbackTooltip => 'Send feedback';
+
+  @override
+  String get feedbackSemanticsLabel => 'Send feedback or feature request';
+
+  @override
+  String get feedbackSheetTitle => 'Feedback';
+
+  @override
+  String get feedbackCategoryLabel => 'Category';
+
+  @override
+  String get feedbackTypeFeature => 'Feature';
+
+  @override
+  String get feedbackTypeRecommendation => 'Idea';
+
+  @override
+  String get feedbackTypeGeneral => 'General';
+
+  @override
+  String get feedbackMessageHint => 'What would you like to share?';
+
+  @override
+  String feedbackCharCount(int current, int max) {
+    return '$current / $max';
+  }
+
+  @override
+  String get feedbackSubmit => 'Send';
+
+  @override
+  String get feedbackEmptyError => 'Please enter a message.';
+
+  @override
+  String get feedbackTooLongError => 'Message is too long.';
+
+  @override
+  String get feedbackSuccess => 'Thanks — we received your feedback.';
+
+  @override
+  String get feedbackSignedOutHint =>
+      'You are not signed in. We will open your email app so you can send this to our team.';
+
+  @override
+  String get feedbackCouldNotOpenEmail =>
+      'Could not open email. Please contact suporte@openwhen.app.';
+
+  @override
+  String feedbackEmailBodyPrefix(String category) {
+    return 'Category: $category';
+  }
+
+  @override
   String get termsIntro =>
       'These Terms of Use (\"Terms\") govern access to and use of the OpenWhen application (\"Platform\"), developed and operated by OpenWhen Tecnologia Ltda. (\"Company\"), registered under CNPJ No. [XX.XXX.XXX/0001-XX], headquartered in Brazil. Use of the Platform implies full and unconditional acceptance of these Terms, pursuant to Article 8 of Law No. 12,965/2014 (Internet Civil Framework) and Law No. 13,709/2018 (General Data Protection Law — LGPD).';
 
