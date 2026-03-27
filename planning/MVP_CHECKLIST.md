@@ -65,6 +65,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] QR Code (gerar e compartilhar)
 - [x] **Link opcional de música** (`musicUrl` em Firestore — só `https`; abre no browser ou app do serviço; cartas e cápsulas)
 - [x] **Mensagem de voz opcional na carta** (`voiceUrl` — Storage `voiceLetters/`, reprodução in-app ao abrir; limite 1 min)
+- [x] **Localização opcional** (`senderLocation`, `geolocator`) — diálogos ao enviar; destinatário copia link do Maps no detalhe
+- [x] **Abertura só no local (10 m)** (`openRequiresProximity`) — gate no Cofre antes da animação de abertura (verificação no cliente)
 
 ### Cápsulas do tempo
 
@@ -72,6 +74,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Persistência em Firestore (`capsules`)
 - [x] Listagem no Cofre (aba Cápsulas)
 - [x] FAB com bottom sheet: Carta ou Cápsula
+- [x] Mesma **localização opcional** e **restrição 10 m** que nas cartas (campos Firestore alinhados)
 
 ### Social e perfil
 

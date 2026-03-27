@@ -13,8 +13,8 @@ Checklist para validar iOS/Android após implementar os itens críticos do MVP.
 1. `flutter pub get`
 2. Conectar dispositivo com USB debugging ou usar emulador com Play Services
 3. `flutter run` (ou `flutter build apk --release` + instalar APK)
-4. Confirmar permissões: notificações (Android 13+), galeria para foto de perfil
-5. Fluxos mínimos: login → feed → cofre → criar/abrir cápsula → perfil → alterar foto → configurações → permissão de push
+4. Confirmar permissões: notificações (Android 13+), galeria para foto de perfil, **localização** ao criar carta/cápsula com partilha de GPS e ao abrir com `openRequiresProximity` (deve pedir localização no destinatário)
+5. Fluxos mínimos: login → feed → cofre → criar carta/cápsula **com** e **sem** localização / **com** restrição de 10 m → abrir no local e longe do ponto → perfil → alterar foto → configurações → permissão de push
 
 ## iOS
 
@@ -22,8 +22,8 @@ Checklist para validar iOS/Android após implementar os itens críticos do MVP.
 2. Abrir `ios/Runner.xcworkspace` no Xcode e definir **Signing & Capabilities** (time + bundle id)
 3. Adicionar capability **Push Notifications** se ainda não existir (FCM)
 4. `flutter run` em dispositivo físico (push não valida no simulador da mesma forma)
-5. Na primeira execução, aceitar alertas de fotos e notificações
-6. Repetir os mesmos fluxos do Android
+5. Na primeira execução, aceitar alertas de fotos, notificações e **localização** quando testar envio com GPS ou abertura com proximidade
+6. Repetir os mesmos fluxos do Android (incluindo localização nos fluxos de carta/cápsula)
 
 ## Firebase (produção)
 

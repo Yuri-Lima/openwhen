@@ -33,8 +33,8 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 | Area | Highlights |
 |------|------------|
-| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music) |
-| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters |
+| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
+| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
 | **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
 | **Vault** | Tabs for waiting, opened, and **capsules** |
 | **Profile** | Own profile, other users, search by @username, settings, legal pages |
@@ -49,6 +49,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **UI** | Flutter (Material 3) |
 | **State** | Riverpod |
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
+| **Location** | `geolocator` (+ platform location permissions) for optional share-at-send and proximity-to-open |
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
 
@@ -178,8 +179,8 @@ lib/
 │   └── profile/
 └── shared/
     ├── theme/
-    ├── utils/          # e.g. music_url, voice_url validation
-    └── widgets/
+    ├── utils/          # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
+    └── widgets/        # e.g. location_share_tile (copy Maps link)
 ```
 
 Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** · Design tokens: **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)**

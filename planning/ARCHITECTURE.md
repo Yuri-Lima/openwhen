@@ -42,13 +42,19 @@ lib/
     │   └── app_theme.dart
     ├── utils/
     │   ├── music_url.dart             # Validação de URL https para link de música (cartas/cápsulas)
-    │   └── voice_url.dart             # Validação de URL de download Firebase Storage (voiceLetters/)
+    │   ├── voice_url.dart             # Validação de URL de download Firebase Storage (voiceLetters/)
+    │   ├── location_capture.dart      # `tryGetCurrentPosition()` (geolocator); constante `kProximityRadiusMeters` (10 m)
+    │   ├── sender_location.dart       # Parse `senderLocation` do Firestore; URL Google Maps; copiar para clipboard
+    │   ├── proximity_gate.dart        # Distância até o ponto ancorado vs. raio de produto
+    │   ├── location_prompt_flow.dart  # Diálogos ao gravar carta/cápsula: partilhar GPS + opcional abertura só nos 10 m
+    │   └── open_with_proximity.dart   # Navegação para `LetterOpeningScreen` / `CapsuleOpeningScreen` com gate no Cofre
     └── widgets/
         ├── owl_logo.dart              # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
         ├── owl_feedback_affordance.dart  # Coruja tocável + animação idle; abre feedback sheet
         ├── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
         ├── music_link_tile.dart       # Abrir link externo (url_launcher) + tile escuro “Ouvir música”
-        └── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
+        ├── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
+        └── location_share_tile.dart   # Tile escuro: toque copia link Maps (detalhe carta/cápsula)
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
@@ -105,6 +111,8 @@ Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o docu
 |-------|----------------|
 | `musicUrl` | String opcional — URL `https` (ex.: Spotify, YouTube Music). Não há streaming na app: o destinatário abre o link no browser ou na app do serviço (`url_launcher`, modo externo). Validado em UI com `lib/shared/utils/music_url.dart`. |
 | `voiceUrl` | String opcional — URL de download do **Firebase Storage** (objeto em `voiceLetters/`), gravado no envio da carta. Reprodução **dentro da app** com `just_audio` em detalhe e fluxo de abertura. Validado com `lib/shared/utils/voice_url.dart`. Limite de gravação no cliente: **1 minuto** (política do produto). |
+| `senderLocation` | Map opcional — `{ lat: double, lng: double, capturedAt: Timestamp }`. Preenchido se o remetente aceitar partilhar localização ao enviar (`geolocator`). O destinatário vê um tile no detalhe que copia uma URL de pesquisa no Google Maps. |
+| `openRequiresProximity` | Boolean opcional (default implícito `false`). Se `true` **e** existir `senderLocation`, o destinatário só entra no ecrã de abertura a partir do Cofre se a posição atual estiver a **≤ 10 m** do ponto (verificação **no cliente** em `open_with_proximity.dart` / `proximity_gate.dart`; não substitui validação server-side). |
 
 ### Cápsula (`capsules`) — campos principais
 
@@ -127,6 +135,8 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 | `createdAt`, `openedAt`, `publishedAt` | timestamps |
 | `likeCount`, `commentCount` | contadores |
 | `musicUrl` | String opcional — mesmo padrão que em `letters` (link `https`, abertura externa) |
+| `senderLocation` | Igual a `letters` — opcional ao criar a cápsula. |
+| `openRequiresProximity` | Igual a `letters` — opcional; raio fixo **10 m** no código. |
 
 ---
 

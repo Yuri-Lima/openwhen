@@ -33,8 +33,8 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 
 | Área | Destaques |
 |------|-----------|
-| **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; campo **mensagem digitada** começa **recolhido** e expande ao toque; **mensagem de voz** opcional (máx. **1 minuto** definido pelo produto, gravação no dispositivo, upload no Storage) com reprodução no app na abertura/detalhe; **link de música** opcional (só `https`, abre fora do app — sem streaming de música no app) |
-| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; mesmo padrão de link de música opcional |
+| **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; campo **mensagem digitada** começa **recolhido** e expande ao toque; **mensagem de voz** opcional (máx. **1 minuto** definido pelo produto, gravação no dispositivo, upload no Storage) com reprodução no app na abertura/detalhe; **link de música** opcional (só `https`, abre fora do app — sem streaming de música no app); **localização** opcional no envio (`geolocator`): diálogos perguntam se compartilha coordenadas com o destinatário (no detalhe, toque copia URL do **Google Maps**) e se a abertura exige estar a **≤ 10 m** do ponto (verificação no cliente ao abrir pelo Cofre — não é garantia de servidor) |
+| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; mesmo padrão de link de música opcional; mesma **localização opcional + opção de abertura em 10 m** das cartas |
 | **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
 | **Cofre** | Abas: aguardando, abertas e **cápsulas** |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
@@ -49,6 +49,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **UI** | Flutter (Material 3) |
 | **Estado** | Riverpod |
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
+| **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
 
@@ -178,8 +179,8 @@ lib/
 │   └── profile/
 └── shared/
     ├── theme/
-    ├── utils/          # ex.: validação de URL de música e de voz (Storage)
-    └── widgets/
+    ├── utils/          # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
+    └── widgets/        # ex.: location_share_tile (copiar link do Maps)
 ```
 
 Árvore completa e schema: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** · Design: **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)**
