@@ -33,8 +33,8 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 
 | Área | Destaques |
 |------|-----------|
-| **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar |
-| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento |
+| **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; **link de música** opcional (só `https`, abre fora do app — sem áudio embutido) |
+| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; mesmo padrão de link de música opcional |
 | **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
 | **Cofre** | Abas: aguardando, abertas e **cápsulas** |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
@@ -176,7 +176,10 @@ lib/
 │   ├── capsules/
 │   ├── feed/
 │   └── profile/
-└── shared/theme/
+└── shared/
+    ├── theme/
+    ├── utils/          # ex.: validação de URL de música
+    └── widgets/
 ```
 
 Árvore completa e schema: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** · Design: **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)**

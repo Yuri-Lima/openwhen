@@ -33,8 +33,8 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 | Area | Highlights |
 |------|------------|
-| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing |
-| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event |
+| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; optional **music link** (`https` only) opened externally (no in-app audio) |
+| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters |
 | **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
 | **Vault** | Tabs for waiting, opened, and **capsules** |
 | **Profile** | Own profile, other users, search by @username, settings, legal pages |
@@ -176,7 +176,10 @@ lib/
 │   ├── capsules/
 │   ├── feed/
 │   └── profile/
-└── shared/theme/
+└── shared/
+    ├── theme/
+    ├── utils/          # e.g. music URL validation
+    └── widgets/
 ```
 
 Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** · Design tokens: **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)**

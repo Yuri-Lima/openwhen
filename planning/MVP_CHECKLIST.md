@@ -37,7 +37,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟢 Pós-MVP
 
 - [ ] Cápsula coletiva
-- [ ] Música de fundo
+- [ ] Música de fundo (reprodução dentro do app — distinto do **link externo** opcional já suportado em cartas/cápsulas)
 - [ ] Voz gravada
 - [ ] Moderação por IA
 - [ ] Premium pay-per-feature (após ~10k usuários)
@@ -64,6 +64,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Leitura da carta
 - [x] Pedidos de carta
 - [x] QR Code (gerar e compartilhar)
+- [x] **Link opcional de música** (`musicUrl` em Firestore — só `https`; abre no browser ou app do serviço; cartas e cápsulas)
 
 ### Cápsulas do tempo
 

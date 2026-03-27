@@ -38,10 +38,13 @@ lib/
 └── shared/
     ├── theme/
     │   └── app_theme.dart
+    ├── utils/
+    │   └── music_url.dart             # Validação de URL https para link de música (cartas/cápsulas)
     └── widgets/
         ├── owl_logo.dart              # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
         ├── owl_feedback_affordance.dart  # Coruja tocável + animação idle; abre feedback sheet
-        └── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
+        ├── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
+        └── music_link_tile.dart       # Abrir link externo (url_launcher) + tile escuro “Ouvir música”
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
@@ -90,6 +93,14 @@ Coleções também usadas no código (strings / queries):
 | `capsules` | Cápsulas do tempo |
 | `reports` | Denúncias / moderação |
 
+### Carta (`letters`) — campos relevantes (subset)
+
+Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o documento pode incluir:
+
+| Campo | Tipo / notas |
+|-------|----------------|
+| `musicUrl` | String opcional — URL `https` (ex.: Spotify, YouTube Music). Não há streaming na app: o destinatário abre o link no browser ou na app do serviço (`url_launcher`, modo externo). Validado em UI com `lib/shared/utils/music_url.dart`. |
+
 ### Cápsula (`capsules`) — campos principais
 
 Alinhados ao fluxo em `create_capsule_screen.dart`:
@@ -110,6 +121,7 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 | `publishAfterReview` | boolean (decisão ao abrir) |
 | `createdAt`, `openedAt`, `publishedAt` | timestamps |
 | `likeCount`, `commentCount` | contadores |
+| `musicUrl` | String opcional — mesmo padrão que em `letters` (link `https`, abertura externa) |
 
 ---
 
