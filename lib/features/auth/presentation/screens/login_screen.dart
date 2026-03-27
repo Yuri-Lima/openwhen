@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/owl_logo.dart';
+import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -13,18 +13,33 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _showPassword = false;
   int _selectedTab = 0;
 
+  /// Inicialização lazy: após hot reload `initState` não corre outra vez, mas o primeiro
+  /// acesso em `build` inicializa o controller.
+  late final AnimationController _sealCtrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 5500),
+  );
+
   @override
   void dispose() {
+    _sealCtrl.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onSealTap() async {
+    if (_sealCtrl.isAnimating) return;
+    if (_sealCtrl.isCompleted) _sealCtrl.reset();
+    await _sealCtrl.forward();
   }
 
   Future<void> _login() async {
@@ -191,13 +206,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ),
                             ),
-                            // Lacre
+                            // Lacre (mesma animação da abertura de carta)
                             Positioned(
                               bottom: 18,
                               left: 0,
                               right: 0,
                               child: Center(
-                                child: const OwlLogo(size: 110),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: _onSealTap,
+                                  child: SizedBox(
+                                    width: 64,
+                                    height: 64,
+                                    child: Center(
+                                      child: OwlSealOpeningAnimation(
+                                        size: 56,
+                                        animation: _sealCtrl,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],

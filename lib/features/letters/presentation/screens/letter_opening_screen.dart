@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/owl_logo.dart' show OwlLogo, OwlLogoMode;
+import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
@@ -99,6 +99,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   late AnimationController _paperCtrl;
   late AnimationController _contentCtrl;
   late AnimationController _particleCtrl;
+  late AnimationController _sealCtrl;
 
   late Animation<double> _glowAnim;
   late Animation<double> _scaleAnim;
@@ -127,6 +128,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     _contentCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _particleCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 60))..repeat();
     _particleCtrl.addListener(() { if (mounted) setState(() => _tickParticles()); });
+    _sealCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 5500));
 
     _glowAnim = Tween(begin: 0.08, end: 0.22).animate(_glowCtrl);
     _scaleAnim = Tween(begin: 1.0, end: 1.06).animate(CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut));
@@ -181,6 +183,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     setState(() => _tapped = true);
     _scaleCtrl.stop();
 
+    await _sealCtrl.forward();
+
     await _shakeCtrl.forward();
     _spawnParticles();
 
@@ -217,6 +221,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   void dispose() {
     _glowCtrl.dispose(); _scaleCtrl.dispose(); _shakeCtrl.dispose();
     _paperCtrl.dispose(); _contentCtrl.dispose(); _particleCtrl.dispose();
+    _sealCtrl.dispose();
     super.dispose();
   }
 
@@ -229,9 +234,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
-      body: GestureDetector(
-        onTap: !_tapped ? _onTap : null,
-        child: Stack(
+      body: Stack(
           alignment: Alignment.center,
           children: [
             AnimatedBuilder(
@@ -335,8 +338,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                   child: AnimatedBuilder(
                                     animation: _glowAnim,
                                     builder: (_, __) => Container(
-                                      width: 86,
-                                      height: 86,
+                                      width: 68,
+                                      height: 68,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
@@ -348,15 +351,22 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                           ),
                                         ],
                                       ),
-                                      child: Container(
-                                        width: 80,
-                                        height: 80,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: glowColor.withOpacity(0.12),
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: !_tapped ? _onTap : null,
+                                        child: Container(
+                                          width: 62,
+                                          height: 62,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: glowColor.withOpacity(0.12),
+                                          ),
+                                          child: OwlSealOpeningAnimation(
+                                            size: 52,
+                                            animation: _sealCtrl,
+                                          ),
                                         ),
-                                        child: const OwlLogo(size: 72, mode: OwlLogoMode.sealOnly),
                                       ),
                                     ),
                                   ),
@@ -405,7 +415,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
             ),
           ],
         ),
-      ),
     );
   }
 
