@@ -36,7 +36,7 @@ OpenWhen combina **cartas temporizadas**, uma **rede social emocional** e **QR C
 | Atual | **Freemium** — crescimento e retenção |
 | Escala | **Pay-per-feature** somente após marco de ~**10k usuários** (evitar monetizar cedo demais) |
 
-Premium futuro pode incluir recursos como exportação avançada, temas, ou cápsulas coletivas — a definir com dados de uso.
+Premium futuro pode incluir recursos como exportação avançada, temas, ou cápsulas coletivas — a definir com dados de uso. **IA** futura no produto foca em **assistência à criação e personalização** (incl. contexto familiar: datas importantes, relações), com transparência — não em vigilância do utilizador.
 
 **Cartões-presente (planejado para escala):** compra no app ou na web (para si ou para presentear) e **resgate** (“adicionar”) via código no app, creditando saldo ou desbloqueando recursos premium — alinhado ao mesmo marco de ~10k usuários e à stack Stripe, salvo decisão contrária de produto.
 
@@ -47,6 +47,7 @@ Premium futuro pode incluir recursos como exportação avançada, temas, ou cáp
 1. **Carta temporizada** — emoção no momento certo, não só “postar agora”.
 2. **Rede social emocional** — feed e interações alinhadas a sentimento e intimidade, não só viralidade.
 3. **QR Code físico** — ponte entre mundo real e digital (presentes, eventos, lembranças).
+4. **Inteligência como apoio emocional** — roadmap prevê IA para sugestões alinhadas ao contexto (família, hábitos, criação de cartas), sempre com foco em confiança e opt-in onde houver dados sensíveis.
 
 ---
 
