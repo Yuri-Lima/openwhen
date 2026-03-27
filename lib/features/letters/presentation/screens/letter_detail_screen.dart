@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/voice_url.dart';
 import '../../../../shared/widgets/music_link_tile.dart';
+import '../../../../shared/widgets/voice_letter_tile.dart';
 import 'qr_code_screen.dart';
 
 class LetterDetailScreen extends StatelessWidget {
@@ -30,6 +31,8 @@ class LetterDetailScreen extends StatelessWidget {
         : DateTime.now();
     final musicUrl = data['musicUrl'] as String?;
     final showMusicLink = isValidHttpsMusicUrl(musicUrl);
+    final voiceUrl = data['voiceUrl'] as String?;
+    final showVoice = isValidVoiceLetterUrl(voiceUrl);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -171,6 +174,10 @@ class LetterDetailScreen extends StatelessWidget {
                       children: [
                         if (showMusicLink) ...[
                           MusicLinkTileDark(url: musicUrl!.trim()),
+                          const SizedBox(height: 12),
+                        ],
+                        if (showVoice) ...[
+                          VoiceLetterTileDark(url: voiceUrl!.trim()),
                           const SizedBox(height: 12),
                         ],
                         GestureDetector(

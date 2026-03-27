@@ -1,4 +1,7 @@
+import 'package:audio_session/audio_session.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/services.dart' show MissingPluginException;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,8 +29,23 @@ import 'shared/widgets/feedback_entry_button.dart';
 
 bool _onboardingShown = false;
 
+/// Best-effort: improves playback on iOS/Android; not available on web and may
+/// throw [MissingPluginException] after hot restart until a full rebuild.
+Future<void> _configureAudioSession() async {
+  if (kIsWeb) return;
+  try {
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration.music());
+  } on MissingPluginException catch (e) {
+    debugPrint('AudioSession skipped (no platform implementation): $e');
+  } catch (e, st) {
+    debugPrint('AudioSession.configure failed: $e\n$st');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _configureAudioSession();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

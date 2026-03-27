@@ -507,6 +507,57 @@ class AppLocalizationsPt extends AppLocalizations {
       'Use um link https:// válido para a música.';
 
   @override
+  String get writeLetterMessageTapToExpand =>
+      'Toque para escrever sua mensagem';
+
+  @override
+  String get writeLetterVoiceSection => 'Mensagem de voz (opcional)';
+
+  @override
+  String get writeLetterVoiceRecord => 'Gravar';
+
+  @override
+  String get writeLetterVoiceStop => 'Parar';
+
+  @override
+  String get writeLetterVoiceDiscard => 'Descartar áudio';
+
+  @override
+  String get writeLetterVoicePreview => 'Ouvir prévia';
+
+  @override
+  String get writeLetterVoiceMaxDuration => 'O limite é 1 minuto.';
+
+  @override
+  String get writeLetterVoicePermissionDenied =>
+      'Permissão do microfone necessária para gravar.';
+
+  @override
+  String get writeLetterVoiceOpenSettings => 'Abrir configurações';
+
+  @override
+  String get writeLetterVoiceWillSend => 'Será enviada com a carta';
+
+  @override
+  String get writeLetterVoiceUploadError =>
+      'Não foi possível enviar o áudio. Tente de novo.';
+
+  @override
+  String get voiceLetterTitle => 'Mensagem de voz';
+
+  @override
+  String get voiceLetterSubtitle => 'Gravada pelo remetente';
+
+  @override
+  String get voiceLetterPlay => 'Ouvir';
+
+  @override
+  String get voiceLetterPause => 'Pausar';
+
+  @override
+  String get voiceLetterPlayError => 'Não foi possível reproduzir o áudio.';
+
+  @override
   String get musicLinkTitle => 'Ouvir música';
 
   @override
@@ -2041,6 +2092,57 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get writeLetterSnackMusicUrlInvalid =>
       'Use um link https:// válido para a música.';
+
+  @override
+  String get writeLetterMessageTapToExpand =>
+      'Toque para escrever sua mensagem';
+
+  @override
+  String get writeLetterVoiceSection => 'Mensagem de voz (opcional)';
+
+  @override
+  String get writeLetterVoiceRecord => 'Gravar';
+
+  @override
+  String get writeLetterVoiceStop => 'Parar';
+
+  @override
+  String get writeLetterVoiceDiscard => 'Descartar áudio';
+
+  @override
+  String get writeLetterVoicePreview => 'Ouvir prévia';
+
+  @override
+  String get writeLetterVoiceMaxDuration => 'O limite é 1 minuto.';
+
+  @override
+  String get writeLetterVoicePermissionDenied =>
+      'Permissão do microfone necessária para gravar.';
+
+  @override
+  String get writeLetterVoiceOpenSettings => 'Abrir configurações';
+
+  @override
+  String get writeLetterVoiceWillSend => 'Será enviada com a carta';
+
+  @override
+  String get writeLetterVoiceUploadError =>
+      'Não foi possível enviar o áudio. Tente de novo.';
+
+  @override
+  String get voiceLetterTitle => 'Mensagem de voz';
+
+  @override
+  String get voiceLetterSubtitle => 'Gravada pelo remetente';
+
+  @override
+  String get voiceLetterPlay => 'Ouvir';
+
+  @override
+  String get voiceLetterPause => 'Pausar';
+
+  @override
+  String get voiceLetterPlayError => 'Não foi possível reproduzir o áudio.';
 
   @override
   String get musicLinkTitle => 'Ouvir música';

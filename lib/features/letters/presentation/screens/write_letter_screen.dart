@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
@@ -12,6 +19,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
+import '../voice_letter.dart';
 
 class EmotionalState {
   final String key;
@@ -77,14 +85,178 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   bool _searching = false;
   bool _showResults = false;
 
+  // Mensagem digitada: recolhida por padrão
+  bool _messageExpanded = false;
+  final FocusNode _messageFocusNode = FocusNode();
+
+  // Voz (mobile/desktop com IO; web usa stub de upload)
+  static const int _voiceMaxSeconds = 60;
+  final AudioRecorder _audioRecorder = AudioRecorder();
+  AudioPlayer? _previewPlayer;
+  String? _voiceLocalPath;
+  bool _isRecording = false;
+  int _recordingSeconds = 0;
+  Timer? _recordingTimer;
+
+  void _onMessageChanged() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController.addListener(_onMessageChanged);
+  }
+
   @override
   void dispose() {
+    _recordingTimer?.cancel();
+    if (_isRecording) {
+      unawaited(_audioRecorder.stop());
+    }
+    unawaited(_audioRecorder.dispose());
+    _previewPlayer?.dispose();
+    _messageController.removeListener(_onMessageChanged);
+    _messageFocusNode.dispose();
     _titleController.dispose();
     _messageController.dispose();
     _searchController.dispose();
     _emailController.dispose();
     _musicUrlController.dispose();
+    if (!kIsWeb && _voiceLocalPath != null) {
+      unawaited(deleteVoiceFile(_voiceLocalPath));
+    }
     super.dispose();
+  }
+
+  Future<bool> _ensureMicPermission() async {
+    final l10n = AppLocalizations.of(context)!;
+    final status = await Permission.microphone.request();
+    if (status.isGranted) return true;
+    if (!mounted) return false;
+    if (status.isPermanentlyDenied) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.writeLetterVoicePermissionDenied),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.actionCancel)),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                openAppSettings();
+              },
+              child: Text(l10n.writeLetterVoiceOpenSettings),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+    );
+    return false;
+  }
+
+  Future<void> _startRecording() async {
+    if (kIsWeb) return;
+    if (!await _ensureMicPermission()) return;
+    final l10n = AppLocalizations.of(context)!;
+    if (_voiceLocalPath != null) {
+      await deleteVoiceFile(_voiceLocalPath);
+      setState(() => _voiceLocalPath = null);
+    }
+    final dir = await getTemporaryDirectory();
+    final path = '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    try {
+      if (!await _audioRecorder.hasPermission()) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+          );
+        }
+        return;
+      }
+      await _audioRecorder.start(
+        const RecordConfig(encoder: AudioEncoder.aacLc),
+        path: path,
+      );
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+        );
+      }
+      return;
+    }
+    setState(() {
+      _isRecording = true;
+      _recordingSeconds = 0;
+    });
+    _recordingTimer?.cancel();
+    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() {
+        _recordingSeconds++;
+        if (_recordingSeconds >= _voiceMaxSeconds) {
+          unawaited(_stopRecording(maxReached: true));
+        }
+      });
+    });
+  }
+
+  Future<void> _stopRecording({bool maxReached = false}) async {
+    final l10n = AppLocalizations.of(context)!;
+    _recordingTimer?.cancel();
+    _recordingTimer = null;
+    if (!_isRecording) return;
+    String? outPath;
+    try {
+      outPath = await _audioRecorder.stop();
+    } catch (_) {
+      outPath = null;
+    }
+    if (!mounted) return;
+    setState(() {
+      _isRecording = false;
+      if (outPath != null) _voiceLocalPath = outPath;
+    });
+    if (maxReached) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.writeLetterVoiceMaxDuration)),
+      );
+    }
+  }
+
+  Future<void> _discardVoice() async {
+    await deleteVoiceFile(_voiceLocalPath);
+    await _previewPlayer?.stop();
+    setState(() => _voiceLocalPath = null);
+  }
+
+  Future<void> _togglePreview() async {
+    if (kIsWeb || _voiceLocalPath == null) return;
+    _previewPlayer ??= AudioPlayer()
+      ..playerStateStream.listen((_) {
+        if (mounted) setState(() {});
+      });
+    final p = _previewPlayer!;
+    try {
+      if (p.playing) {
+        await p.pause();
+        setState(() {});
+        return;
+      }
+      await p.setAudioSource(AudioSource.uri(Uri.file(_voiceLocalPath!)));
+      await p.play();
+      setState(() {});
+    } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.voiceLetterPlayError)),
+        );
+      }
+    }
   }
 
   Future<void> _searchUsers(String query) async {
@@ -241,6 +413,21 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       final currentUser = FirebaseAuth.instance.currentUser!;
       final firestore = FirebaseFirestore.instance;
 
+      String? voiceUrlToSave;
+      if (!kIsWeb && _voiceLocalPath != null) {
+        voiceUrlToSave = await uploadVoiceLetterFile(_voiceLocalPath!, currentUser.uid);
+        if (voiceUrlToSave == null) {
+          if (mounted) {
+            setState(() => _isLoading = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l10n.writeLetterVoiceUploadError)),
+            );
+          }
+          return;
+        }
+        if (mounted) setState(() => _voiceLocalPath = null);
+      }
+
       final senderDoc = await firestore.collection(FirestoreCollections.users).doc(currentUser.uid).get();
       final senderName = senderDoc.data()?['displayName'] ?? senderDoc.data()?['name'] ?? currentUser.email ?? '';
 
@@ -277,6 +464,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'likeCount': 0,
         'commentCount': 0,
         if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
+        if (voiceUrlToSave != null) 'voiceUrl': voiceUrlToSave,
       });
 
       if (mounted) {
@@ -405,23 +593,210 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   const SizedBox(height: 14),
 
                   // CONTEUDO DA CARTA
-                  if (!_isHandwritten)
-                    Container(
-                      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                      child: TextField(
-                        controller: _messageController,
-                        maxLines: 8,
-                        style: GoogleFonts.dmSerifDisplay(color: context.pal.ink, fontStyle: FontStyle.italic, fontSize: 15, height: 1.8),
-                        decoration: InputDecoration(
-                          labelText: l10n.writeLetterFieldMessage,
-                          labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(16),
-                          alignLabelWithHint: true,
+                  if (!_isHandwritten) ...[
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      child: _messageExpanded
+                          ? Container(
+                              decoration: BoxDecoration(
+                                color: context.pal.card,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: context.pal.border),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(12, 4, 4, 0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            l10n.writeLetterFieldMessage,
+                                            style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.expand_less, color: context.pal.inkFaint),
+                                          onPressed: () {
+                                            _messageFocusNode.unfocus();
+                                            setState(() => _messageExpanded = false);
+                                          },
+                                          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextField(
+                                    controller: _messageController,
+                                    focusNode: _messageFocusNode,
+                                    maxLines: 8,
+                                    style: GoogleFonts.dmSerifDisplay(
+                                      color: context.pal.ink,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 15,
+                                      height: 1.8,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: l10n.writeLetterFieldMessage,
+                                      hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                      alignLabelWithHint: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: () {
+                                  setState(() => _messageExpanded = true);
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    _messageFocusNode.requestFocus();
+                                    final ctx = _messageFocusNode.context;
+                                    if (ctx != null && ctx.mounted) {
+                                      Scrollable.ensureVisible(
+                                        ctx,
+                                        duration: const Duration(milliseconds: 250),
+                                        alignment: 0.2,
+                                      );
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: context.pal.card,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: context.pal.border),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              l10n.writeLetterFieldMessage,
+                                              style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              _messageController.text.isEmpty
+                                                  ? l10n.writeLetterMessageTapToExpand
+                                                  : _messageController.text,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.dmSerifDisplay(
+                                                color: context.pal.ink,
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 15,
+                                                height: 1.4,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(Icons.expand_more, color: context.pal.inkFaint),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
+                    if (!kIsWeb) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.writeLetterVoiceSection,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 10,
+                          color: context.pal.inkFaint,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    )
-                  else
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: context.pal.card,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (_isRecording)
+                              Row(
+                                children: [
+                                  Icon(Icons.fiber_manual_record, color: Colors.red.shade400, size: 14),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${_recordingSeconds ~/ 60}:${(_recordingSeconds % 60).toString().padLeft(2, '0')} / 1:00',
+                                    style: GoogleFonts.dmSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.pal.ink,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  TextButton(
+                                    onPressed: () => _stopRecording(),
+                                    child: Text(l10n.writeLetterVoiceStop),
+                                  ),
+                                ],
+                              )
+                            else if (_voiceLocalPath != null)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    l10n.writeLetterVoiceWillSend,
+                                    style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      OutlinedButton.icon(
+                                        onPressed: _togglePreview,
+                                        icon: Icon(
+                                          (_previewPlayer?.playing ?? false)
+                                              ? Icons.pause_rounded
+                                              : Icons.play_arrow_rounded,
+                                          size: 18,
+                                        ),
+                                        label: Text(l10n.writeLetterVoicePreview),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      TextButton.icon(
+                                        onPressed: _discardVoice,
+                                        icon: const Icon(Icons.delete_outline, size: 18),
+                                        label: Text(l10n.writeLetterVoiceDiscard),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            else
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: FilledButton.icon(
+                                  onPressed: _startRecording,
+                                  icon: const Icon(Icons.mic_rounded, size: 18),
+                                  label: Text(l10n.writeLetterVoiceRecord),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ] else
                     GestureDetector(
                       onTap: _pickHandwrittenImage,
                       child: AnimatedContainer(

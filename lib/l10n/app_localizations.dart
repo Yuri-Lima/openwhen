@@ -1013,6 +1013,102 @@ abstract class AppLocalizations {
   /// **'Use um link https:// válido para a música.'**
   String get writeLetterSnackMusicUrlInvalid;
 
+  /// No description provided for @writeLetterMessageTapToExpand.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Toque para escrever sua mensagem'**
+  String get writeLetterMessageTapToExpand;
+
+  /// No description provided for @writeLetterVoiceSection.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mensagem de voz (opcional)'**
+  String get writeLetterVoiceSection;
+
+  /// No description provided for @writeLetterVoiceRecord.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Gravar'**
+  String get writeLetterVoiceRecord;
+
+  /// No description provided for @writeLetterVoiceStop.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Parar'**
+  String get writeLetterVoiceStop;
+
+  /// No description provided for @writeLetterVoiceDiscard.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Descartar áudio'**
+  String get writeLetterVoiceDiscard;
+
+  /// No description provided for @writeLetterVoicePreview.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ouvir prévia'**
+  String get writeLetterVoicePreview;
+
+  /// No description provided for @writeLetterVoiceMaxDuration.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O limite é 1 minuto.'**
+  String get writeLetterVoiceMaxDuration;
+
+  /// No description provided for @writeLetterVoicePermissionDenied.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Permissão do microfone necessária para gravar.'**
+  String get writeLetterVoicePermissionDenied;
+
+  /// No description provided for @writeLetterVoiceOpenSettings.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir configurações'**
+  String get writeLetterVoiceOpenSettings;
+
+  /// No description provided for @writeLetterVoiceWillSend.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Será enviada com a carta'**
+  String get writeLetterVoiceWillSend;
+
+  /// No description provided for @writeLetterVoiceUploadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível enviar o áudio. Tente de novo.'**
+  String get writeLetterVoiceUploadError;
+
+  /// No description provided for @voiceLetterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mensagem de voz'**
+  String get voiceLetterTitle;
+
+  /// No description provided for @voiceLetterSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Gravada pelo remetente'**
+  String get voiceLetterSubtitle;
+
+  /// No description provided for @voiceLetterPlay.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ouvir'**
+  String get voiceLetterPlay;
+
+  /// No description provided for @voiceLetterPause.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Pausar'**
+  String get voiceLetterPause;
+
+  /// No description provided for @voiceLetterPlayError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível reproduzir o áudio.'**
+  String get voiceLetterPlayError;
+
   /// No description provided for @musicLinkTitle.
   ///
   /// In pt_BR, this message translates to:

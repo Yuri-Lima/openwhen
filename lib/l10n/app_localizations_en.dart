@@ -510,6 +510,56 @@ class AppLocalizationsEn extends AppLocalizations {
       'Use a valid https:// link for the song.';
 
   @override
+  String get writeLetterMessageTapToExpand => 'Tap to write your message';
+
+  @override
+  String get writeLetterVoiceSection => 'Voice message (optional)';
+
+  @override
+  String get writeLetterVoiceRecord => 'Record';
+
+  @override
+  String get writeLetterVoiceStop => 'Stop';
+
+  @override
+  String get writeLetterVoiceDiscard => 'Discard audio';
+
+  @override
+  String get writeLetterVoicePreview => 'Preview';
+
+  @override
+  String get writeLetterVoiceMaxDuration => 'The limit is 1 minute.';
+
+  @override
+  String get writeLetterVoicePermissionDenied =>
+      'Microphone permission is required to record.';
+
+  @override
+  String get writeLetterVoiceOpenSettings => 'Open settings';
+
+  @override
+  String get writeLetterVoiceWillSend => 'Will be sent with the letter';
+
+  @override
+  String get writeLetterVoiceUploadError =>
+      'Could not upload audio. Please try again.';
+
+  @override
+  String get voiceLetterTitle => 'Voice message';
+
+  @override
+  String get voiceLetterSubtitle => 'Recorded by the sender';
+
+  @override
+  String get voiceLetterPlay => 'Listen';
+
+  @override
+  String get voiceLetterPause => 'Pause';
+
+  @override
+  String get voiceLetterPlayError => 'Could not play audio.';
+
+  @override
   String get musicLinkTitle => 'Listen to music';
 
   @override

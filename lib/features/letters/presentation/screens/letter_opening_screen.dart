@@ -7,7 +7,9 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/voice_url.dart';
 import '../../../../shared/widgets/music_link_tile.dart';
+import '../../../../shared/widgets/voice_letter_tile.dart';
 import 'letter_detail_screen.dart';
 
 class _EmotionTheme {
@@ -453,6 +455,13 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
             ),
+          ),
+        ],
+        if (isValidVoiceLetterUrl(d['voiceUrl'] as String?)) ...[
+          const SizedBox(height: 12),
+          VoiceLetterOpeningButton(
+            url: (d['voiceUrl'] as String).trim(),
+            accentColor: accentColor,
           ),
         ],
         const SizedBox(height: 24),

@@ -21,6 +21,8 @@ class Letter {
   final int commentCount;
   /// Optional https URL (Spotify, YouTube Music, etc.) — opened externally.
   final String? musicUrl;
+  /// Optional Firebase Storage URL for a short voice recording.
+  final String? voiceUrl;
 
   Letter({
     required this.id,
@@ -40,6 +42,7 @@ class Letter {
     this.likeCount = 0,
     this.commentCount = 0,
     this.musicUrl,
+    this.voiceUrl,
   });
 
   bool get isLocked => status == LetterStatus.locked;
@@ -73,6 +76,7 @@ class Letter {
       likeCount: (data['likeCount'] as num?)?.toInt() ?? 0,
       commentCount: (data['commentCount'] as num?)?.toInt() ?? 0,
       musicUrl: data['musicUrl'] as String?,
+      voiceUrl: data['voiceUrl'] as String?,
     );
   }
 }

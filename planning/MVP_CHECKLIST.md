@@ -38,7 +38,6 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [ ] Cápsula coletiva
 - [ ] Música de fundo (reprodução dentro do app — distinto do **link externo** opcional já suportado em cartas/cápsulas)
-- [ ] Voz gravada
 - [ ] Moderação por IA
 - [ ] Premium pay-per-feature (após ~10k usuários)
 
@@ -55,7 +54,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ### Cartas e cofre
 
-- [x] Escrever carta
+- [x] Escrever carta (mensagem digitada recolhível por defeito; voz opcional até 1 min + `voiceUrl`)
 - [x] Cofre com abas (Aguardando / Abertas / Cápsulas)
 - [x] Detalhe da carta
 - [x] Animação de abertura por estado emocional
@@ -65,6 +64,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Pedidos de carta
 - [x] QR Code (gerar e compartilhar)
 - [x] **Link opcional de música** (`musicUrl` em Firestore — só `https`; abre no browser ou app do serviço; cartas e cápsulas)
+- [x] **Mensagem de voz opcional na carta** (`voiceUrl` — Storage `voiceLetters/`, reprodução in-app ao abrir; limite 1 min)
 
 ### Cápsulas do tempo
 

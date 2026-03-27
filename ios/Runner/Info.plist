@@ -39,7 +39,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<string>O OpenWhen usa o microfone para gravar mensagens de voz nas cartas.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>O OpenWhen precisa acessar suas fotos para definir a imagem de perfil.</string>
 	<key>NSUserTrackingUsageDescription</key>

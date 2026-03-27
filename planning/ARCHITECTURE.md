@@ -27,7 +27,9 @@ lib/
 │   │       └── screens/ (splash, login, register, onboarding)
 │   ├── letters/
 │   │   ├── models/
-│   │   └── presentation/screens/ (write, vault, detail, opening, requests, qr)
+│   │   └── presentation/
+│   │       ├── screens/ (write, vault, detail, opening, requests, qr)
+│   │       └── voice_letter.dart    # conditional export: upload/delete ficheiro local (IO vs web stub)
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
 │   ├── feed/
@@ -39,12 +41,14 @@ lib/
     ├── theme/
     │   └── app_theme.dart
     ├── utils/
-    │   └── music_url.dart             # Validação de URL https para link de música (cartas/cápsulas)
+    │   ├── music_url.dart             # Validação de URL https para link de música (cartas/cápsulas)
+    │   └── voice_url.dart             # Validação de URL de download Firebase Storage (voiceLetters/)
     └── widgets/
         ├── owl_logo.dart              # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
         ├── owl_feedback_affordance.dart  # Coruja tocável + animação idle; abre feedback sheet
         ├── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
-        └── music_link_tile.dart       # Abrir link externo (url_launcher) + tile escuro “Ouvir música”
+        ├── music_link_tile.dart       # Abrir link externo (url_launcher) + tile escuro “Ouvir música”
+        └── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
@@ -69,7 +73,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 |---------|-----|
 | **Authentication** | Sessão do usuário |
 | **Cloud Firestore** | Dados principais (usuários, cartas, social, cápsulas, moderação) |
-| **Cloud Storage** | Mídia (avatar, futuras fotos de cápsula, etc.) |
+| **Cloud Storage** | Avatares; fotos de carta manuscrita (`handwritten/`); mensagens de voz (`voiceLetters/`, áudio curto); mídia de cápsulas (`capsules/**`) — ver [`storage.rules`](../storage.rules) |
 | **FCM** | Notificações push (a configurar no MVP) |
 
 **Projeto Firebase (referência):** `openwhen-923f5`
@@ -100,6 +104,7 @@ Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o docu
 | Campo | Tipo / notas |
 |-------|----------------|
 | `musicUrl` | String opcional — URL `https` (ex.: Spotify, YouTube Music). Não há streaming na app: o destinatário abre o link no browser ou na app do serviço (`url_launcher`, modo externo). Validado em UI com `lib/shared/utils/music_url.dart`. |
+| `voiceUrl` | String opcional — URL de download do **Firebase Storage** (objeto em `voiceLetters/`), gravado no envio da carta. Reprodução **dentro da app** com `just_audio` em detalhe e fluxo de abertura. Validado com `lib/shared/utils/voice_url.dart`. Limite de gravação no cliente: **1 minuto** (política do produto). |
 
 ### Cápsula (`capsules`) — campos principais
 

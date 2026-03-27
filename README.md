@@ -33,7 +33,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 | Area | Highlights |
 |------|------------|
-| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; optional **music link** (`https` only) opened externally (no in-app audio) |
+| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music) |
 | **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters |
 | **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
 | **Vault** | Tabs for waiting, opened, and **capsules** |
@@ -178,7 +178,7 @@ lib/
 │   └── profile/
 └── shared/
     ├── theme/
-    ├── utils/          # e.g. music URL validation
+    ├── utils/          # e.g. music_url, voice_url validation
     └── widgets/
 ```
 
