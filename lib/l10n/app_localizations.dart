@@ -161,6 +161,108 @@ abstract class AppLocalizations {
   /// **'Copiar'**
   String get actionCopy;
 
+  /// No description provided for @actionOk.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'OK'**
+  String get actionOk;
+
+  /// No description provided for @locationAskShareTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar sua localização?'**
+  String get locationAskShareTitle;
+
+  /// No description provided for @locationAskShareBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O destinatário pode ver onde você estava ao enviar e copiar um link do Maps. Você também pode exigir abertura apenas num raio de 10 metros deste ponto.'**
+  String get locationAskShareBody;
+
+  /// No description provided for @locationAskShareAllow.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar localização'**
+  String get locationAskShareAllow;
+
+  /// No description provided for @locationAskShareDeny.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não compartilhar'**
+  String get locationAskShareDeny;
+
+  /// No description provided for @locationAskRestrictTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exigir estar no local para abrir?'**
+  String get locationAskRestrictTitle;
+
+  /// No description provided for @locationAskRestrictBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O destinatário só poderá abrir isto num raio de 10 metros do ponto que você compartilhou.'**
+  String get locationAskRestrictBody;
+
+  /// No description provided for @locationAskRestrictYes.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sim, em 10 m'**
+  String get locationAskRestrictYes;
+
+  /// No description provided for @locationAskRestrictNo.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não'**
+  String get locationAskRestrictNo;
+
+  /// No description provided for @locationCaptureFailed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível obter a localização. Enviando sem ela.'**
+  String get locationCaptureFailed;
+
+  /// No description provided for @locationShareTileTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Local do remetente'**
+  String get locationShareTileTitle;
+
+  /// No description provided for @locationShareTileSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Toque para copiar o link do Google Maps'**
+  String get locationShareTileSubtitle;
+
+  /// No description provided for @locationCopiedSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Copiado para a área de transferência'**
+  String get locationCopiedSnack;
+
+  /// No description provided for @locationProximityTooFarTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Longe demais'**
+  String get locationProximityTooFarTitle;
+
+  /// No description provided for @locationProximityTooFarBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Só é possível abrir isto num raio de 10 metros do local compartilhado. Aproxime-se e tente de novo.'**
+  String get locationProximityTooFarBody;
+
+  /// No description provided for @locationProximityNeedLocationTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Localização necessária'**
+  String get locationProximityNeedLocationTitle;
+
+  /// No description provided for @locationProximityNeedLocationBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ative os serviços de localização e permita que o OpenWhen acesse sua localização para abrir isto.'**
+  String get locationProximityNeedLocationBody;
+
   /// No description provided for @navFeed.
   ///
   /// In pt_BR, this message translates to:

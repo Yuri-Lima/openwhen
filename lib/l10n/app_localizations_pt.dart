@@ -41,6 +41,63 @@ class AppLocalizationsPt extends AppLocalizations {
   String get actionCopy => 'Copiar';
 
   @override
+  String get actionOk => 'OK';
+
+  @override
+  String get locationAskShareTitle => 'Partilhar a sua localização?';
+
+  @override
+  String get locationAskShareBody =>
+      'O destinatário pode ver onde estava ao enviar e copiar uma ligação do Maps. Também pode exigir abertura apenas num raio de 10 metros deste ponto.';
+
+  @override
+  String get locationAskShareAllow => 'Partilhar localização';
+
+  @override
+  String get locationAskShareDeny => 'Não partilhar';
+
+  @override
+  String get locationAskRestrictTitle => 'Exigir estar no local para abrir?';
+
+  @override
+  String get locationAskRestrictBody =>
+      'O destinatário só poderá abrir isto num raio de 10 metros do ponto que partilhou.';
+
+  @override
+  String get locationAskRestrictYes => 'Sim, em 10 m';
+
+  @override
+  String get locationAskRestrictNo => 'Não';
+
+  @override
+  String get locationCaptureFailed =>
+      'Não foi possível obter a localização. A enviar sem ela.';
+
+  @override
+  String get locationShareTileTitle => 'Local do remetente';
+
+  @override
+  String get locationShareTileSubtitle =>
+      'Toque para copiar a ligação do Google Maps';
+
+  @override
+  String get locationCopiedSnack => 'Copiado para a área de transferência';
+
+  @override
+  String get locationProximityTooFarTitle => 'Longe demais';
+
+  @override
+  String get locationProximityTooFarBody =>
+      'Só é possível abrir isto num raio de 10 metros do local partilhado. Aproxime-se e tente de novo.';
+
+  @override
+  String get locationProximityNeedLocationTitle => 'Localização necessária';
+
+  @override
+  String get locationProximityNeedLocationBody =>
+      'Ative os serviços de localização e permita que o OpenWhen aceda à sua localização para abrir isto.';
+
+  @override
   String get navFeed => 'Feed';
 
   @override
@@ -1626,6 +1683,63 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get actionCopy => 'Copiar';
+
+  @override
+  String get actionOk => 'OK';
+
+  @override
+  String get locationAskShareTitle => 'Compartilhar sua localização?';
+
+  @override
+  String get locationAskShareBody =>
+      'O destinatário pode ver onde você estava ao enviar e copiar um link do Maps. Você também pode exigir abertura apenas num raio de 10 metros deste ponto.';
+
+  @override
+  String get locationAskShareAllow => 'Compartilhar localização';
+
+  @override
+  String get locationAskShareDeny => 'Não compartilhar';
+
+  @override
+  String get locationAskRestrictTitle => 'Exigir estar no local para abrir?';
+
+  @override
+  String get locationAskRestrictBody =>
+      'O destinatário só poderá abrir isto num raio de 10 metros do ponto que você compartilhou.';
+
+  @override
+  String get locationAskRestrictYes => 'Sim, em 10 m';
+
+  @override
+  String get locationAskRestrictNo => 'Não';
+
+  @override
+  String get locationCaptureFailed =>
+      'Não foi possível obter a localização. Enviando sem ela.';
+
+  @override
+  String get locationShareTileTitle => 'Local do remetente';
+
+  @override
+  String get locationShareTileSubtitle =>
+      'Toque para copiar o link do Google Maps';
+
+  @override
+  String get locationCopiedSnack => 'Copiado para a área de transferência';
+
+  @override
+  String get locationProximityTooFarTitle => 'Longe demais';
+
+  @override
+  String get locationProximityTooFarBody =>
+      'Só é possível abrir isto num raio de 10 metros do local compartilhado. Aproxime-se e tente de novo.';
+
+  @override
+  String get locationProximityNeedLocationTitle => 'Localização necessária';
+
+  @override
+  String get locationProximityNeedLocationBody =>
+      'Ative os serviços de localização e permita que o OpenWhen acesse sua localização para abrir isto.';
 
   @override
   String get navFeed => 'Feed';

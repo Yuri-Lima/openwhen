@@ -12,6 +12,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/location_prompt_flow.dart';
 
 class CapsuleTheme {
   final String id, emoji;
@@ -124,6 +125,8 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMusicUrlInvalid)));
       return;
     }
+    final locOpts = await promptSenderLocationAndProximity(context, l10n);
+    if (!mounted) return;
     setState(() => _saving = true);
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -157,6 +160,11 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         'likeCount': 0,
         'commentCount': 0,
         if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
+        if (locOpts.senderLocation != null)
+          ...<String, dynamic>{
+            'senderLocation': locOpts.senderLocation!,
+            'openRequiresProximity': locOpts.openRequiresProximity,
+          },
       });
 
       if (mounted) {

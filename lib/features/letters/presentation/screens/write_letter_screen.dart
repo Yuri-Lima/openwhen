@@ -19,6 +19,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/location_prompt_flow.dart';
 import '../voice_letter.dart';
 
 class EmotionalState {
@@ -408,6 +409,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       return;
     }
 
+    final locOpts = await promptSenderLocationAndProximity(context, l10n);
+    if (!mounted) return;
+
     setState(() => _isLoading = true);
     try {
       final currentUser = FirebaseAuth.instance.currentUser!;
@@ -465,6 +469,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'commentCount': 0,
         if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
         if (voiceUrlToSave != null) 'voiceUrl': voiceUrlToSave,
+        if (locOpts.senderLocation != null)
+          ...<String, dynamic>{
+            'senderLocation': locOpts.senderLocation!,
+            'openRequiresProximity': locOpts.openRequiresProximity,
+          },
       });
 
       if (mounted) {

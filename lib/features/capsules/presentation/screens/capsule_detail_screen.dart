@@ -8,6 +8,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/widgets/music_link_tile.dart';
+import '../../../../shared/widgets/location_share_tile.dart';
+import '../../../../shared/utils/sender_location.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -93,6 +95,7 @@ class CapsuleDetailScreen extends StatelessWidget {
     final qa = _qaPairs();
     final musicUrl = data['musicUrl'] as String?;
     final showMusicLink = isValidHttpsMusicUrl(musicUrl);
+    final senderLoc = parseSenderLocationData(data['senderLocation']);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -251,6 +254,10 @@ class CapsuleDetailScreen extends StatelessWidget {
                   if (showMusicLink) ...[
                     const SizedBox(height: 16),
                     MusicLinkTileDark(url: musicUrl!.trim()),
+                  ],
+                  if (senderLoc != null) ...[
+                    const SizedBox(height: 16),
+                    LocationShareTileDark(lat: senderLoc.lat, lng: senderLoc.lng),
                   ],
                   const SizedBox(height: 20),
                   _actionTile(

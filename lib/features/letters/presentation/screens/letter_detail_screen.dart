@@ -8,6 +8,8 @@ import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/voice_url.dart';
 import '../../../../shared/widgets/music_link_tile.dart';
 import '../../../../shared/widgets/voice_letter_tile.dart';
+import '../../../../shared/widgets/location_share_tile.dart';
+import '../../../../shared/utils/sender_location.dart';
 import 'qr_code_screen.dart';
 
 class LetterDetailScreen extends StatelessWidget {
@@ -33,6 +35,7 @@ class LetterDetailScreen extends StatelessWidget {
     final showMusicLink = isValidHttpsMusicUrl(musicUrl);
     final voiceUrl = data['voiceUrl'] as String?;
     final showVoice = isValidVoiceLetterUrl(voiceUrl);
+    final senderLoc = parseSenderLocationData(data['senderLocation']);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -178,6 +181,10 @@ class LetterDetailScreen extends StatelessWidget {
                         ],
                         if (showVoice) ...[
                           VoiceLetterTileDark(url: voiceUrl!.trim()),
+                          const SizedBox(height: 12),
+                        ],
+                        if (senderLoc != null) ...[
+                          LocationShareTileDark(lat: senderLoc.lat, lng: senderLoc.lng),
                           const SizedBox(height: 12),
                         ],
                         GestureDetector(

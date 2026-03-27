@@ -10,10 +10,9 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'letter_detail_screen.dart';
-import 'letter_opening_screen.dart';
 import '../../../capsules/presentation/screens/create_capsule_screen.dart';
-import '../../../capsules/presentation/screens/capsule_opening_screen.dart';
 import '../../../capsules/presentation/screens/capsule_detail_screen.dart';
+import '../../../../shared/utils/open_with_proximity.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
@@ -366,7 +365,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CapsuleOpeningScreen(data: data, docId: docId))),
+              onPressed: () => openCapsuleWithProximityGate(
+                    context,
+                    data: Map<String, dynamic>.from(data),
+                    docId: docId,
+                  ),
               style: ElevatedButton.styleFrom(backgroundColor: context.pal.accent, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 0),
               child: Text(l10n.vaultOpenCapsule, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: context.pal.white)),
             ),
@@ -428,7 +431,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterOpeningScreen(data: data, docId: docId))),
+              onPressed: () => openLetterWithProximityGate(
+                    context,
+                    data: Map<String, dynamic>.from(data),
+                    docId: docId,
+                  ),
               style: ElevatedButton.styleFrom(backgroundColor: context.pal.accent, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 8, shadowColor: context.pal.accent.withOpacity(0.4)),
               child: Text(l10n.vaultOpenLetter, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: context.pal.white, letterSpacing: 0.5)),
             ),

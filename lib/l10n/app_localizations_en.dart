@@ -41,6 +41,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionCopy => 'Copy';
 
   @override
+  String get actionOk => 'OK';
+
+  @override
+  String get locationAskShareTitle => 'Share your location?';
+
+  @override
+  String get locationAskShareBody =>
+      'The recipient can see where you were when you sent this and copy a Maps link. You can also require opening only within 10 meters of this spot.';
+
+  @override
+  String get locationAskShareAllow => 'Share location';
+
+  @override
+  String get locationAskShareDeny => 'Don\'t share';
+
+  @override
+  String get locationAskRestrictTitle => 'Require being on site to open?';
+
+  @override
+  String get locationAskRestrictBody =>
+      'The recipient will only be able to open this within 10 meters of the point you shared.';
+
+  @override
+  String get locationAskRestrictYes => 'Yes, within 10 m';
+
+  @override
+  String get locationAskRestrictNo => 'No';
+
+  @override
+  String get locationCaptureFailed =>
+      'Could not get location. Sending without it.';
+
+  @override
+  String get locationShareTileTitle => 'Sender location';
+
+  @override
+  String get locationShareTileSubtitle => 'Tap to copy a Google Maps link';
+
+  @override
+  String get locationCopiedSnack => 'Copied to clipboard';
+
+  @override
+  String get locationProximityTooFarTitle => 'Too far away';
+
+  @override
+  String get locationProximityTooFarBody =>
+      'This can only be opened within 10 meters of the shared location. Move closer and try again.';
+
+  @override
+  String get locationProximityNeedLocationTitle => 'Location needed';
+
+  @override
+  String get locationProximityNeedLocationBody =>
+      'Turn on location services and allow OpenWhen to access your location to open this.';
+
+  @override
   String get navFeed => 'Feed';
 
   @override
