@@ -160,6 +160,13 @@
   "writeLetterSnackSentExternal": "Letter created! Share the link with the recipient. 💌",
   "writeLetterSnackEmailInvalid": "Enter a valid email!",
   "writeLetterSnackStorageError": "Enable Firebase Storage to use this feature",
+  "writeLetterMusicUrlLabel": "Song link (optional)",
+  "writeLetterMusicUrlHint": "https://open.spotify.com/...",
+  "writeLetterSnackMusicUrlInvalid": "Use a valid https:// link for the song.",
+
+  "musicLinkTitle": "Listen to music",
+  "musicLinkSubtitle": "Opens in the app or browser",
+  "musicLinkOpenError": "Could not open this link.",
 
   "letterDetailHeaderFrom": "A LETTER FROM",
   "letterDetailTo": "to {name}",
@@ -236,6 +243,8 @@
   "createCapsuleWriteHint": "Write freely. No rules. Just you and the future.",
   "createCapsuleFieldTitle": "Title",
   "createCapsuleFieldTitleHint": "E.g.: To my self one year from now...",
+  "createCapsuleMusicUrlLabel": "Song link (optional)",
+  "createCapsuleMusicUrlHint": "https://music.youtube.com/...",
   "createCapsuleFieldMessageHint": "Dear future me...\n\nWrite what you're feeling, what you dream of, what you want to remember...",
   "createCapsuleCharCount": "{count} characters",
   "createCapsuleCharMin": " (minimum 10)",

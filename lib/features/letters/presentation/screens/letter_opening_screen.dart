@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
 import 'letter_detail_screen.dart';
 
 class _EmotionTheme {
@@ -436,6 +438,23 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
         Text(d['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: const Color(0xFF160D04), fontStyle: FontStyle.italic)),
         const SizedBox(height: 16),
         Text(d['message'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 15, fontStyle: FontStyle.italic, color: const Color(0xFF241608), height: 2.0)),
+        if (isValidHttpsMusicUrl(d['musicUrl'] as String?)) ...[
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => launchExternalMusicUrl(context, d['musicUrl'] as String),
+              icon: Icon(Icons.music_note_rounded, color: accentColor, size: 22),
+              label: Text(l10n.musicLinkTitle, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF4A2E14))),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: accentColor.withOpacity(0.55)),
+                backgroundColor: accentColor.withOpacity(0.06),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 24),
         Align(
           alignment: Alignment.centerRight,

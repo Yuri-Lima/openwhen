@@ -497,6 +497,25 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ative o Firebase Storage para usar esta função';
 
   @override
+  String get writeLetterMusicUrlLabel => 'Link da música (opcional)';
+
+  @override
+  String get writeLetterMusicUrlHint => 'https://open.spotify.com/...';
+
+  @override
+  String get writeLetterSnackMusicUrlInvalid =>
+      'Use um link https:// válido para a música.';
+
+  @override
+  String get musicLinkTitle => 'Ouvir música';
+
+  @override
+  String get musicLinkSubtitle => 'Abre no app ou no navegador';
+
+  @override
+  String get musicLinkOpenError => 'Não foi possível abrir este link.';
+
+  @override
   String get letterDetailHeaderFrom => 'UMA CARTA DE';
 
   @override
@@ -742,6 +761,12 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get createCapsuleFieldTitleHint =>
       'Ex: Para o meu eu de daqui a 1 ano...';
+
+  @override
+  String get createCapsuleMusicUrlLabel => 'Link da música (opcional)';
+
+  @override
+  String get createCapsuleMusicUrlHint => 'https://music.youtube.com/...';
 
   @override
   String get createCapsuleFieldMessageHint =>
@@ -2008,6 +2033,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Ative o Firebase Storage para usar esta função';
 
   @override
+  String get writeLetterMusicUrlLabel => 'Link da música (opcional)';
+
+  @override
+  String get writeLetterMusicUrlHint => 'https://open.spotify.com/...';
+
+  @override
+  String get writeLetterSnackMusicUrlInvalid =>
+      'Use um link https:// válido para a música.';
+
+  @override
+  String get musicLinkTitle => 'Ouvir música';
+
+  @override
+  String get musicLinkSubtitle => 'Abre no app ou no navegador';
+
+  @override
+  String get musicLinkOpenError => 'Não foi possível abrir este link.';
+
+  @override
   String get letterDetailHeaderFrom => 'UMA CARTA DE';
 
   @override
@@ -2253,6 +2297,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get createCapsuleFieldTitleHint =>
       'Ex: Para o meu eu de daqui a 1 ano...';
+
+  @override
+  String get createCapsuleMusicUrlLabel => 'Link da música (opcional)';
+
+  @override
+  String get createCapsuleMusicUrlHint => 'https://music.youtube.com/...';
 
   @override
   String get createCapsuleFieldMessageHint =>

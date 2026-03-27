@@ -5,6 +5,8 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
 import 'qr_code_screen.dart';
 
 class LetterDetailScreen extends StatelessWidget {
@@ -26,6 +28,8 @@ class LetterDetailScreen extends StatelessWidget {
     final openDate = data['openDate'] != null
         ? (data['openDate'] as Timestamp).toDate()
         : DateTime.now();
+    final musicUrl = data['musicUrl'] as String?;
+    final showMusicLink = isValidHttpsMusicUrl(musicUrl);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -165,6 +169,10 @@ class LetterDetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
                     child: Column(
                       children: [
+                        if (showMusicLink) ...[
+                          MusicLinkTileDark(url: musicUrl!.trim()),
+                          const SizedBox(height: 12),
+                        ],
                         GestureDetector(
                           onTap: () => Navigator.push(context, MaterialPageRoute(
                             builder: (_) => QrCodeScreen(

@@ -995,6 +995,42 @@ abstract class AppLocalizations {
   /// **'Ative o Firebase Storage para usar esta função'**
   String get writeLetterSnackStorageError;
 
+  /// No description provided for @writeLetterMusicUrlLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link da música (opcional)'**
+  String get writeLetterMusicUrlLabel;
+
+  /// No description provided for @writeLetterMusicUrlHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'https://open.spotify.com/...'**
+  String get writeLetterMusicUrlHint;
+
+  /// No description provided for @writeLetterSnackMusicUrlInvalid.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Use um link https:// válido para a música.'**
+  String get writeLetterSnackMusicUrlInvalid;
+
+  /// No description provided for @musicLinkTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ouvir música'**
+  String get musicLinkTitle;
+
+  /// No description provided for @musicLinkSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abre no app ou no navegador'**
+  String get musicLinkSubtitle;
+
+  /// No description provided for @musicLinkOpenError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir este link.'**
+  String get musicLinkOpenError;
+
   /// No description provided for @letterDetailHeaderFrom.
   ///
   /// In pt_BR, this message translates to:
@@ -1420,6 +1456,18 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Ex: Para o meu eu de daqui a 1 ano...'**
   String get createCapsuleFieldTitleHint;
+
+  /// No description provided for @createCapsuleMusicUrlLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link da música (opcional)'**
+  String get createCapsuleMusicUrlLabel;
+
+  /// No description provided for @createCapsuleMusicUrlHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'https://music.youtube.com/...'**
+  String get createCapsuleMusicUrlHint;
 
   /// No description provided for @createCapsuleFieldMessageHint.
   ///

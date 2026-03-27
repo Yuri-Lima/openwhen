@@ -6,6 +6,8 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -89,6 +91,8 @@ class CapsuleDetailScreen extends StatelessWidget {
     final createdAt = data['createdAt'] != null ? (data['createdAt'] as Timestamp).toDate() : DateTime.now();
     final isPublic = data['isPublic'] == true;
     final qa = _qaPairs();
+    final musicUrl = data['musicUrl'] as String?;
+    final showMusicLink = isValidHttpsMusicUrl(musicUrl);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -244,6 +248,10 @@ class CapsuleDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (showMusicLink) ...[
+                    const SizedBox(height: 16),
+                    MusicLinkTileDark(url: musicUrl!.trim()),
+                  ],
                   const SizedBox(height: 20),
                   _actionTile(
                     icon: Icons.share_outlined,

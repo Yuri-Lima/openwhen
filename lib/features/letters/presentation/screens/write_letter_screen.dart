@@ -11,6 +11,7 @@ import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
 
 class EmotionalState {
   final String key;
@@ -52,6 +53,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   final _messageController = TextEditingController();
   final _searchController = TextEditingController();
   final _emailController = TextEditingController();
+  final _musicUrlController = TextEditingController();
 
   DateTime _openDate = DateTime.now().add(const Duration(days: 7));
   bool _isPublic = false;
@@ -81,6 +83,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     _messageController.dispose();
     _searchController.dispose();
     _emailController.dispose();
+    _musicUrlController.dispose();
     super.dispose();
   }
 
@@ -227,6 +230,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
       return;
     }
+    final musicTrim = _musicUrlController.text.trim();
+    if (musicTrim.isNotEmpty && !isValidHttpsMusicUrl(musicTrim)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMusicUrlInvalid)));
+      return;
+    }
 
     setState(() => _isLoading = true);
     try {
@@ -268,6 +276,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'publishedAt': null,
         'likeCount': 0,
         'commentCount': 0,
+        if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
       });
 
       if (mounted) {
@@ -458,6 +467,27 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                                   ]),
                       ),
                     ),
+                  const SizedBox(height: 20),
+
+                  // Link opcional de música
+                  Text(l10n.writeLetterMusicUrlLabel, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: TextField(
+                      controller: _musicUrlController,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
+                      style: GoogleFonts.dmSans(color: context.pal.ink),
+                      decoration: InputDecoration(
+                        hintText: l10n.writeLetterMusicUrlHint,
+                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
 
                   // DESTINATARIO

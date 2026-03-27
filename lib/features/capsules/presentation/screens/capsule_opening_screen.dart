@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
 import 'capsule_detail_screen.dart';
 
 class _CapsuleThemeVisual {
@@ -357,6 +359,26 @@ class _CapsuleOpeningScreenState extends State<CapsuleOpeningScreen>
                             ),
                           );
                         }),
+                        if (isValidHttpsMusicUrl(widget.data['musicUrl'] as String?)) ...[
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: () => launchExternalMusicUrl(context, widget.data['musicUrl'] as String),
+                              icon: Icon(Icons.music_note_rounded, color: glowColor, size: 22),
+                              label: Text(
+                                l10n.musicLinkTitle,
+                                style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white.withOpacity(0.9)),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: glowColor.withOpacity(0.5)),
+                                backgroundColor: glowColor.withOpacity(0.08),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 24),
                         if (_publishAfterReview) ...[
                           SizedBox(

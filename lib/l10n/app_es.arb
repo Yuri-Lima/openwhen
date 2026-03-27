@@ -160,6 +160,13 @@
   "writeLetterSnackSentExternal": "¡Carta creada! Comparte el enlace con el destinatario. 💌",
   "writeLetterSnackEmailInvalid": "¡Ingresa un correo válido!",
   "writeLetterSnackStorageError": "Activa Firebase Storage para usar esta función",
+  "writeLetterMusicUrlLabel": "Enlace de la canción (opcional)",
+  "writeLetterMusicUrlHint": "https://open.spotify.com/...",
+  "writeLetterSnackMusicUrlInvalid": "Usa un enlace https:// válido para la canción.",
+
+  "musicLinkTitle": "Escuchar música",
+  "musicLinkSubtitle": "Se abre en la app o el navegador",
+  "musicLinkOpenError": "No se pudo abrir este enlace.",
 
   "letterDetailHeaderFrom": "UNA CARTA DE",
   "letterDetailTo": "para {name}",
@@ -236,6 +243,8 @@
   "createCapsuleWriteHint": "Escribe libremente. Sin reglas. Solo tú y el futuro.",
   "createCapsuleFieldTitle": "Título",
   "createCapsuleFieldTitleHint": "Ej: Para mi yo de dentro de 1 año...",
+  "createCapsuleMusicUrlLabel": "Enlace de la canción (opcional)",
+  "createCapsuleMusicUrlHint": "https://music.youtube.com/...",
   "createCapsuleFieldMessageHint": "Querido yo del futuro...\n\nEscribe lo que sientes, lo que sueñas, lo que quieres recordar...",
   "createCapsuleCharCount": "{count} caracteres",
   "createCapsuleCharMin": " (mínimo 10)",

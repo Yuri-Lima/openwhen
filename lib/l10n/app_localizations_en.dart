@@ -500,6 +500,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable Firebase Storage to use this feature';
 
   @override
+  String get writeLetterMusicUrlLabel => 'Song link (optional)';
+
+  @override
+  String get writeLetterMusicUrlHint => 'https://open.spotify.com/...';
+
+  @override
+  String get writeLetterSnackMusicUrlInvalid =>
+      'Use a valid https:// link for the song.';
+
+  @override
+  String get musicLinkTitle => 'Listen to music';
+
+  @override
+  String get musicLinkSubtitle => 'Opens in the app or browser';
+
+  @override
+  String get musicLinkOpenError => 'Could not open this link.';
+
+  @override
   String get letterDetailHeaderFrom => 'A LETTER FROM';
 
   @override
@@ -745,6 +764,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get createCapsuleFieldTitleHint =>
       'E.g.: To my self one year from now...';
+
+  @override
+  String get createCapsuleMusicUrlLabel => 'Song link (optional)';
+
+  @override
+  String get createCapsuleMusicUrlHint => 'https://music.youtube.com/...';
 
   @override
   String get createCapsuleFieldMessageHint =>

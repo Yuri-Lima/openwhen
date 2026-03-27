@@ -11,6 +11,7 @@ import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
 
 class CapsuleTheme {
   final String id, emoji;
@@ -76,6 +77,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
   final _customEventCtrl = TextEditingController();
   final _titleCtrl = TextEditingController();
   final _messageCtrl = TextEditingController();
+  final _musicUrlCtrl = TextEditingController();
   bool _isPublic = false;
   late final AnimationController _stepAnim;
   late final Animation<double> _fadeAnim;
@@ -94,6 +96,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     _customEventCtrl.dispose();
     _titleCtrl.dispose();
     _messageCtrl.dispose();
+    _musicUrlCtrl.dispose();
     super.dispose();
   }
 
@@ -115,6 +118,12 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
 
   Future<void> _saveCapsule() async {
     if (!_canAdvance) return;
+    final l10n = AppLocalizations.of(context)!;
+    final musicTrim = _musicUrlCtrl.text.trim();
+    if (musicTrim.isNotEmpty && !isValidHttpsMusicUrl(musicTrim)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMusicUrlInvalid)));
+      return;
+    }
     setState(() => _saving = true);
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -147,6 +156,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         'publishedAt': null,
         'likeCount': 0,
         'commentCount': 0,
+        if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
       });
 
       if (mounted) {
@@ -388,6 +398,25 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         alignment: Alignment.centerRight,
         child: Text('${l10n.createCapsuleCharCount(_messageCtrl.text.trim().length)}${_messageCtrl.text.trim().length < 10 ? l10n.createCapsuleCharMin : ""}',
           style: GoogleFonts.dmSans(fontSize: 11, color: _messageCtrl.text.trim().length < 10 ? p.accent : p.inkFaint)),
+      ),
+      const SizedBox(height: 20),
+      Text(l10n.createCapsuleMusicUrlLabel, style: GoogleFonts.dmSans(fontSize: 10, color: p.inkFaint, letterSpacing: 1.2, fontWeight: FontWeight.w500)),
+      const SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(12), border: Border.all(color: p.border)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: TextField(
+          controller: _musicUrlCtrl,
+          keyboardType: TextInputType.url,
+          autocorrect: false,
+          style: GoogleFonts.dmSans(fontSize: 15, color: p.ink),
+          decoration: InputDecoration(
+            hintText: l10n.createCapsuleMusicUrlHint,
+            hintStyle: GoogleFonts.dmSans(color: p.inkFaint),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+        ),
       ),
     ]);
   }

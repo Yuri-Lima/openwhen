@@ -19,6 +19,8 @@ class Letter {
   final DateTime? publishedAt;
   final int likeCount;
   final int commentCount;
+  /// Optional https URL (Spotify, YouTube Music, etc.) — opened externally.
+  final String? musicUrl;
 
   Letter({
     required this.id,
@@ -37,6 +39,7 @@ class Letter {
     this.publishedAt,
     this.likeCount = 0,
     this.commentCount = 0,
+    this.musicUrl,
   });
 
   bool get isLocked => status == LetterStatus.locked;
@@ -69,6 +72,7 @@ class Letter {
           : null,
       likeCount: (data['likeCount'] as num?)?.toInt() ?? 0,
       commentCount: (data['commentCount'] as num?)?.toInt() ?? 0,
+      musicUrl: data['musicUrl'] as String?,
     );
   }
 }

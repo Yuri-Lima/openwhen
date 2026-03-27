@@ -497,6 +497,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Activa Firebase Storage para usar esta función';
 
   @override
+  String get writeLetterMusicUrlLabel => 'Enlace de la canción (opcional)';
+
+  @override
+  String get writeLetterMusicUrlHint => 'https://open.spotify.com/...';
+
+  @override
+  String get writeLetterSnackMusicUrlInvalid =>
+      'Usa un enlace https:// válido para la canción.';
+
+  @override
+  String get musicLinkTitle => 'Escuchar música';
+
+  @override
+  String get musicLinkSubtitle => 'Se abre en la app o el navegador';
+
+  @override
+  String get musicLinkOpenError => 'No se pudo abrir este enlace.';
+
+  @override
   String get letterDetailHeaderFrom => 'UNA CARTA DE';
 
   @override
@@ -743,6 +762,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get createCapsuleFieldTitleHint =>
       'Ej: Para mi yo de dentro de 1 año...';
+
+  @override
+  String get createCapsuleMusicUrlLabel => 'Enlace de la canción (opcional)';
+
+  @override
+  String get createCapsuleMusicUrlHint => 'https://music.youtube.com/...';
 
   @override
   String get createCapsuleFieldMessageHint =>
