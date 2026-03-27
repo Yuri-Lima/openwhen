@@ -55,6 +55,7 @@ Foco: expansão de produto e mercado.
 | Entrega | Prioridade | Esforço (est.) | Notas |
 |--------|------------|----------------|-------|
 | Pay-per-feature premium | — | Alto | Stripe / IAP conforme loja |
+| Cartões-presente (compra + resgate / adicionar código) | — | Alto | Alinhado a Stripe / lojas; créditos ou desbloqueio de recursos premium — detalhar na implementação |
 | Analytics de produto | — | Médio | Funis, retenção, conversão |
 
 ---

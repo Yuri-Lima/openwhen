@@ -7,6 +7,14 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- `planning/ROADMAP.md` e `planning/BUSINESS.md`: inclusão de cartões-presente (compra e resgate) na fase de monetização.
+
+---
+
 ## [0.9.0] - 2026-03-23
 
 ### Contexto

@@ -38,6 +38,8 @@ OpenWhen combina **cartas temporizadas**, uma **rede social emocional** e **QR C
 
 Premium futuro pode incluir recursos como exportação avançada, temas, ou cápsulas coletivas — a definir com dados de uso.
 
+**Cartões-presente (planejado para escala):** compra no app ou na web (para si ou para presentear) e **resgate** (“adicionar”) via código no app, creditando saldo ou desbloqueando recursos premium — alinhado ao mesmo marco de ~10k usuários e à stack Stripe, salvo decisão contrária de produto.
+
 ---
 
 ## Diferenciais competitivos
