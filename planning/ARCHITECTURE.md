@@ -35,8 +35,11 @@ lib/
 │   │   └── presentation/screens/ (feed, comments)
 │   └── profile/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal)
-└── shared/theme/
-    └── app_theme.dart
+└── shared/
+    ├── theme/
+    │   └── app_theme.dart
+    └── widgets/
+        └── owl_logo.dart   # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.

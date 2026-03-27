@@ -59,6 +59,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Cofre com abas (Aguardando / Abertas / Cápsulas)
 - [x] Detalhe da carta
 - [x] Animação de abertura por estado emocional
+- [x] **Selo / coruja na abertura da carta** — sequência no lacre (`OwlSealOpeningAnimation` em `lib/shared/widgets/owl_logo.dart`): olhos, revelação de asas/corpo, voo, pausa só no lacre, rosto completo de volta **sem asas**; toque só na área do selo
+- [x] **Login** — mesmo selo animado no hero (toque no lacre; `AnimationController` com inicialização lazy para hot reload)
 - [x] Leitura da carta
 - [x] Pedidos de carta
 - [x] QR Code (gerar e compartilhar)
@@ -86,6 +88,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ### Bugfixes recentes
 
+- [x] **Onboarding** — `Column` overflow em ecrãs baixos: `PageView` com `Positioned.fill`, conteúdo com `SingleChildScrollView` + `ConstrainedBox(minHeight:)` (`onboarding_screen.dart`)
 - [x] **Sair da conta** não redirecionava (popUntil até raiz após signOut em `settings_screen.dart`)
 - [x] **Contraste em temas escuros** — splash, onboarding e hero do login usavam `context.pal.ink` (cor de texto) como fundo, ficando claro em midnight/dark; corrigido para `context.pal.headerGradient.first`
 - [x] **Contraste (acessibilidade)** — fluxo **criar cápsula** usa `OpenWhenPalette` em vez de cores fixas; botão desabilitado sem `AnimatedOpacity` (cores `inkFaint`/`inkSoft`); **Configurações** com subtítulos em `inkSoft`; **bottom sheet da foto de perfil** (`avatar_upload_helper.dart`) com fundo e texto do tema

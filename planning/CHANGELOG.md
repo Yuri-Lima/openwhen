@@ -9,9 +9,17 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ## [Unreleased]
 
+### Added
+
+- **Selo animado (coruja)** na abertura da carta e no hero do login: olhos, revelação de asas/corpo, voo, lacre só em vermelho, reaparição do rosto completo **sem asas**; detalhe dos olhos (sobrancelha/cílios), tufts e penas; `OwlSealArt` / `OwlSealOpeningAnimation` em `lib/shared/widgets/owl_logo.dart`.
+
 ### Changed
 
 - `planning/ROADMAP.md` e `planning/BUSINESS.md`: inclusão de cartões-presente (compra e resgate) na fase de monetização.
+
+### Fixed
+
+- **Onboarding:** overflow vertical em ecrãs curtos — `PageView` com `Positioned.fill` + página com scroll e altura mínima (`onboarding_screen.dart`).
 
 ---
 

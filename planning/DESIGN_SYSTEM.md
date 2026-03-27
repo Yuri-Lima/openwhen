@@ -37,6 +37,7 @@ Fontes carregadas via `google_fonts`.
 
 ## Componentes globais
 
+- **Marca / lacre (coruja):** `OwlLogo` (envelope completo ou só lacre) e **`OwlSealOpeningAnimation`** para o fluxo interativo (abertura da carta, login). Implementação em [`lib/shared/widgets/owl_logo.dart`](../lib/shared/widgets/owl_logo.dart) — lacre de cera, rosto, asas/corpo opcionais na animação; tamanhos atuais definidos nas telas (ex.: abertura ~52, login ~56).
 - **FAB:** cor `accent`, cantos arredondados (16), ícone claro sobre accent.
 - **Botões elevados:** fundo `ink`, texto branco, padding generoso, raio 16.
 - **Botões outline:** borda `inkFaint`, texto `inkSoft`.

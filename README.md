@@ -33,7 +33,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 | Area | Highlights |
 |------|------------|
-| **Letters** | Write, schedule, emotional opening animation, QR generation and sharing |
+| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing |
 | **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event |
 | **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
 | **Vault** | Tabs for waiting, opened, and **capsules** |

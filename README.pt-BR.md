@@ -33,7 +33,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 
 | Área | Destaques |
 |------|-----------|
-| **Cartas** | Escrever, agendar, animação de abertura por emoção, gerar QR e compartilhar |
+| **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar |
 | **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento |
 | **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
 | **Cofre** | Abas: aguardando, abertas e **cápsulas** |
