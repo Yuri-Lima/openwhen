@@ -3,7 +3,6 @@ import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
@@ -213,9 +212,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           letterSpacing: -0.3,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      const OwlWatermark(width: 22, height: 26, opacity: 2.0),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 10),
                       Text(
                         _selectedTab == 0
                             ? l10n.loginHeroLetters
