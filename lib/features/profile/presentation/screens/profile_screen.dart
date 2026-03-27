@@ -77,26 +77,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       forDarkHeader: true,
                                       child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
                                     ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: isPrivate ? Colors.white.withOpacity(0.08) : context.pal.accent.withOpacity(0.15),
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: isPrivate ? Colors.white.withOpacity(0.1) : context.pal.accent.withOpacity(0.3)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(isPrivate ? Icons.lock : Icons.public, size: 10,
-                                            color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent),
-                                          const SizedBox(width: 4),
-                                          Text(isPrivate ? l10n.profilePrivate : l10n.profilePublic,
-                                            style: GoogleFonts.dmSans(fontSize: 10,
-                                              color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent,
-                                              fontWeight: FontWeight.w500)),
-                                        ],
-                                      ),
-                                    ),
                                   ],
                                 ),
                                 GestureDetector(
@@ -180,20 +160,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(data?['name'] ?? l10n.profileDefaultName,
-                                      style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white)),
-                                    const SizedBox(height: 4),
-                                    Text('@${data?['username'] ?? ''}',
-                                      style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
-                                    if (data?['bio'] != null && (data?['bio'] as String).isNotEmpty) ...[
-                                      const SizedBox(height: 4),
-                                      Text(data?['bio'] ?? '',
-                                        style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.5))),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(data?['name'] ?? l10n.profileDefaultName,
+                                              style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white)),
+                                            const SizedBox(height: 4),
+                                            Text('@${data?['username'] ?? ''}',
+                                              style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
+                                            if (data?['bio'] != null && (data?['bio'] as String).isNotEmpty) ...[
+                                              const SizedBox(height: 4),
+                                              Text(data?['bio'] ?? '',
+                                                style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.5))),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      _buildPrivacyBadge(context, isPrivate, l10n),
                                     ],
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -236,6 +227,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildPrivacyBadge(BuildContext context, bool isPrivate, AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: isPrivate ? Colors.white.withOpacity(0.08) : context.pal.accent.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: isPrivate ? Colors.white.withOpacity(0.1) : context.pal.accent.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isPrivate ? Icons.lock : Icons.public,
+            size: 10,
+            color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            isPrivate ? l10n.profilePrivate : l10n.profilePublic,
+            style: GoogleFonts.dmSans(
+              fontSize: 10,
+              color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
