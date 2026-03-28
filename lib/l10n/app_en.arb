@@ -101,10 +101,11 @@
 
   "vaultTitle": "My Vault",
   "vaultSubtitle": "YOUR LETTERS AND CAPSULES",
-  "vaultTabWaiting": "Waiting",
-  "vaultTabOpened": "Opened",
+  "vaultTabReceived": "Received",
   "vaultTabSent": "Sent",
   "vaultTabCapsules": "Capsules",
+  "vaultEmptyReceivedTitle": "No received letters yet",
+  "vaultEmptyReceivedSubtitle": "When someone sends you a letter\nit will appear here",
   "vaultCountdownReady": "Ready to open!",
   "vaultCountdownDays": "Opens in {count} days",
   "vaultCountdownHours": "Opens in {count} hours",

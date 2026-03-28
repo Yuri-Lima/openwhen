@@ -28,7 +28,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -101,8 +101,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               labelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500),
               unselectedLabelStyle: GoogleFonts.dmSans(fontSize: 13),
               tabs: [
-                Tab(text: l10n.vaultTabWaiting),
-                Tab(text: l10n.vaultTabOpened),
+                Tab(text: l10n.vaultTabReceived),
                 Tab(text: l10n.vaultTabSent),
                 Tab(text: l10n.vaultTabCapsules),
               ],
@@ -110,8 +109,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           ])),
         ),
         Expanded(child: TabBarView(controller: _tabController, children: [
-          _buildLockedTab(uid),
-          _buildOpenedTab(uid),
+          _buildReceivedTab(uid),
           _buildSentTab(uid),
           _buildCapsulesTab(uid),
         ])),
@@ -119,48 +117,66 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildLockedTab(String uid) {
+  Widget _buildReceivedTab(String uid) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection(FirestoreCollections.letters).where('receiverUid', isEqualTo: uid).where('status', isEqualTo: 'locked').snapshots(),
-      builder: (context, snapshot) {
-        final l10n = AppLocalizations.of(context)!;
-        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return _buildEmpty(emoji: '🔒', title: l10n.vaultEmptyWaitingTitle, subtitle: l10n.vaultEmptyWaitingSubtitle);
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-          itemCount: docs.length,
-          itemBuilder: (context, i) {
-            final data = docs[i].data() as Map<String, dynamic>;
-            final openDate = (data['openDate'] as Timestamp).toDate();
-            final createdAt = (data['createdAt'] as Timestamp).toDate();
-            final canOpen = DateTime.now().isAfter(openDate);
-            return _buildLockedCard(context: context, data: data, docId: docs[i].id, openDate: openDate, createdAt: createdAt, canOpen: canOpen);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildOpenedTab(String uid) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection(FirestoreCollections.letters).where('receiverUid', isEqualTo: uid).where('status', isEqualTo: 'opened').snapshots(),
-      builder: (context, receivedSnap) {
+      stream: FirebaseFirestore.instance
+          .collection(FirestoreCollections.letters)
+          .where('receiverUid', isEqualTo: uid)
+          .where('status', isEqualTo: 'locked')
+          .snapshots(),
+      builder: (context, lockedSnap) {
         return StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection(FirestoreCollections.letters).where('senderUid', isEqualTo: uid).where('status', isEqualTo: 'opened').snapshots(),
-          builder: (context, sentSnap) {
+          stream: FirebaseFirestore.instance
+              .collection(FirestoreCollections.letters)
+              .where('receiverUid', isEqualTo: uid)
+              .where('status', isEqualTo: 'opened')
+              .snapshots(),
+          builder: (context, openedSnap) {
             final l10n = AppLocalizations.of(context)!;
-            if (receivedSnap.connectionState == ConnectionState.waiting || sentSnap.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
+            if (lockedSnap.connectionState == ConnectionState.waiting ||
+                openedSnap.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
             final allDocs = <String, QueryDocumentSnapshot>{};
-            for (final doc in [...(receivedSnap.data?.docs ?? []), ...(sentSnap.data?.docs ?? [])]) { allDocs[doc.id] = doc; }
-            final docs = allDocs.values.toList();
-            if (docs.isEmpty) return _buildEmpty(emoji: '💌', title: l10n.vaultEmptyOpenedTitle, subtitle: l10n.vaultEmptyOpenedSubtitle);
+            for (final doc in [
+              ...(lockedSnap.data?.docs ?? []),
+              ...(openedSnap.data?.docs ?? []),
+            ]) {
+              allDocs[doc.id] = doc;
+            }
+            final docs = allDocs.values.toList()
+              ..sort((a, b) {
+                final aDate = ((a.data() as Map<String, dynamic>)['openDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+                final bDate = ((b.data() as Map<String, dynamic>)['openDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+                return aDate.compareTo(bDate);
+              });
+            if (docs.isEmpty) {
+              return _buildEmpty(
+                emoji: '💌',
+                title: l10n.vaultEmptyReceivedTitle,
+                subtitle: l10n.vaultEmptyReceivedSubtitle,
+              );
+            }
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
               itemCount: docs.length,
               itemBuilder: (context, i) {
                 final data = docs[i].data() as Map<String, dynamic>;
-                return _buildOpenedCard(context: context, data: data, docId: docs[i].id, uid: uid);
+                final status = data['status'] ?? 'locked';
+                if (status == 'opened') {
+                  return _buildOpenedCard(context: context, data: data, docId: docs[i].id, uid: uid);
+                }
+                final openDate = (data['openDate'] as Timestamp).toDate();
+                final createdAt = (data['createdAt'] as Timestamp).toDate();
+                final canOpen = DateTime.now().isAfter(openDate);
+                return _buildLockedCard(
+                  context: context,
+                  data: data,
+                  docId: docs[i].id,
+                  openDate: openDate,
+                  createdAt: createdAt,
+                  canOpen: canOpen,
+                );
               },
             );
           },
@@ -176,19 +192,49 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .where('senderUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
           .snapshots(),
-      builder: (context, snapshot) {
-        final l10n = AppLocalizations.of(context)!;
-        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return _buildEmpty(emoji: '✉️', title: l10n.vaultEmptySentTitle, subtitle: l10n.vaultEmptySentSubtitle);
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-          itemCount: docs.length,
-          itemBuilder: (context, i) {
-            final data = docs[i].data() as Map<String, dynamic>;
-            final openDate = (data['openDate'] as Timestamp).toDate();
-            final createdAt = (data['createdAt'] as Timestamp).toDate();
-            return _buildSentCard(context: context, data: data, docId: docs[i].id, openDate: openDate, createdAt: createdAt);
+      builder: (context, lockedSnap) {
+        return StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection(FirestoreCollections.letters)
+              .where('senderUid', isEqualTo: uid)
+              .where('status', isEqualTo: 'opened')
+              .snapshots(),
+          builder: (context, openedSnap) {
+            final l10n = AppLocalizations.of(context)!;
+            if (lockedSnap.connectionState == ConnectionState.waiting ||
+                openedSnap.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final allDocs = <String, QueryDocumentSnapshot>{};
+            for (final doc in [
+              ...(lockedSnap.data?.docs ?? []),
+              ...(openedSnap.data?.docs ?? []),
+            ]) {
+              allDocs[doc.id] = doc;
+            }
+            final docs = allDocs.values.toList()
+              ..sort((a, b) {
+                final aDate = ((a.data() as Map<String, dynamic>)['openDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+                final bDate = ((b.data() as Map<String, dynamic>)['openDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+                return aDate.compareTo(bDate);
+              });
+            if (docs.isEmpty) {
+              return _buildEmpty(
+                emoji: '✉️',
+                title: l10n.vaultEmptySentTitle,
+                subtitle: l10n.vaultEmptySentSubtitle,
+              );
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              itemCount: docs.length,
+              itemBuilder: (context, i) {
+                final data = docs[i].data() as Map<String, dynamic>;
+                final openDate = (data['openDate'] as Timestamp).toDate();
+                final createdAt = (data['createdAt'] as Timestamp).toDate();
+                return _buildSentCard(context: context, data: data, docId: docs[i].id, openDate: openDate, createdAt: createdAt);
+              },
+            );
           },
         );
       },

@@ -101,10 +101,11 @@
 
   "vaultTitle": "Mi Cofre",
   "vaultSubtitle": "TUS CARTAS Y CÁPSULAS",
-  "vaultTabWaiting": "En espera",
-  "vaultTabOpened": "Abiertas",
+  "vaultTabReceived": "Recibidas",
   "vaultTabSent": "Enviadas",
   "vaultTabCapsules": "Cápsulas",
+  "vaultEmptyReceivedTitle": "Aún no hay cartas recibidas",
+  "vaultEmptyReceivedSubtitle": "Cuando alguien te envíe una carta\naparecerá aquí",
   "vaultCountdownReady": "¡Lista para abrir!",
   "vaultCountdownDays": "Se abre en {count} días",
   "vaultCountdownHours": "Se abre en {count} horas",
