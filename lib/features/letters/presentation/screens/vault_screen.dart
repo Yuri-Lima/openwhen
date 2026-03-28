@@ -198,7 +198,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   Widget _buildCapsulesTab(String uid) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection(FirestoreCollections.letters)
+          .collection(FirestoreCollections.capsules)
           .where('senderUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
           .snapshots(),
