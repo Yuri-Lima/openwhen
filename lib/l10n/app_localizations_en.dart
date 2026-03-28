@@ -1607,6 +1607,67 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap the three dots next to any letter or comment and select \"Report\". Our team will review the content within 24 hours. Serious reports are handled with priority.';
 
   @override
+  String get reportMenuLabel => 'Report';
+
+  @override
+  String get reportSheetTitle => 'Report content';
+
+  @override
+  String get reportSheetSubtitle =>
+      'Tell us what is wrong. Optional details help our team review faster.';
+
+  @override
+  String get reportReasonSpam => 'Spam or misleading';
+
+  @override
+  String get reportReasonHarassment => 'Harassment or bullying';
+
+  @override
+  String get reportReasonHate => 'Hate speech';
+
+  @override
+  String get reportReasonIllegal => 'Illegal content';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportDetailLabel => 'Additional details (optional)';
+
+  @override
+  String get reportDetailHint => 'Context that helps moderation…';
+
+  @override
+  String get reportSubmit => 'Submit report';
+
+  @override
+  String get reportSuccess => 'Thanks — we received your report.';
+
+  @override
+  String get adminModerationTitle => 'Moderation';
+
+  @override
+  String get adminModerationReportsTab => 'Reports';
+
+  @override
+  String get adminModerationFeedbackTab => 'Feedback';
+
+  @override
+  String get adminModerationEmpty => 'Nothing pending.';
+
+  @override
+  String get adminModerationResolve => 'Dismiss';
+
+  @override
+  String get adminModerationConfirm => 'Mark reviewed';
+
+  @override
+  String get adminModerationLoadError => 'Could not load moderation queue.';
+
+  @override
+  String get adminEntrySettings => 'Moderation (admin)';
+
+  @override
   String get helpNotFoundTitle => 'Didn\'t find what you were looking for?';
 
   @override

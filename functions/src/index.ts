@@ -5,6 +5,13 @@ import * as logger from "firebase-functions/logger";
 import {setGlobalOptions} from "firebase-functions/v2/options";
 import Stripe from "stripe";
 
+export {
+  adminListPendingReports,
+  adminListRecentFeedback,
+  adminResolveReport,
+  bootstrapAdminClaim,
+} from "./admin";
+
 setGlobalOptions({region: "us-central1"});
 
 initializeApp();

@@ -18,6 +18,8 @@ import '../../../../shared/locale/locale_provider.dart';
 import '../../../../core/billing/subscription_tier.dart';
 import '../../../../core/billing/subscription_tier_provider.dart';
 import '../../../../core/billing/tier_guard.dart';
+import '../../../../core/admin/admin_claims.dart';
+import '../../../admin/presentation/admin_moderation_screen.dart';
 import 'subscription_plans_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -29,6 +31,18 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _user = FirebaseAuth.instance.currentUser;
+  bool? _isAdmin;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshAdminClaim();
+  }
+
+  Future<void> _refreshAdminClaim() async {
+    final v = await currentUserHasAdminClaim();
+    if (mounted) setState(() => _isAdmin = v);
+  }
 
   Widget _activePill(AppLocalizations l10n) {
     return Container(
@@ -439,6 +453,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.about))),
                       ),
                     ]),
+
+                    if (_isAdmin == true) ...[
+                      _buildSectionTitle(l10n.adminModerationTitle),
+                      _buildMenuCard([
+                        _buildMenuItem(
+                          icon: Icons.admin_panel_settings_outlined,
+                          iconColor: const Color(0xFF6366F1),
+                          iconBg: const Color(0xFFEEF2FF),
+                          label: l10n.adminEntrySettings,
+                          onTap: () async {
+                            await Navigator.push<void>(
+                              context,
+                              MaterialPageRoute(builder: (_) => const AdminModerationScreen()),
+                            );
+                            await _refreshAdminClaim();
+                          },
+                        ),
+                      ]),
+                    ],
 
                     const SizedBox(height: 16),
 

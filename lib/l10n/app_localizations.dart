@@ -3041,6 +3041,126 @@ abstract class AppLocalizations {
   /// **'Toque nos três pontos ao lado de qualquer carta ou comentário e selecione \"Denunciar\". Nossa equipe analisará o conteúdo em até 24 horas. Denúncias graves são tratadas com prioridade.'**
   String get helpFaq8A;
 
+  /// No description provided for @reportMenuLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denunciar'**
+  String get reportMenuLabel;
+
+  /// No description provided for @reportSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denunciar conteúdo'**
+  String get reportSheetTitle;
+
+  /// No description provided for @reportSheetSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Diga o que está errado. Detalhes opcionais ajudam nossa equipe a analisar mais rápido.'**
+  String get reportSheetSubtitle;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Spam ou enganoso'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonHarassment.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assédio ou bullying'**
+  String get reportReasonHarassment;
+
+  /// No description provided for @reportReasonHate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Discurso de ódio'**
+  String get reportReasonHate;
+
+  /// No description provided for @reportReasonIllegal.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Conteúdo ilegal'**
+  String get reportReasonIllegal;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Outro'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportDetailLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Detalhes adicionais (opcional)'**
+  String get reportDetailLabel;
+
+  /// No description provided for @reportDetailHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Contexto que ajuda a moderação…'**
+  String get reportDetailHint;
+
+  /// No description provided for @reportSubmit.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar denúncia'**
+  String get reportSubmit;
+
+  /// No description provided for @reportSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Obrigado — recebemos sua denúncia.'**
+  String get reportSuccess;
+
+  /// No description provided for @adminModerationTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação'**
+  String get adminModerationTitle;
+
+  /// No description provided for @adminModerationReportsTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denúncias'**
+  String get adminModerationReportsTab;
+
+  /// No description provided for @adminModerationFeedbackTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Feedback'**
+  String get adminModerationFeedbackTab;
+
+  /// No description provided for @adminModerationEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nada pendente.'**
+  String get adminModerationEmpty;
+
+  /// No description provided for @adminModerationResolve.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Arquivar'**
+  String get adminModerationResolve;
+
+  /// No description provided for @adminModerationConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Marcar como analisado'**
+  String get adminModerationConfirm;
+
+  /// No description provided for @adminModerationLoadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar a fila de moderação.'**
+  String get adminModerationLoadError;
+
+  /// No description provided for @adminEntrySettings.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação (admin)'**
+  String get adminEntrySettings;
+
   /// No description provided for @helpNotFoundTitle.
   ///
   /// In pt_BR, this message translates to:

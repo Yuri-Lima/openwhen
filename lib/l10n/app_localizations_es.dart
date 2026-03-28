@@ -1610,6 +1610,68 @@ class AppLocalizationsEs extends AppLocalizations {
       'Toca los tres puntos junto a cualquier carta o comentario y selecciona \"Denunciar\". Nuestro equipo analizará el contenido en un plazo de 24 horas. Las denuncias graves se tratan con prioridad.';
 
   @override
+  String get reportMenuLabel => 'Denunciar';
+
+  @override
+  String get reportSheetTitle => 'Denunciar contenido';
+
+  @override
+  String get reportSheetSubtitle =>
+      'Indica qué falla. Los detalles opcionales ayudan a revisar más rápido.';
+
+  @override
+  String get reportReasonSpam => 'Spam o engañoso';
+
+  @override
+  String get reportReasonHarassment => 'Acoso o intimidación';
+
+  @override
+  String get reportReasonHate => 'Discurso de odio';
+
+  @override
+  String get reportReasonIllegal => 'Contenido ilegal';
+
+  @override
+  String get reportReasonOther => 'Otro';
+
+  @override
+  String get reportDetailLabel => 'Detalles adicionales (opcional)';
+
+  @override
+  String get reportDetailHint => 'Contexto que ayuda a la moderación…';
+
+  @override
+  String get reportSubmit => 'Enviar denuncia';
+
+  @override
+  String get reportSuccess => 'Gracias — recibimos tu denuncia.';
+
+  @override
+  String get adminModerationTitle => 'Moderación';
+
+  @override
+  String get adminModerationReportsTab => 'Denuncias';
+
+  @override
+  String get adminModerationFeedbackTab => 'Comentarios';
+
+  @override
+  String get adminModerationEmpty => 'Nada pendiente.';
+
+  @override
+  String get adminModerationResolve => 'Descartar';
+
+  @override
+  String get adminModerationConfirm => 'Marcar como revisado';
+
+  @override
+  String get adminModerationLoadError =>
+      'No se pudo cargar la cola de moderación.';
+
+  @override
+  String get adminEntrySettings => 'Moderación (admin)';
+
+  @override
   String get helpNotFoundTitle => '¿No encontraste lo que buscabas?';
 
   @override

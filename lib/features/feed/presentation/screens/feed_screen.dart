@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/config/system_config_provider.dart';
+import '../../../../shared/moderation/report_flow.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -32,6 +34,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final reportsEnabled = ref.watch(systemConfigProvider).value?.reportsEnabled ?? true;
     final filters = [l10n.feedFilterAll, l10n.feedFilterLove, l10n.feedFilterFriendship, l10n.feedFilterFamily];
     return Scaffold(
       backgroundColor: context.pal.bg,
@@ -149,7 +152,12 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   itemCount: docs.length,
                   itemBuilder: (_, i) {
                     final data = docs[i].data() as Map<String, dynamic>;
-                    return _FeedCard(data: data, docId: docs[i].id, isFeatured: i == 0);
+                    return _FeedCard(
+                      data: data,
+                      docId: docs[i].id,
+                      isFeatured: i == 0,
+                      reportsEnabled: reportsEnabled,
+                    );
                   },
                 );
               },
@@ -214,8 +222,14 @@ class _FeedCard extends StatefulWidget {
   final Map<String, dynamic> data;
   final String docId;
   final bool isFeatured;
+  final bool reportsEnabled;
 
-  const _FeedCard({required this.data, required this.docId, required this.isFeatured});
+  const _FeedCard({
+    required this.data,
+    required this.docId,
+    required this.isFeatured,
+    required this.reportsEnabled,
+  });
 
   @override
   State<_FeedCard> createState() => _FeedCardState();
@@ -324,7 +338,30 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   ),
                 ),
                 const Spacer(),
-                if (widget.isFeatured)
+                if (widget.reportsEnabled &&
+                    uid != null &&
+                    (data['senderUid'] as String? ?? '') != uid)
+                  PopupMenuButton<String>(
+                    icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
+                    onSelected: (value) {
+                      if (value == 'report') {
+                        showReportContentSheet(
+                          context,
+                          targetType: 'letter',
+                          targetId: widget.docId,
+                          letterId: widget.docId,
+                        );
+                      }
+                    },
+                    itemBuilder: (ctx) => [
+                      PopupMenuItem(
+                        value: 'report',
+                        child: Text(l10n.reportMenuLabel),
+                      ),
+                    ],
+                  ),
+                if (widget.isFeatured) ...[
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
@@ -334,6 +371,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                     ),
                     child: Text(l10n.feedCardFeatured, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500)),
                   ),
+                ],
               ],
             ),
           ),

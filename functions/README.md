@@ -18,6 +18,14 @@ Set these on each deployed function (or use a shared `.env` with the emulator on
 | `STRIPE_WEBHOOK_SECRET` | Webhook verification only | `whsec_...` |
 | `STRIPE_PRICE_PLUS` | Checkout | Price id for **Brisa** (`plus`) |
 | `STRIPE_PRICE_PRO` | Checkout | Price id for **Horizonte** (`pro`) |
+| `ADMIN_BOOTSTRAP_SECRET` | No (moderation only) | Long random string; used **once** with callable `bootstrapAdminClaim` to set `admin: true` on the **signed-in** user’s custom claims |
+
+### Moderation / superadmin
+
+- **`bootstrapAdminClaim`** (callable): body `{ "secret": "<same as ADMIN_BOOTSTRAP_SECRET>" }`. Caller must be authenticated. Sets Firebase Auth custom claim `admin: true` on that user. After calling, the client must refresh the ID token (`getIdToken(true)`) before `adminListPendingReports` and related callables succeed.
+- **`adminListPendingReports`**, **`adminResolveReport`**, **`adminListRecentFeedback`**: require `admin: true` on the ID token. Implementação no app: **Configurações → Moderação (admin)** (visível só com claim).
+
+Rotate or remove `ADMIN_BOOTSTRAP_SECRET` after o primeiro admin estiver criado; novos admins podem ser promovidos por um script Admin SDK ou por uma Function futura que só admins possam chamar.
 
 If `STRIPE_SECRET_KEY` is **unset**, `createCheckoutSession` and `createPortalSession` return `failed-precondition` (`billing_not_configured`), and `stripeWebhook` responds with **503**. You can still deploy and run **`migrateUserBillingDefaults`** without Stripe.
 

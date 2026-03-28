@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/config/system_config_provider.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/moderation/report_flow.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/utils/date_formatter.dart';
@@ -43,7 +46,7 @@ bool _containsBannedWord(String text, Locale locale) {
   return false;
 }
 
-class CommentsScreen extends StatefulWidget {
+class CommentsScreen extends ConsumerStatefulWidget {
   final String letterId;
   final String letterTitle;
 
@@ -54,10 +57,10 @@ class CommentsScreen extends StatefulWidget {
   });
 
   @override
-  State<CommentsScreen> createState() => _CommentsScreenState();
+  ConsumerState<CommentsScreen> createState() => _CommentsScreenState();
 }
 
-class _CommentsScreenState extends State<CommentsScreen> {
+class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   final _commentController = TextEditingController();
   bool _isLoading = false;
 
@@ -128,6 +131,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
+    final reportsEnabled = ref.watch(systemConfigProvider).value?.reportsEnabled ?? true;
     return Scaffold(
       backgroundColor: context.pal.bg,
       body: Column(
@@ -209,6 +213,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     final data = docs[i].data() as Map<String, dynamic>;
                     final createdAt = (data['createdAt'] as Timestamp).toDate();
                     final isMe = data['userUid'] == FirebaseAuth.instance.currentUser?.uid;
+                    final showReport = reportsEnabled && !isMe;
                     return Container(
                       margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.all(16),
@@ -263,6 +268,30 @@ class _CommentsScreenState extends State<CommentsScreen> {
                               ],
                             ),
                           ),
+                          if (showReport)
+                            PopupMenuButton<String>(
+                              icon: Icon(
+                                Icons.more_vert,
+                                size: 20,
+                                color: isMe ? Colors.white38 : context.pal.inkFaint,
+                              ),
+                              onSelected: (value) {
+                                if (value == 'report') {
+                                  showReportContentSheet(
+                                    context,
+                                    targetType: 'comment',
+                                    targetId: docs[i].id,
+                                    letterId: widget.letterId,
+                                  );
+                                }
+                              },
+                              itemBuilder: (ctx) => [
+                                PopupMenuItem(
+                                  value: 'report',
+                                  child: Text(l10n.reportMenuLabel),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     );
