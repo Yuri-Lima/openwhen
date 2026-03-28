@@ -1,23 +1,24 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/owl_logo.dart';
+import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
-import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/voice_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
+import '../../../../shared/widgets/voice_letter_tile.dart';
 import 'letter_detail_screen.dart';
 
-// Configuração visual por estado emocional
 class _EmotionTheme {
   final List<Color> particleColors;
   final List<Color> glowColors;
-  final String openText;
 
   const _EmotionTheme({
     required this.particleColors,
     required this.glowColors,
-    required this.openText,
   });
 }
 
@@ -25,32 +26,38 @@ const Map<String, _EmotionTheme> _emotionThemes = {
   'love': _EmotionTheme(
     particleColors: [Color(0xFFE91E8C), Color(0xFFFF69B4), Color(0xFFFFB6C1), Colors.white, Color(0xFFFF1493)],
     glowColors: [Color(0xFFE91E8C), Color(0xFFFF69B4)],
-    openText: 'Uma carta de amor espera por você 💕',
   ),
   'achievement': _EmotionTheme(
     particleColors: [Color(0xFFF59E0B), Color(0xFFFFD700), Color(0xFFFFA500), Colors.white, Color(0xFFFFEC00)],
     glowColors: [Color(0xFFF59E0B), Color(0xFFFFD700)],
-    openText: 'Uma conquista foi guardada para você 🏆',
   ),
   'advice': _EmotionTheme(
     particleColors: [Color(0xFF10B981), Color(0xFF34D399), Color(0xFF6EE7B7), Colors.white, Color(0xFF059669)],
     glowColors: [Color(0xFF10B981), Color(0xFF34D399)],
-    openText: 'Um conselho especial espera por você 🌿',
   ),
   'nostalgia': _EmotionTheme(
     particleColors: [Color(0xFFD97706), Color(0xFFF59E0B), Color(0xFFFCD34D), Colors.white, Color(0xFFB45309)],
     glowColors: [Color(0xFFD97706), Color(0xFFF59E0B)],
-    openText: 'Memórias guardadas para você 🍂',
   ),
   'farewell': _EmotionTheme(
     particleColors: [Color(0xFF8B5CF6), Color(0xFFA78BFA), Color(0xFFDDD6FE), Colors.white, Color(0xFF7C3AED)],
     glowColors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
-    openText: 'Palavras de despedida esperaram por você 🦋',
   ),
 };
 
 _EmotionTheme _getTheme(String? emotionalState) {
   return _emotionThemes[emotionalState] ?? _emotionThemes['love']!;
+}
+
+String _getOpenText(String? emotionalState, AppLocalizations l10n) {
+  switch (emotionalState) {
+    case 'love': return l10n.letterOpeningEmotionLove;
+    case 'achievement': return l10n.letterOpeningEmotionAchievement;
+    case 'advice': return l10n.letterOpeningEmotionAdvice;
+    case 'nostalgia': return l10n.letterOpeningEmotionNostalgia;
+    case 'farewell': return l10n.letterOpeningEmotionFarewell;
+    default: return l10n.letterOpeningEmotionLove;
+  }
 }
 
 class _Particle {
@@ -96,6 +103,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   late AnimationController _paperCtrl;
   late AnimationController _contentCtrl;
   late AnimationController _particleCtrl;
+  late AnimationController _sealCtrl;
 
   late Animation<double> _glowAnim;
   late Animation<double> _scaleAnim;
@@ -124,6 +132,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     _contentCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _particleCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 60))..repeat();
     _particleCtrl.addListener(() { if (mounted) setState(() => _tickParticles()); });
+    _sealCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 5500));
 
     _glowAnim = Tween(begin: 0.08, end: 0.22).animate(_glowCtrl);
     _scaleAnim = Tween(begin: 1.0, end: 1.06).animate(CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut));
@@ -141,7 +150,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
 
   void _spawnParticles() {
     final colors = _theme.particleColors;
-    // Determina tipos de partículas pelo estado emocional
     final emotionalState = widget.data['emotionalState'] as String? ?? 'love';
     final particleTypes = _getParticleTypes(emotionalState);
 
@@ -160,11 +168,11 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
 
   List<int> _getParticleTypes(String emotionalState) {
     switch (emotionalState) {
-      case 'love': return [1, 1, 1, 0, 3]; // muitos corações
-      case 'achievement': return [2, 2, 0, 0, 2]; // muitas estrelas
-      case 'advice': return [3, 3, 0, 0]; // pétalas
-      case 'nostalgia': return [3, 0, 3, 0]; // pétalas âmbar
-      case 'farewell': return [4, 4, 0, 3]; // borboletas
+      case 'love': return [1, 1, 1, 0, 3];
+      case 'achievement': return [2, 2, 0, 0, 2];
+      case 'advice': return [3, 3, 0, 0];
+      case 'nostalgia': return [3, 0, 3, 0];
+      case 'farewell': return [4, 4, 0, 3];
       default: return [1, 2, 0, 3];
     }
   }
@@ -178,6 +186,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     if (_tapped) return;
     setState(() => _tapped = true);
     _scaleCtrl.stop();
+
+    await _sealCtrl.forward();
 
     await _shakeCtrl.forward();
     _spawnParticles();
@@ -215,6 +225,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   void dispose() {
     _glowCtrl.dispose(); _scaleCtrl.dispose(); _shakeCtrl.dispose();
     _paperCtrl.dispose(); _contentCtrl.dispose(); _particleCtrl.dispose();
+    _sealCtrl.dispose();
     super.dispose();
   }
 
@@ -222,15 +233,14 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final glowColor = _theme.glowColors[0];
+    final l10n = AppLocalizations.of(context)!;
+    final openText = _getOpenText(widget.data['emotionalState'] as String?, l10n);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
-      body: GestureDetector(
-        onTap: !_tapped ? _onTap : null,
-        child: Stack(
+      body: Stack(
           alignment: Alignment.center,
           children: [
-            // Glow colorido por emoção
             AnimatedBuilder(
               animation: _glowAnim,
               builder: (_, __) => Container(
@@ -248,13 +258,11 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
               ),
             ),
 
-            // Partículas
             CustomPaint(
               size: size,
               painter: _ParticlePainter(_particles, center: size.center(Offset.zero)),
             ),
 
-            // Papel
             if (_showPaper)
               AnimatedBuilder(
                 animation: Listenable.merge([_paperRise, _paperCtrl]),
@@ -280,7 +288,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                           child: Stack(
                             children: [
                               Positioned.fill(top: 48, child: CustomPaint(painter: _PaperPainter())),
-                              // Barra colorida por emoção
                               Positioned(
                                 top: 0, left: 0, right: 0, height: 5,
                                 child: Container(color: glowColor),
@@ -290,7 +297,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                   opacity: _contentFade,
                                   child: SingleChildScrollView(
                                     padding: const EdgeInsets.fromLTRB(48, 40, 28, 28),
-                                    child: _buildLetterContent(glowColor),
+                                    child: _buildLetterContent(glowColor, l10n),
                                   ),
                                 ),
                             ],
@@ -302,7 +309,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                 },
               ),
 
-            // Envelope
             if (!_showPaper || _envelopeFade.value > 0)
               AnimatedBuilder(
                 animation: Listenable.merge([_shakeAnim, _scaleAnim, _envelopeFade]),
@@ -315,42 +321,55 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Envelope com cor da emoção
                           Container(
-                            width: 260, height: 175,
+                            width: 280, height: 182,
                             decoration: BoxDecoration(
                               color: const Color(0xFF1A1714),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.white.withOpacity(0.08)),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.white.withOpacity(0.1)),
                               boxShadow: [
-                                BoxShadow(color: glowColor.withOpacity(0.3), blurRadius: 40, offset: const Offset(0, 12)),
-                                BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20),
+                                BoxShadow(color: glowColor.withOpacity(0.28), blurRadius: 44, offset: const Offset(0, 14)),
+                                BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 22),
                               ],
                             ),
                             child: Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CustomPaint(size: const Size(260, 175), painter: _EnvelopePainter()),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: CustomPaint(size: const Size(280, 182), painter: _EnvelopePainter()),
                                 ),
-                                // Lacre colorido
                                 Center(
                                   child: AnimatedBuilder(
                                     animation: _glowAnim,
                                     builder: (_, __) => Container(
-                                      width: 56, height: 56,
+                                      width: 68,
+                                      height: 68,
+                                      alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: glowColor,
                                         boxShadow: [
-                                          BoxShadow(color: glowColor.withOpacity(0.7), blurRadius: _glowAnim.value * 50, spreadRadius: 2),
+                                          BoxShadow(
+                                            color: glowColor.withOpacity(0.42),
+                                            blurRadius: 28 + _glowAnim.value * 28,
+                                            spreadRadius: 0,
+                                          ),
                                         ],
                                       ),
-                                      child: Container(
-                                        margin: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: glowColor.withOpacity(0.7)),
-                                        child: Center(
-                                          child: const OwlLogo(size: 56),
+                                      child: GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: !_tapped ? _onTap : null,
+                                        child: Container(
+                                          width: 62,
+                                          height: 62,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: glowColor.withOpacity(0.12),
+                                          ),
+                                          child: OwlSealOpeningAnimation(
+                                            size: 52,
+                                            animation: _sealCtrl,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -364,7 +383,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                             textAlign: TextAlign.center,
                             style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: Colors.white, fontStyle: FontStyle.italic, height: 1.3)),
                           const SizedBox(height: 8),
-                          // Texto emocional
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
@@ -372,11 +390,11 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: glowColor.withOpacity(0.3)),
                             ),
-                            child: Text(_theme.openText,
+                            child: Text(openText,
                               style: GoogleFonts.dmSans(fontSize: 11, color: glowColor, fontWeight: FontWeight.w500)),
                           ),
                           const SizedBox(height: 32),
-                          if (!_tapped) _PulsingHint(color: glowColor),
+                          if (!_tapped) _PulsingHint(color: glowColor, text: l10n.letterOpeningTapToOpen),
                         ],
                       ),
                     ),
@@ -384,7 +402,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                 ),
               ),
 
-            // Botão voltar
             Positioned(
               top: MediaQuery.of(context).padding.top + 16,
               left: 24,
@@ -402,27 +419,51 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
             ),
           ],
         ),
-      ),
     );
   }
 
-  Widget _buildLetterContent(Color accentColor) {
+  Widget _buildLetterContent(Color accentColor, AppLocalizations l10n) {
+    final locale = Localizations.localeOf(context).toString();
     final d = widget.data;
     final createdAt = d['createdAt'] != null ? (d['createdAt'] as Timestamp).toDate() : DateTime.now();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('UMA CARTA DE', style: TextStyle(fontSize: 9, letterSpacing: 4, color: accentColor.withOpacity(0.8))),
+        Text(l10n.letterDetailHeaderFrom, style: TextStyle(fontSize: 9, letterSpacing: 4, color: accentColor.withOpacity(0.8))),
         const SizedBox(height: 8),
         Text(d['senderName'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFF160D04))),
         const SizedBox(height: 4),
-        Text('para ${d['receiverName'] ?? ''}', style: GoogleFonts.dmSans(fontSize: 12, fontStyle: FontStyle.italic, color: const Color(0xFF7A5C3A))),
+        Text(l10n.letterDetailTo(d['receiverName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 12, fontStyle: FontStyle.italic, color: const Color(0xFF7A5C3A))),
         const SizedBox(height: 16),
         Container(width: 24, height: 1, color: accentColor.withOpacity(0.5)),
         const SizedBox(height: 8),
         Text(d['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: const Color(0xFF160D04), fontStyle: FontStyle.italic)),
         const SizedBox(height: 16),
         Text(d['message'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 15, fontStyle: FontStyle.italic, color: const Color(0xFF241608), height: 2.0)),
+        if (isValidHttpsMusicUrl(d['musicUrl'] as String?)) ...[
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => launchExternalMusicUrl(context, d['musicUrl'] as String),
+              icon: Icon(Icons.music_note_rounded, color: accentColor, size: 22),
+              label: Text(l10n.musicLinkTitle, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF4A2E14))),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: accentColor.withOpacity(0.55)),
+                backgroundColor: accentColor.withOpacity(0.06),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+          ),
+        ],
+        if (isValidVoiceLetterUrl(d['voiceUrl'] as String?)) ...[
+          const SizedBox(height: 12),
+          VoiceLetterOpeningButton(
+            url: (d['voiceUrl'] as String).trim(),
+            accentColor: accentColor,
+          ),
+        ],
         const SizedBox(height: 24),
         Align(
           alignment: Alignment.centerRight,
@@ -431,7 +472,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
         const SizedBox(height: 4),
         Align(
           alignment: Alignment.centerRight,
-          child: Text('Escrita ${createdAt.day}/${createdAt.month}/${createdAt.year}  ·  Aberta hoje',
+          child: Text(l10n.letterOpeningWrittenOpenedToday(formatShortDate(createdAt, locale)),
             style: TextStyle(fontSize: 8, letterSpacing: 2, color: accentColor.withOpacity(0.5))),
         ),
         const SizedBox(height: 32),
@@ -450,7 +491,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             ),
-            child: Text('✦  Publicar no feed', style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+            child: Text(l10n.letterOpeningPublishFeed, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
           ),
         ),
         const SizedBox(height: 8),
@@ -463,7 +504,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             ),
-            child: Text('Guardar só para mim', style: GoogleFonts.dmSans(fontSize: 14, color: const Color(0xFF6B6560))),
+            child: Text(l10n.letterOpeningKeepPrivate, style: GoogleFonts.dmSans(fontSize: 14, color: const Color(0xFF6B6560))),
           ),
         ),
       ],
@@ -538,18 +579,44 @@ class _ParticlePainter extends CustomPainter {
 class _EnvelopePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final w = size.width, h = size.height;
-    final line = Paint()..color = Colors.white.withOpacity(0.06)..strokeWidth = 1;
-    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = const Color(0xFF221E1A));
-    canvas.drawPath(Path()..moveTo(0,0)..lineTo(w/2,h*0.52)..lineTo(0,h)..close(), Paint()..color = const Color(0xFF1E1A16));
-    canvas.drawPath(Path()..moveTo(w,0)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = const Color(0xFF1C1814));
-    canvas.drawPath(Path()..moveTo(0,0)..lineTo(w/2,h*0.48)..lineTo(w,0)..close(), Paint()..color = const Color(0xFF221E1A));
-    canvas.drawLine(Offset(0,0), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(w,0), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(0,h), Offset(w/2,h*0.52), line);
-    canvas.drawLine(Offset(w,h), Offset(w/2,h*0.52), line);
+    final w = size.width;
+    final h = size.height;
+    final line = Paint()
+      ..color = Colors.white.withOpacity(0.07)
+      ..strokeWidth = 1;
+
+    final texture = Paint()
+      ..color = Colors.black.withOpacity(0.07)
+      ..strokeWidth = 0.35;
+    for (double y = 4; y < h * 0.5; y += 4.2) {
+      canvas.drawLine(Offset(6, y), Offset(w - 6, y), texture);
+    }
+
+    canvas.drawPath(
+      Path()..moveTo(0, h)..lineTo(w / 2, h * 0.52)..lineTo(w, h)..close(),
+      Paint()..color = const Color(0xFF2E2820),
+    );
+    canvas.drawPath(
+      Path()..moveTo(0, 0)..lineTo(w / 2, h * 0.52)..lineTo(0, h)..close(),
+      Paint()..color = const Color(0xFF2A241C),
+    );
+    canvas.drawPath(
+      Path()..moveTo(w, 0)..lineTo(w / 2, h * 0.52)..lineTo(w, h)..close(),
+      Paint()..color = const Color(0xFF262018),
+    );
+    canvas.drawPath(
+      Path()..moveTo(0, 0)..lineTo(w / 2, h * 0.48)..lineTo(w, 0)..close(),
+      Paint()..color = const Color(0xFF322A22),
+    );
+
+    canvas.drawLine(Offset.zero, Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(w, 0), Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(0, h), Offset(w / 2, h * 0.52), line);
+    canvas.drawLine(Offset(w, h), Offset(w / 2, h * 0.52), line);
   }
-  @override bool shouldRepaint(_) => false;
+
+  @override
+  bool shouldRepaint(_) => false;
 }
 
 class _PaperPainter extends CustomPainter {
@@ -567,7 +634,8 @@ class _PaperPainter extends CustomPainter {
 
 class _PulsingHint extends StatefulWidget {
   final Color color;
-  const _PulsingHint({required this.color});
+  final String text;
+  const _PulsingHint({required this.color, required this.text});
   @override State<_PulsingHint> createState() => _PulsingHintState();
 }
 class _PulsingHintState extends State<_PulsingHint> with SingleTickerProviderStateMixin {
@@ -577,7 +645,7 @@ class _PulsingHintState extends State<_PulsingHint> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) => FadeTransition(
     opacity: _opacity,
-    child: Text('TOQUE PARA ABRIR',
+    child: Text(widget.text,
       style: TextStyle(fontSize: 10, letterSpacing: 3.5, color: widget.color.withOpacity(0.5))),
   );
 }

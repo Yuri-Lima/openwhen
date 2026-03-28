@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>OpenWhen uses the microphone to record voice messages for letters.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>OpenWhen uses your location to attach a place when sending letters or capsules, and to verify proximity when opening.</string>
 </dict>
 </plist>

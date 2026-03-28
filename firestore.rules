@@ -82,5 +82,23 @@ service cloud.firestore {
       allow create: if signedIn();
       allow update, delete: if false;
     }
+
+    // Feedback / solicitações de produto (somente criação; schema fixo)
+    match /feedback/{feedbackId} {
+      allow read: if false;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'type', 'message', 'createdAt', 'appLocale', 'platform'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type in ['feature', 'recommendation', 'general']
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 1
+        && request.resource.data.message.size() <= 4000
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.appLocale is string
+        && request.resource.data.appLocale.size() <= 32
+        && request.resource.data.platform is string
+        && request.resource.data.platform.size() <= 32;
+      allow update, delete: if false;
+    }
   }
 }

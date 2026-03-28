@@ -4,8 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
+import '../../../../shared/utils/date_formatter.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
 
@@ -18,21 +22,28 @@ class FeedScreen extends ConsumerStatefulWidget {
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   int _selectedFilter = 0;
-  final List<String> _filters = ['Para todos', 'Amor', 'Amizade', 'Família'];
+
+  static const Map<int, List<String>> _filterEmotions = {
+    1: ['love'],
+    2: ['advice', 'achievement'],
+    3: ['nostalgia', 'farewell'],
+  };
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final filters = [l10n.feedFilterAll, l10n.feedFilterLove, l10n.feedFilterFriendship, l10n.feedFilterFamily];
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: Column(
         children: [
           // Header escuro
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -47,9 +58,25 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(children: [Text('OpenWhen', style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: AppColors.white, fontStyle: FontStyle.italic)), const SizedBox(width: 6), const OwlWatermark(width: 20, height: 24)]),
+                            Row(
+                              children: [
+                                Text(
+                                  'OpenWhen',
+                                  style: GoogleFonts.dmSerifDisplay(
+                                    fontSize: 26,
+                                    color: context.pal.white,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const OwlFeedbackAffordance(
+                                  forDarkHeader: true,
+                                  child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 4),
-                            Text('FEED PÚBLICO', style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
+                            Text(l10n.feedPublicHeader, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                           ],
                         ),
                         Row(
@@ -69,19 +96,19 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      itemCount: _filters.length,
+                      itemCount: filters.length,
                       itemBuilder: (_, i) => GestureDetector(
                         onTap: () => setState(() => _selectedFilter = i),
                         child: Container(
                           margin: const EdgeInsets.only(right: 8),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
-                            color: _selectedFilter == i ? AppColors.accent : Colors.white.withOpacity(0.08),
+                            color: _selectedFilter == i ? context.pal.accent : Colors.white.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: _selectedFilter == i ? AppColors.accent : Colors.white.withOpacity(0.08)),
+                            border: Border.all(color: _selectedFilter == i ? context.pal.accent : Colors.white.withOpacity(0.08)),
                           ),
-                          child: Text(_filters[i], style: GoogleFonts.dmSans(fontSize: 12,
-                            color: _selectedFilter == i ? AppColors.white : Colors.white.withOpacity(0.4),
+                          child: Text(filters[i], style: GoogleFonts.dmSans(fontSize: 12,
+                            color: _selectedFilter == i ? context.pal.white : Colors.white.withOpacity(0.4),
                             fontWeight: _selectedFilter == i ? FontWeight.w500 : FontWeight.w400)),
                         ),
                       ),
@@ -98,13 +125,25 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   .collection(FirestoreCollections.letters)
                   .where('isPublic', isEqualTo: true)
                   .where('status', isEqualTo: 'opened')
+                  .orderBy('openedAt', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final docs = snapshot.data?.docs ?? [];
-                if (docs.isEmpty) return _buildEmpty();
+                final allDocs = snapshot.data?.docs ?? [];
+                if (allDocs.isEmpty) return _buildEmpty();
+
+                final allowedKeys = _filterEmotions[_selectedFilter];
+                final docs = allowedKeys == null
+                    ? allDocs
+                    : allDocs.where((d) {
+                        final emotion = (d.data() as Map<String, dynamic>)['emotionalState'] as String?;
+                        return emotion != null && allowedKeys.contains(emotion);
+                      }).toList();
+
+                if (docs.isEmpty) return _buildFilterEmpty();
+
                 return ListView.builder(
                   padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
                   itemCount: docs.length,
@@ -131,21 +170,43 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
   );
 
-  Widget _buildEmpty() => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('✨', style: TextStyle(fontSize: 48)),
-        const SizedBox(height: 16),
-        Text('Nenhuma carta pública ainda',
-          style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
-        const SizedBox(height: 8),
-        Text('Seja o primeiro a compartilhar\numa carta com o mundo',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.6)),
-      ],
-    ),
-  );
+  Widget _buildEmpty() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('✨', style: TextStyle(fontSize: 48)),
+          const SizedBox(height: 16),
+          Text(l10n.feedEmptyTitle,
+            style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 8),
+          Text(l10n.feedEmptySubtitle,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterEmpty() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('🔍', style: TextStyle(fontSize: 40)),
+          const SizedBox(height: 14),
+          Text(l10n.feedFilterEmptyTitle,
+            style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: context.pal.ink, fontStyle: FontStyle.italic)),
+          const SizedBox(height: 6),
+          Text(l10n.feedFilterEmptySubtitle,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
+        ],
+      ),
+    );
+  }
 }
 
 // ── Card individual do feed ──────────────────────────────────
@@ -165,6 +226,13 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
 
+  Color _bg(BuildContext ctx) => widget.isFeatured ? ctx.pal.headerGradient.first : ctx.pal.card;
+  Color _text(BuildContext ctx) => widget.isFeatured ? Colors.white : ctx.pal.ink;
+  Color _textSoft(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.6) : ctx.pal.inkSoft;
+  Color _textFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.4) : ctx.pal.inkFaint;
+  Color _textMuted(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.25) : ctx.pal.inkFaint;
+  Color _iconFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.5) : ctx.pal.inkFaint;
+
   @override
   void initState() {
     super.initState();
@@ -183,6 +251,8 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final data = widget.data;
     final openedAt = data['openedAt'] != null ? (data['openedAt'] as Timestamp).toDate() : DateTime.now();
@@ -190,9 +260,9 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: widget.isFeatured ? AppColors.ink : AppColors.white,
+        color: _bg(context),
         border: Border(
-          bottom: BorderSide(color: AppColors.border),
+          bottom: BorderSide(color: context.pal.border),
         ),
       ),
       child: Column(
@@ -209,19 +279,34 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   )),
                   child: Row(
                     children: [
-                      Container(
-                        width: 38, height: 38,
-                        decoration: BoxDecoration(
-                          color: widget.isFeatured ? AppColors.accent.withOpacity(0.3) : AppColors.accentWarm,
-                          shape: BoxShape.circle,
-                          border: widget.isFeatured ? Border.all(color: AppColors.accent.withOpacity(0.4)) : null,
-                        ),
-                        child: Center(
-                          child: Text(
-                            (data['senderName'] as String? ?? 'U').substring(0, 1).toUpperCase(),
-                            style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: widget.isFeatured ? AppColors.white : AppColors.accent, fontStyle: FontStyle.italic),
-                          ),
-                        ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection(FirestoreCollections.users)
+                            .doc(data['senderUid'] as String? ?? '')
+                            .snapshots(),
+                        builder: (context, userSnap) {
+                          final map = userSnap.data?.data() as Map<String, dynamic>?;
+                          final photoUrl = map?['photoUrl'] as String?;
+                          return Container(
+                            decoration: widget.isFeatured
+                                ? BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: context.pal.accent.withOpacity(0.4)),
+                                  )
+                                : null,
+                            child: ClipOval(
+                              child: UserAvatar(
+                                photoUrl: photoUrl,
+                                name: data['senderName'] as String? ?? 'U',
+                                size: 38,
+                                backgroundColor: widget.isFeatured
+                                    ? context.pal.accent.withOpacity(0.35)
+                                    : context.pal.accentWarm,
+                                textColor: widget.isFeatured ? Colors.white : context.pal.accent,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 10),
                       Column(
@@ -229,10 +314,10 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                         children: [
                           Text(data['senderName'] ?? '',
                             style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500,
-                              color: widget.isFeatured ? AppColors.white : AppColors.ink)),
-                          Text('Para: ${data['receiverName'] ?? ''}',
+                              color: _text(context))),
+                          Text(l10n.feedCardTo(data['receiverName'] ?? ''),
                             style: GoogleFonts.dmSans(fontSize: 11,
-                              color: widget.isFeatured ? Colors.white.withOpacity(0.4) : AppColors.inkFaint)),
+                              color: _textFaint(context))),
                         ],
                       ),
                     ],
@@ -243,11 +328,11 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.2),
+                      color: context.pal.accent.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+                      border: Border.all(color: context.pal.accent.withOpacity(0.3)),
                     ),
-                    child: Text('✦ Destaque', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.accent, fontWeight: FontWeight.w500)),
+                    child: Text(l10n.feedCardFeatured, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500)),
                   ),
               ],
             ),
@@ -261,19 +346,19 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
               children: [
                 Text(data['title'] ?? '',
                   style: GoogleFonts.dmSerifDisplay(fontSize: 18,
-                    color: widget.isFeatured ? AppColors.white : AppColors.ink,
+                    color: _text(context),
                     fontStyle: FontStyle.italic, height: 1.3)),
                 const SizedBox(height: 8),
                 Text(data['message'] ?? '',
                   maxLines: 4, overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.dmSans(fontSize: 14,
-                    color: widget.isFeatured ? Colors.white.withOpacity(0.6) : AppColors.inkSoft,
+                    color: _textSoft(context),
                     height: 1.6)),
                 const SizedBox(height: 8),
                 Text(
-                  'Aberta em ${openedAt.day}/${openedAt.month}/${openedAt.year}',
+                  l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
                   style: GoogleFonts.dmSans(fontSize: 10,
-                    color: widget.isFeatured ? Colors.white.withOpacity(0.25) : AppColors.inkFaint,
+                    color: _textMuted(context),
                     letterSpacing: 1),
                 ),
               ],
@@ -316,14 +401,14 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                                 child: Icon(
                                   liked ? Icons.favorite : Icons.favorite_border,
                                   size: 22,
-                                  color: liked ? AppColors.accent : widget.isFeatured ? Colors.white.withOpacity(0.5) : AppColors.inkFaint,
+                                  color: liked ? context.pal.accent : _iconFaint(context),
                                 ),
                               ),
                             ),
                             const SizedBox(width: 4),
                             Text('${widget.data['likeCount'] ?? 0}',
                               style: GoogleFonts.dmSans(fontSize: 13,
-                                color: widget.isFeatured ? Colors.white.withOpacity(0.5) : AppColors.inkSoft)),
+                                color: _iconFaint(context))),
                           ],
                         ),
                       ),
@@ -341,11 +426,11 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                     child: Row(
                       children: [
                         Icon(Icons.chat_bubble_outline, size: 22,
-                          color: widget.isFeatured ? Colors.white.withOpacity(0.5) : AppColors.inkFaint),
+                          color: _iconFaint(context)),
                         const SizedBox(width: 4),
                         Text('${widget.data['commentCount'] ?? 0}',
                           style: GoogleFonts.dmSans(fontSize: 13,
-                            color: widget.isFeatured ? Colors.white.withOpacity(0.5) : AppColors.inkSoft)),
+                            color: _iconFaint(context))),
                       ],
                     ),
                   ),
@@ -365,6 +450,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
   }
 
   Widget _buildCommentsPreview(String? uid) {
+    final l10n = AppLocalizations.of(context)!;
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection(FirestoreCollections.comments)
@@ -378,7 +464,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(height: 1, color: widget.isFeatured ? Colors.white.withOpacity(0.08) : AppColors.border),
+            Divider(height: 1, color: widget.isFeatured ? Colors.white.withOpacity(0.08) : context.pal.border),
             ...docs.map((doc) {
               final c = doc.data() as Map<String, dynamic>;
               return Padding(
@@ -389,12 +475,12 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                       TextSpan(
                         text: '${c['userName'] ?? ''}  ',
                         style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600,
-                          color: widget.isFeatured ? Colors.white.withOpacity(0.8) : AppColors.ink),
+                          color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink),
                       ),
                       TextSpan(
                         text: c['message'] ?? '',
                         style: GoogleFonts.dmSans(fontSize: 13,
-                          color: widget.isFeatured ? Colors.white.withOpacity(0.5) : AppColors.inkSoft),
+                          color: _textSoft(context)),
                       ),
                     ],
                   ),
@@ -406,9 +492,9 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                 onTap: () => setState(() => _showAllComments = true),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-                  child: Text('Ver todos os ${widget.data['commentCount']} comentários',
+                  child: Text(l10n.feedViewAllComments(widget.data['commentCount'] as int? ?? 0),
                     style: GoogleFonts.dmSans(fontSize: 12,
-                      color: widget.isFeatured ? Colors.white.withOpacity(0.3) : AppColors.inkFaint)),
+                      color: _textMuted(context))),
                 ),
               ),
           ],

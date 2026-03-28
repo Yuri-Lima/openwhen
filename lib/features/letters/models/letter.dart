@@ -19,6 +19,14 @@ class Letter {
   final DateTime? publishedAt;
   final int likeCount;
   final int commentCount;
+  /// Optional https URL (Spotify, YouTube Music, etc.) — opened externally.
+  final String? musicUrl;
+  /// Optional Firebase Storage URL for a short voice recording.
+  final String? voiceUrl;
+  /// Optional point shared at send time (`lat`, `lng`, `capturedAt`).
+  final Map<String, dynamic>? senderLocation;
+  /// When true, receiver must be within 10 m of [senderLocation] to open.
+  final bool openRequiresProximity;
 
   Letter({
     required this.id,
@@ -37,6 +45,10 @@ class Letter {
     this.publishedAt,
     this.likeCount = 0,
     this.commentCount = 0,
+    this.musicUrl,
+    this.voiceUrl,
+    this.senderLocation,
+    this.openRequiresProximity = false,
   });
 
   bool get isLocked => status == LetterStatus.locked;
@@ -69,6 +81,12 @@ class Letter {
           : null,
       likeCount: (data['likeCount'] as num?)?.toInt() ?? 0,
       commentCount: (data['commentCount'] as num?)?.toInt() ?? 0,
+      musicUrl: data['musicUrl'] as String?,
+      voiceUrl: data['voiceUrl'] as String?,
+      senderLocation: data['senderLocation'] is Map
+          ? Map<String, dynamic>.from(data['senderLocation'] as Map)
+          : null,
+      openRequiresProximity: data['openRequiresProximity'] == true,
     );
   }
 }

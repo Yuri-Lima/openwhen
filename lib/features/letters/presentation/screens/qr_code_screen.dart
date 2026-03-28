@@ -1,5 +1,4 @@
 import 'dart:ui' as ui;
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter/rendering.dart';
@@ -7,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
 
 class QrCodeScreen extends StatefulWidget {
   final String docId;
@@ -35,7 +37,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   Future<void> _shareQrCode() async {
     setState(() => _sharing = true);
     try {
-      // Captura o QR Code como imagem
+      final l10n = AppLocalizations.of(context)!;
       final boundary = _qrKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) {
         _shareLink();
@@ -51,8 +53,8 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       final xFile = XFile.fromData(bytes, mimeType: 'image/png', name: 'openwhen_qrcode.png');
       await Share.shareXFiles(
         [xFile],
-        text: '💌 Uma carta especial espera por você no OpenWhen!\n\n"${widget.title}"\n\nEscaneie o QR Code ou acesse: $_deepLink',
-        subject: 'Uma carta especial espera por você 💌',
+        text: l10n.qrShareText(widget.title, _deepLink),
+        subject: l10n.qrShareSubject,
       );
     } catch (e) {
       _shareLink();
@@ -61,20 +63,22 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   }
 
   Future<void> _shareLink() async {
+    final l10n = AppLocalizations.of(context)!;
     await Share.share(
-      '💌 Uma carta especial espera por você no OpenWhen!\n\n"${widget.title}"\n\nAcesse: $_deepLink',
-      subject: 'Uma carta especial espera por você 💌',
+      l10n.qrShareLinkOnly(widget.title, _deepLink),
+      subject: l10n.qrShareSubject,
     );
     if (mounted) setState(() => _sharing = false);
   }
 
   Future<void> _copyLink() async {
+    final l10n = AppLocalizations.of(context)!;
     await Share.share(_deepLink);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Link copiado! 🔗', style: GoogleFonts.dmSans(fontSize: 13)),
-          backgroundColor: AppColors.ink,
+          content: Text(l10n.qrLinkCopied, style: GoogleFonts.dmSans(fontSize: 13)),
+          backgroundColor: context.pal.ink,
         ),
       );
     }
@@ -82,17 +86,18 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: Column(
         children: [
-          // Header escuro
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -116,9 +121,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('QR Code da carta',
-                          style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.white, fontStyle: FontStyle.italic)),
-                        Text('Imprima e coloque no presente',
+                        Text(l10n.qrScreenTitle,
+                          style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white, fontStyle: FontStyle.italic)),
+                        Text(l10n.qrScreenSubtitle,
                           style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
                       ],
                     ),
@@ -133,12 +138,11 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  // Card do QR Code
                   RepaintBoundary(
                     key: _qrKey,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: context.pal.card,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 32, offset: const Offset(0, 8)),
@@ -146,46 +150,54 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       ),
                       child: Column(
                         children: [
-                          // Topo
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Color(0xFF1A1714), Color(0xFF2C1810)],
+                                colors: [
+                                  context.pal.headerGradient[0],
+                                  context.pal.headerGradient[1],
+                                ],
                               ),
-                              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                             ),
                             child: Column(
                               children: [
-                                Container(
-                                  width: 52, height: 52,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.accent,
-                                    boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.4), blurRadius: 16)],
-                                  ),
-                                  child: Container(
-                                    margin: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFA93226)),
-                                    child: Center(
-                                      child: const OwlLogo(size: 44),
+                                Center(
+                                  child: OwlFeedbackAffordance(
+                                    forDarkHeader: true,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: context.pal.accent.withOpacity(0.45),
+                                            blurRadius: 18,
+                                          ),
+                                        ],
+                                      ),
+                                      child: const OwlLogo(
+                                        size: 52,
+                                        mode: OwlLogoMode.sealOnly,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                Text('Uma carta especial espera por você',
+                                Text(l10n.qrCardHeadline,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: Colors.white, fontStyle: FontStyle.italic)),
                                 const SizedBox(height: 4),
-                                Text('De ${widget.senderName}  ·  Abre ${widget.openDate.day}/${widget.openDate.month}/${widget.openDate.year}',
+                                Text(l10n.qrCardMeta(widget.senderName, formatShortDate(widget.openDate, locale)),
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.4))),
                               ],
                             ),
                           ),
 
-                          // QR Code
                           Padding(
                             padding: const EdgeInsets.all(28),
                             child: Column(
@@ -195,7 +207,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: AppColors.border, width: 1.5),
+                                    border: Border.all(color: context.pal.border, width: 1.5),
                                   ),
                                   child: QrImageView(
                                     data: _deepLink,
@@ -215,21 +227,20 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                 const SizedBox(height: 16),
                                 Text(widget.title,
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                                  style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
                                 const SizedBox(height: 6),
-                                Text('Escaneie para acessar a carta',
-                                  style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkFaint)),
+                                Text(l10n.qrScanHint,
+                                  style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint)),
                               ],
                             ),
                           ),
 
-                          // Rodapé
                           Container(
                             padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                             decoration: BoxDecoration(
-                              color: AppColors.bg,
+                              color: context.pal.bg,
                               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
-                              border: Border(top: BorderSide(color: AppColors.border)),
+                              border: Border(top: BorderSide(color: context.pal.border)),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -237,7 +248,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                 const Text('💌', style: TextStyle(fontSize: 14)),
                                 const SizedBox(width: 6),
                                 Text('openwhen.app',
-                                  style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkSoft, fontWeight: FontWeight.w500)),
+                                  style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
                               ],
                             ),
                           ),
@@ -248,13 +259,12 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Como usar
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: AppColors.accentWarm,
+                      color: context.pal.accentWarm,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.accent.withOpacity(0.2)),
+                      border: Border.all(color: context.pal.accent.withOpacity(0.2)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,36 +273,35 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                           children: [
                             const Text('🎁', style: TextStyle(fontSize: 20)),
                             const SizedBox(width: 10),
-                            Text('Como usar no presente físico',
-                              style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink, fontWeight: FontWeight.w600)),
+                            Text(l10n.qrHowToTitle,
+                              style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink, fontWeight: FontWeight.w600)),
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _buildStep('1', 'Compartilhe o QR Code pelo WhatsApp ou imprima'),
-                        _buildStep('2', 'Coloque dentro ou na embalagem do presente'),
-                        _buildStep('3', 'A pessoa escaneia e descobre a carta'),
-                        _buildStep('4', 'A carta abre automaticamente na data certa'),
+                        _buildStep('1', l10n.qrStep1),
+                        _buildStep('2', l10n.qrStep2),
+                        _buildStep('3', l10n.qrStep3),
+                        _buildStep('4', l10n.qrStep4),
                       ],
                     ),
                   ),
 
                   const SizedBox(height: 16),
 
-                  // Link direto
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.pal.card,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.pal.border),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.link, size: 18, color: AppColors.inkSoft),
+                        Icon(Icons.link, size: 18, color: context.pal.inkSoft),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(_deepLink,
-                            style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkSoft),
+                            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
                             overflow: TextOverflow.ellipsis),
                         ),
                         GestureDetector(
@@ -300,10 +309,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: AppColors.accent,
+                              color: context.pal.accent,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Text('Copiar', style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500)),
+                            child: Text(l10n.actionCopy, style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500)),
                           ),
                         ),
                       ],
@@ -312,15 +321,13 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Botões de compartilhamento
                   Row(
                     children: [
-                      // WhatsApp
                       Expanded(
                         child: GestureDetector(
                           onTap: () async {
                             await Share.share(
-                              '💌 Uma carta especial espera por você!\n\n"${widget.title}"\n\nAbra aqui: $_deepLink',
+                              l10n.qrShareWhatsApp(widget.title, _deepLink),
                             );
                           },
                           child: Container(
@@ -342,16 +349,15 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      // Compartilhar QR
                       Expanded(
                         child: GestureDetector(
                           onTap: _sharing ? null : _shareQrCode,
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             decoration: BoxDecoration(
-                              color: AppColors.accent,
+                              color: context.pal.accent,
                               borderRadius: BorderRadius.circular(14),
-                              boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                              boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -360,7 +366,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                     ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                                     : const Icon(Icons.share_outlined, size: 18, color: Colors.white),
                                 const SizedBox(width: 8),
-                                Text('Compartilhar', style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
+                                Text(l10n.actionShare, style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
                               ],
                             ),
                           ),
@@ -386,14 +392,14 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         children: [
           Container(
             width: 20, height: 20,
-            decoration: const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: context.pal.accent, shape: BoxShape.circle),
             child: Center(
               child: Text(number, style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w600)),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(text, style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft, height: 1.5)),
+            child: Text(text, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
           ),
         ],
       ),

@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/voice_url.dart';
+import '../../../../shared/widgets/music_link_tile.dart';
+import '../../../../shared/widgets/voice_letter_tile.dart';
+import '../../../../shared/widgets/location_share_tile.dart';
+import '../../../../shared/utils/sender_location.dart';
 import 'qr_code_screen.dart';
 
 class LetterDetailScreen extends StatelessWidget {
@@ -13,6 +20,8 @@ class LetterDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     final openedAt = data['openedAt'] != null
         ? (data['openedAt'] as Timestamp).toDate()
         : DateTime.now();
@@ -22,18 +31,22 @@ class LetterDetailScreen extends StatelessWidget {
     final openDate = data['openDate'] != null
         ? (data['openDate'] as Timestamp).toDate()
         : DateTime.now();
+    final musicUrl = data['musicUrl'] as String?;
+    final showMusicLink = isValidHttpsMusicUrl(musicUrl);
+    final voiceUrl = data['voiceUrl'] as String?;
+    final showVoice = isValidVoiceLetterUrl(voiceUrl);
+    final senderLoc = parseSenderLocationData(data['senderLocation']);
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
       body: Column(
         children: [
-          // Header escuro
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -56,10 +69,9 @@ class LetterDetailScreen extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(data['title'] ?? '',
-                        style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: AppColors.white, fontStyle: FontStyle.italic),
+                        style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.white, fontStyle: FontStyle.italic),
                         overflow: TextOverflow.ellipsis),
                     ),
-                    // Botão QR Code
                     GestureDetector(
                       onTap: () => Navigator.push(context, MaterialPageRoute(
                         builder: (_) => QrCodeScreen(
@@ -84,7 +96,6 @@ class LetterDetailScreen extends StatelessWidget {
             ),
           ),
 
-          // Papel da carta
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -101,18 +112,15 @@ class LetterDetailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Barra vermelha topo
                         Container(
                           height: 5,
-                          decoration: const BoxDecoration(
-                            color: AppColors.accent,
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                          decoration: BoxDecoration(
+                            color: context.pal.accent,
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                           ),
                         ),
-                        // Conteúdo da carta com linhas de papel
                         Stack(
                           children: [
-                            // Linhas do papel
                             CustomPaint(
                               size: Size(MediaQuery.of(context).size.width - 32, 600),
                               painter: _PaperLinesPainter(),
@@ -122,16 +130,16 @@ class LetterDetailScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('UMA CARTA DE',
-                                    style: TextStyle(fontSize: 9, letterSpacing: 4, color: AppColors.accent.withOpacity(0.8))),
+                                  Text(l10n.letterDetailHeaderFrom,
+                                    style: TextStyle(fontSize: 9, letterSpacing: 4, color: context.pal.accent.withOpacity(0.8))),
                                   const SizedBox(height: 8),
                                   Text(data['senderName'] ?? '',
                                     style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: const Color(0xFF160D04))),
                                   const SizedBox(height: 4),
-                                  Text('para ${data['receiverName'] ?? ''}',
+                                  Text(l10n.letterDetailTo(data['receiverName'] ?? ''),
                                     style: GoogleFonts.dmSans(fontSize: 12, fontStyle: FontStyle.italic, color: const Color(0xFF7A5C3A))),
                                   const SizedBox(height: 20),
-                                  Container(width: 32, height: 1, color: AppColors.accent.withOpacity(0.4)),
+                                  Container(width: 32, height: 1, color: context.pal.accent.withOpacity(0.4)),
                                   const SizedBox(height: 12),
                                   Text(data['title'] ?? '',
                                     style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFF160D04), fontStyle: FontStyle.italic)),
@@ -147,10 +155,10 @@ class LetterDetailScreen extends StatelessWidget {
                                         Text('— ${data['senderName'] ?? ''}',
                                           style: GoogleFonts.dmSerifDisplay(fontSize: 16, fontStyle: FontStyle.italic, color: const Color(0xFF4A2E14))),
                                         const SizedBox(height: 4),
-                                        Text('Escrita ${createdAt.day}/${createdAt.month}/${createdAt.year}',
-                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: AppColors.accent.withOpacity(0.5))),
-                                        Text('Aberta ${openedAt.day}/${openedAt.month}/${openedAt.year}',
-                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: AppColors.accent.withOpacity(0.5))),
+                                        Text(l10n.letterDetailWrittenOn(formatShortDate(createdAt, locale)),
+                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withOpacity(0.5))),
+                                        Text(l10n.letterDetailOpenedOn(formatShortDate(openedAt, locale)),
+                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withOpacity(0.5))),
                                       ],
                                     ),
                                   ),
@@ -163,12 +171,22 @@ class LetterDetailScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // Ações
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
                     child: Column(
                       children: [
-                        // QR Code destaque
+                        if (showMusicLink) ...[
+                          MusicLinkTileDark(url: musicUrl!.trim()),
+                          const SizedBox(height: 12),
+                        ],
+                        if (showVoice) ...[
+                          VoiceLetterTileDark(url: voiceUrl!.trim()),
+                          const SizedBox(height: 12),
+                        ],
+                        if (senderLoc != null) ...[
+                          LocationShareTileDark(lat: senderLoc.lat, lng: senderLoc.lng),
+                          const SizedBox(height: 12),
+                        ],
                         GestureDetector(
                           onTap: () => Navigator.push(context, MaterialPageRoute(
                             builder: (_) => QrCodeScreen(
@@ -190,20 +208,20 @@ class LetterDetailScreen extends StatelessWidget {
                                 Container(
                                   width: 44, height: 44,
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent.withOpacity(0.15),
+                                    color: context.pal.accent.withOpacity(0.15),
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+                                    border: Border.all(color: context.pal.accent.withOpacity(0.3)),
                                   ),
-                                  child: const Icon(Icons.qr_code, size: 22, color: AppColors.accent),
+                                  child: Icon(Icons.qr_code, size: 22, color: context.pal.accent),
                                 ),
                                 const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Gerar QR Code',
+                                      Text(l10n.letterDetailQrTitle,
                                         style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w500)),
-                                      Text('Coloque no presente físico 🎁',
+                                      Text(l10n.letterDetailQrSubtitle,
                                         style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.4))),
                                     ],
                                   ),
@@ -216,7 +234,6 @@ class LetterDetailScreen extends StatelessWidget {
 
                         const SizedBox(height: 12),
 
-                        // Compartilhar
                         GestureDetector(
                           onTap: () {},
                           child: Container(
@@ -242,9 +259,9 @@ class LetterDetailScreen extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Compartilhar carta',
+                                      Text(l10n.letterDetailShareTitle,
                                         style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withOpacity(0.8), fontWeight: FontWeight.w500)),
-                                      Text('Stories, Reels ou link direto',
+                                      Text(l10n.letterDetailShareSubtitle,
                                         style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.3))),
                                     ],
                                   ),

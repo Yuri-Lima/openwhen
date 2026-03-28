@@ -3,6 +3,7 @@ import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -28,11 +29,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.trim().isEmpty ||
         _emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos!')),
+        SnackBar(content: Text(l10n.snackFillAllFields)),
       );
       return;
     }
@@ -49,21 +51,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       final registerState = ref.read(authNotifierProvider);
       if (registerState.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: ${registerState.error}')),
+          SnackBar(content: Text(l10n.errorGeneric(registerState.error.toString()))),
         );
       } else {
-        // createUserWithEmailAndPassword já entra na sessão; encerramos para ir ao login
         await ref.read(authRepositoryProvider).signOut();
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Conta criada com sucesso! Faça login para continuar.')),
+          SnackBar(content: Text(l10n.registerSuccess)),
         );
         Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $e')),
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
         );
       }
     } finally {
@@ -87,7 +88,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           label.toUpperCase(),
           style: GoogleFonts.dmSans(
             fontSize: 10,
-            color: AppColors.inkFaint,
+            color: context.pal.inkFaint,
             fontWeight: FontWeight.w500,
             letterSpacing: 1.5,
           ),
@@ -95,14 +96,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.bg,
+            color: context.pal.bg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border, width: 1.5),
+            border: Border.all(color: context.pal.border, width: 1.5),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: AppColors.inkFaint.withOpacity(0.6)),
+              Icon(icon, size: 18, color: context.pal.inkFaint.withOpacity(0.6)),
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
@@ -112,12 +113,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   keyboardType: keyboard,
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: AppColors.ink,
+                    color: context.pal.ink,
                   ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: hint,
-                    hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                    hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                     contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
@@ -130,7 +131,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                     size: 18,
-                    color: AppColors.inkFaint.withOpacity(0.6),
+                    color: context.pal.inkFaint.withOpacity(0.6),
                   ),
                 ),
             ],
@@ -142,14 +143,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.pal.card,
       body: Column(
         children: [
           // Hero escuro
           Container(
             height: 310,
-            color: AppColors.ink,
+            color: context.pal.ink,
             child: Stack(
               children: [
                 Center(
@@ -160,8 +162,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          AppColors.accent.withOpacity(0.12),
-                          AppColors.accent.withOpacity(0.03),
+                          context.pal.accent.withOpacity(0.12),
+                          context.pal.accent.withOpacity(0.03),
                           Colors.transparent,
                         ],
                       ),
@@ -194,7 +196,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     offset: const Offset(0, 16),
                                   ),
                                   BoxShadow(
-                                    color: AppColors.accent.withOpacity(0.2),
+                                    color: context.pal.accent.withOpacity(0.2),
                                     blurRadius: 30,
                                   ),
                                 ],
@@ -215,11 +217,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   width: 44,
                                   height: 44,
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent,
+                                    color: context.pal.accent,
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.accent.withOpacity(0.4),
+                                        color: context.pal.accent.withOpacity(0.4),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
@@ -236,7 +238,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         'OW',
                                         style: GoogleFonts.dmSerifDisplay(
                                           fontSize: 14,
-                                          color: AppColors.white,
+                                          color: context.pal.white,
                                           fontStyle: FontStyle.italic,
                                         ),
                                       ),
@@ -253,13 +255,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         'OpenWhen',
                         style: GoogleFonts.dmSerifDisplay(
                           fontSize: 26,
-                          color: AppColors.white,
+                          color: context.pal.white,
                           letterSpacing: -0.3,
                         ),
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'CRIE SUA CONTA GRÁTIS',
+                        l10n.loginHeroCreateAccount,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
                           color: Colors.white.withOpacity(0.2),
@@ -283,23 +285,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   _buildField(
                     controller: _nameController,
                     icon: Icons.person_outline,
-                    hint: 'seu nome',
-                    label: 'Nome',
+                    hint: l10n.hintName,
+                    label: l10n.labelName,
                   ),
                   const SizedBox(height: 16),
                   _buildField(
                     controller: _emailController,
                     icon: Icons.mail_outline,
-                    hint: 'seu@email.com',
-                    label: 'E-mail',
+                    hint: l10n.hintEmail,
+                    label: l10n.labelEmail,
                     keyboard: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 16),
                   _buildField(
                     controller: _passwordController,
                     icon: Icons.lock_outline,
-                    hint: 'crie uma senha',
-                    label: 'Senha',
+                    hint: l10n.hintCreatePassword,
+                    label: l10n.labelPassword,
                     obscure: true,
                     hasToggle: true,
                   ),
@@ -307,9 +309,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _register,
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: AppColors.white)
+                        ? CircularProgressIndicator(color: context.pal.white)
                         : Text(
-                            'Criar minha conta',
+                            l10n.registerCreateAccount,
                             style: GoogleFonts.dmSans(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -320,17 +322,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Já tenho uma conta',
+                      l10n.registerAlreadyHaveAccount,
                       style: GoogleFonts.dmSans(fontSize: 15),
                     ),
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Ao criar sua conta você aceita os Termos de Uso e a Política de Privacidade.',
+                    l10n.registerLegalFooter,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.dmSans(
                       fontSize: 11,
-                      color: AppColors.inkFaint,
+                      color: context.pal.inkFaint,
                       height: 1.5,
                     ),
                   ),

@@ -3,22 +3,42 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
+import '../../../../shared/utils/date_formatter.dart';
 
-// Lista de palavras proibidas
-const List<String> _palavrasProibidas = [
-  'idiota', 'imbecil', 'burro', 'estupido', 'estúpido',
-  'lixo', 'merda', 'puta', 'viado', 'fdp',
-  'canalha', 'vagabundo', 'prostituta', 'desgraça',
-  'maldito', 'inferno', 'otario', 'otário',
-  'odeio', 'morra', 'morte',
-];
+const Map<String, List<String>> _bannedWordsByLocale = {
+  'pt': [
+    'idiota', 'imbecil', 'burro', 'estupido', 'estúpido',
+    'lixo', 'merda', 'puta', 'viado', 'fdp',
+    'canalha', 'vagabundo', 'prostituta', 'desgraça',
+    'maldito', 'inferno', 'otario', 'otário',
+    'odeio', 'morra', 'morte',
+  ],
+  'en': [
+    'idiot', 'moron', 'stupid', 'dumb', 'trash',
+    'shit', 'fuck', 'bitch', 'asshole', 'bastard',
+    'slut', 'whore', 'damn', 'crap', 'hate',
+    'die', 'kill',
+  ],
+  'es': [
+    'idiota', 'imbécil', 'estúpido', 'tonto', 'basura',
+    'mierda', 'puta', 'cabrón', 'pendejo', 'maricón',
+    'maldito', 'infierno', 'odio', 'muere', 'muerte',
+    'desgraciado', 'prostituta',
+  ],
+};
 
-bool _contemPalavraProibida(String texto) {
-  final textoLower = texto.toLowerCase();
-  for (final palavra in _palavrasProibidas) {
-    if (textoLower.contains(palavra)) return true;
+bool _containsBannedWord(String text, Locale locale) {
+  final textLower = text.toLowerCase();
+  final lang = locale.languageCode;
+  final allWords = <String>{
+    ..._bannedWordsByLocale['pt'] ?? [],
+    ..._bannedWordsByLocale[lang] ?? [],
+  };
+  for (final word in allWords) {
+    if (textLower.contains(word)) return true;
   }
   return false;
 }
@@ -51,15 +71,17 @@ class _CommentsScreenState extends State<CommentsScreen> {
     final text = _commentController.text.trim();
     if (text.isEmpty) return;
 
+    final l10n = AppLocalizations.of(context)!;
+
     // Filtro de palavras ofensivas
-    if (_contemPalavraProibida(text)) {
+    if (_containsBannedWord(text, Localizations.localeOf(context))) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Sua mensagem contém palavras inadequadas. O OpenWhen é um espaço de amor e respeito. 💌',
+            l10n.commentsModerationWarning,
             style: GoogleFonts.dmSans(fontSize: 13),
           ),
-          backgroundColor: AppColors.accent,
+          backgroundColor: context.pal.accent,
         ),
       );
       return;
@@ -94,7 +116,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $e')),
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
         );
       }
     }
@@ -104,17 +126,19 @@ class _CommentsScreenState extends State<CommentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: Column(
         children: [
           // Header escuro
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+                colors: context.pal.headerGradient,
               ),
             ),
             child: SafeArea(
@@ -140,7 +164,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Comentários', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.white, fontStyle: FontStyle.italic)),
+                          Text(l10n.commentsTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white, fontStyle: FontStyle.italic)),
                           Text(widget.letterTitle, maxLines: 1, overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
                         ],
@@ -171,9 +195,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       children: [
                         const Text('💬', style: TextStyle(fontSize: 40)),
                         const SizedBox(height: 12),
-                        Text('Nenhum comentário ainda', style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: AppColors.ink, fontStyle: FontStyle.italic)),
+                        Text(l10n.commentsEmptyTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: context.pal.ink, fontStyle: FontStyle.italic)),
                         const SizedBox(height: 8),
-                        Text('Seja o primeiro a comentar', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft)),
+                        Text(l10n.commentsEmptySubtitle, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
                       ],
                     ),
                   );
@@ -189,9 +213,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: isMe ? AppColors.ink : AppColors.white,
+                        color: isMe ? context.pal.headerGradient.first : context.pal.card,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: isMe ? Colors.transparent : AppColors.border),
+                        border: Border.all(color: isMe ? Colors.transparent : context.pal.border),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,8 +232,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                 photoUrl: photoUrl,
                                 name: data['userName'] as String? ?? 'U',
                                 size: 36,
-                                backgroundColor: isMe ? AppColors.accent : AppColors.accentWarm,
-                                textColor: isMe ? AppColors.white : AppColors.accent,
+                                backgroundColor: isMe ? context.pal.accent : context.pal.accentWarm,
+                                textColor: isMe ? context.pal.white : context.pal.accent,
                               );
                             },
                           ),
@@ -222,19 +246,19 @@ class _CommentsScreenState extends State<CommentsScreen> {
                                   children: [
                                     Text(
                                       data['userName'] ?? '',
-                                      style: GoogleFonts.dmSans(fontSize: 13, color: isMe ? AppColors.white : AppColors.ink, fontWeight: FontWeight.w500),
+                                      style: GoogleFonts.dmSans(fontSize: 13, color: isMe ? context.pal.white : context.pal.ink, fontWeight: FontWeight.w500),
                                     ),
                                     const Spacer(),
                                     Text(
-                                      '${createdAt.day}/${createdAt.month}',
-                                      style: GoogleFonts.dmSans(fontSize: 11, color: isMe ? Colors.white.withOpacity(0.3) : AppColors.inkFaint),
+                                      formatDayMonth(createdAt, locale),
+                                      style: GoogleFonts.dmSans(fontSize: 11, color: isMe ? Colors.white.withOpacity(0.3) : context.pal.inkFaint),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   data['message'] ?? '',
-                                  style: GoogleFonts.dmSans(fontSize: 14, color: isMe ? Colors.white.withOpacity(0.8) : AppColors.inkSoft, height: 1.5),
+                                  style: GoogleFonts.dmSans(fontSize: 14, color: isMe ? Colors.white.withOpacity(0.8) : context.pal.inkSoft, height: 1.5),
                                 ),
                               ],
                             ),
@@ -250,8 +274,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
           // Campo de comentário
           Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
-              border: Border(top: BorderSide(color: AppColors.border)),
+              color: context.pal.card,
+              border: Border(top: BorderSide(color: context.pal.border)),
             ),
             padding: EdgeInsets.fromLTRB(
               16,
@@ -264,18 +288,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.bg,
+                      color: context.pal.bg,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.pal.border),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: TextField(
                       controller: _commentController,
-                      style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink),
+                      style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink),
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Escreva com amor... 💌',
-                        hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint, fontSize: 14),
+                        hintText: l10n.commentsInputHint,
+                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint, fontSize: 14),
                       ),
                     ),
                   ),
@@ -286,9 +310,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   child: Container(
                     width: 44, height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.accent,
+                      color: context.pal.accent,
                       shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: AppColors.accent.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                      boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 2))],
                     ),
                     child: _isLoading
                         ? const Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))

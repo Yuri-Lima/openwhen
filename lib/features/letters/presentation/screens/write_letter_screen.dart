@@ -1,13 +1,26 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../shared/widgets/owl_feedback_affordance.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/utils/music_url.dart';
+import '../../../../shared/utils/location_prompt_flow.dart';
+import '../voice_letter.dart';
 
 class EmotionalState {
   final String key;
@@ -26,6 +39,17 @@ const List<EmotionalState> emotionalStates = [
   EmotionalState(key: 'farewell', label: 'Despedida', emoji: '🦋', color: Color(0xFF8B5CF6), bgColor: Color(0xFFEDE9FE)),
 ];
 
+String emotionalStateLabel(AppLocalizations l10n, String key) {
+  switch (key) {
+    case 'love': return l10n.writeLetterEmotionLove;
+    case 'achievement': return l10n.writeLetterEmotionAchievement;
+    case 'advice': return l10n.writeLetterEmotionAdvice;
+    case 'nostalgia': return l10n.writeLetterEmotionNostalgia;
+    case 'farewell': return l10n.writeLetterEmotionFarewell;
+    default: return key;
+  }
+}
+
 class WriteLetterScreen extends ConsumerStatefulWidget {
   const WriteLetterScreen({super.key});
 
@@ -38,6 +62,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   final _messageController = TextEditingController();
   final _searchController = TextEditingController();
   final _emailController = TextEditingController();
+  final _musicUrlController = TextEditingController();
 
   DateTime _openDate = DateTime.now().add(const Duration(days: 7));
   bool _isPublic = false;
@@ -61,13 +86,178 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   bool _searching = false;
   bool _showResults = false;
 
+  // Mensagem digitada: recolhida por padrão
+  bool _messageExpanded = false;
+  final FocusNode _messageFocusNode = FocusNode();
+
+  // Voz (mobile/desktop com IO; web usa stub de upload)
+  static const int _voiceMaxSeconds = 60;
+  final AudioRecorder _audioRecorder = AudioRecorder();
+  AudioPlayer? _previewPlayer;
+  String? _voiceLocalPath;
+  bool _isRecording = false;
+  int _recordingSeconds = 0;
+  Timer? _recordingTimer;
+
+  void _onMessageChanged() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController.addListener(_onMessageChanged);
+  }
+
   @override
   void dispose() {
+    _recordingTimer?.cancel();
+    if (_isRecording) {
+      unawaited(_audioRecorder.stop());
+    }
+    unawaited(_audioRecorder.dispose());
+    _previewPlayer?.dispose();
+    _messageController.removeListener(_onMessageChanged);
+    _messageFocusNode.dispose();
     _titleController.dispose();
     _messageController.dispose();
     _searchController.dispose();
     _emailController.dispose();
+    _musicUrlController.dispose();
+    if (!kIsWeb && _voiceLocalPath != null) {
+      unawaited(deleteVoiceFile(_voiceLocalPath));
+    }
     super.dispose();
+  }
+
+  Future<bool> _ensureMicPermission() async {
+    final l10n = AppLocalizations.of(context)!;
+    final status = await Permission.microphone.request();
+    if (status.isGranted) return true;
+    if (!mounted) return false;
+    if (status.isPermanentlyDenied) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.writeLetterVoicePermissionDenied),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.actionCancel)),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                openAppSettings();
+              },
+              child: Text(l10n.writeLetterVoiceOpenSettings),
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+    );
+    return false;
+  }
+
+  Future<void> _startRecording() async {
+    if (kIsWeb) return;
+    if (!await _ensureMicPermission()) return;
+    final l10n = AppLocalizations.of(context)!;
+    if (_voiceLocalPath != null) {
+      await deleteVoiceFile(_voiceLocalPath);
+      setState(() => _voiceLocalPath = null);
+    }
+    final dir = await getTemporaryDirectory();
+    final path = '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    try {
+      if (!await _audioRecorder.hasPermission()) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+          );
+        }
+        return;
+      }
+      await _audioRecorder.start(
+        const RecordConfig(encoder: AudioEncoder.aacLc),
+        path: path,
+      );
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.writeLetterVoicePermissionDenied)),
+        );
+      }
+      return;
+    }
+    setState(() {
+      _isRecording = true;
+      _recordingSeconds = 0;
+    });
+    _recordingTimer?.cancel();
+    _recordingTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      setState(() {
+        _recordingSeconds++;
+        if (_recordingSeconds >= _voiceMaxSeconds) {
+          unawaited(_stopRecording(maxReached: true));
+        }
+      });
+    });
+  }
+
+  Future<void> _stopRecording({bool maxReached = false}) async {
+    final l10n = AppLocalizations.of(context)!;
+    _recordingTimer?.cancel();
+    _recordingTimer = null;
+    if (!_isRecording) return;
+    String? outPath;
+    try {
+      outPath = await _audioRecorder.stop();
+    } catch (_) {
+      outPath = null;
+    }
+    if (!mounted) return;
+    setState(() {
+      _isRecording = false;
+      if (outPath != null) _voiceLocalPath = outPath;
+    });
+    if (maxReached) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.writeLetterVoiceMaxDuration)),
+      );
+    }
+  }
+
+  Future<void> _discardVoice() async {
+    await deleteVoiceFile(_voiceLocalPath);
+    await _previewPlayer?.stop();
+    setState(() => _voiceLocalPath = null);
+  }
+
+  Future<void> _togglePreview() async {
+    if (kIsWeb || _voiceLocalPath == null) return;
+    _previewPlayer ??= AudioPlayer()
+      ..playerStateStream.listen((_) {
+        if (mounted) setState(() {});
+      });
+    final p = _previewPlayer!;
+    try {
+      if (p.playing) {
+        await p.pause();
+        setState(() {});
+        return;
+      }
+      await p.setAudioSource(AudioSource.uri(Uri.file(_voiceLocalPath!)));
+      await p.play();
+      setState(() {});
+    } catch (_) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.voiceLetterPlayError)),
+        );
+      }
+    }
   }
 
   Future<void> _searchUsers(String query) async {
@@ -121,10 +311,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   void _selectByEmail() {
+    final l10n = AppLocalizations.of(context)!;
     final email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Digite um email válido!')),
+        SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
       );
       return;
     }
@@ -149,29 +340,25 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _pickHandwrittenImage() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.first;
-    if (file.bytes == null) return;
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
 
     setState(() => _uploadingImage = true);
     try {
+      final bytes = await picked.readAsBytes();
       final uid = FirebaseAuth.instance.currentUser!.uid;
       final ref = FirebaseStorage.instance
           .ref('handwritten/${uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
-      await ref.putData(file.bytes!, SettableMetadata(contentType: 'image/jpeg'));
+      await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       final url = await ref.getDownloadURL();
       setState(() => _handwrittenImageUrl = url);
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Ative o Firebase Storage para usar esta função'),
-            backgroundColor: AppColors.accent,
+            content: Text(l10n.writeLetterSnackStorageError),
+            backgroundColor: context.pal.accent,
           ),
         );
       }
@@ -180,13 +367,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _pickDate() async {
+    final accent = context.pal.accent;
     final picked = await showDatePicker(
       context: context,
       initialDate: _openDate,
       firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
       builder: (ctx, child) => Theme(
-        data: Theme.of(ctx).copyWith(colorScheme: const ColorScheme.light(primary: AppColors.accent)),
+        data: Theme.of(ctx).copyWith(colorScheme: ColorScheme.light(primary: accent)),
         child: child!,
       ),
     );
@@ -194,31 +382,55 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _saveLetter() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_titleController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preencha o título!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackTitle)));
       return;
     }
     if (!_isHandwritten && _messageController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escreva sua mensagem!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMessage)));
       return;
     }
     if (_isHandwritten && _handwrittenImageUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Adicione a foto da carta!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackPhoto)));
       return;
     }
     if (_receiverName == null || _receiverName!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escolha o destinatário!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
       return;
     }
     if (_selectedEmotion == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escolha o estado emocional!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
       return;
     }
+    final musicTrim = _musicUrlController.text.trim();
+    if (musicTrim.isNotEmpty && !isValidHttpsMusicUrl(musicTrim)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMusicUrlInvalid)));
+      return;
+    }
+
+    final locOpts = await promptSenderLocationAndProximity(context, l10n);
+    if (!mounted) return;
 
     setState(() => _isLoading = true);
     try {
       final currentUser = FirebaseAuth.instance.currentUser!;
       final firestore = FirebaseFirestore.instance;
+
+      String? voiceUrlToSave;
+      if (!kIsWeb && _voiceLocalPath != null) {
+        voiceUrlToSave = await uploadVoiceLetterFile(_voiceLocalPath!, currentUser.uid);
+        if (voiceUrlToSave == null) {
+          if (mounted) {
+            setState(() => _isLoading = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(l10n.writeLetterVoiceUploadError)),
+            );
+          }
+          return;
+        }
+        if (mounted) setState(() => _voiceLocalPath = null);
+      }
 
       final senderDoc = await firestore.collection(FirestoreCollections.users).doc(currentUser.uid).get();
       final senderName = senderDoc.data()?['displayName'] ?? senderDoc.data()?['name'] ?? currentUser.email ?? '';
@@ -255,43 +467,54 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'publishedAt': null,
         'likeCount': 0,
         'commentCount': 0,
+        if (musicTrim.isNotEmpty) 'musicUrl': musicTrim,
+        if (voiceUrlToSave != null) 'voiceUrl': voiceUrlToSave,
+        if (locOpts.senderLocation != null)
+          ...<String, dynamic>{
+            'senderLocation': locOpts.senderLocation!,
+            'openRequiresProximity': locOpts.openRequiresProximity,
+          },
       });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_receiverHasAccount
-              ? (areFriends ? 'Carta enviada! 💌' : 'Carta enviada! Aguardando aprovação. 💌')
-              : 'Carta criada! Compartilhe o link com o destinatário. 💌'),
-          backgroundColor: AppColors.accent,
+              ? (areFriends ? l10n.writeLetterSnackSentFriend : l10n.writeLetterSnackSentPending)
+              : l10n.writeLetterSnackSentExternal),
+          backgroundColor: context.pal.accent,
         ));
         Navigator.pop(context);
       }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.errorGeneric(e.toString()))));
     }
     if (mounted) setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: SafeArea(
         child: Column(children: [
           // Header
           Container(
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-              border: Border(bottom: BorderSide(color: AppColors.border)),
+            decoration: BoxDecoration(
+              color: context.pal.card,
+              border: Border(bottom: BorderSide(color: context.pal.border)),
             ),
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
             child: Row(children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back, color: AppColors.ink)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back, color: context.pal.ink)),
               const SizedBox(width: 16),
               Row(children: [
-                Text('Escrever carta', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: AppColors.ink)),
+                Text(l10n.writeLetterTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink)),
                 const SizedBox(width: 6),
-                const OwlWatermark(width: 18, height: 22, color: AppColors.ink),
+                OwlFeedbackAffordance(
+                  child: OwlWatermark(width: 18, height: 22, color: context.pal.ink),
+                ),
               ]),
             ]),
           ),
@@ -303,7 +526,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
 
                   // Estado emocional
-                  Text('COMO VOCÊ ESTÁ SE SENTINDO?', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterFeeling, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 12),
                   Row(children: emotionalStates.map((e) {
                     final isSelected = _selectedEmotion?.key == e.key;
@@ -312,35 +535,28 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         margin: const EdgeInsets.symmetric(horizontal: 3),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                          color: isSelected ? e.color : AppColors.white,
+                          color: isSelected ? e.bgColor : context.pal.card,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: isSelected ? e.color : AppColors.border, width: isSelected ? 2 : 1),
+                          border: Border.all(color: isSelected ? e.color : context.pal.border, width: isSelected ? 2 : 1),
                         ),
-                        child: Center(
-                          child: Text(
-                            e.label,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.dmSerifDisplay(
-                              fontSize: e.label.length > 8 ? 11 : e.label.length > 6 ? 13 : 15,
-                              color: isSelected ? Colors.white : e.color,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
+                        child: Column(children: [
+                          Text(e.emoji, style: const TextStyle(fontSize: 20)),
+                          const SizedBox(height: 4),
+                          Text(emotionalStateLabel(l10n, e.key), style: GoogleFonts.dmSans(fontSize: 9, color: isSelected ? e.color : context.pal.inkFaint, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400)),
+                        ]),
                       ),
                     ));
                   }).toList()),
                   const SizedBox(height: 20),
 
                   // Titulo
-                  _buildField(controller: _titleController, label: 'Título', hint: 'Ex: Abra quando sentir saudade'),
+                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
                   const SizedBox(height: 20),
 
                   // TIPO DE CARTA
-                  Text('TIPO DE CARTA', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterTypeSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 10),
                   Row(children: [
                     Expanded(
@@ -350,14 +566,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: !_isHandwritten ? AppColors.accentWarm : AppColors.white,
+                            color: !_isHandwritten ? context.pal.accentWarm : context.pal.card,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: !_isHandwritten ? AppColors.accent : AppColors.border, width: !_isHandwritten ? 2 : 1),
+                            border: Border.all(color: !_isHandwritten ? context.pal.accent : context.pal.border, width: !_isHandwritten ? 2 : 1),
                           ),
                           child: Column(children: [
                             Text('⌨️', style: const TextStyle(fontSize: 22)),
                             const SizedBox(height: 4),
-                            Text('Digitada', style: GoogleFonts.dmSans(fontSize: 12, color: !_isHandwritten ? AppColors.accent : AppColors.inkSoft, fontWeight: !_isHandwritten ? FontWeight.w600 : FontWeight.w400)),
+                            Text(l10n.writeLetterTypeTyped, style: GoogleFonts.dmSans(fontSize: 12, color: !_isHandwritten ? context.pal.accent : context.pal.inkSoft, fontWeight: !_isHandwritten ? FontWeight.w600 : FontWeight.w400)),
                           ]),
                         ),
                       ),
@@ -370,14 +586,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: _isHandwritten ? AppColors.accentWarm : AppColors.white,
+                            color: _isHandwritten ? context.pal.accentWarm : context.pal.card,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: _isHandwritten ? AppColors.accent : AppColors.border, width: _isHandwritten ? 2 : 1),
+                            border: Border.all(color: _isHandwritten ? context.pal.accent : context.pal.border, width: _isHandwritten ? 2 : 1),
                           ),
                           child: Column(children: [
                             Text('✍️', style: const TextStyle(fontSize: 22)),
                             const SizedBox(height: 4),
-                            Text('Manuscrita', style: GoogleFonts.dmSans(fontSize: 12, color: _isHandwritten ? AppColors.accent : AppColors.inkSoft, fontWeight: _isHandwritten ? FontWeight.w600 : FontWeight.w400)),
+                            Text(l10n.writeLetterTypeHandwritten, style: GoogleFonts.dmSans(fontSize: 12, color: _isHandwritten ? context.pal.accent : context.pal.inkSoft, fontWeight: _isHandwritten ? FontWeight.w600 : FontWeight.w400)),
                           ]),
                         ),
                       ),
@@ -386,35 +602,206 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   const SizedBox(height: 14),
 
                   // CONTEUDO DA CARTA
-                  if (!_isHandwritten)
-                    Container(
-                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
-                      child: TextField(
-                        controller: _messageController,
-                        maxLines: 8,
-                        style: GoogleFonts.dmSerifDisplay(color: AppColors.ink, fontStyle: FontStyle.italic, fontSize: 15, height: 1.8),
-                        decoration: InputDecoration(
-                          labelText: 'Sua mensagem',
-                          labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(16),
-                          alignLabelWithHint: true,
+                  if (!_isHandwritten) ...[
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      child: _messageExpanded
+                          ? Container(
+                              decoration: BoxDecoration(
+                                color: context.pal.card,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: context.pal.border),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(12, 4, 4, 0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            l10n.writeLetterFieldMessage,
+                                            style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.expand_less, color: context.pal.inkFaint),
+                                          onPressed: () {
+                                            _messageFocusNode.unfocus();
+                                            setState(() => _messageExpanded = false);
+                                          },
+                                          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextField(
+                                    controller: _messageController,
+                                    focusNode: _messageFocusNode,
+                                    maxLines: 8,
+                                    style: GoogleFonts.dmSerifDisplay(
+                                      color: context.pal.ink,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 15,
+                                      height: 1.8,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: l10n.writeLetterFieldMessage,
+                                      hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                      alignLabelWithHint: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: () {
+                                  setState(() => _messageExpanded = true);
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    _messageFocusNode.requestFocus();
+                                    final ctx = _messageFocusNode.context;
+                                    if (ctx != null && ctx.mounted) {
+                                      Scrollable.ensureVisible(
+                                        ctx,
+                                        duration: const Duration(milliseconds: 250),
+                                        alignment: 0.2,
+                                      );
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: context.pal.card,
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(color: context.pal.border),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              l10n.writeLetterFieldMessage,
+                                              style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              _messageController.text.isEmpty
+                                                  ? l10n.writeLetterMessageTapToExpand
+                                                  : _messageController.text,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.dmSerifDisplay(
+                                                color: context.pal.ink,
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 15,
+                                                height: 1.4,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(Icons.expand_more, color: context.pal.inkFaint),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
+                    if (!kIsWeb) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.writeLetterVoiceSection,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 10,
+                          color: context.pal.inkFaint,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    )
-                  else
-                    GestureDetector(
-                      onTap: _pickHandwrittenImage,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: _handwrittenImageUrl != null ? null : 180,
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: context.pal.card,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: _handwrittenImageUrl != null ? AppColors.accent : AppColors.border,
-                            width: _handwrittenImageUrl != null ? 2 : 1,
-                          ),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (_isRecording)
+                              Row(
+                                children: [
+                                  Icon(Icons.fiber_manual_record, color: Colors.red.shade400, size: 14),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${_recordingSeconds ~/ 60}:${(_recordingSeconds % 60).toString().padLeft(2, '0')} / 1:00',
+                                    style: GoogleFonts.dmSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.pal.ink,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  TextButton(
+                                    onPressed: () => _stopRecording(),
+                                    child: Text(l10n.writeLetterVoiceStop),
+                                  ),
+                                ],
+                              )
+                            else if (_voiceLocalPath != null)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    l10n.writeLetterVoiceWillSend,
+                                    style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      OutlinedButton.icon(
+                                        onPressed: _togglePreview,
+                                        icon: Icon(
+                                          (_previewPlayer?.playing ?? false)
+                                              ? Icons.pause_rounded
+                                              : Icons.play_arrow_rounded,
+                                          size: 18,
+                                        ),
+                                        label: Text(l10n.writeLetterVoicePreview),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      TextButton.icon(
+                                        onPressed: _discardVoice,
+                                        icon: const Icon(Icons.delete_outline, size: 18),
+                                        label: Text(l10n.writeLetterVoiceDiscard),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            else
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: FilledButton.icon(
+                                  onPressed: _startRecording,
+                                  icon: const Icon(Icons.mic_rounded, size: 18),
+                                  label: Text(l10n.writeLetterVoiceRecord),
+                                ),
+                              ),
+                          ],
                         ),
                         child: _uploadingImage
                             ? const Center(child: Padding(
@@ -447,64 +834,131 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                                     Text('Tire uma foto da sua carta escrita à mão', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
                                   ]),
                       ),
+                    ],
+                  ] else
+                    GestureDetector(
+                      onTap: _pickHandwrittenImage,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: _handwrittenImageUrl != null ? null : 180,
+                        decoration: BoxDecoration(
+                          color: context.pal.card,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: _handwrittenImageUrl != null ? context.pal.accent : context.pal.border,
+                            width: _handwrittenImageUrl != null ? 2 : 1,
+                          ),
+                        ),
+                        child: _uploadingImage
+                            ? Center(child: Padding(
+                                padding: const EdgeInsets.all(40),
+                                child: CircularProgressIndicator(color: context.pal.accent),
+                              ))
+                            : _handwrittenImageUrl != null
+                                ? Stack(children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(13),
+                                      child: Image.network(_handwrittenImageUrl!, fit: BoxFit.cover, width: double.infinity),
+                                    ),
+                                    Positioned(
+                                      top: 8, right: 8,
+                                      child: GestureDetector(
+                                        onTap: () => setState(() => _handwrittenImageUrl = null),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(color: context.pal.accent, shape: BoxShape.circle),
+                                          child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ])
+                                : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                    Icon(Icons.add_photo_alternate_outlined, size: 40, color: context.pal.inkFaint),
+                                    const SizedBox(height: 10),
+                                    Text(l10n.writeLetterPhotoTap, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
+                                    const SizedBox(height: 4),
+                                    Text(l10n.writeLetterPhotoHint, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
+                                  ]),
+                      ),
                     ),
                   const SizedBox(height: 20),
 
+                  // Link opcional de música
+                  Text(l10n.writeLetterMusicUrlLabel, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: TextField(
+                      controller: _musicUrlController,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
+                      style: GoogleFonts.dmSans(color: context.pal.ink),
+                      decoration: InputDecoration(
+                        hintText: l10n.writeLetterMusicUrlHint,
+                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
                   // DESTINATARIO
-                  Text('PARA QUEM?', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.writeLetterRecipientSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
 
                   if (_receiverName != null)
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: context.pal.card,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.accent),
+                        border: Border.all(color: context.pal.accent),
                       ),
                       child: Row(children: [
                         Container(
                           width: 40, height: 40,
                           decoration: BoxDecoration(
-                            color: _receiverHasAccount ? AppColors.accentWarm : const Color(0xFFEEF2FF),
+                            color: _receiverHasAccount ? context.pal.accentWarm : const Color(0xFFEEF2FF),
                             shape: BoxShape.circle,
                           ),
                           child: Center(child: _receiverHasAccount
-                              ? Text((_receiverName ?? 'U').substring(0, 1).toUpperCase(), style: GoogleFonts.dmSans(color: AppColors.accent, fontWeight: FontWeight.bold))
+                              ? Text((_receiverName ?? 'U').substring(0, 1).toUpperCase(), style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold))
                               : const Icon(Icons.email_outlined, color: Color(0xFF6366F1), size: 18)),
                         ),
                         const SizedBox(width: 12),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(_receiverName ?? '', style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                          Text(_receiverName ?? '', style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
                           Text(
-                            _receiverHasAccount ? '@${_receiverUsername ?? ''}' : 'Receberá um link para criar conta',
-                            style: GoogleFonts.dmSans(fontSize: 12, color: _receiverHasAccount ? AppColors.inkSoft : const Color(0xFF6366F1)),
+                            _receiverHasAccount ? '@${_receiverUsername ?? ''}' : l10n.writeLetterReceiverLink,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: _receiverHasAccount ? context.pal.inkSoft : const Color(0xFF6366F1)),
                           ),
                         ])),
-                        GestureDetector(onTap: _clearReceiver, child: const Icon(Icons.close, color: AppColors.accent, size: 20)),
+                        GestureDetector(onTap: _clearReceiver, child: Icon(Icons.close, color: context.pal.accent, size: 20)),
                       ]),
                     )
                   else
                     Column(children: [
                       // Busca por usuario
                       Container(
-                        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                         child: Row(children: [
-                          const Icon(Icons.search, color: AppColors.inkFaint, size: 20),
+                          Icon(Icons.search, color: context.pal.inkFaint, size: 20),
                           const SizedBox(width: 8),
                           Expanded(child: TextField(
                             controller: _searchController,
                             onChanged: _searchUsers,
-                            style: GoogleFonts.dmSans(color: AppColors.ink),
+                            style: GoogleFonts.dmSans(color: context.pal.ink),
                             decoration: InputDecoration(
-                              hintText: 'Buscar por @usuario ou nome...',
-                              hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                              hintText: l10n.writeLetterSearchHint,
+                              hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                           )),
-                          if (_searching) const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent)),
+                          if (_searching) SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: context.pal.accent)),
                         ]),
                       ),
 
@@ -512,7 +966,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       if (_showResults && _searchResults.isNotEmpty)
                         Container(
                           margin: const EdgeInsets.only(top: 4),
-                          decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
+                          decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
                           child: Column(children: _searchResults.map((u) {
                             final nome = u['displayName'] ?? u['name'] ?? '';
                             final foto = u['photoUrl'];
@@ -521,12 +975,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                               leading: CircleAvatar(
                                 radius: 20,
-                                backgroundColor: AppColors.accentWarm,
+                                backgroundColor: context.pal.accentWarm,
                                 backgroundImage: foto != null ? NetworkImage(foto) : null,
-                                child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: AppColors.accent, fontWeight: FontWeight.bold)) : null,
+                                child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold)) : null,
                               ),
-                              title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.ink)),
-                              subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.inkSoft)),
+                              title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
+                              subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft)),
                               onTap: () => _selectUser(u),
                             );
                           }).toList()),
@@ -536,12 +990,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Row(children: [
-                          const Expanded(child: Divider(color: AppColors.border)),
+                          Expanded(child: Divider(color: context.pal.border)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('ou envie para quem não tem conta', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                            child: Text(l10n.writeLetterOrSendExternal, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                           ),
-                          const Expanded(child: Divider(color: AppColors.border)),
+                          Expanded(child: Divider(color: context.pal.border)),
                         ]),
                       ),
 
@@ -549,15 +1003,15 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       Row(children: [
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                            decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                             child: TextField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
-                              style: GoogleFonts.dmSans(color: AppColors.ink),
+                              style: GoogleFonts.dmSans(color: context.pal.ink),
                               decoration: InputDecoration(
-                                hintText: 'email@exemplo.com',
-                                hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                                hintText: l10n.writeLetterEmailHint,
+                                hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.symmetric(vertical: 14),
                               ),
@@ -569,7 +1023,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           onTap: _selectByEmail,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(14)),
+                            decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(14)),
                             child: Text('OK', style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
                           ),
                         ),
@@ -582,13 +1036,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     onTap: _pickDate,
                     child: Container(
                       padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                       child: Row(children: [
-                        const Icon(Icons.calendar_today, color: AppColors.accent, size: 20),
+                        Icon(Icons.calendar_today, color: context.pal.accent, size: 20),
                         const SizedBox(width: 12),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('Data de abertura', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 11)),
-                          Text('${_openDate.day}/${_openDate.month}/${_openDate.year}', style: GoogleFonts.dmSans(color: AppColors.ink, fontSize: 15, fontWeight: FontWeight.w500)),
+                          Text(l10n.writeLetterOpenDateLabel, style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 11)),
+                          Text(formatShortDate(_openDate, locale), style: GoogleFonts.dmSans(color: context.pal.ink, fontSize: 15, fontWeight: FontWeight.w500)),
                         ]),
                       ]),
                     ),
@@ -597,12 +1051,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
                   // Toggle publico
                   Container(
-                    decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
                     child: SwitchListTile(
-                      title: Text('Carta pública', style: GoogleFonts.dmSans(color: AppColors.ink)),
-                      subtitle: Text('Pode aparecer no feed após ser aberta', style: GoogleFonts.dmSans(color: AppColors.inkSoft, fontSize: 12)),
+                      title: Text(l10n.writeLetterPublicToggle, style: GoogleFonts.dmSans(color: context.pal.ink)),
+                      subtitle: Text(l10n.writeLetterPublicHint, style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12)),
                       value: _isPublic,
-                      activeColor: AppColors.accent,
+                      activeColor: context.pal.accent,
                       onChanged: (value) => setState(() => _isPublic = value),
                     ),
                   ),
@@ -612,8 +1066,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _saveLetter,
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: AppColors.white)
-                        : Text('Enviar carta 💌', style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+                        ? CircularProgressIndicator(color: context.pal.white)
+                        : Text(l10n.writeLetterSend, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
                   ),
                   const SizedBox(height: 24),
                 ]),
@@ -627,17 +1081,17 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   Widget _buildField({required TextEditingController controller, required String label, required String hint, TextInputType keyboard = TextInputType.text}) {
     return Container(
-      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: TextField(
         controller: controller,
         keyboardType: keyboard,
-        style: GoogleFonts.dmSans(color: AppColors.ink),
+        style: GoogleFonts.dmSans(color: context.pal.ink),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.dmSans(color: AppColors.inkSoft),
-          hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+          labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
+          hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
         ),

@@ -1,9 +1,15 @@
+import 'package:audio_session/audio_session.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/services.dart' show MissingPluginException;
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'l10n/app_localizations.dart';
+import 'shared/locale/locale_provider.dart';
+import 'core/constants/firestore_collections.dart';
 import 'core/services/notification_service.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
@@ -18,26 +24,105 @@ import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/profile/presentation/screens/search_screen.dart';
 import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
+import 'shared/theme/theme_provider.dart';
+import 'shared/widgets/feedback_entry_button.dart';
 
 bool _onboardingShown = false;
 
+/// Best-effort: improves playback on iOS/Android; not available on web and may
+/// throw [MissingPluginException] after hot restart until a full rebuild.
+Future<void> _configureAudioSession() async {
+  if (kIsWeb) return;
+  try {
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration.music());
+  } on MissingPluginException catch (e) {
+    debugPrint('AudioSession skipped (no platform implementation): $e');
+  } catch (e, st) {
+    debugPrint('AudioSession.configure failed: $e\n$st');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await _configureAudioSession();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await NotificationService.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
+  final GlobalKey<NavigatorState> _appNavigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final mode = ref.watch(themeModeProvider);
+    final brightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final palette = resolvePalette(mode, brightness);
+    final localePref = ref.watch(localePreferenceProvider);
+    final platformLocale =
+        WidgetsBinding.instance.platformDispatcher.locale;
+    final appLocale = resolveAppLocale(localePref, platformLocale);
+
+    // Logged-in users get feedback next to each owl; global FAB only when signed out.
+    final hideGlobalFeedbackFab = ref.watch(authStateProvider).maybeWhen(
+      data: (user) => user != null,
+      orElse: () => false,
+    );
+
     return MaterialApp(
+      navigatorKey: _appNavigatorKey,
       title: 'OpenWhen',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme,
+      locale: appLocale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: AppTheme.themeFromPalette(palette),
+      builder: (context, child) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            child ?? const SizedBox.shrink(),
+            if (!hideGlobalFeedbackFab)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: SafeArea(
+                  minimum: const EdgeInsets.only(top: 8, right: 8),
+                  child: FeedbackEntryButton(navigatorKey: _appNavigatorKey),
+                ),
+              ),
+          ],
+        );
+      },
       routes: {
         '/register': (context) => const RegisterScreen(),
         '/write': (context) => const WriteLetterScreen(),
@@ -83,7 +168,10 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
         return const LoginScreen();
       },
       loading: () => const SplashScreen(),
-      error: (e, _) => Scaffold(body: Center(child: Text('Erro: $e'))),
+      error: (e, _) {
+        final l10n = AppLocalizations.of(context)!;
+        return Scaffold(body: Center(child: Text(l10n.errorGeneric(e.toString()))));
+      },
     );
   }
 }
@@ -105,29 +193,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ];
 
   void _showCreateOptions(BuildContext context) {
+    final p = context.pal;
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
+      builder: (ctx) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Color(0xFFF7F4F0),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: p.bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Container(width: 40, height: 4, decoration: BoxDecoration(color: const Color(0xFFC4BFB9), borderRadius: BorderRadius.circular(2))),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: p.inkFaint,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
           const SizedBox(height: 20),
           ListTile(
-            leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFFF0EAE4), borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.mail_outline_rounded, color: Color(0xFFC0392B))),
-            title: const Text('Escrever Carta', style: TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: const Text('Para alguem especial'),
-            onTap: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (_) => const WriteLetterScreen())); },
+            leading: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: p.accentWarm,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.mail_outline_rounded, color: p.accent),
+            ),
+            title: Text(l10n.homeWriteLetter,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.homeWriteLetterSubtitle),
+            onTap: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(
+                    builder: (_) => const WriteLetterScreen()),
+              );
+            },
           ),
           ListTile(
-            leading: Container(width: 44, height: 44, decoration: BoxDecoration(color: const Color(0xFFF0EAE4), borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.hourglass_empty_rounded, color: Color(0xFFC0392B))),
-            title: const Text('Nova Capsula do Tempo', style: TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: const Text('Para voce mesmo ou um grupo'),
-            onTap: () { Navigator.pop(context); Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateCapsuleScreen())); },
+            leading: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: p.accentWarm,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.hourglass_empty_rounded, color: p.accent),
+            ),
+            title: Text(l10n.homeNewCapsule,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.homeNewCapsuleSubtitle),
+            onTap: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(
+                    builder: (_) => const CreateCapsuleScreen()),
+              );
+            },
           ),
           const SizedBox(height: 8),
         ]),
@@ -138,17 +267,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final p = context.pal;
+    final l10n = AppLocalizations.of(context)!;
 
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('letters')
+          .collection(FirestoreCollections.letters)
           .where('receiverUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
           .snapshots(),
       builder: (context, lettersSnap) {
         return StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('capsules')
+              .collection(FirestoreCollections.capsules)
               .where('senderUid', isEqualTo: uid)
               .where('status', isEqualTo: 'locked')
               .snapshots(),
@@ -158,7 +289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             final totalCount = lettersCount + capsulesCount;
 
             return Scaffold(
-              backgroundColor: AppColors.bg,
+              backgroundColor: p.bg,
               body: _screens[_currentIndex],
               floatingActionButton: FloatingActionButton(
                 onPressed: () => _showCreateOptions(context),
@@ -166,27 +297,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
               bottomNavigationBar: Container(
-                decoration: const BoxDecoration(
-                  border: Border(top: BorderSide(color: AppColors.border)),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: p.border)),
                 ),
                 child: BottomNavigationBar(
-                  currentIndex: _currentIndex,
+                  currentIndex: _currentIndex == 0 ? 0 : _currentIndex == 1 ? 2 : 3,
                   onTap: (i) {
                     if (i == 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const SearchScreen()),
+                      );
                       return;
                     }
                     setState(() => _currentIndex = i == 2 ? 1 : i == 3 ? 2 : i);
                   },
                   items: [
-                    const BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_outlined), activeIcon: Icon(Icons.auto_awesome), label: 'Feed'),
-                    const BottomNavigationBarItem(icon: Icon(Icons.search), activeIcon: Icon(Icons.search), label: 'Buscar'),
                     BottomNavigationBarItem(
-                      label: 'Cofre',
-                      icon: _buildBadgeIcon(Icons.lock_outline, totalCount),
-                      activeIcon: _buildBadgeIcon(Icons.lock, totalCount),
+                      icon: const Icon(Icons.auto_awesome_outlined),
+                      activeIcon: const Icon(Icons.auto_awesome),
+                      label: l10n.navFeed,
                     ),
-                    const BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: 'Perfil'),
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.search),
+                      activeIcon: const Icon(Icons.search),
+                      label: l10n.navSearch,
+                    ),
+                    BottomNavigationBarItem(
+                      label: l10n.navVault,
+                      icon: _buildBadgeIcon(context, Icons.lock_outline, totalCount),
+                      activeIcon:
+                          _buildBadgeIcon(context, Icons.lock, totalCount),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: const Icon(Icons.person_outline),
+                      activeIcon: const Icon(Icons.person),
+                      label: l10n.navProfile,
+                    ),
                   ],
                 ),
               ),
@@ -197,7 +345,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildBadgeIcon(IconData icon, int count) {
+  Widget _buildBadgeIcon(BuildContext context, IconData icon, int count) {
+    final accent = context.pal.accent;
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -208,14 +357,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             right: -8,
             child: Container(
               padding: const EdgeInsets.all(3),
-              decoration: const BoxDecoration(
-                color: Color(0xFFC0392B),
+              decoration: BoxDecoration(
+                color: accent,
                 shape: BoxShape.circle,
               ),
               constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
               child: Text(
                 count > 99 ? '99+' : count.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),

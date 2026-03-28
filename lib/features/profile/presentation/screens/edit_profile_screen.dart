@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -49,31 +50,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .collection(FirestoreCollections.users)
         .where('username', isEqualTo: username.toLowerCase())
         .get();
-    // Permite se for o proprio usuario
     return snap.docs.isEmpty || (snap.docs.length == 1 && snap.docs.first.id == uid);
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
     final name = _nameCtrl.text.trim();
     final username = _usernameCtrl.text.trim().toLowerCase().replaceAll('@', '').replaceAll(' ', '');
     final bio = _bioCtrl.text.trim();
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nome nao pode ser vazio')),
+        SnackBar(content: Text(l10n.editProfileErrorNameEmpty)),
       );
       return;
     }
 
     if (username.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username nao pode ser vazio')),
+        SnackBar(content: Text(l10n.editProfileErrorUsernameEmpty)),
       );
       return;
     }
 
     if (username.length < 3) {
-      setState(() => _usernameError = 'Username deve ter pelo menos 3 caracteres');
+      setState(() => _usernameError = l10n.editProfileErrorUsernameShort);
       return;
     }
 
@@ -81,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     final available = await _isUsernameAvailable(username);
     if (!available) {
-      setState(() { _usernameError = 'Este username ja esta em uso'; _saving = false; });
+      setState(() { _usernameError = l10n.editProfileErrorUsernameTaken; _saving = false; });
       return;
     }
 
@@ -99,8 +100,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Perfil atualizado!', style: GoogleFonts.dmSans()),
-          backgroundColor: AppColors.accent,
+          content: Text(l10n.editProfileSaved, style: GoogleFonts.dmSans()),
+          backgroundColor: context.pal.accent,
         ),
       );
       Navigator.pop(context);
@@ -118,15 +119,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pal.bg,
       body: Column(children: [
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1A1714), Color(0xFF2C1810), Color(0xFF1A1714)],
+              colors: context.pal.headerGradient,
             ),
           ),
           child: SafeArea(bottom: false, child: Padding(
@@ -137,7 +139,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Container(width: 36, height: 36, decoration: BoxDecoration(color: Colors.white.withOpacity(0.08), borderRadius: BorderRadius.circular(12)), child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6))),
               ),
               const SizedBox(width: 16),
-              Text('Editar perfil', style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: AppColors.white, fontStyle: FontStyle.italic)),
+              Text(l10n.editProfileTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
               const Spacer(),
               if (_saving)
                 const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
@@ -146,8 +148,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onTap: _save,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(20)),
-                    child: Text('Salvar', style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
+                    decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(20)),
+                    child: Text(l10n.actionSave, style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
                   ),
                 ),
             ]),
@@ -158,63 +160,59 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ? const Center(child: CircularProgressIndicator())
               : ListView(padding: const EdgeInsets.all(24), children: [
 
-                  // Nome
-                  Text('NOME', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.editProfileSectionName, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   _buildField(
                     controller: _nameCtrl,
-                    hint: 'Seu nome completo',
+                    hint: l10n.editProfileHintName,
                     icon: Icons.person_outline_rounded,
                   ),
                   const SizedBox(height: 20),
 
-                  // Username
-                  Text('USERNAME', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.editProfileSectionUsername, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   _buildField(
                     controller: _usernameCtrl,
-                    hint: 'seu_username',
+                    hint: l10n.editProfileHintUsername,
                     icon: Icons.alternate_email_rounded,
                     prefix: '@',
                     error: _usernameError,
                     onChanged: (_) => setState(() => _usernameError = null),
                   ),
                   const SizedBox(height: 4),
-                  Text('Apenas letras, numeros e _', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
+                  Text(l10n.editProfileUsernameRules, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                   const SizedBox(height: 20),
 
-                  // Bio
-                  Text('BIO', style: GoogleFonts.dmSans(fontSize: 10, color: AppColors.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                  Text(l10n.editProfileSectionBio, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.pal.card,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.pal.border),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: TextField(
                       controller: _bioCtrl,
                       maxLines: 3,
                       maxLength: 150,
-                      style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink),
+                      style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink),
                       decoration: InputDecoration(
-                        hintText: 'Conte um pouco sobre voce...',
-                        hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+                        hintText: l10n.editProfileHintBio,
+                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                         border: InputBorder.none,
-                        counterStyle: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint),
+                        counterStyle: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint),
                       ),
                     ),
                   ),
                   const SizedBox(height: 32),
 
-                  // Botao salvar
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _saving ? null : _save,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.accent,
+                        backgroundColor: context.pal.accent,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -222,7 +220,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       child: _saving
                           ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                          : Text('Salvar alteracoes', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 16)),
+                          : Text(l10n.editProfileSaveChanges, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 16)),
                     ),
                   ),
                 ]),
@@ -242,23 +240,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.pal.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: error != null ? AppColors.accent : AppColors.border),
+          border: Border.all(color: error != null ? context.pal.accent : context.pal.border),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(children: [
-          Icon(icon, size: 18, color: AppColors.inkFaint),
+          Icon(icon, size: 18, color: context.pal.inkFaint),
           const SizedBox(width: 10),
           if (prefix != null)
-            Text(prefix, style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.inkSoft, fontWeight: FontWeight.w500)),
+            Text(prefix, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
           Expanded(child: TextField(
             controller: controller,
             onChanged: onChanged,
-            style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.ink),
+            style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: GoogleFonts.dmSans(color: AppColors.inkFaint),
+              hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 14),
             ),
@@ -267,7 +265,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       if (error != null) ...[
         const SizedBox(height: 4),
-        Text(error, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.accent)),
+        Text(error, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.accent)),
       ],
     ]);
   }

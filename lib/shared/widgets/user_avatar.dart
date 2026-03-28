@@ -22,8 +22,8 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initial = name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'U';
-    final bg = backgroundColor ?? AppColors.accent;
-    final fg = textColor ?? AppColors.white;
+    final bg = backgroundColor ?? context.pal.accent;
+    final fg = textColor ?? context.pal.white;
 
     if (photoUrl != null && photoUrl!.isNotEmpty) {
       return ClipOval(
