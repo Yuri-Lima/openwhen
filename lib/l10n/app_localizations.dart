@@ -2231,6 +2231,54 @@ abstract class AppLocalizations {
   /// **'Galeria ou remover'**
   String get settingsProfilePhotoSubtitle;
 
+  /// No description provided for @avatarChooseFromGallery.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolher da galeria'**
+  String get avatarChooseFromGallery;
+
+  /// No description provided for @avatarRemovePhoto.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover foto'**
+  String get avatarRemovePhoto;
+
+  /// No description provided for @avatarPhotoRemovedSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Foto removida'**
+  String get avatarPhotoRemovedSnack;
+
+  /// No description provided for @avatarPhotoUpdatedSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Foto de perfil atualizada'**
+  String get avatarPhotoUpdatedSnack;
+
+  /// No description provided for @avatarUploadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível enviar a foto: {error}'**
+  String avatarUploadError(String error);
+
+  /// No description provided for @settingsNotifPermissionStatus.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Status: {status}'**
+  String settingsNotifPermissionStatus(String status);
+
+  /// No description provided for @qrFooterBrand.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'openwhen.app'**
+  String get qrFooterBrand;
+
+  /// No description provided for @qrShareWhatsAppLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'WhatsApp'**
+  String get qrShareWhatsAppLabel;
+
   /// No description provided for @settingsEditProfile.
   ///
   /// In pt_BR, this message translates to:
@@ -2896,6 +2944,120 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Categoria: {category}'**
   String feedbackEmailBodyPrefix(String category);
+
+  /// No description provided for @subscriptionSectionTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Plano e assinatura'**
+  String get subscriptionSectionTitle;
+
+  /// No description provided for @subscriptionScreenTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Planos'**
+  String get subscriptionScreenTitle;
+
+  /// No description provided for @subscriptionPlanAmanhaName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Amanhã'**
+  String get subscriptionPlanAmanhaName;
+
+  /// No description provided for @subscriptionPlanBrisaName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Brisa'**
+  String get subscriptionPlanBrisaName;
+
+  /// No description provided for @subscriptionPlanHorizonteName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Horizonte'**
+  String get subscriptionPlanHorizonteName;
+
+  /// No description provided for @subscriptionPlanAmanhaPitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O essencial para escrever hoje e sentir no tempo certo.'**
+  String get subscriptionPlanAmanhaPitch;
+
+  /// No description provided for @subscriptionPlanBrisaPitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Partilha e expressão: mais profundidade no cofre e nas redes.'**
+  String get subscriptionPlanBrisaPitch;
+
+  /// No description provided for @subscriptionPlanHorizontePitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Arquivo, família e inteligência com transparência.'**
+  String get subscriptionPlanHorizontePitch;
+
+  /// No description provided for @subscriptionCurrentPlanLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seu plano atual'**
+  String get subscriptionCurrentPlanLabel;
+
+  /// No description provided for @subscriptionSubscribeBrisa.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assinar Brisa'**
+  String get subscriptionSubscribeBrisa;
+
+  /// No description provided for @subscriptionSubscribeHorizonte.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assinar Horizonte'**
+  String get subscriptionSubscribeHorizonte;
+
+  /// No description provided for @subscriptionManageBilling.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Gerenciar assinatura e pagamento'**
+  String get subscriptionManageBilling;
+
+  /// No description provided for @subscriptionCheckoutError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir o pagamento. Tente novamente.'**
+  String get subscriptionCheckoutError;
+
+  /// No description provided for @subscriptionPortalError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir o portal de cobrança.'**
+  String get subscriptionPortalError;
+
+  /// No description provided for @subscriptionUpgradeDialogTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Plano necessário'**
+  String get subscriptionUpgradeDialogTitle;
+
+  /// No description provided for @subscriptionUpgradeDialogBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta função exige o plano {planName} ou superior.'**
+  String subscriptionUpgradeDialogBody(String planName);
+
+  /// No description provided for @subscriptionUpgradeDialogViewPlans.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ver planos'**
+  String get subscriptionUpgradeDialogViewPlans;
+
+  /// No description provided for @subscriptionBillingDisabledBanner.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O checkout de assinatura ainda não está ativado. Você pode continuar usando o app no plano Amanhã. Ative o billing no projeto quando o Stripe estiver pronto.'**
+  String get subscriptionBillingDisabledBanner;
+
+  /// No description provided for @subscriptionBillingDisabledSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Pagamentos ainda não estão ativos. Use BILLING_ENABLED=true quando o Stripe estiver configurado.'**
+  String get subscriptionBillingDisabledSnack;
 
   /// No description provided for @termsIntro.
   ///

@@ -803,36 +803,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               ),
                           ],
                         ),
-                        child: _uploadingImage
-                            ? const Center(child: Padding(
-                                padding: EdgeInsets.all(40),
-                                child: CircularProgressIndicator(color: AppColors.accent),
-                              ))
-                            : _handwrittenImageUrl != null
-                                ? Stack(children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(13),
-                                      child: Image.network(_handwrittenImageUrl!, fit: BoxFit.cover, width: double.infinity),
-                                    ),
-                                    Positioned(
-                                      top: 8, right: 8,
-                                      child: GestureDetector(
-                                        onTap: () => setState(() => _handwrittenImageUrl = null),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
-                                          child: const Icon(Icons.close, size: 14, color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ])
-                                : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                    const Icon(Icons.add_photo_alternate_outlined, size: 40, color: AppColors.inkFaint),
-                                    const SizedBox(height: 10),
-                                    Text('Toque para adicionar a foto da carta', style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.inkSoft)),
-                                    const SizedBox(height: 4),
-                                    Text('Tire uma foto da sua carta escrita à mão', style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.inkFaint)),
-                                  ]),
                       ),
                     ],
                   ] else
@@ -1024,7 +994,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(14)),
-                            child: Text('OK', style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
+                            child: Text(l10n.actionOk, style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ]),

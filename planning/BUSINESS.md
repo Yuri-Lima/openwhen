@@ -36,6 +36,8 @@ OpenWhen combina **cartas temporizadas**, uma **rede social emocional** e **QR C
 | Atual | **Freemium** — crescimento e retenção |
 | Escala | **Pay-per-feature** somente após marco de ~**10k usuários** (evitar monetizar cedo demais) |
 
+**Subscrição (tiers):** o produto prevê níveis nomeados (**Amanhã**, **Brisa**, **Horizonte**) com pagamento recorrente via **Stripe** (Checkout + portal do cliente) e sincronização server-side (Firebase Cloud Functions + estado no perfil). A integração técnica pode existir no código antes do “go live” comercial; política de quando activar a cobrança segue o marco de escala acima.
+
 Premium futuro pode incluir recursos como exportação avançada, temas, ou cápsulas coletivas — a definir com dados de uso. **IA** futura no produto foca em **assistência à criação e personalização** (incl. contexto familiar: datas importantes, relações), com transparência — não em vigilância do utilizador.
 
 ### OpenWhen Gift (valor selado à carta)

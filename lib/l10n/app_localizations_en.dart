@@ -1170,6 +1170,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsProfilePhotoSubtitle => 'Gallery or remove';
 
   @override
+  String get avatarChooseFromGallery => 'Choose from gallery';
+
+  @override
+  String get avatarRemovePhoto => 'Remove photo';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Photo removed';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Profile photo updated';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'Could not upload photo: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Permission status: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Edit profile';
 
   @override
@@ -1534,6 +1562,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String feedbackEmailBodyPrefix(String category) {
     return 'Category: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plan & subscription';
+
+  @override
+  String get subscriptionScreenTitle => 'Plans';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'The essentials to write today and feel it at the right time.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Share and express more — richer vault and social moments.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Archive, family context, and transparent intelligence.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'Your current plan';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Subscribe to Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Subscribe to Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Manage subscription & payment';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'Could not open checkout. Please try again.';
+
+  @override
+  String get subscriptionPortalError => 'Could not open the billing portal.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plan required';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'This feature requires the $planName plan or higher.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'View plans';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'Subscription checkout is not enabled yet. You can keep using the app on the Amanhã plan. Enable billing in the project when Stripe is ready.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Billing is not enabled yet. Set BILLING_ENABLED=true when Stripe is configured.';
 
   @override
   String get termsIntro =>

@@ -15,8 +15,10 @@
 lib/
 ├── main.dart
 ├── firebase_options.dart          # Não versionado no remoto — obter com o time
-├── core/constants/
-│   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
+├── core/
+│   ├── billing/                   # BillingProvider, StripeBillingProvider, tier guard, feature flags (BILLING_ENABLED)
+│   └── constants/
+│       └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 ├── features/
 │   ├── auth/
 │   │   ├── data/auth_service.dart
@@ -36,7 +38,7 @@ lib/
 │   │   ├── models/
 │   │   └── presentation/screens/ (feed, comments)
 │   └── profile/
-│       └── presentation/screens/ (profile, user_profile, search, settings, legal)
+│       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
     ├── theme/
     │   └── app_theme.dart
@@ -160,3 +162,7 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 ## Extensões futuras — pagamentos (planejado)
 
 O produto **OpenWhen Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
+
+### Subscrição (tiers Amanhã / Brisa / Horizonte)
+
+A subscrição usa **Stripe Checkout** (modo subscription) e **Customer Portal**, expostos via **Firebase Cloud Functions** (`createCheckoutSession`, `createPortalSession`, `stripeWebhook`, `migrateUserBillingDefaults`). O estado (`subscriptionTier`, ids Stripe) vive em `users/{uid}` e só é escrito pelo webhook ou pela migração server-side; o cliente Flutter usa a abstracção `BillingProvider` com implementação `StripeBillingProvider` (`lib/core/billing/`). As Functions leem chaves Stripe de **variáveis de ambiente** em runtime (sem obrigar Secret Manager). No app, o checkout Stripe fica **desactivado por defeito** (`BILLING_ENABLED=false`); usar `--dart-define=BILLING_ENABLED=true` quando Stripe e envs estiverem prontos. Ver [`functions/README.md`](../functions/README.md).

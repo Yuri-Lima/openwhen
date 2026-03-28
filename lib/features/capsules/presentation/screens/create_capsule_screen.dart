@@ -340,12 +340,11 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
                 ),
                 child: Center(
                   child: Text(
-                    t.label,
+                    t.emoji,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.dmSerifDisplay(
-                      fontSize: t.label.length > 10 ? 9 : t.label.length > 6 ? 11 : 14,
+                    style: TextStyle(
+                      fontSize: 26,
                       color: isSelected ? Colors.white : t.color,
-                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),

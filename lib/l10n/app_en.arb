@@ -382,6 +382,16 @@
   "settingsMyAccount": "MY ACCOUNT",
   "settingsProfilePhoto": "Profile photo",
   "settingsProfilePhotoSubtitle": "Gallery or remove",
+  "avatarChooseFromGallery": "Choose from gallery",
+  "avatarRemovePhoto": "Remove photo",
+  "avatarPhotoRemovedSnack": "Photo removed",
+  "avatarPhotoUpdatedSnack": "Profile photo updated",
+  "avatarUploadError": "Could not upload photo: {error}",
+  "@avatarUploadError": { "placeholders": { "error": { "type": "String" } } },
+  "settingsNotifPermissionStatus": "Permission status: {status}",
+  "@settingsNotifPermissionStatus": { "placeholders": { "status": { "type": "String" } } },
+  "qrFooterBrand": "openwhen.app",
+  "qrShareWhatsAppLabel": "WhatsApp",
   "settingsEditProfile": "Edit profile",
   "settingsChangePassword": "Change password",
   "settingsPrivacySection": "PRIVACY AND SECURITY",
@@ -513,6 +523,31 @@
       "category": { "type": "String" }
     }
   },
+
+  "subscriptionSectionTitle": "Plan & subscription",
+  "subscriptionScreenTitle": "Plans",
+  "subscriptionPlanAmanhaName": "Amanhã",
+  "subscriptionPlanBrisaName": "Brisa",
+  "subscriptionPlanHorizonteName": "Horizonte",
+  "subscriptionPlanAmanhaPitch": "The essentials to write today and feel it at the right time.",
+  "subscriptionPlanBrisaPitch": "Share and express more — richer vault and social moments.",
+  "subscriptionPlanHorizontePitch": "Archive, family context, and transparent intelligence.",
+  "subscriptionCurrentPlanLabel": "Your current plan",
+  "subscriptionSubscribeBrisa": "Subscribe to Brisa",
+  "subscriptionSubscribeHorizonte": "Subscribe to Horizonte",
+  "subscriptionManageBilling": "Manage subscription & payment",
+  "subscriptionCheckoutError": "Could not open checkout. Please try again.",
+  "subscriptionPortalError": "Could not open the billing portal.",
+  "subscriptionUpgradeDialogTitle": "Plan required",
+  "subscriptionUpgradeDialogBody": "This feature requires the {planName} plan or higher.",
+  "@subscriptionUpgradeDialogBody": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "subscriptionUpgradeDialogViewPlans": "View plans",
+  "subscriptionBillingDisabledBanner": "Subscription checkout is not enabled yet. You can keep using the app on the Amanhã plan. Enable billing in the project when Stripe is ready.",
+  "subscriptionBillingDisabledSnack": "Billing is not enabled yet. Set BILLING_ENABLED=true when Stripe is configured.",
 
   "termsIntro": "These Terms of Use (\"Terms\") govern access to and use of the OpenWhen application (\"Platform\"), developed and operated by OpenWhen Tecnologia Ltda. (\"Company\"), registered under CNPJ No. [XX.XXX.XXX/0001-XX], headquartered in Brazil. Use of the Platform implies full and unconditional acceptance of these Terms, pursuant to Article 8 of Law No. 12,965/2014 (Internet Civil Framework) and Law No. 13,709/2018 (General Data Protection Law — LGPD).",
   "termsSection1Title": "1. PURPOSE AND NATURE OF THE SERVICE",

@@ -1168,6 +1168,34 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsProfilePhotoSubtitle => 'Galeria ou remover';
 
   @override
+  String get avatarChooseFromGallery => 'Escolher da galeria';
+
+  @override
+  String get avatarRemovePhoto => 'Remover foto';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Foto removida';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Foto de perfil atualizada';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'Não foi possível enviar a foto: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Editar perfil';
 
   @override
@@ -1530,6 +1558,72 @@ class AppLocalizationsPt extends AppLocalizations {
   String feedbackEmailBodyPrefix(String category) {
     return 'Categoria: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plano e assinatura';
+
+  @override
+  String get subscriptionScreenTitle => 'Planos';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'O essencial para escrever hoje e sentir no tempo certo.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Partilha e expressão: mais profundidade no cofre e nas redes.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Arquivo, família e inteligência com transparência.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'O seu plano atual';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Subscrever Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Subscrever Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Gerir assinatura e pagamento';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'Não foi possível abrir o pagamento. Tente novamente.';
+
+  @override
+  String get subscriptionPortalError =>
+      'Não foi possível abrir o portal de faturação.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plano necessário';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'Esta função exige o plano $planName ou superior.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'Ver planos';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'O checkout de assinatura ainda não está ativado. Pode continuar a usar a app no plano Amanhã. Ative o billing no projeto quando o Stripe estiver pronto.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Pagamentos ainda não estão activos. Use BILLING_ENABLED=true quando o Stripe estiver configurado.';
 
   @override
   String get termsIntro =>
@@ -2812,6 +2906,34 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsProfilePhotoSubtitle => 'Galeria ou remover';
 
   @override
+  String get avatarChooseFromGallery => 'Escolher da galeria';
+
+  @override
+  String get avatarRemovePhoto => 'Remover foto';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Foto removida';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Foto de perfil atualizada';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'Não foi possível enviar a foto: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Editar perfil';
 
   @override
@@ -3174,6 +3296,72 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String feedbackEmailBodyPrefix(String category) {
     return 'Categoria: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plano e assinatura';
+
+  @override
+  String get subscriptionScreenTitle => 'Planos';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'O essencial para escrever hoje e sentir no tempo certo.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Partilha e expressão: mais profundidade no cofre e nas redes.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Arquivo, família e inteligência com transparência.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'Seu plano atual';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Assinar Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Assinar Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Gerenciar assinatura e pagamento';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'Não foi possível abrir o pagamento. Tente novamente.';
+
+  @override
+  String get subscriptionPortalError =>
+      'Não foi possível abrir o portal de cobrança.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plano necessário';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'Esta função exige o plano $planName ou superior.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'Ver planos';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'O checkout de assinatura ainda não está ativado. Você pode continuar usando o app no plano Amanhã. Ative o billing no projeto quando o Stripe estiver pronto.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Pagamentos ainda não estão ativos. Use BILLING_ENABLED=true quando o Stripe estiver configurado.';
 
   @override
   String get termsIntro =>

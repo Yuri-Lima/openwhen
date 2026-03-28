@@ -15,6 +15,10 @@ import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/theme_provider.dart';
 import '../../../../shared/locale/locale_provider.dart';
+import '../../../../core/billing/subscription_tier.dart';
+import '../../../../core/billing/subscription_tier_provider.dart';
+import '../../../../core/billing/tier_guard.dart';
+import 'subscription_plans_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -59,6 +63,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           final data = snapshot.data?.data() as Map<String, dynamic>?;
+          final subTier = ref.watch(subscriptionTierProvider).asData?.value ?? SubscriptionTier.free;
           final isPrivate = data?['isPrivate'] ?? false;
           final notifLike = data?['notifLike'] ?? true;
           final notifComment = data?['notifComment'] ?? true;
@@ -144,6 +149,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ]),
 
+                    _buildSectionTitle(l10n.subscriptionSectionTitle),
+                    _buildMenuCard([
+                      _buildMenuItem(
+                        icon: Icons.workspace_premium_outlined,
+                        iconColor: const Color(0xFFD97706),
+                        iconBg: const Color(0xFFFEF3C7),
+                        label: l10n.subscriptionScreenTitle,
+                        subtitle: '${l10n.subscriptionCurrentPlanLabel}: ${tierDisplayName(subTier, l10n)}',
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => const SubscriptionPlansScreen(),
+                          ),
+                        ),
+                      ),
+                    ]),
+
                     _buildSectionTitle(l10n.settingsPrivacySection),
                     _buildMenuCard([
                       _buildToggleItem(
@@ -189,10 +211,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           try {
                             final s = await FirebaseMessaging.instance.getNotificationSettings();
                             if (!context.mounted) return;
+                            final permL10n = AppLocalizations.of(context)!;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Status: ${s.authorizationStatus}',
+                                  permL10n.settingsNotifPermissionStatus(s.authorizationStatus.toString()),
                                   style: GoogleFonts.dmSans(fontSize: 13),
                                 ),
                               ),
@@ -355,7 +378,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconBg: const Color(0xFFEFF6FF),
                         label: l10n.settingsExportLetters,
                         subtitle: l10n.settingsExportLettersSubtitle,
-                        onTap: () => _showExportDialog(context),
+                        onTap: () async {
+                          final tier = ref.read(subscriptionTierProvider).asData?.value ?? SubscriptionTier.free;
+                          if (!tierMeets(tier, SubscriptionTier.pro)) {
+                            await ensureTierOrPrompt(
+                              context,
+                              current: tier,
+                              requiredTier: SubscriptionTier.pro,
+                            );
+                            return;
+                          }
+                          if (!context.mounted) return;
+                          _showExportDialog(context);
+                        },
                       ),
                       _buildDivider(),
                       _buildMenuItem(

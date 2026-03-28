@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../shared/theme/app_theme.dart';
 import 'avatar_service.dart';
 
@@ -13,48 +14,52 @@ class AvatarUploadHelper {
   /// Abre bottom sheet: galeria ou remover foto.
   static Future<void> showAvatarOptions(BuildContext context, String uid) async {
     final p = context.pal;
+    final l10n = AppLocalizations.of(context)!;
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: p.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(Icons.photo_library_outlined, color: p.accent),
-              title: Text('Escolher da galeria', style: GoogleFonts.dmSans(color: p.ink)),
-              onTap: () async {
-                Navigator.pop(ctx);
-                await pickFromGalleryAndUpload(context, uid);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.delete_outline, color: Colors.red.shade400),
-              title: Text('Remover foto', style: GoogleFonts.dmSans(color: Colors.red.shade400)),
-              onTap: () async {
-                Navigator.pop(ctx);
-                try {
-                  await AvatarService.removeUserPhotoUrl(uid);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Foto removida')),
-                    );
+      builder: (ctx) {
+        final sheetL10n = AppLocalizations.of(ctx)!;
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_library_outlined, color: p.accent),
+                title: Text(sheetL10n.avatarChooseFromGallery, style: GoogleFonts.dmSans(color: p.ink)),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await pickFromGalleryAndUpload(context, uid);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_outline, color: Colors.red.shade400),
+                title: Text(sheetL10n.avatarRemovePhoto, style: GoogleFonts.dmSans(color: Colors.red.shade400)),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  try {
+                    await AvatarService.removeUserPhotoUrl(uid);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.avatarPhotoRemovedSnack)),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+                      );
+                    }
                   }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Erro: $e')),
-                    );
-                  }
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -66,18 +71,20 @@ class AvatarUploadHelper {
       imageQuality: 88,
     );
     if (file == null) return;
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     try {
       final url = await AvatarService.uploadAvatar(uid, file);
       await AvatarService.updateUserPhotoUrl(uid, url);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Foto de perfil atualizada')),
+          SnackBar(content: Text(l10n.avatarPhotoUpdatedSnack)),
         );
       }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao enviar foto: $e')),
+          SnackBar(content: Text(l10n.avatarUploadError(e.toString()))),
         );
       }
     }

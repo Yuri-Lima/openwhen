@@ -1172,6 +1172,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsProfilePhotoSubtitle => 'Galería o eliminar';
 
   @override
+  String get avatarChooseFromGallery => 'Elegir de la galería';
+
+  @override
+  String get avatarRemovePhoto => 'Eliminar foto';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Foto eliminada';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Foto de perfil actualizada';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'No se pudo subir la foto: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Estado: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Editar perfil';
 
   @override
@@ -1539,6 +1567,72 @@ class AppLocalizationsEs extends AppLocalizations {
   String feedbackEmailBodyPrefix(String category) {
     return 'Categoría: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plan y suscripción';
+
+  @override
+  String get subscriptionScreenTitle => 'Planes';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'Lo esencial para escribir hoy y sentirlo en el momento adecuado.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Comparte y expresa más: cofre y redes con más profundidad.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Archivo, familia e inteligencia con transparencia.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'Tu plan actual';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Suscribirse a Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Suscribirse a Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Gestionar suscripción y pago';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'No se pudo abrir el pago. Inténtalo de nuevo.';
+
+  @override
+  String get subscriptionPortalError =>
+      'No se pudo abrir el portal de facturación.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plan necesario';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'Esta función requiere el plan $planName o superior.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'Ver planes';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'El pago de suscripción aún no está activado. Puedes seguir usando la app en el plano Amanhã. Activa el billing cuando Stripe esté listo.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Los pagos aún no están activos. Usa BILLING_ENABLED=true cuando Stripe esté configurado.';
 
   @override
   String get termsIntro =>

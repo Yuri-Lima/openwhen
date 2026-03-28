@@ -4,7 +4,7 @@ Este documento organiza entregas por fase. Prioridades: **P0** (crítico), **P1*
 
 ---
 
-## Fase 1 — MVP core (atual ~92%)
+## Fase 1 — MVP core (atual ~100% dos itens críticos; QA/deploy contínuos)
 
 Foco: experiência completa de cartas + cápsulas, estabilidade e segurança antes de escalar.
 
@@ -64,6 +64,7 @@ Foco: expansão de produto e mercado.
 
 **Pré-requisito sugerido:** ~10k usuários ativos (alinhado à estratégia freemium → pay-per-feature).
 
+**Infra já no repositório (scaffold):** subscrição por tiers (**Amanhã** / **Brisa** / **Horizonte**) com **Stripe Checkout**, **Customer Portal**, webhooks e **Firebase Cloud Functions**; estado em `users/{uid}`; cliente Flutter em `lib/core/billing/`. O fluxo de pagamento no app fica **desactivado por defeito** (`BILLING_ENABLED=false`) até configuração Stripe e deploy — ver [`functions/README.md`](../functions/README.md) e secção em [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 | Entrega                                                                                                         | Prioridade | Esforço (est.) | Notas                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------------------------------------------------------------------------------------------------- | ---------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

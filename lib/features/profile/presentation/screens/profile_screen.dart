@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -26,34 +26,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _uploadingAvatar = false;
 
   Future<void> _pickAndUploadAvatar() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty) return;
-    final file = result.files.first;
-    if (file.bytes == null) return;
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+    if (picked == null) return;
+    final bytes = await picked.readAsBytes();
 
     setState(() => _uploadingAvatar = true);
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
       final ref = FirebaseStorage.instance.ref('avatars/$uid/avatar.jpg');
-      await ref.putData(file.bytes!, SettableMetadata(contentType: 'image/jpeg'));
+      await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       final url = await ref.getDownloadURL();
       await FirebaseFirestore.instance
           .collection(FirestoreCollections.users)
           .doc(uid)
           .update({'photoUrl': url});
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Foto atualizada!', style: GoogleFonts.dmSans()), backgroundColor: AppColors.accent),
+          SnackBar(content: Text(l10n.avatarPhotoUpdatedSnack, style: GoogleFonts.dmSans()), backgroundColor: context.pal.accent),
         );
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro: $e', style: GoogleFonts.dmSans()), backgroundColor: AppColors.accent),
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()), style: GoogleFonts.dmSans()), backgroundColor: context.pal.accent),
         );
       }
     }

@@ -382,6 +382,16 @@
   "settingsMyAccount": "MI CUENTA",
   "settingsProfilePhoto": "Foto de perfil",
   "settingsProfilePhotoSubtitle": "Galería o eliminar",
+  "avatarChooseFromGallery": "Elegir de la galería",
+  "avatarRemovePhoto": "Eliminar foto",
+  "avatarPhotoRemovedSnack": "Foto eliminada",
+  "avatarPhotoUpdatedSnack": "Foto de perfil actualizada",
+  "avatarUploadError": "No se pudo subir la foto: {error}",
+  "@avatarUploadError": { "placeholders": { "error": { "type": "String" } } },
+  "settingsNotifPermissionStatus": "Estado: {status}",
+  "@settingsNotifPermissionStatus": { "placeholders": { "status": { "type": "String" } } },
+  "qrFooterBrand": "openwhen.app",
+  "qrShareWhatsAppLabel": "WhatsApp",
   "settingsEditProfile": "Editar perfil",
   "settingsChangePassword": "Cambiar contraseña",
   "settingsPrivacySection": "PRIVACIDAD Y SEGURIDAD",
@@ -513,6 +523,31 @@
       "category": { "type": "String" }
     }
   },
+
+  "subscriptionSectionTitle": "Plan y suscripción",
+  "subscriptionScreenTitle": "Planes",
+  "subscriptionPlanAmanhaName": "Amanhã",
+  "subscriptionPlanBrisaName": "Brisa",
+  "subscriptionPlanHorizonteName": "Horizonte",
+  "subscriptionPlanAmanhaPitch": "Lo esencial para escribir hoy y sentirlo en el momento adecuado.",
+  "subscriptionPlanBrisaPitch": "Comparte y expresa más: cofre y redes con más profundidad.",
+  "subscriptionPlanHorizontePitch": "Archivo, familia e inteligencia con transparencia.",
+  "subscriptionCurrentPlanLabel": "Tu plan actual",
+  "subscriptionSubscribeBrisa": "Suscribirse a Brisa",
+  "subscriptionSubscribeHorizonte": "Suscribirse a Horizonte",
+  "subscriptionManageBilling": "Gestionar suscripción y pago",
+  "subscriptionCheckoutError": "No se pudo abrir el pago. Inténtalo de nuevo.",
+  "subscriptionPortalError": "No se pudo abrir el portal de facturación.",
+  "subscriptionUpgradeDialogTitle": "Plan necesario",
+  "subscriptionUpgradeDialogBody": "Esta función requiere el plan {planName} o superior.",
+  "@subscriptionUpgradeDialogBody": {
+    "placeholders": {
+      "planName": { "type": "String" }
+    }
+  },
+  "subscriptionUpgradeDialogViewPlans": "Ver planes",
+  "subscriptionBillingDisabledBanner": "El pago de suscripción aún no está activado. Puedes seguir usando la app en el plano Amanhã. Activa el billing cuando Stripe esté listo.",
+  "subscriptionBillingDisabledSnack": "Los pagos aún no están activos. Usa BILLING_ENABLED=true cuando Stripe esté configurado.",
 
   "termsIntro": "Estos Términos de Uso (\"Términos\") regulan el acceso y la utilización de la aplicación OpenWhen (\"Plataforma\"), desarrollada y operada por OpenWhen Tecnologia Ltda. (\"Empresa\"), inscrita en el CNPJ bajo el nº [XX.XXX.XXX/0001-XX], con sede en Brasil. La utilización de la Plataforma implica la aceptación integral e irrestricta de estos Términos, en los términos del art. 8º de la Ley nº 12.965/2014 (Marco Civil de Internet) y la Ley nº 13.709/2018 (Ley General de Protección de Datos — LGPD).",
   "termsSection1Title": "1. DEL OBJETO Y NATURALEZA DEL SERVICIO",
