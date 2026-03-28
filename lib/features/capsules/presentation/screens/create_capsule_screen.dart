@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -80,6 +83,9 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
   final _messageCtrl = TextEditingController();
   final _musicUrlCtrl = TextEditingController();
   bool _isPublic = false;
+  final List<String> _capsulePhotos = [];
+  bool _uploadingPhoto = false;
+  static const int _maxPhotos = 5;
   late final AnimationController _stepAnim;
   late final Animation<double> _fadeAnim;
 
@@ -117,6 +123,43 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     }
   }
 
+  Future<void> _pickCapsulePhoto() async {
+    if (kIsWeb) return;
+    final l10n = AppLocalizations.of(context)!;
+    if (_capsulePhotos.length >= _maxPhotos) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.capsulePhotoMax(_maxPhotos))),
+      );
+      return;
+    }
+    final picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+      maxWidth: 1200,
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _uploadingPhoto = true);
+    try {
+      final bytes = await picked.readAsBytes();
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final ref = FirebaseStorage.instance
+          .ref('capsulePhotos/${uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+      await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
+      final url = await ref.getDownloadURL();
+      setState(() => _capsulePhotos.add(url));
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.capsulePhotoErrorUpload),
+            backgroundColor: context.pal.accent,
+          ),
+        );
+      }
+    }
+    if (mounted) setState(() => _uploadingPhoto = false);
+  }
+
   Future<void> _saveCapsule() async {
     if (!_canAdvance) return;
     final l10n = AppLocalizations.of(context)!;
@@ -148,7 +191,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         'title': _titleCtrl.text.trim(),
         'message': _messageCtrl.text.trim(),
         'theme': _selectedTheme!.id,
-        'photos': [],
+        'photos': _capsulePhotos,
         'openDate': _openDate != null ? Timestamp.fromDate(_openDate!) : null,
         'openEvent': eventLabel,
         'openEventType': _openEventType,
@@ -445,7 +488,97 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
           ),
         ),
       ),
+
+      const SizedBox(height: 24),
+      Text(l10n.capsulePhotoAdd.toUpperCase(), style: GoogleFonts.dmSans(fontSize: 10, color: p.inkFaint, letterSpacing: 1.2, fontWeight: FontWeight.w500)),
+      const SizedBox(height: 10),
+
+      if (kIsWeb)
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(12), border: Border.all(color: p.border)),
+          child: Row(children: [
+            Icon(Icons.info_outline_rounded, color: p.inkFaint, size: 18),
+            const SizedBox(width: 10),
+            Expanded(child: Text(l10n.capsulePhotoWebDisabled, style: GoogleFonts.dmSans(fontSize: 13, color: p.inkSoft))),
+          ]),
+        )
+      else ...[
+        if (_capsulePhotos.isNotEmpty)
+          SizedBox(
+            height: 110,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _capsulePhotos.length + (_capsulePhotos.length < _maxPhotos ? 1 : 0),
+              itemBuilder: (context, i) {
+                if (i == _capsulePhotos.length) {
+                  return _buildAddPhotoButton(p, l10n);
+                }
+                return _buildPhotoThumbnail(_capsulePhotos[i], p, l10n);
+              },
+            ),
+          )
+        else
+          _buildAddPhotoButton(p, l10n),
+        if (_capsulePhotos.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text('${_capsulePhotos.length}/$_maxPhotos', style: GoogleFonts.dmSans(fontSize: 11, color: p.inkFaint)),
+          ),
+      ],
     ]);
+  }
+
+  Widget _buildAddPhotoButton(OpenWhenPalette p, AppLocalizations l10n) {
+    return GestureDetector(
+      onTap: _uploadingPhoto ? null : _pickCapsulePhoto,
+      child: Container(
+        width: 110,
+        height: 110,
+        margin: const EdgeInsets.only(right: 10),
+        decoration: BoxDecoration(
+          color: p.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: p.border, width: 1.5),
+        ),
+        child: _uploadingPhoto
+            ? Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: p.accent)))
+            : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.add_photo_alternate_outlined, size: 28, color: p.inkFaint),
+                const SizedBox(height: 6),
+                Text(l10n.capsulePhotoAdd, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 11, color: p.inkSoft)),
+              ]),
+      ),
+    );
+  }
+
+  Widget _buildPhotoThumbnail(String url, OpenWhenPalette p, AppLocalizations l10n) {
+    return Stack(
+      children: [
+        Container(
+          width: 110,
+          height: 110,
+          margin: const EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
+          ),
+        ),
+        Positioned(
+          top: 4,
+          right: 14,
+          child: GestureDetector(
+            onTap: () => setState(() => _capsulePhotos.remove(url)),
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+              child: const Icon(Icons.close_rounded, color: Colors.white, size: 14),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   // PASSO 3 — Quando abrir

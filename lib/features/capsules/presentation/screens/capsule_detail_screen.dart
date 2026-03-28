@@ -93,6 +93,7 @@ class CapsuleDetailScreen extends StatelessWidget {
     final createdAt = data['createdAt'] != null ? (data['createdAt'] as Timestamp).toDate() : DateTime.now();
     final isPublic = data['isPublic'] == true;
     final qa = _qaPairs();
+    final photos = (data['photos'] as List?)?.whereType<String>().toList() ?? [];
     final musicUrl = data['musicUrl'] as String?;
     final showMusicLink = isValidHttpsMusicUrl(musicUrl);
     final senderLoc = parseSenderLocationData(data['senderLocation']);
@@ -251,6 +252,37 @@ class CapsuleDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (photos.isNotEmpty) ...[
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: photos.length,
+                        itemBuilder: (context, i) => GestureDetector(
+                          onTap: () => _showPhotoFullscreen(context, photos, i),
+                          child: Container(
+                            width: 180,
+                            margin: EdgeInsets.only(right: i < photos.length - 1 ? 12 : 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              image: DecorationImage(
+                                image: NetworkImage(photos[i]),
+                                fit: BoxFit.cover,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                   if (showMusicLink) ...[
                     const SizedBox(height: 16),
                     MusicLinkTileDark(url: musicUrl!.trim()),
@@ -286,6 +318,14 @@ class CapsuleDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showPhotoFullscreen(BuildContext context, List<String> photos, int initialIndex) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (_) => _PhotoGalleryDialog(photos: photos, initialIndex: initialIndex),
     );
   }
 
@@ -340,6 +380,89 @@ class CapsuleDetailScreen extends StatelessWidget {
               ),
             ),
             Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.25)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoGalleryDialog extends StatefulWidget {
+  final List<String> photos;
+  final int initialIndex;
+  const _PhotoGalleryDialog({required this.photos, required this.initialIndex});
+
+  @override
+  State<_PhotoGalleryDialog> createState() => _PhotoGalleryDialogState();
+}
+
+class _PhotoGalleryDialogState extends State<_PhotoGalleryDialog> {
+  late final PageController _pageCtrl;
+  late int _current;
+
+  @override
+  void initState() {
+    super.initState();
+    _current = widget.initialIndex;
+    _pageCtrl = PageController(initialPage: widget.initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageCtrl,
+              itemCount: widget.photos.length,
+              onPageChanged: (i) => setState(() => _current = i),
+              itemBuilder: (_, i) => Center(
+                child: InteractiveViewer(
+                  child: Image.network(widget.photos[i], fit: BoxFit.contain),
+                ),
+              ),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 12,
+              right: 16,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+                  child: const Icon(Icons.close_rounded, color: Colors.white, size: 20),
+                ),
+              ),
+            ),
+            if (widget.photos.length > 1)
+              Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 16,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(widget.photos.length, (i) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: i == _current ? 16 : 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: i == _current ? Colors.white : Colors.white38,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  )),
+                ),
+              ),
           ],
         ),
       ),

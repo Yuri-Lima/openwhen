@@ -138,6 +138,14 @@
   "vaultCapsuleOpenedOn": "Opened on {date}",
   "vaultCapsuleSealed": "Sealed",
 
+  "capsulePhotoAdd": "Add photo",
+  "capsulePhotoHint": "Tap to add a photo to your capsule",
+  "capsulePhotoWebDisabled": "Photos are only available in the mobile app",
+  "capsulePhotoRemove": "Remove photo",
+  "capsulePhotoErrorUpload": "Error uploading photo. Please try again.",
+  "capsulePhotoMax": "Maximum of {count} photos reached",
+  "@capsulePhotoMax": { "placeholders": { "count": { "type": "int" } } },
+
   "capsuleThemeMemories": "Memories",
   "capsuleThemeGoals": "Goals",
   "capsuleThemeFeelings": "Feelings",

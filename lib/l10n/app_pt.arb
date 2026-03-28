@@ -150,6 +150,14 @@
   "@vaultCapsuleOpenedOn": { "placeholders": { "date": { "type": "String" } } },
   "vaultCapsuleSealed": "Selada",
 
+  "capsulePhotoAdd": "Adicionar foto",
+  "capsulePhotoHint": "Toque para adicionar uma foto a sua capsula",
+  "capsulePhotoWebDisabled": "Fotos disponiveis apenas no app mobile",
+  "capsulePhotoRemove": "Remover foto",
+  "capsulePhotoErrorUpload": "Erro ao enviar foto. Tente novamente.",
+  "capsulePhotoMax": "Maximo de {count} fotos atingido",
+  "@capsulePhotoMax": { "placeholders": { "count": { "type": "int" } } },
+
   "capsuleThemeMemories": "Memorias",
   "capsuleThemeGoals": "Metas",
   "capsuleThemeFeelings": "Sentimentos",
