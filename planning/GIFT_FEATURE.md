@@ -107,5 +107,6 @@ Destinatário recebe: R$96,80
 [ ] Lançado
 
 ---
-*Ideia criada por Diego Rocha — Founder OpenWhen*
+*Ideia criada por Diego Rocha — CEO & Founder OpenWhen*
+*Yuri Lima — CTO & Co-Founder OpenWhen*
 *Data: Março 2026*
