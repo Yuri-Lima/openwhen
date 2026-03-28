@@ -27,6 +27,8 @@ Set these on each deployed function (or use a shared `.env` with the emulator on
 
 Rotate or remove `ADMIN_BOOTSTRAP_SECRET` after o primeiro admin estiver criado; novos admins podem ser promovidos por um script Admin SDK ou por uma Function futura que só admins possam chamar.
 
+**Guia passo a passo (deploy, segredo, curl, Flutter):** ver [`planning/ADMIN_BOOTSTRAP.md`](../planning/ADMIN_BOOTSTRAP.md).
+
 If `STRIPE_SECRET_KEY` is **unset**, `createCheckoutSession` and `createPortalSession` return `failed-precondition` (`billing_not_configured`), and `stripeWebhook` responds with **503**. You can still deploy and run **`migrateUserBillingDefaults`** without Stripe.
 
 **Where to set:** Google Cloud Console → Cloud Functions → select function → **Edit** → **Runtime environment variables** (or use `gcloud functions deploy` with `--set-env-vars`).
