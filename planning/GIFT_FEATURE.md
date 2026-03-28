@@ -110,3 +110,78 @@ Destinatário recebe: R$96,80
 *Ideia criada por Diego Rocha — CEO & Founder OpenWhen*
 *Yuri Lima — CTO & Co-Founder OpenWhen*
 *Data: Março 2026*
+
+---
+
+## NOX CARD — Card da Coruja (Funcionalidade Viral)
+
+### Conceito
+Quando alguém recebe um presente pelo OpenWhen, recebe também um
+Card da Coruja — uma animação compartilhável onde a coruja aparece,
+voa, solta o lacre e revela o nível do presente.
+
+Feito para viralizar no TikTok e Instagram.
+
+### Nome da Coruja
+A coruja tem um nome próprio — ela é o personagem da marca.
+Opções em avaliação (todas universais, sem regionalismo):
+- **Owly** — simples, fofo, universal
+- **Hoot** — som da coruja, conhecido mundialmente
+- **Nox** — latim para noite, misterioso e elegante
+- **Sage** — sábio em inglês, símbolo da coruja
+- **Luno** — lua, onde a coruja voa
+- **Oryn** — inventado, soa misterioso e universal
+
+*Nome a ser decidido pelos founders antes do lançamento.*
+
+### Níveis do Card
+O card mostra o nível mas NUNCA o valor exato.
+Quem recebe sabe o nível, não o número — protege quem tem menos condição.
+A margem grande dentro de cada nível garante que ninguém saiba
+se foi $1 ou $99 dentro do Bronze, por exemplo.
+
+| Nível | Faixa de Valor | Visual |
+|-------|---------------|--------|
+| Bronze | $1 a $100 | Coruja com brilho bronze, tons quentes |
+| Prata | $100 a $500 | Coruja prateada, elegante |
+| Ouro | $500 a $2.000 | Coruja dourada, premium |
+| Rubi | $2.000 a $10.000 | Coruja vermelha, exclusivo |
+| Diamante | Acima de $10.000 | Coruja cristal, lendário |
+
+### A Animação Compartilhável
+1. Tela escura — dois olhos se abrem devagar
+2. A coruja aparece completa voando
+3. Ela pousa e segura um envelope lacrado
+4. Bate as asas — o lacre se abre
+5. O nível do card é revelado com efeito de luz
+6. Aparece o nome do remetente e a mensagem
+7. Botão "Compartilhar" para Stories e Reels
+
+### Por Que Viraliza
+- A animação é bonita e emocional — pessoas compartilham emoção
+- O mistério do valor exato gera curiosidade nos comentários
+- "Recebi um Nox Ouro!" vira status social
+- Quem vê quer saber o que é — tráfego orgânico para o app
+- A coruja já é a identidade da marca — reforça o branding
+
+### Impacto na Marca
+Cada card compartilhado é um anúncio gratuito do OpenWhen.
+Cada pessoa que vê o card e não conhece o app vai pesquisar.
+A coruja vira reconhecível — como o pombo do Twitter ou o cão do Snapchat.
+
+### Receita Adicional
+- Taxa de 2,9% + $0,30 já cobre o processamento
+- Cards de nível Rubi e Diamante podem ter taxa especial
+- Futuramente: cards colecionáveis NFT para níveis premium
+
+### Roadmap do Nox Card
+- [ ] Nome da coruja definido
+- [ ] Animação do card criada
+- [ ] Integração com Gift When (Fase 1)
+- [ ] Compartilhamento para Stories e Reels
+- [ ] Cards colecionáveis (futuro)
+
+---
+*Ideia criada por Diego Rocha — CEO & Founder OpenWhen*
+*Yuri Lima — CTO & Co-Founder OpenWhen*
+*Data: Março 2026*
