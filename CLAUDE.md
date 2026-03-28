@@ -74,6 +74,24 @@ cd /sessions/gallant-fervent-curie/mnt/openwhen && <comando>
 
 Este projeto está rodando no **Cursor** (editor externo). Qualquer alteração de arquivo ou comando deve considerar que o ambiente ativo é este diretório.
 
+### ⚠️ Limitação de Remote Git (proxy)
+
+O ambiente sandbox do Claude **não tem acesso à internet**, portanto os seguintes comandos **falham** no sandbox:
+`git pull`, `git push`, `git fetch`
+
+**Regra para comandos com remote:** Claude deve informar o comando exato e pedir para o usuário executar no terminal do Cursor.
+
+Comandos **locais** (sem remote) funcionam normalmente no sandbox:
+`git checkout`, `git merge`, `git commit`, `git add`, `git reset`, `git branch`, `git log`, `git status`, `git stash`
+
+### 🖥️ Computer Use — Terminal do Cursor
+
+Claude **não consegue** interagir com o terminal do Cursor a menos que o **Computer Use** esteja ativado.
+
+Para ativar: `Settings → Desktop app → Computer use`
+
+Quando ativado, Claude poderá digitar comandos diretamente no terminal do Cursor (incluindo comandos com remote), eliminando completamente o bloqueio de proxy do sandbox.
+
 ---
 
 ## 🌐 Acesso ao Navegador
