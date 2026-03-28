@@ -76,7 +76,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ### Cartas e cofre
 
 - [x] Escrever carta (mensagem digitada recolhível por defeito; voz opcional até 1 min + `voiceUrl`)
-- [x] Cofre com abas (Aguardando / Abertas / Cápsulas)
+- [x] Cofre com abas (Aguardando / Abertas / Enviadas / Cápsulas)
+- [x] **Filtro e ordenação no Cofre** — bottom sheet por aba (busca, sort, datas, origem, pendentes, temas); processamento em memória após o snapshot (`vault_list_filters.dart`, `vault_filter_sheet.dart`)
 - [x] Detalhe da carta
 - [x] Animação de abertura por estado emocional
 - [x] **Selo / coruja na abertura da carta** — sequência no lacre (`OwlSealOpeningAnimation` em `lib/shared/widgets/owl_logo.dart`): olhos, revelação de asas/corpo, voo, pausa só no lacre, rosto completo de volta **sem asas**; toque só na área do selo

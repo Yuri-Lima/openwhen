@@ -31,6 +31,8 @@ lib/
 │   │   ├── models/
 │   │   └── presentation/
 │   │       ├── screens/ (write, vault, detail, opening, requests, qr)
+│   │       ├── vault_list_filters.dart   # estado de filtros por aba + sort/filtro em memória sobre snapshots
+│   │       └── widgets/ (vault_filter_sheet — bottom sheet de filtro/ordenação)
 │   │       └── voice_letter.dart    # conditional export: upload/delete ficheiro local (IO vs web stub)
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
@@ -147,6 +149,8 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 - **`HomeScreen`** (`main.dart`): bottom navigation (Feed, Buscar, Cofre, Perfil) + **FAB** que abre `showModalBottomSheet` com:
   - Escrever carta → `WriteLetterScreen`
   - Nova cápsula → `CreateCapsuleScreen`
+
+- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; cada aba mantém a mesma query Firestore de sempre; **filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta.
 
 ---
 

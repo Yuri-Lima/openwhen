@@ -857,6 +857,222 @@ abstract class AppLocalizations {
   /// **'Selada'**
   String get vaultCapsuleSealed;
 
+  /// No description provided for @vaultFilterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Filtrar e ordenar'**
+  String get vaultFilterTitle;
+
+  /// No description provided for @vaultFilterSearchHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Buscar por título ou nome...'**
+  String get vaultFilterSearchHint;
+
+  /// No description provided for @vaultFilterSortLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ordenar por'**
+  String get vaultFilterSortLabel;
+
+  /// No description provided for @vaultFilterApply.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aplicar'**
+  String get vaultFilterApply;
+
+  /// No description provided for @vaultFilterClear.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Limpar filtros'**
+  String get vaultFilterClear;
+
+  /// No description provided for @vaultFilterOpenDateFrom.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abre a partir de'**
+  String get vaultFilterOpenDateFrom;
+
+  /// No description provided for @vaultFilterOpenDateTo.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abre até'**
+  String get vaultFilterOpenDateTo;
+
+  /// No description provided for @vaultFilterClearDate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Limpar data'**
+  String get vaultFilterClearDate;
+
+  /// No description provided for @vaultFilterPendingOnly.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Somente pendentes de aceite'**
+  String get vaultFilterPendingOnly;
+
+  /// No description provided for @vaultFilterThemesLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Temas'**
+  String get vaultFilterThemesLabel;
+
+  /// No description provided for @vaultFilterDirectionAll.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Todas'**
+  String get vaultFilterDirectionAll;
+
+  /// No description provided for @vaultFilterDirectionReceived.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Recebidas'**
+  String get vaultFilterDirectionReceived;
+
+  /// No description provided for @vaultFilterDirectionSent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviadas'**
+  String get vaultFilterDirectionSent;
+
+  /// No description provided for @vaultFilterEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhum item com este filtro'**
+  String get vaultFilterEmptyTitle;
+
+  /// No description provided for @vaultFilterEmptySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ajuste a busca ou limpe os filtros para ver tudo de novo'**
+  String get vaultFilterEmptySubtitle;
+
+  /// No description provided for @vaultFilterActiveBadge.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Filtrado'**
+  String get vaultFilterActiveBadge;
+
+  /// No description provided for @vaultSortWaitingOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortWaitingOpenDateAsc;
+
+  /// No description provided for @vaultSortWaitingOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortWaitingOpenDateDesc;
+
+  /// No description provided for @vaultSortWaitingCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortWaitingCreatedDesc;
+
+  /// No description provided for @vaultSortWaitingCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortWaitingCreatedAsc;
+
+  /// No description provided for @vaultSortWaitingTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortWaitingTitleAsc;
+
+  /// No description provided for @vaultSortOpenedOpenedAtDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aberta em (mais recente)'**
+  String get vaultSortOpenedOpenedAtDesc;
+
+  /// No description provided for @vaultSortOpenedOpenedAtAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aberta em (mais antiga)'**
+  String get vaultSortOpenedOpenedAtAsc;
+
+  /// No description provided for @vaultSortOpenedOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data planejada (mais distante)'**
+  String get vaultSortOpenedOpenDateDesc;
+
+  /// No description provided for @vaultSortOpenedOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data planejada (mais próxima)'**
+  String get vaultSortOpenedOpenDateAsc;
+
+  /// No description provided for @vaultSortOpenedTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortOpenedTitleAsc;
+
+  /// No description provided for @vaultSortSentOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortSentOpenDateAsc;
+
+  /// No description provided for @vaultSortSentOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortSentOpenDateDesc;
+
+  /// No description provided for @vaultSortSentCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortSentCreatedDesc;
+
+  /// No description provided for @vaultSortSentCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortSentCreatedAsc;
+
+  /// No description provided for @vaultSortSentTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortSentTitleAsc;
+
+  /// No description provided for @vaultSortCapsulesOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortCapsulesOpenDateAsc;
+
+  /// No description provided for @vaultSortCapsulesOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortCapsulesOpenDateDesc;
+
+  /// No description provided for @vaultSortCapsulesCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortCapsulesCreatedDesc;
+
+  /// No description provided for @vaultSortCapsulesCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortCapsulesCreatedAsc;
+
+  /// No description provided for @vaultSortCapsulesTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortCapsulesTitleAsc;
+
   /// No description provided for @capsuleThemeMemories.
   ///
   /// In pt_BR, this message translates to:

@@ -431,6 +431,116 @@ class AppLocalizationsPt extends AppLocalizations {
   String get vaultCapsuleSealed => 'Selada';
 
   @override
+  String get vaultFilterTitle => 'Filtrar e ordenar';
+
+  @override
+  String get vaultFilterSearchHint => 'Buscar por titulo ou nome...';
+
+  @override
+  String get vaultFilterSortLabel => 'Ordenar por';
+
+  @override
+  String get vaultFilterApply => 'Aplicar';
+
+  @override
+  String get vaultFilterClear => 'Limpar filtros';
+
+  @override
+  String get vaultFilterOpenDateFrom => 'Abre a partir de';
+
+  @override
+  String get vaultFilterOpenDateTo => 'Abre ate';
+
+  @override
+  String get vaultFilterClearDate => 'Limpar data';
+
+  @override
+  String get vaultFilterPendingOnly => 'Somente pendentes de aceite';
+
+  @override
+  String get vaultFilterThemesLabel => 'Temas';
+
+  @override
+  String get vaultFilterDirectionAll => 'Todas';
+
+  @override
+  String get vaultFilterDirectionReceived => 'Recebidas';
+
+  @override
+  String get vaultFilterDirectionSent => 'Enviadas';
+
+  @override
+  String get vaultFilterEmptyTitle => 'Nenhum item com este filtro';
+
+  @override
+  String get vaultFilterEmptySubtitle =>
+      'Ajuste a busca ou limpe os filtros para ver tudo de novo';
+
+  @override
+  String get vaultFilterActiveBadge => 'Filtrado';
+
+  @override
+  String get vaultSortWaitingOpenDateAsc => 'Data de abertura (mais proxima)';
+
+  @override
+  String get vaultSortWaitingOpenDateDesc => 'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortWaitingCreatedDesc => 'Criacao (mais recente)';
+
+  @override
+  String get vaultSortWaitingCreatedAsc => 'Criacao (mais antiga)';
+
+  @override
+  String get vaultSortWaitingTitleAsc => 'Titulo (A-Z)';
+
+  @override
+  String get vaultSortOpenedOpenedAtDesc => 'Aberta em (mais recente)';
+
+  @override
+  String get vaultSortOpenedOpenedAtAsc => 'Aberta em (mais antiga)';
+
+  @override
+  String get vaultSortOpenedOpenDateDesc => 'Data planejada (mais distante)';
+
+  @override
+  String get vaultSortOpenedOpenDateAsc => 'Data planejada (mais proxima)';
+
+  @override
+  String get vaultSortOpenedTitleAsc => 'Titulo (A-Z)';
+
+  @override
+  String get vaultSortSentOpenDateAsc => 'Data de abertura (mais proxima)';
+
+  @override
+  String get vaultSortSentOpenDateDesc => 'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortSentCreatedDesc => 'Criacao (mais recente)';
+
+  @override
+  String get vaultSortSentCreatedAsc => 'Criacao (mais antiga)';
+
+  @override
+  String get vaultSortSentTitleAsc => 'Titulo (A-Z)';
+
+  @override
+  String get vaultSortCapsulesOpenDateAsc => 'Data de abertura (mais proxima)';
+
+  @override
+  String get vaultSortCapsulesOpenDateDesc =>
+      'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortCapsulesCreatedDesc => 'Criacao (mais recente)';
+
+  @override
+  String get vaultSortCapsulesCreatedAsc => 'Criacao (mais antiga)';
+
+  @override
+  String get vaultSortCapsulesTitleAsc => 'Titulo (A-Z)';
+
+  @override
   String get capsuleThemeMemories => 'Memorias';
 
   @override
@@ -2167,6 +2277,116 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get vaultCapsuleSealed => 'Selada';
+
+  @override
+  String get vaultFilterTitle => 'Filtrar e ordenar';
+
+  @override
+  String get vaultFilterSearchHint => 'Buscar por título ou nome...';
+
+  @override
+  String get vaultFilterSortLabel => 'Ordenar por';
+
+  @override
+  String get vaultFilterApply => 'Aplicar';
+
+  @override
+  String get vaultFilterClear => 'Limpar filtros';
+
+  @override
+  String get vaultFilterOpenDateFrom => 'Abre a partir de';
+
+  @override
+  String get vaultFilterOpenDateTo => 'Abre até';
+
+  @override
+  String get vaultFilterClearDate => 'Limpar data';
+
+  @override
+  String get vaultFilterPendingOnly => 'Somente pendentes de aceite';
+
+  @override
+  String get vaultFilterThemesLabel => 'Temas';
+
+  @override
+  String get vaultFilterDirectionAll => 'Todas';
+
+  @override
+  String get vaultFilterDirectionReceived => 'Recebidas';
+
+  @override
+  String get vaultFilterDirectionSent => 'Enviadas';
+
+  @override
+  String get vaultFilterEmptyTitle => 'Nenhum item com este filtro';
+
+  @override
+  String get vaultFilterEmptySubtitle =>
+      'Ajuste a busca ou limpe os filtros para ver tudo de novo';
+
+  @override
+  String get vaultFilterActiveBadge => 'Filtrado';
+
+  @override
+  String get vaultSortWaitingOpenDateAsc => 'Data de abertura (mais próxima)';
+
+  @override
+  String get vaultSortWaitingOpenDateDesc => 'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortWaitingCreatedDesc => 'Criação (mais recente)';
+
+  @override
+  String get vaultSortWaitingCreatedAsc => 'Criação (mais antiga)';
+
+  @override
+  String get vaultSortWaitingTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortOpenedOpenedAtDesc => 'Aberta em (mais recente)';
+
+  @override
+  String get vaultSortOpenedOpenedAtAsc => 'Aberta em (mais antiga)';
+
+  @override
+  String get vaultSortOpenedOpenDateDesc => 'Data planejada (mais distante)';
+
+  @override
+  String get vaultSortOpenedOpenDateAsc => 'Data planejada (mais próxima)';
+
+  @override
+  String get vaultSortOpenedTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortSentOpenDateAsc => 'Data de abertura (mais próxima)';
+
+  @override
+  String get vaultSortSentOpenDateDesc => 'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortSentCreatedDesc => 'Criação (mais recente)';
+
+  @override
+  String get vaultSortSentCreatedAsc => 'Criação (mais antiga)';
+
+  @override
+  String get vaultSortSentTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortCapsulesOpenDateAsc => 'Data de abertura (mais próxima)';
+
+  @override
+  String get vaultSortCapsulesOpenDateDesc =>
+      'Data de abertura (mais distante)';
+
+  @override
+  String get vaultSortCapsulesCreatedDesc => 'Criação (mais recente)';
+
+  @override
+  String get vaultSortCapsulesCreatedAsc => 'Criação (mais antiga)';
+
+  @override
+  String get vaultSortCapsulesTitleAsc => 'Título (A–Z)';
 
   @override
   String get capsuleThemeMemories => 'Memorias';

@@ -13,6 +13,8 @@ import 'letter_detail_screen.dart';
 import '../../../capsules/presentation/screens/create_capsule_screen.dart';
 import '../../../capsules/presentation/screens/capsule_detail_screen.dart';
 import '../../../../shared/utils/open_with_proximity.dart';
+import '../vault_list_filters.dart';
+import '../widgets/vault_filter_sheet.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
   const VaultScreen({super.key});
@@ -24,17 +26,30 @@ class VaultScreen extends ConsumerStatefulWidget {
 class _VaultScreenState extends ConsumerState<VaultScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  VaultFiltersState _vaultFilters = VaultFiltersState.initial;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openVaultFilterSheet() async {
+    final next = await showVaultFilterSheet(
+      context: context,
+      tabIndex: _tabController.index,
+      current: _vaultFilters,
+    );
+    if (next != null && mounted) setState(() => _vaultFilters = next);
   }
 
   String _countdown(DateTime openDate, AppLocalizations l10n) {
@@ -86,7 +101,26 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                     const SizedBox(height: 4),
                     Text(l10n.vaultSubtitle, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                   ]),
-                  Container(width: 36, height: 36, decoration: BoxDecoration(color: Colors.white.withOpacity(0.08), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white.withOpacity(0.08))), child: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withOpacity(0.5))),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withOpacity(0.08)),
+                    ),
+                    child: Badge(
+                      isLabelVisible: _vaultFilters.isActiveForTab(_tabController.index),
+                      backgroundColor: context.pal.accent,
+                      smallSize: 7,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        tooltip: l10n.vaultFilterTitle,
+                        onPressed: _openVaultFilterSheet,
+                        icon: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withOpacity(0.85)),
+                      ),
+                    ),
+                  ),
                 ]),
               ),
             ]),
@@ -125,8 +159,10 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       builder: (context, snapshot) {
         final l10n = AppLocalizations.of(context)!;
         if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return _buildEmpty(emoji: '🔒', title: l10n.vaultEmptyWaitingTitle, subtitle: l10n.vaultEmptyWaitingSubtitle);
+        final raw = snapshot.data?.docs ?? [];
+        if (raw.isEmpty) return _buildEmpty(emoji: '🔒', title: l10n.vaultEmptyWaitingTitle, subtitle: l10n.vaultEmptyWaitingSubtitle);
+        final docs = filterAndSortWaiting(raw, _vaultFilters.waiting);
+        if (docs.isEmpty) return _buildFilterEmpty(context);
         return ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           itemCount: docs.length,
@@ -153,8 +189,10 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             if (receivedSnap.connectionState == ConnectionState.waiting || sentSnap.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
             final allDocs = <String, QueryDocumentSnapshot>{};
             for (final doc in [...(receivedSnap.data?.docs ?? []), ...(sentSnap.data?.docs ?? [])]) { allDocs[doc.id] = doc; }
-            final docs = allDocs.values.toList();
-            if (docs.isEmpty) return _buildEmpty(emoji: '💌', title: l10n.vaultEmptyOpenedTitle, subtitle: l10n.vaultEmptyOpenedSubtitle);
+            final raw = allDocs.values.toList();
+            if (raw.isEmpty) return _buildEmpty(emoji: '💌', title: l10n.vaultEmptyOpenedTitle, subtitle: l10n.vaultEmptyOpenedSubtitle);
+            final docs = filterAndSortOpened(raw, _vaultFilters.opened, uid);
+            if (docs.isEmpty) return _buildFilterEmpty(context);
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
               itemCount: docs.length,
@@ -179,8 +217,10 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       builder: (context, snapshot) {
         final l10n = AppLocalizations.of(context)!;
         if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return _buildEmpty(emoji: '✉️', title: l10n.vaultEmptySentTitle, subtitle: l10n.vaultEmptySentSubtitle);
+        final raw = snapshot.data?.docs ?? [];
+        if (raw.isEmpty) return _buildEmpty(emoji: '✉️', title: l10n.vaultEmptySentTitle, subtitle: l10n.vaultEmptySentSubtitle);
+        final docs = filterAndSortSent(raw, _vaultFilters.sent);
+        if (docs.isEmpty) return _buildFilterEmpty(context);
         return ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           itemCount: docs.length,
@@ -204,8 +244,10 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final docs = snapshot.data?.docs ?? [];
-        if (docs.isEmpty) return _buildEmptyCapsules(context);
+        final raw = snapshot.data?.docs ?? [];
+        if (raw.isEmpty) return _buildEmptyCapsules(context);
+        final docs = filterAndSortCapsules(raw, _vaultFilters.capsules);
+        if (docs.isEmpty) return _buildFilterEmpty(context);
         return ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           itemCount: docs.length,
@@ -504,6 +546,33 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       const SizedBox(height: 8),
       Text(subtitle, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
     ]));
+  }
+
+  Widget _buildFilterEmpty(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.filter_alt_off_rounded, size: 48, color: context.pal.inkFaint),
+            const SizedBox(height: 16),
+            Text(
+              l10n.vaultFilterEmptyTitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.vaultFilterEmptySubtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildEmptyCapsules(BuildContext context) {

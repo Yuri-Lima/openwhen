@@ -430,6 +430,115 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaultCapsuleSealed => 'Sealed';
 
   @override
+  String get vaultFilterTitle => 'Filter and sort';
+
+  @override
+  String get vaultFilterSearchHint => 'Search by title or name...';
+
+  @override
+  String get vaultFilterSortLabel => 'Sort by';
+
+  @override
+  String get vaultFilterApply => 'Apply';
+
+  @override
+  String get vaultFilterClear => 'Clear filters';
+
+  @override
+  String get vaultFilterOpenDateFrom => 'Opens from';
+
+  @override
+  String get vaultFilterOpenDateTo => 'Opens until';
+
+  @override
+  String get vaultFilterClearDate => 'Clear date';
+
+  @override
+  String get vaultFilterPendingOnly => 'Pending acceptance only';
+
+  @override
+  String get vaultFilterThemesLabel => 'Themes';
+
+  @override
+  String get vaultFilterDirectionAll => 'All';
+
+  @override
+  String get vaultFilterDirectionReceived => 'Received';
+
+  @override
+  String get vaultFilterDirectionSent => 'Sent';
+
+  @override
+  String get vaultFilterEmptyTitle => 'Nothing matches this filter';
+
+  @override
+  String get vaultFilterEmptySubtitle =>
+      'Adjust your search or clear filters to see everything again';
+
+  @override
+  String get vaultFilterActiveBadge => 'Filtered';
+
+  @override
+  String get vaultSortWaitingOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortWaitingOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortWaitingCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortWaitingCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortWaitingTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortOpenedOpenedAtDesc => 'Opened at (newest)';
+
+  @override
+  String get vaultSortOpenedOpenedAtAsc => 'Opened at (oldest)';
+
+  @override
+  String get vaultSortOpenedOpenDateDesc => 'Planned open date (farthest)';
+
+  @override
+  String get vaultSortOpenedOpenDateAsc => 'Planned open date (soonest)';
+
+  @override
+  String get vaultSortOpenedTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortSentOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortSentOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortSentCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortSentCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortSentTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortCapsulesOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortCapsulesOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortCapsulesCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortCapsulesCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortCapsulesTitleAsc => 'Title (A–Z)';
+
+  @override
   String get capsuleThemeMemories => 'Memories';
 
   @override
