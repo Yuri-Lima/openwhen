@@ -86,11 +86,14 @@ Comandos **locais** (sem remote) funcionam normalmente no sandbox:
 
 ### 🖥️ Computer Use — Terminal do Cursor
 
-Claude **não consegue** interagir com o terminal do Cursor a menos que o **Computer Use** esteja ativado.
+O Computer Use está **ativado**, porém o Cursor opera no nível **"click"** (restrição de segurança para IDEs), o que significa:
 
-Para ativar: `Settings → Desktop app → Computer use`
+- ✅ Claude consegue ver a tela e tirar screenshots
+- ✅ Claude consegue clicar em botões da interface
+- ❌ Claude **não consegue digitar** no terminal do Cursor
+- ❌ Claude **não consegue colar** via clipboard no terminal
 
-Quando ativado, Claude poderá digitar comandos diretamente no terminal do Cursor (incluindo comandos com remote), eliminando completamente o bloqueio de proxy do sandbox.
+**Conclusão definitiva:** comandos com remote (`git pull`, `git push`, `git fetch`) devem ser executados manualmente pelo usuário no terminal do Cursor. Claude fornece o comando exato e o usuário o digita/executa.
 
 ---
 
