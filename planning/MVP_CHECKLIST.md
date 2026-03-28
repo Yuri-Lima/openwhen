@@ -43,6 +43,27 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
+## Futuro — Gift & Nox (pós-escala; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 / 4 e [`BUSINESS.md`](BUSINESS.md))
+
+**OpenWhen Gift (Presente Selado / Gift When)**
+
+- [ ] Aprovado para desenvolvimento futuro
+- [ ] Pesquisa legal concluída (*money transmission* EUA e requisitos locais)
+- [ ] Integração Stripe Connect configurada (conta aprovada)
+- [ ] Termos de uso e política de reembolso atualizados
+- [ ] MVP Gift desenvolvido e validado
+- [ ] Lançado
+
+**Nox Card (card da coruja)**
+
+- [ ] Nome do mascote definido
+- [ ] Animação do card criada
+- [ ] Integração com Gift When (Fase 1 do Gift)
+- [ ] Compartilhamento para Stories e Reels
+- [ ] Cards colecionáveis (futuro)
+
+---
+
 ## Concluído (referência)
 
 ### Autenticação e onboarding

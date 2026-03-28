@@ -19,7 +19,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
-- `planning/ROADMAP.md` e `planning/BUSINESS.md`: inclusão de cartões-presente (compra e resgate) na fase de monetização.
+- **Planejamento:** OpenWhen Gift (Presente Selado / Gift When) e Nox Card descritos em [`ROADMAP.md`](planning/ROADMAP.md), [`BUSINESS.md`](planning/BUSINESS.md), [`MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md) e nota em [`ARCHITECTURE.md`](planning/ARCHITECTURE.md); conteúdo que estava em `planning/GIFT_FEATURE.md` foi integrado e esse arquivo removido. Política documentada no roadmap: novas ideias entram nas tabelas e no checklist, não em um `.md` por feature.
 
 ### Fixed
 

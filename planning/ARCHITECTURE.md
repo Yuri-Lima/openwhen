@@ -154,3 +154,9 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 - Validar também builds móveis antes de releases (`flutter run` em dispositivo/emulador).
 
 Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
+
+---
+
+## Extensões futuras — pagamentos (planejado)
+
+O produto **OpenWhen Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
