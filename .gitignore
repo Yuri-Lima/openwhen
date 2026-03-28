@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Scripts locais com API keys / passwords (copiar de .example)
+scripts/bootstrap-token.local.sh

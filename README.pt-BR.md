@@ -36,7 +36,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; campo **mensagem digitada** começa **recolhido** e expande ao toque; **mensagem de voz** opcional (máx. **1 minuto** definido pelo produto, gravação no dispositivo, upload no Storage) com reprodução no app na abertura/detalhe; **link de música** opcional (só `https`, abre fora do app — sem streaming de música no app); **localização** opcional no envio (`geolocator`): diálogos perguntam se compartilha coordenadas com o destinatário (no detalhe, toque copia URL do **Google Maps**) e se a abertura exige estar a **≤ 10 m** do ponto (verificação no cliente ao abrir pelo Cofre — não é garantia de servidor) |
 | **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; mesmo padrão de link de música opcional; mesma **localização opcional + opção de abertura em 10 m** das cartas |
 | **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
-| **Cofre** | Abas: aguardando, abertas e **cápsulas** |
+| **Cofre** | Abas: aguardando, abertas, enviadas e **cápsulas**; **filtro e ordenação** (bottom sheet, no cliente sobre os dados já carregados) |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
 | **Feedback** | Toque na coruja do header para enviar feedback (mesmo bottom sheet); animação idle (oscilação + vibração) em intervalos aleatórios por visita ao ecrã. Utilizadores sem sessão também têm o FAB global. |
 

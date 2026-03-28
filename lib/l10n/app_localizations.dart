@@ -857,6 +857,222 @@ abstract class AppLocalizations {
   /// **'Selada'**
   String get vaultCapsuleSealed;
 
+  /// No description provided for @vaultFilterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Filtrar e ordenar'**
+  String get vaultFilterTitle;
+
+  /// No description provided for @vaultFilterSearchHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Buscar por título ou nome...'**
+  String get vaultFilterSearchHint;
+
+  /// No description provided for @vaultFilterSortLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ordenar por'**
+  String get vaultFilterSortLabel;
+
+  /// No description provided for @vaultFilterApply.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aplicar'**
+  String get vaultFilterApply;
+
+  /// No description provided for @vaultFilterClear.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Limpar filtros'**
+  String get vaultFilterClear;
+
+  /// No description provided for @vaultFilterOpenDateFrom.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abre a partir de'**
+  String get vaultFilterOpenDateFrom;
+
+  /// No description provided for @vaultFilterOpenDateTo.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abre até'**
+  String get vaultFilterOpenDateTo;
+
+  /// No description provided for @vaultFilterClearDate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Limpar data'**
+  String get vaultFilterClearDate;
+
+  /// No description provided for @vaultFilterPendingOnly.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Somente pendentes de aceite'**
+  String get vaultFilterPendingOnly;
+
+  /// No description provided for @vaultFilterThemesLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Temas'**
+  String get vaultFilterThemesLabel;
+
+  /// No description provided for @vaultFilterDirectionAll.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Todas'**
+  String get vaultFilterDirectionAll;
+
+  /// No description provided for @vaultFilterDirectionReceived.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Recebidas'**
+  String get vaultFilterDirectionReceived;
+
+  /// No description provided for @vaultFilterDirectionSent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviadas'**
+  String get vaultFilterDirectionSent;
+
+  /// No description provided for @vaultFilterEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhum item com este filtro'**
+  String get vaultFilterEmptyTitle;
+
+  /// No description provided for @vaultFilterEmptySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ajuste a busca ou limpe os filtros para ver tudo de novo'**
+  String get vaultFilterEmptySubtitle;
+
+  /// No description provided for @vaultFilterActiveBadge.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Filtrado'**
+  String get vaultFilterActiveBadge;
+
+  /// No description provided for @vaultSortWaitingOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortWaitingOpenDateAsc;
+
+  /// No description provided for @vaultSortWaitingOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortWaitingOpenDateDesc;
+
+  /// No description provided for @vaultSortWaitingCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortWaitingCreatedDesc;
+
+  /// No description provided for @vaultSortWaitingCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortWaitingCreatedAsc;
+
+  /// No description provided for @vaultSortWaitingTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortWaitingTitleAsc;
+
+  /// No description provided for @vaultSortOpenedOpenedAtDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aberta em (mais recente)'**
+  String get vaultSortOpenedOpenedAtDesc;
+
+  /// No description provided for @vaultSortOpenedOpenedAtAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aberta em (mais antiga)'**
+  String get vaultSortOpenedOpenedAtAsc;
+
+  /// No description provided for @vaultSortOpenedOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data planejada (mais distante)'**
+  String get vaultSortOpenedOpenDateDesc;
+
+  /// No description provided for @vaultSortOpenedOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data planejada (mais próxima)'**
+  String get vaultSortOpenedOpenDateAsc;
+
+  /// No description provided for @vaultSortOpenedTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortOpenedTitleAsc;
+
+  /// No description provided for @vaultSortSentOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortSentOpenDateAsc;
+
+  /// No description provided for @vaultSortSentOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortSentOpenDateDesc;
+
+  /// No description provided for @vaultSortSentCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortSentCreatedDesc;
+
+  /// No description provided for @vaultSortSentCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortSentCreatedAsc;
+
+  /// No description provided for @vaultSortSentTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortSentTitleAsc;
+
+  /// No description provided for @vaultSortCapsulesOpenDateAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais próxima)'**
+  String get vaultSortCapsulesOpenDateAsc;
+
+  /// No description provided for @vaultSortCapsulesOpenDateDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Data de abertura (mais distante)'**
+  String get vaultSortCapsulesOpenDateDesc;
+
+  /// No description provided for @vaultSortCapsulesCreatedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais recente)'**
+  String get vaultSortCapsulesCreatedDesc;
+
+  /// No description provided for @vaultSortCapsulesCreatedAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criação (mais antiga)'**
+  String get vaultSortCapsulesCreatedAsc;
+
+  /// No description provided for @vaultSortCapsulesTitleAsc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Título (A–Z)'**
+  String get vaultSortCapsulesTitleAsc;
+
   /// No description provided for @capsuleThemeMemories.
   ///
   /// In pt_BR, this message translates to:
@@ -2231,6 +2447,54 @@ abstract class AppLocalizations {
   /// **'Galeria ou remover'**
   String get settingsProfilePhotoSubtitle;
 
+  /// No description provided for @avatarChooseFromGallery.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolher da galeria'**
+  String get avatarChooseFromGallery;
+
+  /// No description provided for @avatarRemovePhoto.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover foto'**
+  String get avatarRemovePhoto;
+
+  /// No description provided for @avatarPhotoRemovedSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Foto removida'**
+  String get avatarPhotoRemovedSnack;
+
+  /// No description provided for @avatarPhotoUpdatedSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Foto de perfil atualizada'**
+  String get avatarPhotoUpdatedSnack;
+
+  /// No description provided for @avatarUploadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível enviar a foto: {error}'**
+  String avatarUploadError(String error);
+
+  /// No description provided for @settingsNotifPermissionStatus.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Status: {status}'**
+  String settingsNotifPermissionStatus(String status);
+
+  /// No description provided for @qrFooterBrand.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'openwhen.app'**
+  String get qrFooterBrand;
+
+  /// No description provided for @qrShareWhatsAppLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'WhatsApp'**
+  String get qrShareWhatsAppLabel;
+
   /// No description provided for @settingsEditProfile.
   ///
   /// In pt_BR, this message translates to:
@@ -2777,6 +3041,126 @@ abstract class AppLocalizations {
   /// **'Toque nos três pontos ao lado de qualquer carta ou comentário e selecione \"Denunciar\". Nossa equipe analisará o conteúdo em até 24 horas. Denúncias graves são tratadas com prioridade.'**
   String get helpFaq8A;
 
+  /// No description provided for @reportMenuLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denunciar'**
+  String get reportMenuLabel;
+
+  /// No description provided for @reportSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denunciar conteúdo'**
+  String get reportSheetTitle;
+
+  /// No description provided for @reportSheetSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Diga o que está errado. Detalhes opcionais ajudam nossa equipe a analisar mais rápido.'**
+  String get reportSheetSubtitle;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Spam ou enganoso'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonHarassment.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assédio ou bullying'**
+  String get reportReasonHarassment;
+
+  /// No description provided for @reportReasonHate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Discurso de ódio'**
+  String get reportReasonHate;
+
+  /// No description provided for @reportReasonIllegal.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Conteúdo ilegal'**
+  String get reportReasonIllegal;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Outro'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportDetailLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Detalhes adicionais (opcional)'**
+  String get reportDetailLabel;
+
+  /// No description provided for @reportDetailHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Contexto que ajuda a moderação…'**
+  String get reportDetailHint;
+
+  /// No description provided for @reportSubmit.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar denúncia'**
+  String get reportSubmit;
+
+  /// No description provided for @reportSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Obrigado — recebemos sua denúncia.'**
+  String get reportSuccess;
+
+  /// No description provided for @adminModerationTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação'**
+  String get adminModerationTitle;
+
+  /// No description provided for @adminModerationReportsTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denúncias'**
+  String get adminModerationReportsTab;
+
+  /// No description provided for @adminModerationFeedbackTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Feedback'**
+  String get adminModerationFeedbackTab;
+
+  /// No description provided for @adminModerationEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nada pendente.'**
+  String get adminModerationEmpty;
+
+  /// No description provided for @adminModerationResolve.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Arquivar'**
+  String get adminModerationResolve;
+
+  /// No description provided for @adminModerationConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Marcar como analisado'**
+  String get adminModerationConfirm;
+
+  /// No description provided for @adminModerationLoadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar a fila de moderação.'**
+  String get adminModerationLoadError;
+
+  /// No description provided for @adminEntrySettings.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação (admin)'**
+  String get adminEntrySettings;
+
   /// No description provided for @helpNotFoundTitle.
   ///
   /// In pt_BR, this message translates to:
@@ -2896,6 +3280,120 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Categoria: {category}'**
   String feedbackEmailBodyPrefix(String category);
+
+  /// No description provided for @subscriptionSectionTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Plano e assinatura'**
+  String get subscriptionSectionTitle;
+
+  /// No description provided for @subscriptionScreenTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Planos'**
+  String get subscriptionScreenTitle;
+
+  /// No description provided for @subscriptionPlanAmanhaName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Amanhã'**
+  String get subscriptionPlanAmanhaName;
+
+  /// No description provided for @subscriptionPlanBrisaName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Brisa'**
+  String get subscriptionPlanBrisaName;
+
+  /// No description provided for @subscriptionPlanHorizonteName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Horizonte'**
+  String get subscriptionPlanHorizonteName;
+
+  /// No description provided for @subscriptionPlanAmanhaPitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O essencial para escrever hoje e sentir no tempo certo.'**
+  String get subscriptionPlanAmanhaPitch;
+
+  /// No description provided for @subscriptionPlanBrisaPitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Partilha e expressão: mais profundidade no cofre e nas redes.'**
+  String get subscriptionPlanBrisaPitch;
+
+  /// No description provided for @subscriptionPlanHorizontePitch.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Arquivo, família e inteligência com transparência.'**
+  String get subscriptionPlanHorizontePitch;
+
+  /// No description provided for @subscriptionCurrentPlanLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seu plano atual'**
+  String get subscriptionCurrentPlanLabel;
+
+  /// No description provided for @subscriptionSubscribeBrisa.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assinar Brisa'**
+  String get subscriptionSubscribeBrisa;
+
+  /// No description provided for @subscriptionSubscribeHorizonte.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assinar Horizonte'**
+  String get subscriptionSubscribeHorizonte;
+
+  /// No description provided for @subscriptionManageBilling.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Gerenciar assinatura e pagamento'**
+  String get subscriptionManageBilling;
+
+  /// No description provided for @subscriptionCheckoutError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir o pagamento. Tente novamente.'**
+  String get subscriptionCheckoutError;
+
+  /// No description provided for @subscriptionPortalError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível abrir o portal de cobrança.'**
+  String get subscriptionPortalError;
+
+  /// No description provided for @subscriptionUpgradeDialogTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Plano necessário'**
+  String get subscriptionUpgradeDialogTitle;
+
+  /// No description provided for @subscriptionUpgradeDialogBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta função exige o plano {planName} ou superior.'**
+  String subscriptionUpgradeDialogBody(String planName);
+
+  /// No description provided for @subscriptionUpgradeDialogViewPlans.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ver planos'**
+  String get subscriptionUpgradeDialogViewPlans;
+
+  /// No description provided for @subscriptionBillingDisabledBanner.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O checkout de assinatura ainda não está ativado. Você pode continuar usando o app no plano Amanhã. Ative o billing no projeto quando o Stripe estiver pronto.'**
+  String get subscriptionBillingDisabledBanner;
+
+  /// No description provided for @subscriptionBillingDisabledSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Pagamentos ainda não estão ativos. Use BILLING_ENABLED=true quando o Stripe estiver configurado.'**
+  String get subscriptionBillingDisabledSnack;
 
   /// No description provided for @termsIntro.
   ///

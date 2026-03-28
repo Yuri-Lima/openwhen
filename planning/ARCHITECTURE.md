@@ -15,8 +15,10 @@
 lib/
 ├── main.dart
 ├── firebase_options.dart          # Não versionado no remoto — obter com o time
-├── core/constants/
-│   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
+├── core/
+│   ├── billing/                   # BillingProvider, StripeBillingProvider, tier guard, feature flags (BILLING_ENABLED)
+│   └── constants/
+│       └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 ├── features/
 │   ├── auth/
 │   │   ├── data/auth_service.dart
@@ -29,6 +31,8 @@ lib/
 │   │   ├── models/
 │   │   └── presentation/
 │   │       ├── screens/ (write, vault, detail, opening, requests, qr)
+│   │       ├── vault_list_filters.dart   # estado de filtros por aba + sort/filtro em memória sobre snapshots
+│   │       └── widgets/ (vault_filter_sheet — bottom sheet de filtro/ordenação)
 │   │       └── voice_letter.dart    # conditional export: upload/delete ficheiro local (IO vs web stub)
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
@@ -36,7 +40,7 @@ lib/
 │   │   ├── models/
 │   │   └── presentation/screens/ (feed, comments)
 │   └── profile/
-│       └── presentation/screens/ (profile, user_profile, search, settings, legal)
+│       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
     ├── theme/
     │   └── app_theme.dart
@@ -146,6 +150,8 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
   - Escrever carta → `WriteLetterScreen`
   - Nova cápsula → `CreateCapsuleScreen`
 
+- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; cada aba mantém a mesma query Firestore de sempre; **filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta.
+
 ---
 
 ## Testes e ambiente
@@ -160,3 +166,7 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 ## Extensões futuras — pagamentos (planejado)
 
 O produto **OpenWhen Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
+
+### Subscrição (tiers Amanhã / Brisa / Horizonte)
+
+A subscrição usa **Stripe Checkout** (modo subscription) e **Customer Portal**, expostos via **Firebase Cloud Functions** (`createCheckoutSession`, `createPortalSession`, `stripeWebhook`, `migrateUserBillingDefaults`). O estado (`subscriptionTier`, ids Stripe) vive em `users/{uid}` e só é escrito pelo webhook ou pela migração server-side; o cliente Flutter usa a abstracção `BillingProvider` com implementação `StripeBillingProvider` (`lib/core/billing/`). As Functions leem chaves Stripe de **variáveis de ambiente** em runtime (sem obrigar Secret Manager). No app, o checkout Stripe fica **desactivado por defeito** (`BILLING_ENABLED=false`); usar `--dart-define=BILLING_ENABLED=true` quando Stripe e envs estiverem prontos. Ver [`functions/README.md`](../functions/README.md).

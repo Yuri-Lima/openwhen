@@ -139,7 +139,7 @@ class LegalScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Text('OpenWhen', style: GoogleFonts.dmSerifDisplay(fontSize: 28, color: context.pal.ink, fontStyle: FontStyle.italic)),
+              Text(l10n.appName, style: GoogleFonts.dmSerifDisplay(fontSize: 28, color: context.pal.ink, fontStyle: FontStyle.italic)),
               const SizedBox(height: 4),
               Text(l10n.aboutTagline,
                 style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft, fontStyle: FontStyle.italic)),

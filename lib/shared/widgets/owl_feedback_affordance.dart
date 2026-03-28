@@ -179,11 +179,16 @@ class _OwlFeedbackAffordanceState extends State<OwlFeedbackAffordance>
                 tilt = _tilt.value;
                 dx = 0;
                 dy = _lift.value;
-              } else {
+              } else if (_buzzController.value > 0) {
                 final b = _buzzMotion(_buzzController.value);
                 tilt = b.tilt;
                 dx = b.dx;
                 dy = b.dy;
+              } else {
+                // Idle: do not use _buzzMotion(0) — it is not at rest (dy would be ~3.8px down).
+                tilt = 0;
+                dx = 0;
+                dy = 0;
               }
               return Transform.translate(
                 offset: Offset(dx, dy),

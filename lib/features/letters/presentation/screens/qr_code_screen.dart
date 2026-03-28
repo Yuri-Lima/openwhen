@@ -247,7 +247,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                               children: [
                                 const Text('💌', style: TextStyle(fontSize: 14)),
                                 const SizedBox(width: 6),
-                                Text('openwhen.app',
+                                Text(l10n.qrFooterBrand,
                                   style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
                               ],
                             ),
@@ -342,7 +342,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                               children: [
                                 const Icon(Icons.chat, size: 18, color: Colors.white),
                                 const SizedBox(width: 8),
-                                Text('WhatsApp', style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
+                                Text(l10n.qrShareWhatsAppLabel, style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w500)),
                               ],
                             ),
                           ),

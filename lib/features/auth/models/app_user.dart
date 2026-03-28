@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../core/billing/subscription_tier.dart';
 
 class AppUser {
   final String uid;
@@ -15,6 +16,18 @@ class AppUser {
   final String language;
   final String? country;
 
+  /// Billing: `free` | `plus` | `pro` (Amanhã / Brisa / Horizonte).
+  final SubscriptionTier subscriptionTier;
+
+  /// Stripe Customer id (set by webhook); optional until first checkout.
+  final String? stripeCustomerId;
+
+  /// Active subscription id in Stripe (optional mirror).
+  final String? stripeSubscriptionId;
+
+  /// Mirror of Stripe subscription status, e.g. `active`, `past_due`, `canceled`.
+  final String? subscriptionStatus;
+
   AppUser({
     required this.uid,
     required this.name,
@@ -29,6 +42,10 @@ class AppUser {
     this.openedLettersCount = 0,
     this.language = 'pt-BR',
     this.country,
+    this.subscriptionTier = SubscriptionTier.free,
+    this.stripeCustomerId,
+    this.stripeSubscriptionId,
+    this.subscriptionStatus,
   });
 
   factory AppUser.fromFirestore(DocumentSnapshot doc) {
@@ -47,6 +64,10 @@ class AppUser {
       openedLettersCount: data['openedLettersCount'] ?? 0,
       language: data['language'] ?? 'pt-BR',
       country: data['country'],
+      subscriptionTier: subscriptionTierFromId(data['subscriptionTier'] as String?),
+      stripeCustomerId: data['stripeCustomerId'] as String?,
+      stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
+      subscriptionStatus: data['subscriptionStatus'] as String?,
     );
   }
 
@@ -65,6 +86,10 @@ class AppUser {
       'openedLettersCount': openedLettersCount,
       'language': language,
       'country': country,
+      'subscriptionTier': subscriptionTierId(subscriptionTier),
+      if (stripeCustomerId != null) 'stripeCustomerId': stripeCustomerId,
+      if (stripeSubscriptionId != null) 'stripeSubscriptionId': stripeSubscriptionId,
+      if (subscriptionStatus != null) 'subscriptionStatus': subscriptionStatus,
     };
   }
 }

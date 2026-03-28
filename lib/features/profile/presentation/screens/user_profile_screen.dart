@@ -128,7 +128,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                 Container(
                                   width: 72, height: 72,
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent,
+                                    color: context.pal.accent,
                                     shape: BoxShape.circle,
                                     border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
                                   ),

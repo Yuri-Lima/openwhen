@@ -43,6 +43,7 @@ dependencies:
   permission_handler: ^11.4.0
   path_provider: ^2.1.5
   geolocator: ^14.0.2
+  cloud_functions: ^6.1.0
 
 dev_dependencies:
   flutter_test:

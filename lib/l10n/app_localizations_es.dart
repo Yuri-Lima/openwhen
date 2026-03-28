@@ -431,6 +431,115 @@ class AppLocalizationsEs extends AppLocalizations {
   String get vaultCapsuleSealed => 'Sellada';
 
   @override
+  String get vaultFilterTitle => 'Filtrar y ordenar';
+
+  @override
+  String get vaultFilterSearchHint => 'Buscar por título o nombre...';
+
+  @override
+  String get vaultFilterSortLabel => 'Ordenar por';
+
+  @override
+  String get vaultFilterApply => 'Aplicar';
+
+  @override
+  String get vaultFilterClear => 'Borrar filtros';
+
+  @override
+  String get vaultFilterOpenDateFrom => 'Abre desde';
+
+  @override
+  String get vaultFilterOpenDateTo => 'Abre hasta';
+
+  @override
+  String get vaultFilterClearDate => 'Quitar fecha';
+
+  @override
+  String get vaultFilterPendingOnly => 'Solo pendientes de aceptación';
+
+  @override
+  String get vaultFilterThemesLabel => 'Temas';
+
+  @override
+  String get vaultFilterDirectionAll => 'Todas';
+
+  @override
+  String get vaultFilterDirectionReceived => 'Recibidas';
+
+  @override
+  String get vaultFilterDirectionSent => 'Enviadas';
+
+  @override
+  String get vaultFilterEmptyTitle => 'Nada coincide con este filtro';
+
+  @override
+  String get vaultFilterEmptySubtitle =>
+      'Ajusta la búsqueda o borra los filtros para verlo todo';
+
+  @override
+  String get vaultFilterActiveBadge => 'Filtrado';
+
+  @override
+  String get vaultSortWaitingOpenDateAsc => 'Fecha de apertura (más próxima)';
+
+  @override
+  String get vaultSortWaitingOpenDateDesc => 'Fecha de apertura (más lejana)';
+
+  @override
+  String get vaultSortWaitingCreatedDesc => 'Creación (más reciente)';
+
+  @override
+  String get vaultSortWaitingCreatedAsc => 'Creación (más antigua)';
+
+  @override
+  String get vaultSortWaitingTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortOpenedOpenedAtDesc => 'Abierta (más reciente)';
+
+  @override
+  String get vaultSortOpenedOpenedAtAsc => 'Abierta (más antigua)';
+
+  @override
+  String get vaultSortOpenedOpenDateDesc => 'Fecha prevista (más lejana)';
+
+  @override
+  String get vaultSortOpenedOpenDateAsc => 'Fecha prevista (más próxima)';
+
+  @override
+  String get vaultSortOpenedTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortSentOpenDateAsc => 'Fecha de apertura (más próxima)';
+
+  @override
+  String get vaultSortSentOpenDateDesc => 'Fecha de apertura (más lejana)';
+
+  @override
+  String get vaultSortSentCreatedDesc => 'Creación (más reciente)';
+
+  @override
+  String get vaultSortSentCreatedAsc => 'Creación (más antigua)';
+
+  @override
+  String get vaultSortSentTitleAsc => 'Título (A–Z)';
+
+  @override
+  String get vaultSortCapsulesOpenDateAsc => 'Fecha de apertura (más próxima)';
+
+  @override
+  String get vaultSortCapsulesOpenDateDesc => 'Fecha de apertura (más lejana)';
+
+  @override
+  String get vaultSortCapsulesCreatedDesc => 'Creación (más reciente)';
+
+  @override
+  String get vaultSortCapsulesCreatedAsc => 'Creación (más antigua)';
+
+  @override
+  String get vaultSortCapsulesTitleAsc => 'Título (A–Z)';
+
+  @override
   String get capsuleThemeMemories => 'Recuerdos';
 
   @override
@@ -1172,6 +1281,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsProfilePhotoSubtitle => 'Galería o eliminar';
 
   @override
+  String get avatarChooseFromGallery => 'Elegir de la galería';
+
+  @override
+  String get avatarRemovePhoto => 'Eliminar foto';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Foto eliminada';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Foto de perfil actualizada';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'No se pudo subir la foto: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Estado: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Editar perfil';
 
   @override
@@ -1473,6 +1610,68 @@ class AppLocalizationsEs extends AppLocalizations {
       'Toca los tres puntos junto a cualquier carta o comentario y selecciona \"Denunciar\". Nuestro equipo analizará el contenido en un plazo de 24 horas. Las denuncias graves se tratan con prioridad.';
 
   @override
+  String get reportMenuLabel => 'Denunciar';
+
+  @override
+  String get reportSheetTitle => 'Denunciar contenido';
+
+  @override
+  String get reportSheetSubtitle =>
+      'Indica qué falla. Los detalles opcionales ayudan a revisar más rápido.';
+
+  @override
+  String get reportReasonSpam => 'Spam o engañoso';
+
+  @override
+  String get reportReasonHarassment => 'Acoso o intimidación';
+
+  @override
+  String get reportReasonHate => 'Discurso de odio';
+
+  @override
+  String get reportReasonIllegal => 'Contenido ilegal';
+
+  @override
+  String get reportReasonOther => 'Otro';
+
+  @override
+  String get reportDetailLabel => 'Detalles adicionales (opcional)';
+
+  @override
+  String get reportDetailHint => 'Contexto que ayuda a la moderación…';
+
+  @override
+  String get reportSubmit => 'Enviar denuncia';
+
+  @override
+  String get reportSuccess => 'Gracias — recibimos tu denuncia.';
+
+  @override
+  String get adminModerationTitle => 'Moderación';
+
+  @override
+  String get adminModerationReportsTab => 'Denuncias';
+
+  @override
+  String get adminModerationFeedbackTab => 'Comentarios';
+
+  @override
+  String get adminModerationEmpty => 'Nada pendiente.';
+
+  @override
+  String get adminModerationResolve => 'Descartar';
+
+  @override
+  String get adminModerationConfirm => 'Marcar como revisado';
+
+  @override
+  String get adminModerationLoadError =>
+      'No se pudo cargar la cola de moderación.';
+
+  @override
+  String get adminEntrySettings => 'Moderación (admin)';
+
+  @override
   String get helpNotFoundTitle => '¿No encontraste lo que buscabas?';
 
   @override
@@ -1539,6 +1738,72 @@ class AppLocalizationsEs extends AppLocalizations {
   String feedbackEmailBodyPrefix(String category) {
     return 'Categoría: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plan y suscripción';
+
+  @override
+  String get subscriptionScreenTitle => 'Planes';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'Lo esencial para escribir hoy y sentirlo en el momento adecuado.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Comparte y expresa más: cofre y redes con más profundidad.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Archivo, familia e inteligencia con transparencia.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'Tu plan actual';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Suscribirse a Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Suscribirse a Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Gestionar suscripción y pago';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'No se pudo abrir el pago. Inténtalo de nuevo.';
+
+  @override
+  String get subscriptionPortalError =>
+      'No se pudo abrir el portal de facturación.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plan necesario';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'Esta función requiere el plan $planName o superior.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'Ver planes';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'El pago de suscripción aún no está activado. Puedes seguir usando la app en el plano Amanhã. Activa el billing cuando Stripe esté listo.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Los pagos aún no están activos. Usa BILLING_ENABLED=true cuando Stripe esté configurado.';
 
   @override
   String get termsIntro =>

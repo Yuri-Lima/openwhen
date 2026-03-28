@@ -430,6 +430,115 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaultCapsuleSealed => 'Sealed';
 
   @override
+  String get vaultFilterTitle => 'Filter and sort';
+
+  @override
+  String get vaultFilterSearchHint => 'Search by title or name...';
+
+  @override
+  String get vaultFilterSortLabel => 'Sort by';
+
+  @override
+  String get vaultFilterApply => 'Apply';
+
+  @override
+  String get vaultFilterClear => 'Clear filters';
+
+  @override
+  String get vaultFilterOpenDateFrom => 'Opens from';
+
+  @override
+  String get vaultFilterOpenDateTo => 'Opens until';
+
+  @override
+  String get vaultFilterClearDate => 'Clear date';
+
+  @override
+  String get vaultFilterPendingOnly => 'Pending acceptance only';
+
+  @override
+  String get vaultFilterThemesLabel => 'Themes';
+
+  @override
+  String get vaultFilterDirectionAll => 'All';
+
+  @override
+  String get vaultFilterDirectionReceived => 'Received';
+
+  @override
+  String get vaultFilterDirectionSent => 'Sent';
+
+  @override
+  String get vaultFilterEmptyTitle => 'Nothing matches this filter';
+
+  @override
+  String get vaultFilterEmptySubtitle =>
+      'Adjust your search or clear filters to see everything again';
+
+  @override
+  String get vaultFilterActiveBadge => 'Filtered';
+
+  @override
+  String get vaultSortWaitingOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortWaitingOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortWaitingCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortWaitingCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortWaitingTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortOpenedOpenedAtDesc => 'Opened at (newest)';
+
+  @override
+  String get vaultSortOpenedOpenedAtAsc => 'Opened at (oldest)';
+
+  @override
+  String get vaultSortOpenedOpenDateDesc => 'Planned open date (farthest)';
+
+  @override
+  String get vaultSortOpenedOpenDateAsc => 'Planned open date (soonest)';
+
+  @override
+  String get vaultSortOpenedTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortSentOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortSentOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortSentCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortSentCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortSentTitleAsc => 'Title (A–Z)';
+
+  @override
+  String get vaultSortCapsulesOpenDateAsc => 'Open date (soonest first)';
+
+  @override
+  String get vaultSortCapsulesOpenDateDesc => 'Open date (latest first)';
+
+  @override
+  String get vaultSortCapsulesCreatedDesc => 'Created (newest)';
+
+  @override
+  String get vaultSortCapsulesCreatedAsc => 'Created (oldest)';
+
+  @override
+  String get vaultSortCapsulesTitleAsc => 'Title (A–Z)';
+
+  @override
   String get capsuleThemeMemories => 'Memories';
 
   @override
@@ -1170,6 +1279,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsProfilePhotoSubtitle => 'Gallery or remove';
 
   @override
+  String get avatarChooseFromGallery => 'Choose from gallery';
+
+  @override
+  String get avatarRemovePhoto => 'Remove photo';
+
+  @override
+  String get avatarPhotoRemovedSnack => 'Photo removed';
+
+  @override
+  String get avatarPhotoUpdatedSnack => 'Profile photo updated';
+
+  @override
+  String avatarUploadError(String error) {
+    return 'Could not upload photo: $error';
+  }
+
+  @override
+  String settingsNotifPermissionStatus(String status) {
+    return 'Permission status: $status';
+  }
+
+  @override
+  String get qrFooterBrand => 'openwhen.app';
+
+  @override
+  String get qrShareWhatsAppLabel => 'WhatsApp';
+
+  @override
   String get settingsEditProfile => 'Edit profile';
 
   @override
@@ -1470,6 +1607,67 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap the three dots next to any letter or comment and select \"Report\". Our team will review the content within 24 hours. Serious reports are handled with priority.';
 
   @override
+  String get reportMenuLabel => 'Report';
+
+  @override
+  String get reportSheetTitle => 'Report content';
+
+  @override
+  String get reportSheetSubtitle =>
+      'Tell us what is wrong. Optional details help our team review faster.';
+
+  @override
+  String get reportReasonSpam => 'Spam or misleading';
+
+  @override
+  String get reportReasonHarassment => 'Harassment or bullying';
+
+  @override
+  String get reportReasonHate => 'Hate speech';
+
+  @override
+  String get reportReasonIllegal => 'Illegal content';
+
+  @override
+  String get reportReasonOther => 'Other';
+
+  @override
+  String get reportDetailLabel => 'Additional details (optional)';
+
+  @override
+  String get reportDetailHint => 'Context that helps moderation…';
+
+  @override
+  String get reportSubmit => 'Submit report';
+
+  @override
+  String get reportSuccess => 'Thanks — we received your report.';
+
+  @override
+  String get adminModerationTitle => 'Moderation';
+
+  @override
+  String get adminModerationReportsTab => 'Reports';
+
+  @override
+  String get adminModerationFeedbackTab => 'Feedback';
+
+  @override
+  String get adminModerationEmpty => 'Nothing pending.';
+
+  @override
+  String get adminModerationResolve => 'Dismiss';
+
+  @override
+  String get adminModerationConfirm => 'Mark reviewed';
+
+  @override
+  String get adminModerationLoadError => 'Could not load moderation queue.';
+
+  @override
+  String get adminEntrySettings => 'Moderation (admin)';
+
+  @override
   String get helpNotFoundTitle => 'Didn\'t find what you were looking for?';
 
   @override
@@ -1534,6 +1732,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String feedbackEmailBodyPrefix(String category) {
     return 'Category: $category';
   }
+
+  @override
+  String get subscriptionSectionTitle => 'Plan & subscription';
+
+  @override
+  String get subscriptionScreenTitle => 'Plans';
+
+  @override
+  String get subscriptionPlanAmanhaName => 'Amanhã';
+
+  @override
+  String get subscriptionPlanBrisaName => 'Brisa';
+
+  @override
+  String get subscriptionPlanHorizonteName => 'Horizonte';
+
+  @override
+  String get subscriptionPlanAmanhaPitch =>
+      'The essentials to write today and feel it at the right time.';
+
+  @override
+  String get subscriptionPlanBrisaPitch =>
+      'Share and express more — richer vault and social moments.';
+
+  @override
+  String get subscriptionPlanHorizontePitch =>
+      'Archive, family context, and transparent intelligence.';
+
+  @override
+  String get subscriptionCurrentPlanLabel => 'Your current plan';
+
+  @override
+  String get subscriptionSubscribeBrisa => 'Subscribe to Brisa';
+
+  @override
+  String get subscriptionSubscribeHorizonte => 'Subscribe to Horizonte';
+
+  @override
+  String get subscriptionManageBilling => 'Manage subscription & payment';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'Could not open checkout. Please try again.';
+
+  @override
+  String get subscriptionPortalError => 'Could not open the billing portal.';
+
+  @override
+  String get subscriptionUpgradeDialogTitle => 'Plan required';
+
+  @override
+  String subscriptionUpgradeDialogBody(String planName) {
+    return 'This feature requires the $planName plan or higher.';
+  }
+
+  @override
+  String get subscriptionUpgradeDialogViewPlans => 'View plans';
+
+  @override
+  String get subscriptionBillingDisabledBanner =>
+      'Subscription checkout is not enabled yet. You can keep using the app on the Amanhã plan. Enable billing in the project when Stripe is ready.';
+
+  @override
+  String get subscriptionBillingDisabledSnack =>
+      'Billing is not enabled yet. Set BILLING_ENABLED=true when Stripe is configured.';
 
   @override
   String get termsIntro =>

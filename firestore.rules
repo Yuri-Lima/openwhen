@@ -10,11 +10,36 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
+    // Billing fields are written only by backend (Stripe webhooks). Client may set subscriptionTier to free once if missing.
+    function userBillingFieldsUnchanged() {
+      return request.resource.data.subscriptionTier == resource.data.subscriptionTier
+        && request.resource.data.stripeCustomerId == resource.data.stripeCustomerId
+        && request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId
+        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus;
+    }
+
+    function userBillingOnlyFreeTierMigration() {
+      return resource.data.subscriptionTier == null
+        && request.resource.data.subscriptionTier == 'free'
+        && request.resource.data.stripeCustomerId == resource.data.stripeCustomerId
+        && request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId
+        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus;
+    }
+
+    function userCreateHasNoServerBillingFields() {
+      return !request.resource.data.keys().hasAny(['stripeCustomerId', 'stripeSubscriptionId', 'subscriptionStatus']);
+    }
+
     // Perfis
     match /users/{userId} {
       allow read: if signedIn();
-      allow create: if isUser(userId);
-      allow update, delete: if isUser(userId);
+      allow create: if isUser(userId)
+        && request.resource.data.subscriptionTier == 'free'
+        && userCreateHasNoServerBillingFields();
+      allow update: if isUser(userId) && (
+        userBillingFieldsUnchanged() || userBillingOnlyFreeTierMigration()
+      );
+      allow delete: if isUser(userId);
     }
 
     // Cartas
@@ -76,11 +101,33 @@ service cloud.firestore {
       allow update: if false;
     }
 
-    // Denúncias (somente criação pelo cliente)
+    // Denúncias — schema fixo; moderação via Admin SDK / Cloud Functions
     match /reports/{reportId} {
       allow read: if false;
-      allow create: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'reporterUid', 'targetType', 'targetId', 'letterId', 'reason', 'detail', 'status', 'createdAt'
+        ])
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.targetType in ['letter', 'comment']
+        && request.resource.data.targetId is string
+        && request.resource.data.targetId.size() >= 1
+        && request.resource.data.targetId.size() <= 128
+        && request.resource.data.letterId is string
+        && request.resource.data.letterId.size() >= 1
+        && request.resource.data.letterId.size() <= 128
+        && request.resource.data.reason in ['spam', 'harassment', 'hate', 'illegal', 'other']
+        && request.resource.data.detail is string
+        && request.resource.data.detail.size() <= 2000
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time;
       allow update, delete: if false;
+    }
+
+    // Config remota legível por utilizadores autenticados (escrita só Admin SDK / Functions)
+    match /systemConfig/{docId} {
+      allow read: if signedIn();
+      allow write: if false;
     }
 
     // Feedback / solicitações de produto (somente criação; schema fixo)

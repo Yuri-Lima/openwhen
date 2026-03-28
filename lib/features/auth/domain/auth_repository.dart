@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data/auth_service.dart';
 import '../models/app_user.dart';
 import '../../../core/constants/firestore_collections.dart';
+import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
 
 class AuthRepository {
@@ -45,6 +46,7 @@ class AuthRepository {
       'lettersCount': 0,
       'language': 'pt-BR',
       'country': null,
+      'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
     });
   }
 
