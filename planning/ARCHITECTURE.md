@@ -94,7 +94,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 | **Authentication** | Sessão do usuário |
 | **Cloud Firestore** | Dados principais (usuários, cartas, social, cápsulas, moderação) |
 | **Cloud Storage** | Avatares; fotos de carta manuscrita (`handwritten/`); mensagens de voz (`voiceLetters/`, áudio curto); mídia de cápsulas (`capsules/**`) — ver [`storage.rules`](../storage.rules) |
-| **FCM** | Notificações push (a configurar no MVP) |
+| **FCM** | Notificações push (Firebase Cloud Messaging; integrado no app — ver `MVP_CHECKLIST.md` 🔴) |
 
 **Projeto Firebase (referência):** `openwhen-923f5`
 

@@ -2,39 +2,44 @@
 
 Este documento organiza entregas por fase. Prioridades: **P0** (crítico), **P1** (importante), **P2** (desejável).
 
----
-
-## Fase 1 — MVP core (atual ~100% dos itens críticos; QA/deploy contínuos)
-
-Foco: experiência completa de cartas + cápsulas, estabilidade e segurança antes de escalar.
-
-
-| Entrega                                                                    | Prioridade | Esforço (est.) | Notas                                      |
-| -------------------------------------------------------------------------- | ---------- | -------------- | ------------------------------------------ |
-| Tela de abertura da cápsula (animação, revelar Q&A, publicar após revisão) | P0         | Alto           | Fecha o loop da feature cápsulas           |
-| Avatar de perfil (upload; web + mobile)                                    | P0         | Médio          | `file_picker` / Storage                    |
-| Notificações FCM                                                           | P0         | Médio          | Lembretes e eventos de abertura            |
-| Testes em dispositivo real (iOS/Android)                                   | P0         | Médio          | Validação além do Chrome                   |
-| Regras Firestore de produção                                               | P0         | Médio          | Bloquear acessos indevidos, validar writes |
-
+**Estado vs. checklist:** o rastreio fino (marcado `[x]` / `[ ]`) está em [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md). Este roadmap resume por fase; em caso de divergência, prevalece o checklist.
 
 ---
 
-## Fase 2 — Engajamento
+## Fase 1 — MVP core (concluída)
 
-Foco: retenção, descoberta e hábito de uso.
+Foco original: experiência completa de cartas + cápsulas, estabilidade e segurança. Itens **P0** abaixo estão entregues no código e marcados no checklist (🔴 Crítico).
 
 
-| Entrega                                                                            | Prioridade | Esforço (est.) | Notas                                                                                                                                                                                 |
-| ---------------------------------------------------------------------------------- | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Fotos na cápsula (mobile; desabilitado no Chrome se necessário)                    | P1         | Médio          | `image_picker`                                                                                                                                                                        |
-| Compartilhamento Stories/Reels                                                     | P1         | Alto           | Integração nativa por plataforma                                                                                                                                                      |
-| Tela “Cartas recebidas” separada                                                   | P1         | Médio          | Clareza no cofre                                                                                                                                                                      |
-| Badges / gamificação                                                               | P1         | Médio          | Metas leves, não paywall                                                                                                                                                              |
-| Toggle tema claro/escuro                                                           | P1         | Baixo          | Extensão do design system                                                                                                                                                             |
-| Feed em 3 camadas                                                                  | P1         | Alto           | Camadas de conteúdo / prioridade                                                                                                                                                      |
-| Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Médio          | Alinha com fotos/voz; vídeo→carta fica para fase posterior (storage, UX, custo)                                                                                                       |
-| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **OpenWhen Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
+| Entrega                                                                    | Prioridade | Status    | Notas                                                                |
+| -------------------------------------------------------------------------- | ---------- | --------- | -------------------------------------------------------------------- |
+| Tela de abertura da cápsula (animação, revelar Q&A, publicar após revisão) | P0         | Concluído | Fecha o loop da feature cápsulas                                     |
+| Avatar de perfil (upload; web + mobile)                                    | P0         | Concluído | `file_picker` / Storage                                              |
+| Notificações FCM                                                           | P0         | Concluído | Lembretes e eventos de abertura                                      |
+| Testes em dispositivo real (iOS/Android)                                   | P0         | Concluído | Ver [`DEVICE_TESTING.md`](DEVICE_TESTING.md)                         |
+| Regras Firestore de produção                                               | P0         | Concluído | `firestore.rules` + `storage.rules`; deploy e validação              |
+
+
+---
+
+## Fase 2 — Engajamento (foco atual)
+
+Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) (🟡 Importante).
+
+
+| Entrega                                                                            | Prioridade | Status    | Esforço (est.) | Notas                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------- | ---------- | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fotos na cápsula (mobile; desabilitado no Chrome se necessário)                    | P1         | Concluído | Médio          | `image_picker`                                                                                                                                                                      |
+| Compartilhamento Stories/Reels                                                     | P1         | Pendente  | Alto           | Integração nativa por plataforma — **próximo item pendente** no checklist 🟡                                                                                                          |
+| Tela “Cartas recebidas” separada                                                   | P1         | Concluído | Médio          | Clareza no cofre                                                                                                                                                                    |
+| Badges / gamificação                                                               | P1         | Pendente  | Médio          | Metas leves, não paywall                                                                                                                                                            |
+| Temas do app (paletas + automático/sistema)                                        | P1         | Concluído | Baixo          | Evolução do “toggle claro/escuro”; `open_when_palette.dart`, Configurações                                                                                                            |
+| Feed em 3 camadas                                                                  | P1         | Pendente  | Alto           | Camadas de conteúdo / prioridade                                                                                                                                                    |
+| Carta multimodal (OCR em foto; transcrição de áudio)                             | P1         | Pendente  | Médio          | Alinha com fotos/voz; vídeo→carta fica para fase posterior (storage, UX, custo)                                                                                                     |
+| Multilíngue (pt-BR, en, es)                                                        | P1         | Concluído | Alto           | Também no checklist 🟡; expansão para mais locales → Fase 3                                                                                                                          |
+| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **OpenWhen Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
+
+**Exportar cartas (PDF / ZIP)** está no checklist como 🟡 Importante; no roadmap macro consta na Fase 3 (ver tabela abaixo) — mesmo escopo, dupla referência intencional.
 
 
 ---
@@ -48,8 +53,8 @@ Foco: expansão de produto e mercado.
 | ----------------------------------------------------------------------------------------- | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Cápsula coletiva                                                                          | P2         | Alto           | Multi-usuário, permissões                                                                                        |
 | Música de fundo                                                                           | P2         | Médio          | Licenciamento                                                                                                    |
-| Voz gravada                                                                               | P2         | Médio          | Storage + UX                                                                                                     |
-| Multilíngue (ex.: en-US)                                                                  | P2         | Alto           | i18n em todo o app                                                                                               |
+| Voz gravada                                                                               | P2         | Médio          | Storage + UX — distinto da **mensagem de voz** já suportada em cartas (MVP)                                      |
+| Multilíngue (locales adicionais além de pt-BR / en / es)                                  | P2         | Alto           | Base i18n já entregue (Fase 2); aqui expansão (ex.: mais idiomas ou variantes regionais)                          |
 | Perfis familiares (membros, data de nascimento, fotos)                                    | P2         | Médio          | Modelo de dados (limites, relação opcional); Storage; UX para menores e consentimento                            |
 | Recomendações por comportamento (trilha de ações, cartas públicas, curtidas, comentários) | P2         | Alto           | Opt-in; minimização de dados; base analítica sólida                                                              |
 | Sugestões de ações por IA (círculo familiar, datas, contexto)                             | P2         | Alto           | Pode reutilizar motor de recomendações; política clara sobre uso de fotos                                        |

@@ -1,6 +1,6 @@
-# OpenWhen — Testes em dispositivo real (MVP)
+# OpenWhen — Testes em dispositivo real
 
-Checklist para validar iOS/Android após implementar os itens críticos do MVP.
+Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxos críticos do MVP já implementados — ver [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md)).
 
 ## Pré-requisitos
 

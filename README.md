@@ -25,7 +25,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 **For users:** express what matters, schedule it with intention, and open it when the moment is right.
 
-**For builders & backers:** Flutter + Firebase, a clear feature-first codebase, and a roadmap focused on finishing the MVP before scaling monetization.
+**For builders & backers:** Flutter + Firebase, a clear feature-first codebase, and a roadmap that spans the **completed MVP core**, ongoing **engagement** work ([`planning/ROADMAP.md`](planning/ROADMAP.md) Fase 2), and **monetization** later at scale.
 
 ---
 
@@ -190,7 +190,7 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 
 ## Roadmap & progress
 
-**MVP core complete.** Remaining: run device QA ([`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md)) and deploy Firestore/Storage rules to production.
+**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Next:** 🟡 Important items (e.g. Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) for regression QA on real devices when shipping releases.
 
 | Document | Purpose |
 |----------|---------|
