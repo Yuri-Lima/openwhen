@@ -651,4 +651,12 @@
   "privacySection7Body": "Users' personal data may be transferred to servers located outside Brazil (Google Cloud Platform), in compliance with Article 33 of the LGPD, ensuring an adequate level of protection through standard contractual clauses approved by the National Data Protection Authority (ANPD).",
   "privacySection8Title": "8. DATA PROTECTION OFFICER (DPO)",
   "privacySection8Body": "Pursuant to Article 41 of the LGPD, the Company's Data Protection Officer (DPO) can be contacted at: dpo@openwhen.app. Last updated: March 22, 2026."
+,
+  "letterPrivacyPublicLabel": "Public",
+  "letterPrivacyPublicSubtitle": "Visible to everyone in the feed",
+  "letterPrivacyPrivateLabel": "Private",
+  "letterPrivacyPrivateSubtitle": "Only you can see it",
+  "letterPrivacyActionMakePublic": "Make public",
+  "letterPrivacyActionMakePrivate": "Make private",
+  "letterDetailSentView": "YOUR SENT LETTER"
 }

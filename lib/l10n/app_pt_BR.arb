@@ -679,4 +679,12 @@
   "privacySection7Body": "Os dados pessoais dos usuários podem ser transferidos para servidores localizados fora do Brasil (Google Cloud Platform), em conformidade com o art. 33 da LGPD, garantindo nível de proteção adequado mediante cláusulas contratuais padrão aprovadas pela Autoridade Nacional de Proteção de Dados (ANPD).",
   "privacySection8Title": "8. DO ENCARREGADO DE PROTEÇÃO DE DADOS (DPO)",
   "privacySection8Body": "Nos termos do art. 41 da LGPD, o Encarregado de Proteção de Dados (DPO) da Empresa pode ser contatado em: dpo@openwhen.app. Última atualização: 22 de março de 2026."
+,
+  "letterPrivacyPublicLabel": "Pública",
+  "letterPrivacyPublicSubtitle": "Aparece no feed para todos",
+  "letterPrivacyPrivateLabel": "Privada",
+  "letterPrivacyPrivateSubtitle": "Só você pode ver",
+  "letterPrivacyActionMakePublic": "Tornar pública",
+  "letterPrivacyActionMakePrivate": "Tornar privada",
+  "letterDetailSentView": "SUA CARTA ENVIADA"
 }

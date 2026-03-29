@@ -321,7 +321,12 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       statusEmoji = '✨';
     }
 
-    return Container(
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId)),
+      ),
+      child: Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -368,6 +373,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           ),
         ],
       ]),
+      ),
     );
   }
 
