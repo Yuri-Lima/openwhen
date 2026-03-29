@@ -1937,4 +1937,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacySection8Body =>
       'Pursuant to Article 41 of the LGPD, the Company\'s Data Protection Officer (DPO) can be contacted at: dpo@openwhen.app. Last updated: March 22, 2026.';
+
+  @override
+  String get letterPrivacyPublicLabel => 'Public';
+
+  @override
+  String get letterPrivacyPublicSubtitle => 'Visible to everyone in the feed';
+
+  @override
+  String get letterPrivacyPrivateLabel => 'Private';
+
+  @override
+  String get letterPrivacyPrivateSubtitle => 'Only you can see it';
+
+  @override
+  String get letterPrivacyActionMakePublic => 'Make public';
+
+  @override
+  String get letterPrivacyActionMakePrivate => 'Make private';
+
+  @override
+  String get letterDetailSentView => 'YOUR SENT LETTER';
 }

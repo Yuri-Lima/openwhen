@@ -1937,6 +1937,27 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get privacySection8Body =>
       'Nos termos do art. 41 da LGPD, o Encarregado de Proteção de Dados (DPO) da Empresa pode ser contatado em: dpo@openwhen.app. Última atualização: 22 de março de 2026.';
+
+  @override
+  String get letterPrivacyPublicLabel => 'Pública';
+
+  @override
+  String get letterPrivacyPublicSubtitle => 'Aparece no feed para todos';
+
+  @override
+  String get letterPrivacyPrivateLabel => 'Privada';
+
+  @override
+  String get letterPrivacyPrivateSubtitle => 'Só você pode ver';
+
+  @override
+  String get letterPrivacyActionMakePublic => 'Tornar pública';
+
+  @override
+  String get letterPrivacyActionMakePrivate => 'Tornar privada';
+
+  @override
+  String get letterDetailSentView => 'SUA CARTA ENVIADA';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -3872,4 +3893,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get privacySection8Body =>
       'Nos termos do art. 41 da LGPD, o Encarregado de Proteção de Dados (DPO) da Empresa pode ser contatado em: dpo@openwhen.app. Última atualização: 22 de março de 2026.';
+
+  @override
+  String get letterPrivacyPublicLabel => 'Pública';
+
+  @override
+  String get letterPrivacyPublicSubtitle => 'Aparece no feed para todos';
+
+  @override
+  String get letterPrivacyPrivateLabel => 'Privada';
+
+  @override
+  String get letterPrivacyPrivateSubtitle => 'Só você pode ver';
+
+  @override
+  String get letterPrivacyActionMakePublic => 'Tornar pública';
+
+  @override
+  String get letterPrivacyActionMakePrivate => 'Tornar privada';
+
+  @override
+  String get letterDetailSentView => 'SUA CARTA ENVIADA';
 }

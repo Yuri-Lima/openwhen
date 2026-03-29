@@ -3628,6 +3628,48 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Nos termos do art. 41 da LGPD, o Encarregado de Proteção de Dados (DPO) da Empresa pode ser contatado em: dpo@openwhen.app. Última atualização: 22 de março de 2026.'**
   String get privacySection8Body;
+
+  /// No description provided for @letterPrivacyPublicLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Pública'**
+  String get letterPrivacyPublicLabel;
+
+  /// No description provided for @letterPrivacyPublicSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aparece no feed para todos'**
+  String get letterPrivacyPublicSubtitle;
+
+  /// No description provided for @letterPrivacyPrivateLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Privada'**
+  String get letterPrivacyPrivateLabel;
+
+  /// No description provided for @letterPrivacyPrivateSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Só você pode ver'**
+  String get letterPrivacyPrivateSubtitle;
+
+  /// No description provided for @letterPrivacyActionMakePublic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tornar pública'**
+  String get letterPrivacyActionMakePublic;
+
+  /// No description provided for @letterPrivacyActionMakePrivate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tornar privada'**
+  String get letterPrivacyActionMakePrivate;
+
+  /// No description provided for @letterDetailSentView.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'SUA CARTA ENVIADA'**
+  String get letterDetailSentView;
 }
 
 class _AppLocalizationsDelegate
