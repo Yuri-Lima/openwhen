@@ -290,106 +290,198 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => UserProfileScreen(userId: data['senderUid'] ?? '', userName: data['senderName'] ?? ''),
-                  )),
-                  child: Row(
-                    children: [
-                      StreamBuilder<DocumentSnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection(FirestoreCollections.users)
-                            .doc(data['senderUid'] as String? ?? '')
-                            .snapshots(),
-                        builder: (context, userSnap) {
-                          final map = userSnap.data?.data() as Map<String, dynamic>?;
-                          final photoUrl = map?['photoUrl'] as String?;
-                          return Container(
-                            decoration: widget.isFeatured
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: context.pal.accent.withOpacity(0.4)),
-                                  )
-                                : null,
-                            child: ClipOval(
-                              child: UserAvatar(
-                                photoUrl: photoUrl,
-                                name: data['senderName'] as String? ?? 'U',
-                                size: 38,
-                                backgroundColor: widget.isFeatured
-                                    ? context.pal.accent.withOpacity(0.35)
-                                    : context.pal.accentWarm,
-                                textColor: widget.isFeatured ? Colors.white : context.pal.accent,
-                              ),
+                // ── Identificação do remetente ─────────────────────────────
+                Builder(builder: (context) {
+                  final hideSender = (data['hideSenderName'] ?? false) == true;
+                  final senderUid  = data['senderUid'] as String? ?? '';
+                  final senderName = data['senderName'] as String? ?? 'U';
+
+                  Widget avatarSection;
+                  if (hideSender) {
+                    // Remetente ocultado: avatar genérico, sem link para perfil
+                    avatarSection = Row(
+                      children: [
+                        Container(
+                          decoration: widget.isFeatured
+                              ? BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: context.pal.accent.withOpacity(0.4)),
+                                )
+                              : null,
+                          child: ClipOval(
+                            child: UserAvatar(
+                              photoUrl: null,
+                              name: '?',
+                              size: 38,
+                              backgroundColor: widget.isFeatured
+                                  ? context.pal.accent.withOpacity(0.35)
+                                  : context.pal.accentWarm,
+                              textColor: widget.isFeatured ? Colors.white : context.pal.accent,
                             ),
-                          );
-                        },
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(data['senderName'] ?? '',
-                            style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500,
-                              color: _text(context))),
-                          if ((data['hideReceiverName'] ?? false) != true)
-                            Text(l10n.feedCardTo(data['receiverName'] ?? ''),
-                              style: GoogleFonts.dmSans(fontSize: 11,
-                                color: _textFaint(context)))
-                          else
-                            Text(l10n.feedCardToAnonymous,
-                              style: GoogleFonts.dmSans(fontSize: 11,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.feedSenderAnonymous,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
                                 fontStyle: FontStyle.italic,
-                                color: _textFaint(context))),
+                                color: _text(context),
+                              )),
+                            Text(l10n.feedCardTo(data['receiverName'] as String? ?? ''),
+                              style: GoogleFonts.dmSans(fontSize: 11, color: _textFaint(context))),
+                          ],
+                        ),
+                      ],
+                    );
+                  } else {
+                    // Remetente visível: avatar real + link para perfil
+                    avatarSection = GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(
+                        builder: (_) => UserProfileScreen(userId: senderUid, userName: senderName),
+                      )),
+                      child: Row(
+                        children: [
+                          StreamBuilder<DocumentSnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection(FirestoreCollections.users)
+                                .doc(senderUid)
+                                .snapshots(),
+                            builder: (context, userSnap) {
+                              final map = userSnap.data?.data() as Map<String, dynamic>?;
+                              final photoUrl = map?['photoUrl'] as String?;
+                              return Container(
+                                decoration: widget.isFeatured
+                                    ? BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: context.pal.accent.withOpacity(0.4)),
+                                      )
+                                    : null,
+                                child: ClipOval(
+                                  child: UserAvatar(
+                                    photoUrl: photoUrl,
+                                    name: senderName,
+                                    size: 38,
+                                    backgroundColor: widget.isFeatured
+                                        ? context.pal.accent.withOpacity(0.35)
+                                        : context.pal.accentWarm,
+                                    textColor: widget.isFeatured ? Colors.white : context.pal.accent,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(senderName,
+                                style: GoogleFonts.dmSans(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: _text(context),
+                                )),
+                              Text(l10n.feedCardTo(data['receiverName'] as String? ?? ''),
+                                style: GoogleFonts.dmSans(fontSize: 11, color: _textFaint(context))),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+                  return avatarSection;
+                }),
+
                 const Spacer(),
-                // ── Menu ··· do feed ──────────────────────────────────────
+
+                // ── Menu ··· — visível apenas para o destinatário ──────────
                 Builder(builder: (context) {
-                  final isReceiver = uid != null && data['receiverUid'] == uid;
-                  final isStranger = uid != null && data['senderUid'] != uid && !isReceiver;
-                  final isPublic = data['isPublic'] == true;
-                  final hideReceiver = (data['hideReceiverName'] ?? false) == true;
+                  // isReceiver: o usuário logado é quem recebeu (e publicou) a carta
+                  final isReceiver = uid != null &&
+                      (data['receiverUid'] as String? ?? '') == uid;
+                  // isStranger: nem remetente nem destinatário
+                  final isSender   = uid != null && (data['senderUid'] as String? ?? '') == uid;
+                  final isStranger = uid != null && !isReceiver && !isSender;
+
+                  final isPublic    = data['isPublic'] == true;
+                  final hideSender  = (data['hideSenderName'] ?? false) == true;
 
                   if (isReceiver) {
-                    // Receptor: controla privacidade e exclusão do feed
                     return PopupMenuButton<String>(
                       icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
+                      tooltip: '',
                       onSelected: (value) async {
-                        if (value == 'toggle_public') {
-                          await setLetterPublic(docId: widget.docId, isPublic: !isPublic);
-                        } else if (value == 'toggle_receiver') {
-                          await setLetterHideReceiverName(docId: widget.docId, hide: !hideReceiver);
-                        } else if (value == 'delete') {
-                          await setLetterPublic(docId: widget.docId, isPublic: false);
+                        switch (value) {
+                          case 'toggle_public':
+                            await setLetterPublic(
+                              docId: widget.docId,
+                              isPublic: !isPublic,
+                            );
+                            break;
+                          case 'toggle_sender':
+                            await setLetterHideSenderName(
+                              docId: widget.docId,
+                              hide: !hideSender,
+                            );
+                            break;
+                          case 'remove_feed':
+                            await setLetterPublic(
+                              docId: widget.docId,
+                              isPublic: false,
+                            );
+                            break;
                         }
                       },
                       itemBuilder: (ctx) => [
-                        PopupMenuItem(
+                        // 1. Tornar privada / pública
+                        PopupMenuItem<String>(
                           value: 'toggle_public',
                           child: Row(children: [
-                            Icon(isPublic ? Icons.lock_outline_rounded : Icons.public_rounded, size: 18),
+                            Icon(
+                              isPublic
+                                  ? Icons.lock_outline_rounded
+                                  : Icons.public_rounded,
+                              size: 18,
+                            ),
                             const SizedBox(width: 10),
-                            Text(isPublic ? l10n.vaultLetterSheetMakePrivate : l10n.vaultLetterSheetMakePublic),
+                            Text(isPublic
+                                ? l10n.vaultLetterSheetMakePrivate
+                                : l10n.vaultLetterSheetMakePublic),
                           ]),
                         ),
-                        if (isPublic) PopupMenuItem(
-                          value: 'toggle_receiver',
+                        // 2. Ocultar / mostrar nome do remetente (só quando pública)
+                        if (isPublic)
+                          PopupMenuItem<String>(
+                            value: 'toggle_sender',
+                            child: Row(children: [
+                              Icon(
+                                hideSender
+                                    ? Icons.person_rounded
+                                    : Icons.person_off_rounded,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(hideSender
+                                  ? l10n.feedShowSenderName
+                                  : l10n.feedHideSenderName),
+                            ]),
+                          ),
+                        // 3. Remover do feed (divisor visual)
+                        const PopupMenuDivider(),
+                        PopupMenuItem<String>(
+                          value: 'remove_feed',
                           child: Row(children: [
-                            Icon(hideReceiver ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 18),
+                            Icon(
+                              Icons.remove_circle_outline_rounded,
+                              size: 18,
+                              color: Colors.red.shade700,
+                            ),
                             const SizedBox(width: 10),
-                            Text(hideReceiver ? l10n.vaultLetterSheetShowReceiver : l10n.vaultLetterSheetHideReceiver),
-                          ]),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(children: [
-                            Icon(Icons.remove_circle_outline_rounded, size: 18, color: Colors.red.shade700),
-                            const SizedBox(width: 10),
-                            Text(l10n.feedRemoveFromFeed, style: TextStyle(color: Colors.red.shade700)),
+                            Text(l10n.feedRemoveFromFeed,
+                              style: TextStyle(color: Colors.red.shade700)),
                           ]),
                         ),
                       ],
@@ -399,9 +491,11 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   if (isStranger && widget.reportsEnabled) {
                     return PopupMenuButton<String>(
                       icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
+                      tooltip: '',
                       onSelected: (value) {
                         if (value == 'report') {
-                          showReportContentSheet(context,
+                          showReportContentSheet(
+                            context,
                             targetType: 'letter',
                             targetId: widget.docId,
                             letterId: widget.docId,
@@ -409,13 +503,17 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                         }
                       },
                       itemBuilder: (ctx) => [
-                        PopupMenuItem(value: 'report', child: Text(l10n.reportMenuLabel)),
+                        PopupMenuItem<String>(
+                          value: 'report',
+                          child: Text(l10n.reportMenuLabel),
+                        ),
                       ],
                     );
                   }
 
                   return const SizedBox.shrink();
                 }),
+
                 if (widget.isFeatured) ...[
                   const SizedBox(width: 8),
                   Container(
@@ -425,7 +523,12 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: context.pal.accent.withOpacity(0.3)),
                     ),
-                    child: Text(l10n.feedCardFeatured, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500)),
+                    child: Text(l10n.feedCardFeatured,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 10,
+                        color: context.pal.accent,
+                        fontWeight: FontWeight.w500,
+                      )),
                   ),
                 ],
               ],

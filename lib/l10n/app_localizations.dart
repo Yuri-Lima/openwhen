@@ -3772,6 +3772,24 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Remover do feed'**
   String get feedRemoveFromFeed;
+
+  /// No description provided for @feedHideSenderName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ocultar quem me enviou'**
+  String get feedHideSenderName;
+
+  /// No description provided for @feedShowSenderName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mostrar quem me enviou'**
+  String get feedShowSenderName;
+
+  /// No description provided for @feedSenderAnonymous.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Alguém especial'**
+  String get feedSenderAnonymous;
 }
 
 class _AppLocalizationsDelegate

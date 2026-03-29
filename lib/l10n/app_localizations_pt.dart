@@ -2013,6 +2013,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get feedRemoveFromFeed => 'Remover do feed';
+
+  @override
+  String get feedHideSenderName => 'Ocultar quem me enviou';
+
+  @override
+  String get feedShowSenderName => 'Mostrar quem me enviou';
+
+  @override
+  String get feedSenderAnonymous => 'Alguém especial';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -4024,4 +4033,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get feedRemoveFromFeed => 'Remover do feed';
+
+  @override
+  String get feedHideSenderName => 'Ocultar quem me enviou';
+
+  @override
+  String get feedShowSenderName => 'Mostrar quem me enviou';
+
+  @override
+  String get feedSenderAnonymous => 'Alguém especial';
 }

@@ -2023,5 +2023,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get vaultLetterSheetShowReceiver => 'Mostrar nombre del destinatario';
 
   @override
-  String get feedRemoveFromFeed => 'Eliminar del feed';
+  String get feedRemoveFromFeed => 'Quitar del feed';
+
+  @override
+  String get feedHideSenderName => 'Ocultar quien me lo envió';
+
+  @override
+  String get feedShowSenderName => 'Mostrar quien me lo envió';
+
+  @override
+  String get feedSenderAnonymous => 'Alguien especial';
 }

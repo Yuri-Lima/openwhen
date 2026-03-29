@@ -25,6 +25,17 @@ Future<void> setLetterHideReceiverName({
       .update({'hideReceiverName': hide});
 }
 
+/// Usado no feed pelo destinatário para ocultar o nome de quem enviou a carta.
+Future<void> setLetterHideSenderName({
+  required String docId,
+  required bool hide,
+}) async {
+  await FirebaseFirestore.instance
+      .collection(FirestoreCollections.letters)
+      .doc(docId)
+      .update({'hideSenderName': hide});
+}
+
 Future<void> deleteLetterDocument(String docId) async {
   await FirebaseFirestore.instance
       .collection(FirestoreCollections.letters)
