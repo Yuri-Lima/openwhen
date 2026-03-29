@@ -11,8 +11,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Docs
 
+- **Feed (arquitetura e custo):** [`ARCHITECTURE.md`](ARCHITECTURE.md) — secção “Feed” atualizada (Explorar / Destaques / Seguindo, chips fixados até 3 com `feed_pinned_filters_provider`, ícone de filtros à direita, `explore_feed_paged` / `following_feed_body`, merge `whereIn`). [`PRODUCTION.md`](PRODUCTION.md) — tabela Firestore com nota de custo do feed Seguindo e paginação em Explorar.
+- **Roadmap e README:** [`ROADMAP.md`](ROADMAP.md) Fase 2 — badges e feed em 3 camadas como **Concluído** (alinhado a [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md)); Fase 3 — linha de export renomeada para evoluções (MVP de export no checklist). [`README.md`](../README.md) / [`README.pt-BR.md`](../README.pt-BR.md) — tabelas “Social” e “Perfil” com camadas do feed, chips fixados e export. [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) — detalhe nos filtros do feed.
 - **Produção:** [`PRODUCTION.md`](PRODUCTION.md) — checklist para build/lojas (`dart-define` `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION`), ficheiros Firebase e referências cruzadas.
-- **Planejamento:** alinhamento de [`ROADMAP.md`](planning/ROADMAP.md), [`CHANGELOG.md`](CHANGELOG.md) (release 0.9.0), [`README.md`](../README.md) / [`README.pt-BR.md`](../README.pt-BR.md), [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`DEVICE_TESTING.md`](DEVICE_TESTING.md) com o estado em [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) (fonte de verdade para itens concluídos).
+- **Planejamento:** alinhamento de [`ROADMAP.md`](ROADMAP.md), [`CHANGELOG.md`](CHANGELOG.md) (release 0.9.0), [`README.md`](../README.md) / [`README.pt-BR.md`](../README.pt-BR.md), [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`DEVICE_TESTING.md`](DEVICE_TESTING.md) com o estado em [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) (fonte de verdade para itens concluídos).
 
 ### Added
 
@@ -28,7 +30,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 ### Changed
 
 - **Feed — preview de comentários:** no card (`feed_screen.dart`, `_buildCommentsPreview`), cada comentário longo fica limitado a **4 linhas** com reticências (como o corpo da carta). **Ler mais** (`feedReadMore`) aparece quando a heurística indica texto longo (> 120 caracteres ou ≥ 4 linhas) e expande só aquele comentário no preview (estado por ID Firestore `_expandedCommentPreviewIds`). O link **Ver todos os N comentários** e o limite 2 → 20 no preview mantêm-se. Ver [`ARCHITECTURE.md`](ARCHITECTURE.md) (secção “Feed”).
-- **Planejamento:** OpenWhen Gift (Presente Selado / Gift When) e Nox Card descritos em [`ROADMAP.md`](planning/ROADMAP.md), [`BUSINESS.md`](planning/BUSINESS.md), [`MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md) e nota em [`ARCHITECTURE.md`](planning/ARCHITECTURE.md); conteúdo que estava em `planning/GIFT_FEATURE.md` foi integrado e esse arquivo removido. Política documentada no roadmap: novas ideias entram nas tabelas e no checklist, não em um `.md` por feature.
+- **Planejamento:** OpenWhen Gift (Presente Selado / Gift When) e Nox Card descritos em [`ROADMAP.md`](ROADMAP.md), [`BUSINESS.md`](BUSINESS.md), [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) e nota em [`ARCHITECTURE.md`](ARCHITECTURE.md); conteúdo que estava em `planning/GIFT_FEATURE.md` foi integrado e esse arquivo removido. Política documentada no roadmap: novas ideias entram nas tabelas e no checklist, não em um `.md` por feature.
 
 ### Fixed
 

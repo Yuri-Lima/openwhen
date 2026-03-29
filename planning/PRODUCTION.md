@@ -86,8 +86,8 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 | Área | Nota |
 |------|------|
-| **Feed público** | Query com `limit` + janela em `openedAt` ([`feed_config.dart`](../lib/core/constants/feed_config.dart)); evita leituras globais ilimitadas. |
-| **Busca (lista de utilizadores)** | Cada linha pode subscrever `follows` para o estado Seguir/Seguindo — até **N** listeners por ecrã; o pull-to-refresh tem **throttle** (~3 s). Evolução: `whereIn` em blocos de 10 ou agregação server-side. |
+| **Feed público** | Query com `limit` + janela em `openedAt` ([`feed_config.dart`](../lib/core/constants/feed_config.dart)); evita leituras globais ilimitadas. **Explorar:** primeira página em stream + mais páginas com `get()` + `startAfter` ao fazer scroll (custo por página extra). **Destaques:** mesma query limitada; ordenação por engajamento só no cliente, com teto de documentos. **Seguindo:** até **ceil(n/10)** queries/listeners por atualização (n = contas seguidas), por limite `whereIn` do Firestore — monitorizar em contas com muitos follows. |
+| **Busca (lista de utilizadores)** | Cada linha pode subscrever `follows` para o estado Seguir/Seguindo — até **N** listeners por ecrã; o pull-to-refresh tem **throttle** (~3 s). |
 | **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
 
 ---
@@ -131,4 +131,5 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 ## 9. Histórico de alterações deste guia
 
+- **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).
 - **2026-03:** documento criado para consolidar `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION` e requisitos Firebase/lojas.

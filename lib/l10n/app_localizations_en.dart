@@ -260,6 +260,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedLayerFollowing => 'Following';
 
   @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Choose feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Open feed type filters';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Pin quick filters…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Choose up to 3 mood chips for the bar';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Pin quick filters';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Pick up to 3 filters. Order is kept as you select them.';
+
+  @override
+  String get feedPinFiltersSave => 'Save';
+
+  @override
   String get feedFollowingEmptyTitle => 'No letters from people you follow';
 
   @override

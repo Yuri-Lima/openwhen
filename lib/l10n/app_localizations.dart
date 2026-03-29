@@ -575,6 +575,54 @@ abstract class AppLocalizations {
   /// **'Seguindo'**
   String get feedLayerFollowing;
 
+  /// No description provided for @feedFiltersButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Feed'**
+  String get feedFiltersButton;
+
+  /// No description provided for @feedFiltersSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolher feed'**
+  String get feedFiltersSheetTitle;
+
+  /// No description provided for @feedFiltersButtonSemantic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir filtros do tipo de feed'**
+  String get feedFiltersButtonSemantic;
+
+  /// No description provided for @feedCustomizePinnedFilters.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fixar filtros rápidos…'**
+  String get feedCustomizePinnedFilters;
+
+  /// No description provided for @feedCustomizePinnedFiltersHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolha até 3 chips de humor na barra'**
+  String get feedCustomizePinnedFiltersHint;
+
+  /// No description provided for @feedPinFiltersSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fixar filtros rápidos'**
+  String get feedPinFiltersSheetTitle;
+
+  /// No description provided for @feedPinFiltersMaxNote.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Até 3 filtros. A ordem segue a sua seleção.'**
+  String get feedPinFiltersMaxNote;
+
+  /// No description provided for @feedPinFiltersSave.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Guardar'**
+  String get feedPinFiltersSave;
+
   /// No description provided for @feedFollowingEmptyTitle.
   ///
   /// In pt_BR, this message translates to:

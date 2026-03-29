@@ -102,7 +102,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [x] Feed estilo Instagram
 - [x] Curtidas e comentários em tempo real
-- [x] Filtros por emoção (feed)
+- [x] Filtros por emoção (feed) — até **3** chips fixados pelo utilizador (`feed_pinned_filters_provider`); tipo de feed (Explorar / Destaques / Seguindo) no bottom sheet
 - [x] Seguidores (`follows`)
 - [x] Conta pública/privada
 - [x] Perfil próprio e de outros

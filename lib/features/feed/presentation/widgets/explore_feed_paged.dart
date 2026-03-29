@@ -1,12 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/feed_config.dart';
 import '../../domain/feed_letter_filter.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/theme/app_theme.dart';
-
 /// Explorar tab: real-time first page via [baseQuery] + optional `startAfter` pages.
 class ExploreFeedPaged extends StatefulWidget {
   const ExploreFeedPaged({
@@ -27,6 +23,7 @@ class ExploreFeedPaged extends StatefulWidget {
   final Widget Function(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, {
     required bool reportsEnabled,
+    ScrollController? scrollController,
   }) buildLetterList;
 
   final Widget Function() buildEmpty;
@@ -41,6 +38,37 @@ class _ExploreFeedPagedState extends State<ExploreFeedPaged> {
   final List<QueryDocumentSnapshot<Map<String, dynamic>>> _pagedExtra = [];
   bool _loadingMore = false;
   bool _hasMore = true;
+  final ScrollController _scrollController = ScrollController();
+  QueryDocumentSnapshot<Map<String, dynamic>>? _lastDocForPaging;
+
+  /// Pixels from bottom of scroll extent to trigger next page (lazy load).
+  static const double _loadMoreThreshold = 320;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_hasMore || _loadingMore) return;
+    final last = _lastDocForPaging;
+    if (last == null) return;
+    final pos = _scrollController.position;
+    if (!pos.hasPixels || !pos.hasViewportDimension) return;
+    if (pos.maxScrollExtent <= 0) return;
+    final nearBottom = pos.pixels >= pos.maxScrollExtent - _loadMoreThreshold;
+    if (nearBottom) {
+      _loadMore(last);
+    }
+  }
 
   @override
   void didUpdateWidget(covariant ExploreFeedPaged oldWidget) {
@@ -94,7 +122,6 @@ class _ExploreFeedPagedState extends State<ExploreFeedPaged> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: widget.baseQuery.snapshots(),
       builder: (context, snapshot) {
@@ -131,6 +158,15 @@ class _ExploreFeedPagedState extends State<ExploreFeedPaged> {
         }
 
         final lastChrono = merged.last;
+        _lastDocForPaging = lastChrono;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !_hasMore || _loadingMore) return;
+          if (!_scrollController.hasClients) return;
+          final pos = _scrollController.position;
+          if (pos.hasPixels && pos.maxScrollExtent <= 0 && _lastDocForPaging != null) {
+            _loadMore(_lastDocForPaging!);
+          }
+        });
 
         return Column(
           children: [
@@ -145,28 +181,22 @@ class _ExploreFeedPagedState extends State<ExploreFeedPaged> {
                 child: widget.buildLetterList(
                   merged,
                   reportsEnabled: widget.reportsEnabled,
+                  scrollController: _scrollController,
                 ),
               ),
             ),
-            if (_hasMore)
+            if (_loadingMore)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _loadingMore
-                    ? const SizedBox(
-                        height: 36,
-                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                      )
-                    : TextButton(
-                        onPressed: () => _loadMore(lastChrono),
-                        child: Text(
-                          l10n.feedLoadMore,
-                          style: GoogleFonts.dmSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: context.pal.accent,
-                          ),
-                        ),
-                      ),
+                child: SizedBox(
+                  height: 36,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
               ),
           ],
         );

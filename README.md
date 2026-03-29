@@ -35,9 +35,9 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 |------|------------|
 | **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
 | **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
-| **Social** | Instagram-style feed, likes & comments (feed card shows up to 2 comments, optional “view all” up to 20; long comments clamp to 4 lines with **Read more** per comment), follows, privacy controls, moderation |
+| **Social** | **Feed** with three layers (Explore / Highlights / Following), emotion filters (up to **3** pinned chips) + filter icon; likes & comments (card preview: up to 2 comments, “view all” up to 20; long comments clamp to 4 lines with **Read more**); follows, privacy, moderation |
 | **Vault** | Tabs for waiting, opened, sent, and **capsules**; advanced **filter and sort** (bottom sheet, client-side on snapshot data) |
-| **Profile** | Own profile, other users, search by @username, settings, legal pages |
+| **Profile** | Own profile, other users, search by @username, settings (includes **export opened letters** as PDF/ZIP with allowlisted links), legal pages |
 | **Feedback** | Tap the header owl to send feedback (shared bottom sheet); idle wobble + buzz on random intervals per screen visit. Logged-out users also get the global FAB. |
 | **Keyboard** | While the soft keyboard is open, a small **dismiss keyboard** control appears just above it (global `MaterialApp.builder` overlay); same behavior everywhere. |
 

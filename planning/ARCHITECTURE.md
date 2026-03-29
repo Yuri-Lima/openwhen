@@ -39,8 +39,12 @@ lib/
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
 │   ├── feed/
+│   │   ├── domain/ (feed_letter_filter, feed_following_merge — filtro cliente e merge de chunks)
 │   │   ├── models/
-│   │   └── presentation/screens/ (feed, comments)
+│   │   └── presentation/
+│   │       ├── providers/ (feed_pinned_filters_provider — chips fixados, SharedPreferences)
+│   │       ├── screens/ (feed, comments)
+│   │       └── widgets/ (explore_feed_paged, following_feed_body, pinned_feed_filters_sheet)
 │   └── profile/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
@@ -178,8 +182,11 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 ### Feed
 
 - **`FeedScreen` / `_FeedCard`** ([`feed_screen.dart`](../lib/features/feed/presentation/screens/feed_screen.dart)): lista de cartas públicas; cada card pode mostrar um **preview de comentários** (`_buildCommentsPreview`).
-  - **Custo / escala:** a query global usa `limit` + janela temporal em `openedAt` (constantes em [`lib/core/constants/feed_config.dart`](../lib/core/constants/feed_config.dart)), não um `orderBy` aberto sobre toda a coleção. Utilizadores bloqueados pelo viewer são filtrados no cliente a partir de `blocks` (remetente não aparece no feed).
-  - **Quantidade:** query Firestore com `limit(2)` por defeito; se `commentCount > 2`, aparece o link localizado **Ver todos os N comentários** (`feedViewAllComments`), que passa a `limit(20)` no mesmo preview (estado `_showAllComments` no card).
+  - **Três camadas (fonte de dados):** o utilizador escolhe no bottom sheet **Explorar** | **Destaques** | **Seguindo** (ícone de filtros à direita, fixo; só ícone). **Explorar** — [`explore_feed_paged.dart`](../lib/features/feed/presentation/widgets/explore_feed_paged.dart): primeira página em tempo real (`snapshots`) + páginas extra com `startAfter`; carregamento incremental ao aproximar do fim do scroll (`ScrollController`, sem botão “carregar mais”). **Destaques** — mesma query limitada + janela `openedAt` que o feed global, depois ordenação no cliente por `likeCount` e `openedAt` com teto em [`FeedConfig.highlightsMaxVisible`](../lib/core/constants/feed_config.dart). **Seguindo** — [`following_feed_body.dart`](../lib/features/feed/presentation/widgets/following_feed_body.dart): IDs de `follows`, consultas `letters` em blocos `whereIn` (≤10) e merge em [`feed_following_merge.dart`](../lib/features/feed/domain/feed_following_merge.dart); sem sessão mostra estado “entrar”.
+  - **Filtros emocionais (cliente):** quatro significados semânticos (Para todos / Amor / Amizade / Família) mapeiam para `emotionalState` e listas em `_filterEmotions` no ecrã. O utilizador **fixa até 3** chips na barra — preferência em [`feed_pinned_filters_provider.dart`](../lib/features/feed/presentation/providers/feed_pinned_filters_provider.dart) (`SharedPreferences`, chave `feed_pinned_filter_ids_v1`); edição no sheet [`pinned_feed_filters_sheet.dart`](../lib/features/feed/presentation/widgets/pinned_feed_filters_sheet.dart), acessível a partir do mesmo bottom sheet do tipo de feed (“Fixar filtros rápidos”). Os chips deslocam-se horizontalmente; o botão de filtros permanece à direita (`Row` + `Expanded`).
+  - **Bloqueios:** [`feed_letter_filter.dart`](../lib/features/feed/domain/feed_letter_filter.dart) — cartas de remetentes em `blocks` não são mostradas.
+  - **Custo / escala:** todas as camadas respeitam `limit` + janela em `openedAt` onde aplicável ([`feed_config.dart`](../lib/core/constants/feed_config.dart)). Destaques não fazem sort global infinito no servidor. Seguindo: até **ceil(n/10)** listeners/query por atualização (n = número de contas seguidas), documentado em [`PRODUCTION.md`](PRODUCTION.md).
+  - **Quantidade (comentários no card):** query Firestore com `limit(2)` por defeito; se `commentCount > 2`, aparece o link localizado **Ver todos os N comentários** (`feedViewAllComments`), que passa a `limit(20)` no mesmo preview (estado `_showAllComments` no card).
   - **Texto longo por comentário:** cada linha do preview usa `Text.rich` com no máximo **4 linhas** e `TextOverflow.ellipsis` até o utilizador expandir **esse** comentário (toque em **Ler mais** — mesma string `feedReadMore` que o corpo da carta). IDs expandidos ficam em `_expandedCommentPreviewIds` (`Set<String>` de IDs de documento em `comments`).
   - **Quando mostrar “Ler mais”:** heurística no cliente — mensagem com mais de **120** caracteres **ou** com **4** ou mais linhas (`\n`). Não mede overflow com `TextPainter`.
   - **Lista completa:** ícone de comentário no card abre [`CommentsScreen`](../lib/features/feed/presentation/screens/comments_screen.dart) (stream sem este limite de linhas por item).

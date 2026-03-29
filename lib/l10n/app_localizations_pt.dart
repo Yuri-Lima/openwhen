@@ -261,6 +261,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String get feedLayerFollowing => 'Seguindo';
 
   @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Escolher feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Abrir filtros do tipo de feed';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Fixar filtros rápidos…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Escolha até 3 chips de humor na barra';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Fixar filtros rápidos';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Até 3 filtros. A ordem segue a sua seleção.';
+
+  @override
+  String get feedPinFiltersSave => 'Guardar';
+
+  @override
   String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';
 
   @override
@@ -2386,6 +2412,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get feedLayerFollowing => 'Seguindo';
+
+  @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Escolher feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Abrir filtros do tipo de feed';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Fixar filtros rápidos…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Escolha até 3 chips de humor na barra';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Fixar filtros rápidos';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Até 3 filtros. A ordem segue a sua seleção.';
+
+  @override
+  String get feedPinFiltersSave => 'Guardar';
 
   @override
   String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';

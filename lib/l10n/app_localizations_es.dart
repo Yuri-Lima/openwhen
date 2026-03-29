@@ -262,6 +262,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedLayerFollowing => 'Siguiendo';
 
   @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Elegir feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Abrir filtros del tipo de feed';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Fijar filtros rápidos…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Elige hasta 3 chips de humor en la barra';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Fijar filtros rápidos';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Hasta 3 filtros. El orden sigue tu selección.';
+
+  @override
+  String get feedPinFiltersSave => 'Guardar';
+
+  @override
   String get feedFollowingEmptyTitle => 'No hay cartas de quien sigues';
 
   @override
