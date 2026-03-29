@@ -12,4 +12,16 @@ class FeedConfig {
   /// Only letters opened within this many days appear in the global feed.
   /// Product decision: tune with analytics; increases index selectivity.
   static const int openedAtWindowDays = 30;
+
+  /// Firestore `whereIn` max array length.
+  static const int whereInChunkSize = 10;
+
+  /// Max letters read per `senderUid` chunk (Seguindo tab).
+  static const int perChunkFollowQueryLimit = 40;
+
+  /// Max items shown in Destaques after client sort by [likeCount].
+  static const int highlightsMaxVisible = 50;
+
+  /// Page size for Explorar tab pagination (`startAfter`).
+  static const int explorePageSize = 20;
 }

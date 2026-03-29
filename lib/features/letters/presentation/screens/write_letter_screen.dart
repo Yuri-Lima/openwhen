@@ -20,6 +20,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
+import '../../../gamification/badge_unlock_service.dart';
 import '../voice_letter.dart';
 
 class EmotionalState {
@@ -494,6 +495,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             'openRequiresProximity': locOpts.openRequiresProximity,
           },
       });
+
+      await BadgeUnlockHooks.afterLetterSent(
+        senderUid: currentUser.uid,
+        hasVoice: voiceUrlToSave != null,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

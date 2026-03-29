@@ -557,6 +557,60 @@ abstract class AppLocalizations {
   /// **'Família'**
   String get feedFilterFamily;
 
+  /// No description provided for @feedLayerExplore.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Explorar'**
+  String get feedLayerExplore;
+
+  /// No description provided for @feedLayerHighlights.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Destaques'**
+  String get feedLayerHighlights;
+
+  /// No description provided for @feedLayerFollowing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguindo'**
+  String get feedLayerFollowing;
+
+  /// No description provided for @feedFollowingEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma carta de quem você segue'**
+  String get feedFollowingEmptyTitle;
+
+  /// No description provided for @feedFollowingEmptySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Siga perfis para ver as cartas públicas deles aqui.'**
+  String get feedFollowingEmptySubtitle;
+
+  /// No description provided for @feedFollowingSignedOutTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Entre para ver este feed'**
+  String get feedFollowingSignedOutTitle;
+
+  /// No description provided for @feedFollowingSignedOutSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A aba Seguindo mostra cartas públicas de quem você segue.'**
+  String get feedFollowingSignedOutSubtitle;
+
+  /// No description provided for @feedLoadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar o feed. Tente novamente.'**
+  String get feedLoadError;
+
+  /// No description provided for @feedLoadMore.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carregar mais'**
+  String get feedLoadMore;
+
   /// No description provided for @feedEmptyTitle.
   ///
   /// In pt_BR, this message translates to:
@@ -2309,6 +2363,84 @@ abstract class AppLocalizations {
   /// **'Abertas'**
   String get profileStatOpened;
 
+  /// No description provided for @profileBadgesTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'CONQUISTAS'**
+  String get profileBadgesTitle;
+
+  /// No description provided for @badgeFirstLetterSentTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira carta'**
+  String get badgeFirstLetterSentTitle;
+
+  /// No description provided for @badgeFirstLetterSentDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou sua primeira carta.'**
+  String get badgeFirstLetterSentDesc;
+
+  /// No description provided for @badgeFirstLetterOpenedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira abertura'**
+  String get badgeFirstLetterOpenedTitle;
+
+  /// No description provided for @badgeFirstLetterOpenedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você abriu sua primeira carta.'**
+  String get badgeFirstLetterOpenedDesc;
+
+  /// No description provided for @badgeFirstPublicTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira no feed'**
+  String get badgeFirstPublicTitle;
+
+  /// No description provided for @badgeFirstPublicDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você compartilhou uma carta no feed público.'**
+  String get badgeFirstPublicDesc;
+
+  /// No description provided for @badgeLettersSentFiveTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'5 cartas'**
+  String get badgeLettersSentFiveTitle;
+
+  /// No description provided for @badgeLettersSentFiveDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou 5 cartas.'**
+  String get badgeLettersSentFiveDesc;
+
+  /// No description provided for @badgeLettersSentTenTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'10 cartas'**
+  String get badgeLettersSentTenTitle;
+
+  /// No description provided for @badgeLettersSentTenDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou 10 cartas.'**
+  String get badgeLettersSentTenDesc;
+
+  /// No description provided for @badgeVoiceLetterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Voz'**
+  String get badgeVoiceLetterTitle;
+
+  /// No description provided for @badgeVoiceLetterDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou uma carta com áudio.'**
+  String get badgeVoiceLetterDesc;
+
   /// No description provided for @profileStatLetters.
   ///
   /// In pt_BR, this message translates to:
@@ -2888,14 +3020,38 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportButton.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Exportar como PDF'**
+  /// **'Exportar como ZIP'**
   String get settingsExportButton;
+
+  /// No description provided for @settingsExportZipSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Um PDF por carta, mais áudio e imagem manuscrita quando houver.'**
+  String get settingsExportZipSubtitle;
+
+  /// No description provided for @settingsExportSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{count} cartas exportadas.'**
+  String settingsExportSuccess(int count);
 
   /// No description provided for @settingsExportSnack.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Exportação em breve! 📦'**
+  /// **'Preparando exportação…'**
   String get settingsExportSnack;
+
+  /// No description provided for @letterDetailExportPdfTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exportar PDF'**
+  String get letterDetailExportPdfTitle;
+
+  /// No description provided for @letterDetailExportPdfSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Baixe uma cópia portátil desta carta'**
+  String get letterDetailExportPdfSubtitle;
 
   /// No description provided for @settingsDeleteTitle.
   ///

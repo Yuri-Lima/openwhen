@@ -7,6 +7,9 @@ import '../../../../core/constants/feed_config.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
 import '../../domain/feed_letter_filter.dart';
+import '../../domain/feed_following_merge.dart';
+import '../widgets/explore_feed_paged.dart';
+import '../widgets/following_feed_body.dart';
 import '../../../../shared/moderation/report_flow.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -28,6 +31,8 @@ class FeedScreen extends ConsumerStatefulWidget {
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   int _selectedFilter = 0;
+  /// 0 = Explorar, 1 = Destaques, 2 = Seguindo
+  int _feedLayer = 0;
 
   /// Rolling window lower bound, fixed for this screen lifetime so the Firestore
   /// listener is not recreated every frame (would duplicate reads).
@@ -43,6 +48,17 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         .where('openedAt', isGreaterThanOrEqualTo: _feedOpenedAtMin)
         .orderBy('openedAt', descending: true)
         .limit(FeedConfig.publicMaxDocuments);
+  }
+
+  /// Explorar: smaller page + `startAfter` for load-more (see [ExploreFeedPaged]).
+  Query<Map<String, dynamic>> _explorePageQuery() {
+    return FirebaseFirestore.instance
+        .collection(FirestoreCollections.letters)
+        .where('isPublic', isEqualTo: true)
+        .where('status', isEqualTo: 'opened')
+        .where('openedAt', isGreaterThanOrEqualTo: _feedOpenedAtMin)
+        .orderBy('openedAt', descending: true)
+        .limit(FeedConfig.explorePageSize);
   }
 
   static const Map<int, List<String>> _filterEmotions = {
@@ -137,6 +153,33 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       ),
                     ),
                   ),
+                  // Feed layer: Explorar / Destaques / Seguindo
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SegmentedButton<int>(
+                        segments: [
+                          ButtonSegment<int>(
+                            value: 0,
+                            label: Text(l10n.feedLayerExplore, style: GoogleFonts.dmSans(fontSize: 12)),
+                          ),
+                          ButtonSegment<int>(
+                            value: 1,
+                            label: Text(l10n.feedLayerHighlights, style: GoogleFonts.dmSans(fontSize: 12)),
+                          ),
+                          ButtonSegment<int>(
+                            value: 2,
+                            label: Text(l10n.feedLayerFollowing, style: GoogleFonts.dmSans(fontSize: 12)),
+                          ),
+                        ],
+                        selected: {_feedLayer},
+                        onSelectionChanged: (Set<int> next) {
+                          setState(() => _feedLayer = next.first);
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -146,17 +189,69 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             child: Builder(
               builder: (context) {
                 final uid = FirebaseAuth.instance.currentUser?.uid;
-                Widget lettersList(Set<String> blocked) {
+
+                Widget feedForBlocked(Set<String> blocked) {
+                  if (_feedLayer == 2) {
+                    if (uid == null) {
+                      return _buildFollowingSignedOut();
+                    }
+                    return FollowingFeedBody(
+                      followerUid: uid,
+                      openedAtMin: _feedOpenedAtMin,
+                      blockedSenderUids: blocked,
+                      builder: (context, docs) {
+                        if (docs.isEmpty) return _buildFollowingEmpty();
+                        return _buildLetterListFromDocs(
+                          docs,
+                          reportsEnabled: reportsEnabled,
+                        );
+                      },
+                    );
+                  }
+
+                  if (_feedLayer == 0) {
+                    return ExploreFeedPaged(
+                      baseQuery: _explorePageQuery(),
+                      blockedSenderUids: blocked,
+                      reportsEnabled: reportsEnabled,
+                      buildLetterList: _buildLetterListFromDocs,
+                      buildEmpty: _buildEmpty,
+                      buildFilterEmpty: _buildFilterEmpty,
+                      buildError: () => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Text(
+                            AppLocalizations.of(context)!.feedLoadError,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: _publicFeedQuery().snapshots(),
                     builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Text(
+                              AppLocalizations.of(context)!.feedLoadError,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+                            ),
+                          ),
+                        );
+                      }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       }
                       final allDocs = snapshot.data?.docs ?? [];
                       if (allDocs.isEmpty) return _buildEmpty();
 
-                      final visibleDocs = allDocs.where((d) {
+                      var visibleDocs = allDocs.where((d) {
                         final data = d.data();
                         return isFeedLetterVisibleForViewer(
                           letterData: data,
@@ -165,35 +260,23 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       }).toList();
                       if (visibleDocs.isEmpty) return _buildEmpty();
 
-                      final allowedKeys = _filterEmotions[_selectedFilter];
-                      final docs = allowedKeys == null
-                          ? visibleDocs
-                          : visibleDocs.where((d) {
-                              final emotion = d.data()['emotionalState'] as String?;
-                              return emotion != null && allowedKeys.contains(emotion);
-                            }).toList();
+                      if (_feedLayer == 1) {
+                        visibleDocs = sortByLikeCountThenOpenedAt(
+                          visibleDocs,
+                          maxItems: FeedConfig.highlightsMaxVisible,
+                        );
+                      }
 
-                      if (docs.isEmpty) return _buildFilterEmpty();
-
-                      return ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-                        itemCount: docs.length,
-                        itemBuilder: (_, i) {
-                          final data = docs[i].data();
-                          return _FeedCard(
-                            data: data,
-                            docId: docs[i].id,
-                            isFeatured: i == 0,
-                            reportsEnabled: reportsEnabled,
-                          );
-                        },
+                      return _buildLetterListFromDocs(
+                        visibleDocs,
+                        reportsEnabled: reportsEnabled,
                       );
                     },
                   );
                 }
 
                 if (uid == null) {
-                  return lettersList(<String>{});
+                  return feedForBlocked(<String>{});
                 }
                 return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
@@ -207,7 +290,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       final blockedUid = m['blockedUid'] as String?;
                       if (blockedUid != null && blockedUid.isNotEmpty) blocked.add(blockedUid);
                     }
-                    return lettersList(blocked);
+                    return feedForBlocked(blocked);
                   },
                 );
               },
@@ -227,6 +310,88 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     ),
     child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
   );
+
+  Widget _buildLetterListFromDocs(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, {
+    required bool reportsEnabled,
+  }) {
+    final allowedKeys = _filterEmotions[_selectedFilter];
+    final filtered = allowedKeys == null
+        ? docs
+        : docs.where((d) {
+            final emotion = d.data()['emotionalState'] as String?;
+            return emotion != null && allowedKeys.contains(emotion);
+          }).toList();
+
+    if (filtered.isEmpty) return _buildFilterEmpty();
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+      itemCount: filtered.length,
+      itemBuilder: (_, i) {
+        final data = filtered[i].data();
+        return _FeedCard(
+          data: data,
+          docId: filtered[i].id,
+          isFeatured: i == 0,
+          reportsEnabled: reportsEnabled,
+        );
+      },
+    );
+  }
+
+  Widget _buildFollowingSignedOut() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('👋', style: TextStyle(fontSize: 40)),
+            const SizedBox(height: 12),
+            Text(
+              l10n.feedFollowingSignedOutTitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: context.pal.ink, fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.feedFollowingSignedOutSubtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFollowingEmpty() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('💌', style: TextStyle(fontSize: 48)),
+          const SizedBox(height: 16),
+          Text(
+            l10n.feedFollowingEmptyTitle,
+            style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              l10n.feedFollowingEmptySubtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildEmpty() {
     final l10n = AppLocalizations.of(context)!;

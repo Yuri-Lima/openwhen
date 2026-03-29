@@ -13,6 +13,7 @@ import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/avatar_upload_helper.dart';
+import '../../../gamification/profile_badges_strip.dart';
 import 'settings_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -241,15 +242,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     final following = followingSnap.data?.docs.length ?? 0;
                                     final lettersSent = (data?['lettersSentCount'] as num?)?.toInt() ?? 0;
                                     final opened = (data?['openedLettersCount'] as num?)?.toInt() ?? 0;
-                                    return Row(
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
                                       children: [
-                                        _buildCounter(l10n.profileStatFollowers, followers),
-                                        _buildDividerVertical(),
-                                        _buildCounter(l10n.profileStatFollowing, following),
-                                        _buildDividerVertical(),
-                                        _buildCounter(l10n.profileStatSent, lettersSent),
-                                        _buildDividerVertical(),
-                                        _buildCounter(l10n.profileStatOpened, opened),
+                                        Row(
+                                          children: [
+                                            _buildCounter(l10n.profileStatFollowers, followers),
+                                            _buildDividerVertical(),
+                                            _buildCounter(l10n.profileStatFollowing, following),
+                                            _buildDividerVertical(),
+                                            _buildCounter(l10n.profileStatSent, lettersSent),
+                                            _buildDividerVertical(),
+                                            _buildCounter(l10n.profileStatOpened, opened),
+                                          ],
+                                        ),
+                                        const ProfileBadgesStrip(),
                                       ],
                                     );
                                   },

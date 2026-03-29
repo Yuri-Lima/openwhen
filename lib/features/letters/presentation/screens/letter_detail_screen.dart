@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/letter_repository_actions.dart';
+import '../../export/letter_export_service.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/voice_url.dart';
@@ -32,6 +33,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   late bool _isPublic;
   bool _isUpdating = false;
   bool _sharingStory = false;
+  bool _exportingPdf = false;
 
   String get _currentUid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
@@ -98,6 +100,27 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
       }
     } finally {
       if (mounted) setState(() => _sharingStory = false);
+    }
+  }
+
+  Future<void> _exportLetterPdf() async {
+    if (_exportingPdf) return;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _exportingPdf = true);
+    try {
+      await shareLetterPdf(
+        data: widget.data,
+        docId: widget.docId,
+        localeName: Localizations.localeOf(context).toString(),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()), style: GoogleFonts.dmSans(fontSize: 13))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _exportingPdf = false);
     }
   }
 
@@ -365,6 +388,27 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                             ),
                           ),
                         ),
+                        if (_isOpened && (_isSender || _isReceiver)) ...[
+                          const SizedBox(height: 12),
+                          GestureDetector(
+                            onTap: _exportingPdf ? null : _exportLetterPdf,
+                            child: _buildTile(
+                              icon: Icons.picture_as_pdf_outlined,
+                              iconColor: context.pal.accent,
+                              iconBg: context.pal.accent.withOpacity(0.15),
+                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              title: l10n.letterDetailExportPdfTitle,
+                              subtitle: l10n.letterDetailExportPdfSubtitle,
+                              trailing: _exportingPdf
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

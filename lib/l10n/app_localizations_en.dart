@@ -251,6 +251,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedFilterFamily => 'Family';
 
   @override
+  String get feedLayerExplore => 'Explore';
+
+  @override
+  String get feedLayerHighlights => 'Highlights';
+
+  @override
+  String get feedLayerFollowing => 'Following';
+
+  @override
+  String get feedFollowingEmptyTitle => 'No letters from people you follow';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Follow profiles to see their public letters here.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Sign in to see this feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'The Following tab shows public letters from people you follow.';
+
+  @override
+  String get feedLoadError => 'Could not load the feed. Pull to retry.';
+
+  @override
+  String get feedLoadMore => 'Load more';
+
+  @override
   String get feedEmptyTitle => 'No public letters yet';
 
   @override
@@ -1216,6 +1245,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileStatOpened => 'Opened';
 
   @override
+  String get profileBadgesTitle => 'BADGES';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'First letter';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'You sent your first letter.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'First open';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'You opened your first letter.';
+
+  @override
+  String get badgeFirstPublicTitle => 'First share';
+
+  @override
+  String get badgeFirstPublicDesc => 'You shared a letter to the public feed.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 letters';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'You sent 5 letters.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 letters';
+
+  @override
+  String get badgeLettersSentTenDesc => 'You sent 10 letters.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voice';
+
+  @override
+  String get badgeVoiceLetterDesc => 'You sent a letter with voice.';
+
+  @override
   String get profileStatLetters => 'Letters';
 
   @override
@@ -1520,10 +1588,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your opened letters will be exported in PDF format. This may take a few minutes.';
 
   @override
-  String get settingsExportButton => 'Export as PDF';
+  String get settingsExportButton => 'Export as ZIP';
 
   @override
-  String get settingsExportSnack => 'Export coming soon! 📦';
+  String get settingsExportZipSubtitle =>
+      'PDF per letter plus voice and handwritten images when available.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return 'Exported $count letters.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparing export…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Export PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Download a portable copy of this letter';
 
   @override
   String get settingsDeleteTitle => 'Delete account';

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/constants/firestore_collections.dart';
+import '../../gamification/badge_unlock_service.dart';
 
 Future<void> setLetterPublic({
   required String docId,
@@ -13,6 +15,12 @@ Future<void> setLetterPublic({
     'isPublic': isPublic,
     'publishedAt': isPublic ? FieldValue.serverTimestamp() : null,
   });
+  if (isPublic) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      await BadgeUnlockHooks.afterLetterMadePublic(uid);
+    }
+  }
 }
 
 Future<void> setLetterHideReceiverName({

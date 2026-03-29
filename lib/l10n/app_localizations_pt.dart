@@ -252,6 +252,36 @@ class AppLocalizationsPt extends AppLocalizations {
   String get feedFilterFamily => 'Família';
 
   @override
+  String get feedLayerExplore => 'Explorar';
+
+  @override
+  String get feedLayerHighlights => 'Destaques';
+
+  @override
+  String get feedLayerFollowing => 'Seguindo';
+
+  @override
+  String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Siga perfis para ver as cartas públicas deles aqui.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Entre para ver este feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'A aba Seguindo mostra cartas públicas de quem você segue.';
+
+  @override
+  String get feedLoadError =>
+      'Não foi possível carregar o feed. Tente novamente.';
+
+  @override
+  String get feedLoadMore => 'Carregar mais';
+
+  @override
   String get feedEmptyTitle => 'Nenhuma carta pública ainda';
 
   @override
@@ -1217,6 +1247,46 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileStatOpened => 'Abertas';
 
   @override
+  String get profileBadgesTitle => 'CONQUISTAS';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'Primeira carta';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'Você enviou sua primeira carta.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'Primeira abertura';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'Você abriu sua primeira carta.';
+
+  @override
+  String get badgeFirstPublicTitle => 'Primeira no feed';
+
+  @override
+  String get badgeFirstPublicDesc =>
+      'Você compartilhou uma carta no feed público.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 cartas';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'Você enviou 5 cartas.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 cartas';
+
+  @override
+  String get badgeLettersSentTenDesc => 'Você enviou 10 cartas.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voz';
+
+  @override
+  String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -1520,10 +1590,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
 
   @override
-  String get settingsExportButton => 'Exportar como PDF';
+  String get settingsExportButton => 'Exportar como ZIP';
 
   @override
-  String get settingsExportSnack => 'Exportação em breve! 📦';
+  String get settingsExportZipSubtitle =>
+      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return '$count cartas exportadas.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparando exportação…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Exportar PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Baixe uma cópia portátil desta carta';
 
   @override
   String get settingsDeleteTitle => 'Deletar conta';
@@ -2291,6 +2377,36 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get feedFilterFamily => 'Família';
+
+  @override
+  String get feedLayerExplore => 'Explorar';
+
+  @override
+  String get feedLayerHighlights => 'Destaques';
+
+  @override
+  String get feedLayerFollowing => 'Seguindo';
+
+  @override
+  String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Siga perfis para ver as cartas públicas deles aqui.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Entre para ver este feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'A aba Seguindo mostra cartas públicas de quem você segue.';
+
+  @override
+  String get feedLoadError =>
+      'Não foi possível carregar o feed. Tente novamente.';
+
+  @override
+  String get feedLoadMore => 'Carregar mais';
 
   @override
   String get feedEmptyTitle => 'Nenhuma carta pública ainda';
@@ -3258,6 +3374,46 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get profileStatOpened => 'Abertas';
 
   @override
+  String get profileBadgesTitle => 'CONQUISTAS';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'Primeira carta';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'Você enviou sua primeira carta.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'Primeira abertura';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'Você abriu sua primeira carta.';
+
+  @override
+  String get badgeFirstPublicTitle => 'Primeira no feed';
+
+  @override
+  String get badgeFirstPublicDesc =>
+      'Você compartilhou uma carta no feed público.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 cartas';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'Você enviou 5 cartas.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 cartas';
+
+  @override
+  String get badgeLettersSentTenDesc => 'Você enviou 10 cartas.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voz';
+
+  @override
+  String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -3561,10 +3717,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
 
   @override
-  String get settingsExportButton => 'Exportar como PDF';
+  String get settingsExportButton => 'Exportar como ZIP';
 
   @override
-  String get settingsExportSnack => 'Exportação em breve! 📦';
+  String get settingsExportZipSubtitle =>
+      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return '$count cartas exportadas.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparando exportação…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Exportar PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Baixe uma cópia portátil desta carta';
 
   @override
   String get settingsDeleteTitle => 'Deletar conta';

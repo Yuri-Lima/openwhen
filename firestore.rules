@@ -40,6 +40,23 @@ service cloud.firestore {
         userBillingFieldsUnchanged() || userBillingOnlyFreeTierMigration()
       );
       allow delete: if isUser(userId);
+
+      // Conquistas — apenas criação pelo próprio utilizador; ids fixos (anti-fraude leve)
+      match /badgeUnlocks/{badgeId} {
+        allow read: if signedIn();
+        allow create: if isUser(userId)
+          && badgeId in [
+            'first_letter_sent',
+            'first_letter_opened',
+            'first_public',
+            'letters_sent_five',
+            'letters_sent_ten',
+            'voice_letter'
+          ]
+          && request.resource.data.keys().hasOnly(['unlockedAt'])
+          && request.resource.data.unlockedAt is timestamp;
+        allow update, delete: if false;
+      }
     }
 
     // Cartas

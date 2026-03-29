@@ -12,6 +12,7 @@ import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
 import '../../data/letter_export_data.dart';
+import '../../../letters/export/letter_export_service.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -690,7 +691,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   void _showChangePassword(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final ctrl = TextEditingController();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -744,11 +744,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 8),
             Text(l10n.settingsExportBody,
               style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
+            const SizedBox(height: 6),
+            Text(l10n.settingsExportZipSubtitle,
+              style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint, height: 1.45)),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final uid = _user?.uid;
                 if (uid == null) return;
+                final locale = Localizations.localeOf(context).toString();
+                final messenger = ScaffoldMessenger.of(context);
                 Navigator.pop(context);
                 try {
                   final docs = await fetchLettersForUserExport(
@@ -762,7 +767,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         music.isNotEmpty &&
                         !isValidHttpsMusicUrl(music)) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           SnackBar(
                             content: Text(
                               l10n.writeLetterSnackMusicUrlInvalid,
@@ -774,18 +779,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       return;
                     }
                   }
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        '${docs.length} — ${l10n.settingsExportSnack}',
-                        style: GoogleFonts.dmSans(fontSize: 13),
-                      ),
-                    ),
+                  if (docs.isEmpty) {
+                    if (context.mounted) {
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(l10n.settingsExportSuccess(0), style: GoogleFonts.dmSans(fontSize: 13))),
+                      );
+                    }
+                    return;
+                  }
+                  await shareExportZip(
+                    docs: docs,
+                    localeName: locale,
+                    subject: l10n.settingsExportTitle,
                   );
+                  if (context.mounted) {
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          l10n.settingsExportSuccess(docs.length),
+                          style: GoogleFonts.dmSans(fontSize: 13),
+                        ),
+                      ),
+                    );
+                  }
                 } catch (e) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    messenger.showSnackBar(
                       SnackBar(
                         content: Text(
                           l10n.errorGeneric(e.toString()),

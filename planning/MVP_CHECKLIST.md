@@ -21,10 +21,10 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
 - [x] Compartilhamento Stories/Reels
 - [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
-- [ ] Badges / gamificação leve
+- [x] Badges / gamificação leve
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
-- [ ] Feed em **3 camadas**
-- [ ] Exportar cartas (PDF / ZIP)
+- [x] Feed em **3 camadas**
+- [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**
   - [x] `flutter_localizations` + `gen-l10n` (ARB `app_pt_BR`, `app_en`, `app_es`)
   - [x] **Idioma padrão:** detectar locale do sistema (`PlatformDispatcher`); mapear `pt*` → pt-BR, `es*` → es, `en*` → en; demais → fallback pt-BR
@@ -127,4 +127,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** em andamento — primeiro pendente na lista acima: **Badges / gamificação leve** (alinhado a [`ROADMAP.md`](ROADMAP.md) Fase 2).
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — itens da secção acima (badges, feed em 3 camadas, export PDF/ZIP, multilíngue) estão marcados como concluídos no código; manter revisão manual antes do lançamento.
