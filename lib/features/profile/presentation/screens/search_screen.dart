@@ -10,6 +10,10 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'user_profile_screen.dart';
 
+/// User search loads all profiles once; each list row still attaches a live
+/// `follows` listener (Seguir/Seguindo). At scale, replace with batched reads
+/// (e.g. `whereIn` chunks of 10) or a Cloud Function–aggregated follow graph.
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -23,6 +27,8 @@ class _SearchScreenState extends State<SearchScreen> {
   List<DocumentSnapshot> _filtered = [];
   bool _loading = true;
   String _query = '';
+  /// Throttle pull-to-refresh to avoid repeated full-collection reads (Firestore cost).
+  DateTime? _lastUsersRefresh;
 
   @override
   void initState() {
@@ -163,22 +169,45 @@ class _SearchScreenState extends State<SearchScreen> {
           Expanded(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
-                : _filtered.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('😕', style: TextStyle(fontSize: 40)),
-                            const SizedBox(height: 12),
-                            Text(l10n.searchEmpty,
-                              style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: context.pal.ink, fontStyle: FontStyle.italic)),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: _filtered.length,
-                        itemBuilder: (_, i) => _buildUserTile(_filtered[i]),
-                      ),
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      final now = DateTime.now();
+                      if (_lastUsersRefresh != null &&
+                          now.difference(_lastUsersRefresh!) <
+                              const Duration(seconds: 3)) {
+                        await Future<void>.delayed(Duration.zero);
+                        return;
+                      }
+                      _lastUsersRefresh = now;
+                      setState(() => _loading = true);
+                      await _loadUsers();
+                    },
+                    child: _filtered.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.35,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('😕', style: TextStyle(fontSize: 40)),
+                                      const SizedBox(height: 12),
+                                      Text(l10n.searchEmpty,
+                                        style: GoogleFonts.dmSerifDisplay(fontSize: 16, color: context.pal.ink, fontStyle: FontStyle.italic)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: _filtered.length,
+                            itemBuilder: (_, i) => _buildUserTile(_filtered[i]),
+                          ),
+                  ),
           ),
         ],
       ),

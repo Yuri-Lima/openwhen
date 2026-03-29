@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/constants/feed_config.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
+import '../../domain/feed_letter_filter.dart';
 import '../../../../shared/moderation/report_flow.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -26,6 +28,22 @@ class FeedScreen extends ConsumerStatefulWidget {
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   int _selectedFilter = 0;
+
+  /// Rolling window lower bound, fixed for this screen lifetime so the Firestore
+  /// listener is not recreated every frame (would duplicate reads).
+  late final Timestamp _feedOpenedAtMin = Timestamp.fromDate(
+    DateTime.now().subtract(const Duration(days: FeedConfig.openedAtWindowDays)),
+  );
+
+  Query<Map<String, dynamic>> _publicFeedQuery() {
+    return FirebaseFirestore.instance
+        .collection(FirestoreCollections.letters)
+        .where('isPublic', isEqualTo: true)
+        .where('status', isEqualTo: 'opened')
+        .where('openedAt', isGreaterThanOrEqualTo: _feedOpenedAtMin)
+        .orderBy('openedAt', descending: true)
+        .limit(FeedConfig.publicMaxDocuments);
+  }
 
   static const Map<int, List<String>> _filterEmotions = {
     1: ['love'],
@@ -123,43 +141,73 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               ),
             ),
           ),
-          // Feed
+          // Feed — bounded query (limit + openedAt window); blocked senders hidden per viewer.
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection(FirestoreCollections.letters)
-                  .where('isPublic', isEqualTo: true)
-                  .where('status', isEqualTo: 'opened')
-                  .orderBy('openedAt', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final allDocs = snapshot.data?.docs ?? [];
-                if (allDocs.isEmpty) return _buildEmpty();
+            child: Builder(
+              builder: (context) {
+                final uid = FirebaseAuth.instance.currentUser?.uid;
+                Widget lettersList(Set<String> blocked) {
+                  return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: _publicFeedQuery().snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final allDocs = snapshot.data?.docs ?? [];
+                      if (allDocs.isEmpty) return _buildEmpty();
 
-                final allowedKeys = _filterEmotions[_selectedFilter];
-                final docs = allowedKeys == null
-                    ? allDocs
-                    : allDocs.where((d) {
-                        final emotion = (d.data() as Map<String, dynamic>)['emotionalState'] as String?;
-                        return emotion != null && allowedKeys.contains(emotion);
+                      final visibleDocs = allDocs.where((d) {
+                        final data = d.data();
+                        return isFeedLetterVisibleForViewer(
+                          letterData: data,
+                          blockedSenderUids: blocked,
+                        );
                       }).toList();
+                      if (visibleDocs.isEmpty) return _buildEmpty();
 
-                if (docs.isEmpty) return _buildFilterEmpty();
+                      final allowedKeys = _filterEmotions[_selectedFilter];
+                      final docs = allowedKeys == null
+                          ? visibleDocs
+                          : visibleDocs.where((d) {
+                              final emotion = d.data()['emotionalState'] as String?;
+                              return emotion != null && allowedKeys.contains(emotion);
+                            }).toList();
 
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-                  itemCount: docs.length,
-                  itemBuilder: (_, i) {
-                    final data = docs[i].data() as Map<String, dynamic>;
-                    return _FeedCard(
-                      data: data,
-                      docId: docs[i].id,
-                      isFeatured: i == 0,
-                      reportsEnabled: reportsEnabled,
-                    );
+                      if (docs.isEmpty) return _buildFilterEmpty();
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+                        itemCount: docs.length,
+                        itemBuilder: (_, i) {
+                          final data = docs[i].data();
+                          return _FeedCard(
+                            data: data,
+                            docId: docs[i].id,
+                            isFeatured: i == 0,
+                            reportsEnabled: reportsEnabled,
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+
+                if (uid == null) {
+                  return lettersList(<String>{});
+                }
+                return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('blocks')
+                      .where('blockedBy', isEqualTo: uid)
+                      .snapshots(),
+                  builder: (context, blocksSnap) {
+                    final blocked = <String>{};
+                    for (final d in blocksSnap.data?.docs ?? []) {
+                      final m = d.data();
+                      final blockedUid = m['blockedUid'] as String?;
+                      if (blockedUid != null && blockedUid.isNotEmpty) blocked.add(blockedUid);
+                    }
+                    return lettersList(blocked);
                   },
                 );
               },

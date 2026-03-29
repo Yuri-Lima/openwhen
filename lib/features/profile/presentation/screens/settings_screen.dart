@@ -11,6 +11,8 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
+import '../../data/letter_export_data.dart';
+import '../../../../shared/utils/music_url.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/theme_provider.dart';
@@ -744,11 +746,55 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                final uid = _user?.uid;
+                if (uid == null) return;
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.settingsExportSnack, style: GoogleFonts.dmSans(fontSize: 13))),
-                );
+                try {
+                  final docs = await fetchLettersForUserExport(
+                    firestore: FirebaseFirestore.instance,
+                    uid: uid,
+                  );
+                  for (final d in docs) {
+                    final m = d.data();
+                    final music = (m['musicUrl'] as String?)?.trim();
+                    if (music != null &&
+                        music.isNotEmpty &&
+                        !isValidHttpsMusicUrl(music)) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              l10n.writeLetterSnackMusicUrlInvalid,
+                              style: GoogleFonts.dmSans(fontSize: 13),
+                            ),
+                          ),
+                        );
+                      }
+                      return;
+                    }
+                  }
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${docs.length} — ${l10n.settingsExportSnack}',
+                        style: GoogleFonts.dmSans(fontSize: 13),
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          l10n.errorGeneric(e.toString()),
+                          style: GoogleFonts.dmSans(fontSize: 13),
+                        ),
+                      ),
+                    );
+                  }
+                }
               },
               child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
             ),

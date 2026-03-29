@@ -178,6 +178,7 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 ### Feed
 
 - **`FeedScreen` / `_FeedCard`** ([`feed_screen.dart`](../lib/features/feed/presentation/screens/feed_screen.dart)): lista de cartas públicas; cada card pode mostrar um **preview de comentários** (`_buildCommentsPreview`).
+  - **Custo / escala:** a query global usa `limit` + janela temporal em `openedAt` (constantes em [`lib/core/constants/feed_config.dart`](../lib/core/constants/feed_config.dart)), não um `orderBy` aberto sobre toda a coleção. Utilizadores bloqueados pelo viewer são filtrados no cliente a partir de `blocks` (remetente não aparece no feed).
   - **Quantidade:** query Firestore com `limit(2)` por defeito; se `commentCount > 2`, aparece o link localizado **Ver todos os N comentários** (`feedViewAllComments`), que passa a `limit(20)` no mesmo preview (estado `_showAllComments` no card).
   - **Texto longo por comentário:** cada linha do preview usa `Text.rich` com no máximo **4 linhas** e `TextOverflow.ellipsis` até o utilizador expandir **esse** comentário (toque em **Ler mais** — mesma string `feedReadMore` que o corpo da carta). IDs expandidos ficam em `_expandedCommentPreviewIds` (`Set<String>` de IDs de documento em `comments`).
   - **Quando mostrar “Ler mais”:** heurística no cliente — mensagem com mais de **120** caracteres **ou** com **4** ou mais linhas (`\n`). Não mede overflow com `TextPainter`.

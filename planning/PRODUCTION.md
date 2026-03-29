@@ -82,6 +82,14 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
+### Firestore — custo e padrões
+
+| Área | Nota |
+|------|------|
+| **Feed público** | Query com `limit` + janela em `openedAt` ([`feed_config.dart`](../lib/core/constants/feed_config.dart)); evita leituras globais ilimitadas. |
+| **Busca (lista de utilizadores)** | Cada linha pode subscrever `follows` para o estado Seguir/Seguindo — até **N** listeners por ecrã; o pull-to-refresh tem **throttle** (~3 s). Evolução: `whereIn` em blocos de 10 ou agregação server-side. |
+| **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
+
 ---
 
 ## 5. Cloud Functions e billing (Stripe) — opcional até monetização
