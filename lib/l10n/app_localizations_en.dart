@@ -1796,6 +1796,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get keyboardDismissTooltip => 'Hide keyboard';
+
+  @override
+  String get keyboardDismissSemanticsLabel => 'Dismiss keyboard';
+
+  @override
   String get subscriptionSectionTitle => 'Plan & subscription';
 
   @override

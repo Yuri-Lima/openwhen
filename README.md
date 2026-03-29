@@ -39,6 +39,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Vault** | Tabs for waiting, opened, sent, and **capsules**; advanced **filter and sort** (bottom sheet, client-side on snapshot data) |
 | **Profile** | Own profile, other users, search by @username, settings, legal pages |
 | **Feedback** | Tap the header owl to send feedback (shared bottom sheet); idle wobble + buzz on random intervals per screen visit. Logged-out users also get the global FAB. |
+| **Keyboard** | While the soft keyboard is open, a small **dismiss keyboard** control appears just above it (global `MaterialApp.builder` overlay); same behavior everywhere. |
 
 ---
 

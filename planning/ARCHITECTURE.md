@@ -56,12 +56,22 @@ lib/
         ├── owl_logo.dart              # OwlLogo, OwlSealOpeningAnimation, pintura do lacre/coruja
         ├── owl_feedback_affordance.dart  # Coruja tocável + animação idle; abre feedback sheet
         ├── feedback_entry_button.dart # Botão/FAB + showFeedbackSheet (sheet partilhado)
+        ├── keyboard_dismiss_overlay_button.dart # Overlay global: botão “fechar teclado” quando há teclado virtual (MaterialApp.builder)
         ├── music_link_tile.dart       # Abrir link externo (url_launcher) + tile escuro “Ouvir música”
         ├── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
         └── location_share_tile.dart   # Tile escuro: toque copia link Maps (detalhe carta/cápsula)
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
+
+### Overlays globais (`MaterialApp.builder`)
+
+Em [`lib/main.dart`](../lib/main.dart), o `builder` empilha widgets sobre o `Navigator`:
+
+| Widget | Comportamento |
+|--------|----------------|
+| [`FeedbackEntryButton`](../lib/shared/widgets/feedback_entry_button.dart) | Visível quando o utilizador **não** tem sessão (canto superior direito); abre o sheet de feedback. |
+| [`KeyboardDismissOverlayButton`](../lib/shared/widgets/keyboard_dismiss_overlay_button.dart) | Quando `MediaQuery.viewInsets.bottom > 0` (teclado virtual aberto), mostra um controlo pequeno acima do teclado; toque chama `FocusManager.instance.primaryFocus?.unfocus()`. Mesmo comportamento em todas as rotas e ecrãs. |
 
 ---
 

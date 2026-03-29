@@ -1802,6 +1802,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get keyboardDismissTooltip => 'Ocultar teclado';
+
+  @override
+  String get keyboardDismissSemanticsLabel => 'Cerrar teclado';
+
+  @override
   String get subscriptionSectionTitle => 'Plan y suscripción';
 
   @override

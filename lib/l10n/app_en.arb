@@ -604,6 +604,9 @@
     }
   },
 
+  "keyboardDismissTooltip": "Hide keyboard",
+  "keyboardDismissSemanticsLabel": "Dismiss keyboard",
+
   "subscriptionSectionTitle": "Plan & subscription",
   "subscriptionScreenTitle": "Plans",
   "subscriptionPlanAmanhaName": "Amanhã",

@@ -3389,6 +3389,18 @@ abstract class AppLocalizations {
   /// **'Categoria: {category}'**
   String feedbackEmailBodyPrefix(String category);
 
+  /// No description provided for @keyboardDismissTooltip.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ocultar teclado'**
+  String get keyboardDismissTooltip;
+
+  /// No description provided for @keyboardDismissSemanticsLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fechar teclado'**
+  String get keyboardDismissSemanticsLabel;
+
   /// No description provided for @subscriptionSectionTitle.
   ///
   /// In pt_BR, this message translates to:

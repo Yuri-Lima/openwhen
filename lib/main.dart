@@ -26,6 +26,7 @@ import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
 import 'shared/widgets/feedback_entry_button.dart';
+import 'shared/widgets/keyboard_dismiss_overlay_button.dart';
 import 'core/navigation/home_tab_provider.dart';
 
 bool _onboardingShown = false;
@@ -121,6 +122,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                   child: FeedbackEntryButton(navigatorKey: _appNavigatorKey),
                 ),
               ),
+            const KeyboardDismissOverlayButton(),
           ],
         );
       },

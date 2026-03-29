@@ -1794,6 +1794,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get keyboardDismissTooltip => 'Ocultar teclado';
+
+  @override
+  String get keyboardDismissSemanticsLabel => 'Fechar teclado';
+
+  @override
   String get subscriptionSectionTitle => 'Plano e assinatura';
 
   @override
@@ -3785,6 +3791,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String feedbackEmailBodyPrefix(String category) {
     return 'Categoria: $category';
   }
+
+  @override
+  String get keyboardDismissTooltip => 'Ocultar teclado';
+
+  @override
+  String get keyboardDismissSemanticsLabel => 'Fechar teclado';
 
   @override
   String get subscriptionSectionTitle => 'Plano e assinatura';

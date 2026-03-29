@@ -604,6 +604,9 @@
     }
   },
 
+  "keyboardDismissTooltip": "Ocultar teclado",
+  "keyboardDismissSemanticsLabel": "Cerrar teclado",
+
   "subscriptionSectionTitle": "Plan y suscripción",
   "subscriptionScreenTitle": "Planes",
   "subscriptionPlanAmanhaName": "Amanhã",
