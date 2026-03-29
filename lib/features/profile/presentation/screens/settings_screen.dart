@@ -475,28 +475,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                     const SizedBox(height: 16),
 
-                    GestureDetector(
-                      onTap: () async {
-                        await ref.read(authNotifierProvider.notifier).signOut();
-                        if (context.mounted) {
-                          Navigator.of(context).popUntil((route) => route.isFirst);
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          color: context.pal.card,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: context.pal.border),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.logout, size: 18, color: context.pal.accent),
-                            const SizedBox(width: 8),
-                            Text(l10n.settingsLogout,
-                              style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.accent, fontWeight: FontWeight.w500)),
-                          ],
+                    Material(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(16),
+                      child: InkWell(
+                        onTap: () => _signOutAndNavigate(context),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: context.pal.border),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout, size: 18, color: context.pal.accent),
+                              const SizedBox(width: 8),
+                              Text(l10n.settingsLogout,
+                                style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.accent, fontWeight: FontWeight.w500)),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -509,6 +508,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         },
       ),
     );
+  }
+
+  Future<void> _signOutAndNavigate(BuildContext context) async {
+    await ref.read(authNotifierProvider.notifier).signOut();
+    if (!context.mounted) return;
+    await _handleSignOutResult(context);
+  }
+
+  Future<void> _handleSignOutResult(BuildContext context) async {
+    if (!context.mounted) return;
+    final authAsync = ref.read(authNotifierProvider);
+    if (authAsync.hasError) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.errorGeneric(authAsync.error.toString()),
+            style: GoogleFonts.dmSans(fontSize: 13),
+          ),
+        ),
+      );
+      return;
+    }
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   Future<void> _updateField(String field, dynamic value) async {
@@ -762,7 +785,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 if (context.mounted) {
                   await ref.read(authNotifierProvider.notifier).signOut();
                   if (context.mounted) {
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    await _handleSignOutResult(context);
                   }
                 }
               },

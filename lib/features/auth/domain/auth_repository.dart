@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data/auth_service.dart';
@@ -58,7 +59,11 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    await FcmTokenManager.clearToken();
+    try {
+      await FcmTokenManager.clearToken();
+    } catch (e, st) {
+      debugPrint('FcmTokenManager.clearToken failed (sign-out continues): $e\n$st');
+    }
     await _authService.signOut();
   }
 
