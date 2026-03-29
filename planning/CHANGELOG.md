@@ -9,6 +9,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ## [Unreleased]
 
+### Docs
+
+- **Planejamento:** alinhamento de [`ROADMAP.md`](planning/ROADMAP.md), [`CHANGELOG.md`](CHANGELOG.md) (release 0.9.0), [`README.md`](../README.md) / [`README.pt-BR.md`](../README.pt-BR.md), [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`DEVICE_TESTING.md`](DEVICE_TESTING.md) com o estado em [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) (fonte de verdade para itens concluídos).
+
 ### Added
 
 - **Teclado — fechar global:** botão flutuante acima do teclado virtual quando este está aberto (`MediaQuery.viewInsets.bottom > 0`), registado no `MaterialApp.builder` (`lib/shared/widgets/keyboard_dismiss_overlay_button.dart`); toque remove o foco (`FocusManager`). Strings em ARB (en, pt, pt-BR, es). Ver [`ARCHITECTURE.md`](ARCHITECTURE.md) (secção “Overlays globais”).
@@ -33,7 +37,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Contexto
 
-Release de referência alinhada ao estado do MVP (~**92%**). Consolida funcionalidades já implementadas no repositório e documentação em `planning/`.
+Release de referência histórica (março/2026). Na época, o MVP ainda tinha lacunas documentadas em “Known limitations” abaixo; **após** esta tag, os itens críticos foram fechados no código — ver estado atual em [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) (🔴 Crítico) e [`ROADMAP.md`](ROADMAP.md) Fase 1.
 
 ### Added (usuário)
 
@@ -53,11 +57,15 @@ Release de referência alinhada ao estado do MVP (~**92%**). Consolida funcional
 - Pasta `planning/` com roadmap, checklist de MVP, arquitetura, design system, negócio e changelog
 - README voltado a desenvolvedores e investidores
 
-### Known limitations / próximos passos
+### Known limitations / próximos passos *(no momento da release 0.9.0)*
+
+Itens abaixo refletem o backlog **na data desta release**; não o estado atual do repositório.
 
 - Tela dedicada de **abertura da cápsula** (revelação + publicar após revisão)
 - **Avatar** com upload estável em web e mobile
 - **FCM** end-to-end
 - **Regras Firestore** de produção e testes em dispositivo real
+
+**Atualização:** estes pontos foram subsequentemente concluídos e estão marcados no checklist (🔴). Próximo foco de produto: itens 🟡 Importante — ver [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) e [`ROADMAP.md`](ROADMAP.md) Fase 2.
 
 [0.9.0]: https://github.com/Yuri-Lima/openwhen/releases

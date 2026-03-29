@@ -127,4 +127,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** ~100% — itens 🔴 Crítico implementados no código; validar deploy das regras e QA em dispositivo físico.
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** em andamento — primeiro pendente na lista acima: **Compartilhamento Stories/Reels** (alinhado a [`ROADMAP.md`](ROADMAP.md) Fase 2).

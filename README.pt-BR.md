@@ -25,7 +25,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 
 **Para quem usa:** expressar o que importa, agendar com intenção e abrir no momento certo.
 
-**Para quem constrói e investe:** Flutter + Firebase, código organizado por features e roadmap focado em fechar o MVP antes de escalar a monetização.
+**Para quem constrói e investe:** Flutter + Firebase, código organizado por features e roadmap que cobre o **núcleo do MVP (concluído)**, entregas de **engajamento** ([`planning/ROADMAP.md`](planning/ROADMAP.md) Fase 2) e **monetização** depois em escala.
 
 ---
 
@@ -190,7 +190,7 @@ lib/
 
 ## Roadmap e progresso
 
-**Núcleo do MVP concluído.** Pendências operacionais: QA em dispositivo físico ([`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md)) e deploy das regras Firestore/Storage em produção.
+**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes (ex.: Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) para QA de regressão em dispositivo ao publicar releases.
 
 | Documento | Função |
 |-----------|--------|
