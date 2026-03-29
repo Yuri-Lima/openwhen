@@ -823,7 +823,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get letterDetailShareTitle => 'Share letter';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels, or direct link';
+  String get letterDetailShareSubtitle => 'Instagram Stories or share sheet';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Share sheet opened — pick Instagram or another app.';
+
+  @override
+  String get storyShareSheetTitle => 'Share capsule';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Plain text (Q&A)';
 
   @override
   String get letterOpeningEmotionLove => 'A love letter is waiting for you 💕';
@@ -1137,7 +1150,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get capsuleDetailOnFeed => 'On feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Summarized text of the capsule';
+  String get capsuleDetailShareSubtitle => 'Instagram Stories or share sheet';
 
   @override
   String get capsuleDetailDeleteTitle => 'Delete capsule';

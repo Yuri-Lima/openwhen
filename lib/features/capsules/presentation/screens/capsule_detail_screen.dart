@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,8 @@ import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/widgets/music_link_tile.dart';
 import '../../../../shared/widgets/location_share_tile.dart';
 import '../../../../shared/utils/sender_location.dart';
+import '../../../../shared/social/instagram_stories_share_service.dart';
+import '../../../../shared/social/story_share_content.dart';
 
 class CapsuleDetailScreen extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -296,13 +299,15 @@ class CapsuleDetailScreen extends StatelessWidget {
                     icon: Icons.share_outlined,
                     title: l10n.actionShare,
                     subtitle: l10n.capsuleDetailShareSubtitle,
-                    onTap: () {
-                      final buffer = StringBuffer('$title\n\n');
-                      for (final p in qa) {
-                        buffer.writeln('${p['question']}\n${p['answer']}\n');
-                      }
-                      Share.share(buffer.toString(), subject: title);
-                    },
+                    onTap: () => _openCapsuleShareSheet(
+                      context,
+                      data: data,
+                      docId: docId,
+                      title: title,
+                      themeLabel: themeLabel,
+                      qa: qa,
+                      locale: locale,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _actionTile(
@@ -465,6 +470,120 @@ class _PhotoGalleryDialogState extends State<_PhotoGalleryDialog> {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+Future<void> _openCapsuleShareSheet(
+  BuildContext context, {
+  required Map<String, dynamic> data,
+  required String docId,
+  required String title,
+  required String themeLabel,
+  required List<Map<String, String>> qa,
+  required String locale,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  await showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: const Color(0xFF1A1714),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (ctx) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+            child: Text(
+              l10n.storyShareSheetTitle,
+              style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.camera_alt_outlined, color: Colors.white.withOpacity(0.85)),
+            title: Text(l10n.storyShareInstagramOption, style: GoogleFonts.dmSans(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(ctx);
+              _shareCapsuleInstagram(
+                context,
+                data: data,
+                docId: docId,
+                title: title,
+                themeLabel: themeLabel,
+                locale: locale,
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.text_fields, color: Colors.white.withOpacity(0.85)),
+            title: Text(l10n.storyShareTextOption, style: GoogleFonts.dmSans(color: Colors.white)),
+            onTap: () {
+              Navigator.pop(ctx);
+              final buffer = StringBuffer('$title\n\n');
+              for (final p in qa) {
+                buffer.writeln('${p['question']}\n${p['answer']}\n');
+              }
+              Share.share(buffer.toString(), subject: title);
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Future<void> _shareCapsuleInstagram(
+  BuildContext context, {
+  required Map<String, dynamic> data,
+  required String docId,
+  required String title,
+  required String themeLabel,
+  required String locale,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final deepLink = 'https://openwhen.app/capsule/$docId';
+
+  if (kIsWeb) {
+    await Share.share(
+      '$title\n\n$deepLink',
+      subject: title.isEmpty ? 'OpenWhen' : title,
+    );
+    return;
+  }
+
+  final openDate = data['openDate'] != null ? (data['openDate'] as Timestamp).toDate() : DateTime.now();
+  final openedAt = data['openedAt'] != null ? (data['openedAt'] as Timestamp).toDate() : DateTime.now();
+  final isOpened = (data['status'] ?? 'locked') == 'opened';
+  final dateSubtitle = isOpened
+      ? l10n.letterDetailOpenedOn(formatShortDate(openedAt, locale))
+      : l10n.requestsOpensOn(formatShortDate(openDate, locale));
+
+  final content = StoryShareContent.capsule(
+    docId: docId,
+    title: title,
+    themeLabel: themeLabel,
+    dateSubtitle: dateSubtitle,
+  );
+
+  final box = context.findRenderObject() as RenderBox?;
+  final origin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+  final outcome = await InstagramStoriesShareService.share(
+    context: context,
+    content: content,
+    shareText: '$title\n\n$deepLink',
+    shareSubject: title.isEmpty ? 'OpenWhen' : title,
+    sharePositionOrigin: origin,
+  );
+  if (!context.mounted) return;
+  if (outcome == StoriesShareOutcome.fallback) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.storyShareFallbackSnack, style: GoogleFonts.dmSans(fontSize: 13)),
+        backgroundColor: const Color(0xFF1A1714),
       ),
     );
   }

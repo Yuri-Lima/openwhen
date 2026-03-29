@@ -1598,8 +1598,32 @@ abstract class AppLocalizations {
   /// No description provided for @letterDetailShareSubtitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Stories, Reels ou link direto'**
+  /// **'Instagram Stories ou folha de partilha'**
   String get letterDetailShareSubtitle;
+
+  /// No description provided for @storyShareFallbackSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Folha de partilha aberta — escolha o Instagram ou outra app.'**
+  String get storyShareFallbackSnack;
+
+  /// No description provided for @storyShareSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar cápsula'**
+  String get storyShareSheetTitle;
+
+  /// No description provided for @storyShareInstagramOption.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Instagram Stories'**
+  String get storyShareInstagramOption;
+
+  /// No description provided for @storyShareTextOption.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Texto (perguntas e respostas)'**
+  String get storyShareTextOption;
 
   /// No description provided for @letterOpeningEmotionLove.
   ///
@@ -2156,7 +2180,7 @@ abstract class AppLocalizations {
   /// No description provided for @capsuleDetailShareSubtitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Texto resumido da capsula'**
+  /// **'Instagram Stories ou folha de partilha'**
   String get capsuleDetailShareSubtitle;
 
   /// No description provided for @capsuleDetailDeleteTitle.

@@ -823,7 +823,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get letterDetailShareTitle => 'Compartilhar carta';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels ou link direto';
+  String get letterDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Folha de partilha aberta — escolha o Instagram ou outra app.';
+
+  @override
+  String get storyShareSheetTitle => 'Compartilhar cápsula';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Texto (perguntas e respostas)';
 
   @override
   String get letterOpeningEmotionLove => 'Uma carta de amor espera por você 💕';
@@ -1136,7 +1150,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get capsuleDetailOnFeed => 'No feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Texto resumido da capsula';
+  String get capsuleDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
 
   @override
   String get capsuleDetailDeleteTitle => 'Excluir capsula';
@@ -2849,7 +2864,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get letterDetailShareTitle => 'Compartilhar carta';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels ou link direto';
+  String get letterDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Folha de partilha aberta — escolha o Instagram ou outra app.';
+
+  @override
+  String get storyShareSheetTitle => 'Compartilhar cápsula';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Texto (perguntas e respostas)';
 
   @override
   String get letterOpeningEmotionLove => 'Uma carta de amor espera por você 💕';
@@ -3162,7 +3191,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get capsuleDetailOnFeed => 'No feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Texto resumido da capsula';
+  String get capsuleDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
 
   @override
   String get capsuleDetailDeleteTitle => 'Excluir capsula';

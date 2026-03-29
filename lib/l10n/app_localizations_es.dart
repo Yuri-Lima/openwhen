@@ -822,7 +822,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get letterDetailShareTitle => 'Compartir carta';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels o enlace directo';
+  String get letterDetailShareSubtitle =>
+      'Instagram Stories o hoja de compartir';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Se abrió la hoja de compartir — elige Instagram u otra app.';
+
+  @override
+  String get storyShareSheetTitle => 'Compartir cápsula';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Texto (preguntas y respuestas)';
 
   @override
   String get letterOpeningEmotionLove => 'Una carta de amor te espera 💕';
@@ -1136,7 +1150,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get capsuleDetailOnFeed => 'En el feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Texto resumido de la cápsula';
+  String get capsuleDetailShareSubtitle =>
+      'Instagram Stories o hoja de compartir';
 
   @override
   String get capsuleDetailDeleteTitle => 'Eliminar cápsula';
