@@ -2018,4 +2018,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedRemoveFromFeed => 'Remove from feed';
+
+  @override
+  String get feedHideSenderName => 'Hide who sent this';
+
+  @override
+  String get feedShowSenderName => 'Show who sent this';
+
+  @override
+  String get feedSenderAnonymous => 'Someone special';
 }

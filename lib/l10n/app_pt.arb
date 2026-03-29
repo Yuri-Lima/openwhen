@@ -708,5 +708,8 @@
   "vaultLetterSheetHideReceiver": "Ocultar nome do destinatário",
   "vaultLetterSheetShowReceiver": "Mostrar nome do destinatário"
 ,
-  "feedRemoveFromFeed": "Remover do feed"
+  "feedRemoveFromFeed": "Remover do feed",
+  "feedHideSenderName": "Ocultar quem me enviou",
+  "feedShowSenderName": "Mostrar quem me enviou",
+  "feedSenderAnonymous": "Alguém especial"
 }

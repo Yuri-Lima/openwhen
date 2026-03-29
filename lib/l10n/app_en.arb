@@ -680,5 +680,8 @@
   "vaultLetterSheetHideReceiver": "Hide recipient name",
   "vaultLetterSheetShowReceiver": "Show recipient name"
 ,
-  "feedRemoveFromFeed": "Remove from feed"
+  "feedRemoveFromFeed": "Remove from feed",
+  "feedHideSenderName": "Hide who sent this",
+  "feedShowSenderName": "Show who sent this",
+  "feedSenderAnonymous": "Someone special"
 }
