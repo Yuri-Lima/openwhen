@@ -647,10 +647,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get writeLetterOpenDateLabel => 'Data de abertura';
 
   @override
-  String get writeLetterPublicToggle => 'Carta pública';
-
-  @override
-  String get writeLetterPublicHint => 'Pode aparecer no feed após ser aberta';
+  String get writeLetterPrivacyNote =>
+      'Cartas enviadas são privadas. Só quem recebe pode escolher publicar no feed depois de abrir.';
 
   @override
   String get writeLetterSend => 'Enviar carta 💌';
@@ -2603,10 +2601,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get writeLetterOpenDateLabel => 'Data de abertura';
 
   @override
-  String get writeLetterPublicToggle => 'Carta pública';
-
-  @override
-  String get writeLetterPublicHint => 'Pode aparecer no feed após ser aberta';
+  String get writeLetterPrivacyNote =>
+      'Cartas enviadas são privadas. Só quem recebe pode escolher publicar no feed depois de abrir.';
 
   @override
   String get writeLetterSend => 'Enviar carta 💌';

@@ -1277,17 +1277,11 @@ abstract class AppLocalizations {
   /// **'Data de abertura'**
   String get writeLetterOpenDateLabel;
 
-  /// No description provided for @writeLetterPublicToggle.
+  /// No description provided for @writeLetterPrivacyNote.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Carta pública'**
-  String get writeLetterPublicToggle;
-
-  /// No description provided for @writeLetterPublicHint.
-  ///
-  /// In pt_BR, this message translates to:
-  /// **'Pode aparecer no feed após ser aberta'**
-  String get writeLetterPublicHint;
+  /// **'Cartas enviadas são privadas. Só quem recebe pode escolher publicar no feed depois de abrir.'**
+  String get writeLetterPrivacyNote;
 
   /// No description provided for @writeLetterSend.
   ///

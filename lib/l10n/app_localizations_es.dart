@@ -647,11 +647,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get writeLetterOpenDateLabel => 'Fecha de apertura';
 
   @override
-  String get writeLetterPublicToggle => 'Carta pública';
-
-  @override
-  String get writeLetterPublicHint =>
-      'Puede aparecer en el feed después de ser abierta';
+  String get writeLetterPrivacyNote =>
+      'Las cartas enviadas son privadas. Solo quien recibe puede elegir compartir en el feed público al abrirla.';
 
   @override
   String get writeLetterSend => 'Enviar carta 💌';

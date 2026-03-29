@@ -648,11 +648,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get writeLetterOpenDateLabel => 'Opening date';
 
   @override
-  String get writeLetterPublicToggle => 'Public letter';
-
-  @override
-  String get writeLetterPublicHint =>
-      'May appear on the feed after being opened';
+  String get writeLetterPrivacyNote =>
+      'Sent letters are private. Only the recipient can choose to share on the public feed after opening.';
 
   @override
   String get writeLetterSend => 'Send letter 💌';

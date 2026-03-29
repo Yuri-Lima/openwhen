@@ -65,7 +65,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   final _musicUrlController = TextEditingController();
 
   DateTime _openDate = DateTime.now().add(const Duration(days: 7));
-  bool _isPublic = false;
   bool _isLoading = false;
   EmotionalState? _selectedEmotion;
 
@@ -458,8 +457,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'handwrittenImageUrl': _handwrittenImageUrl,
         'openDate': Timestamp.fromDate(_openDate),
         'status': 'locked',
-        'isPublic': _isPublic,
-        'canBeShared': _isPublic,
+        'isPublic': false,
+        'canBeShared': false,
         'emotionalState': _selectedEmotion!.key,
         'requestStatus': areFriends ? 'accepted' : 'pending',
         'createdAt': Timestamp.now(),
@@ -1019,15 +1018,25 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Toggle publico
                   Container(
-                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                    child: SwitchListTile(
-                      title: Text(l10n.writeLetterPublicToggle, style: GoogleFonts.dmSans(color: context.pal.ink)),
-                      subtitle: Text(l10n.writeLetterPublicHint, style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12)),
-                      value: _isPublic,
-                      activeColor: context.pal.accent,
-                      onChanged: (value) => setState(() => _isPublic = value),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: context.pal.border),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.lock_outline_rounded, color: context.pal.inkSoft, size: 22),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            l10n.writeLetterPrivacyNote,
+                            style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 13, height: 1.45),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 24),
