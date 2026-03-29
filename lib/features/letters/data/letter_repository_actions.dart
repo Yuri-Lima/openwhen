@@ -15,6 +15,16 @@ Future<void> setLetterPublic({
   });
 }
 
+Future<void> setLetterHideReceiverName({
+  required String docId,
+  required bool hide,
+}) async {
+  await FirebaseFirestore.instance
+      .collection(FirestoreCollections.letters)
+      .doc(docId)
+      .update({'hideReceiverName': hide});
+}
+
 Future<void> deleteLetterDocument(String docId) async {
   await FirebaseFirestore.instance
       .collection(FirestoreCollections.letters)

@@ -701,4 +701,10 @@
   "letterPrivacyActionMakePublic": "Tornar pública",
   "letterPrivacyActionMakePrivate": "Tornar privada",
   "letterDetailSentView": "SUA CARTA ENVIADA"
+,
+  "feedReadMore": "Ler mais",
+  "feedReadFullLetter": "Ler carta completa",
+  "feedCardToAnonymous": "Para: alguém especial",
+  "vaultLetterSheetHideReceiver": "Ocultar nome do destinatário",
+  "vaultLetterSheetShowReceiver": "Mostrar nome do destinatário"
 }

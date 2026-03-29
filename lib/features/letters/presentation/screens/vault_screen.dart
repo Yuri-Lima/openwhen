@@ -96,6 +96,12 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     }
   }
 
+  Future<void> _setHideReceiverFromVault(String docId, bool hide) async {
+    try {
+      await setLetterHideReceiverName(docId: docId, hide: hide);
+    } catch (_) {}
+  }
+
   Future<void> _deleteLetterFromVault(String docId) async {
     final l10n = AppLocalizations.of(context)!;
     try {
@@ -153,6 +159,23 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               onTap: () {
                 Navigator.pop(ctx);
                 _setLetterPublicFromVault(docId, !isPublic);
+              },
+            ),
+            if (isPublic) ListTile(
+              leading: Icon(
+                (data['hideReceiverName'] ?? false) == true
+                    ? Icons.visibility_rounded
+                    : Icons.visibility_off_rounded,
+                color: context.pal.inkSoft,
+              ),
+              title: Text(
+                (data['hideReceiverName'] ?? false) == true
+                    ? l10n.vaultLetterSheetShowReceiver
+                    : l10n.vaultLetterSheetHideReceiver,
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _setHideReceiverFromVault(docId, !((data['hideReceiverName'] ?? false) as bool));
               },
             ),
             ListTile(
