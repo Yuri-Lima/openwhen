@@ -239,6 +239,7 @@ class _FeedCard extends StatefulWidget {
 
 class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixin {
   bool _showAllComments = false;
+  final Set<String> _expandedCommentPreviewIds = <String>{};
   bool _expanded = false;
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
@@ -689,23 +690,51 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
             Divider(height: 1, color: widget.isFeatured ? Colors.white.withOpacity(0.08) : context.pal.border),
             ...docs.map((doc) {
               final c = doc.data() as Map<String, dynamic>;
+              final message = c['message'] as String? ?? '';
+              final commentExpanded = _expandedCommentPreviewIds.contains(doc.id);
+              final showReadMore = !commentExpanded &&
+                  (message.length > 120 || message.split('\n').length >= 4);
               return Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
                       TextSpan(
-                        text: '${c['userName'] ?? ''}  ',
-                        style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600,
-                          color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink),
+                        children: [
+                          TextSpan(
+                            text: '${c['userName'] ?? ''}  ',
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink,
+                            ),
+                          ),
+                          TextSpan(
+                            text: message,
+                            style: GoogleFonts.dmSans(fontSize: 13, color: _textSoft(context)),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: c['message'] ?? '',
-                        style: GoogleFonts.dmSans(fontSize: 13,
-                          color: _textSoft(context)),
+                      maxLines: commentExpanded ? null : 4,
+                      overflow: commentExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                    ),
+                    if (showReadMore)
+                      GestureDetector(
+                        onTap: () => setState(() => _expandedCommentPreviewIds.add(doc.id)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            l10n.feedReadMore,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              color: _textFaint(context),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               );
             }),

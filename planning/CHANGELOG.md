@@ -27,6 +27,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
+- **Feed — preview de comentários:** no card (`feed_screen.dart`, `_buildCommentsPreview`), cada comentário longo fica limitado a **4 linhas** com reticências (como o corpo da carta). **Ler mais** (`feedReadMore`) aparece quando a heurística indica texto longo (> 120 caracteres ou ≥ 4 linhas) e expande só aquele comentário no preview (estado por ID Firestore `_expandedCommentPreviewIds`). O link **Ver todos os N comentários** e o limite 2 → 20 no preview mantêm-se. Ver [`ARCHITECTURE.md`](ARCHITECTURE.md) (secção “Feed”).
 - **Planejamento:** OpenWhen Gift (Presente Selado / Gift When) e Nox Card descritos em [`ROADMAP.md`](planning/ROADMAP.md), [`BUSINESS.md`](planning/BUSINESS.md), [`MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md) e nota em [`ARCHITECTURE.md`](planning/ARCHITECTURE.md); conteúdo que estava em `planning/GIFT_FEATURE.md` foi integrado e esse arquivo removido. Política documentada no roadmap: novas ideias entram nas tabelas e no checklist, não em um `.md` por feature.
 
 ### Fixed

@@ -175,6 +175,14 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 
 - **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; cada aba mantém a mesma query Firestore de sempre; **filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta.
 
+### Feed
+
+- **`FeedScreen` / `_FeedCard`** ([`feed_screen.dart`](../lib/features/feed/presentation/screens/feed_screen.dart)): lista de cartas públicas; cada card pode mostrar um **preview de comentários** (`_buildCommentsPreview`).
+  - **Quantidade:** query Firestore com `limit(2)` por defeito; se `commentCount > 2`, aparece o link localizado **Ver todos os N comentários** (`feedViewAllComments`), que passa a `limit(20)` no mesmo preview (estado `_showAllComments` no card).
+  - **Texto longo por comentário:** cada linha do preview usa `Text.rich` com no máximo **4 linhas** e `TextOverflow.ellipsis` até o utilizador expandir **esse** comentário (toque em **Ler mais** — mesma string `feedReadMore` que o corpo da carta). IDs expandidos ficam em `_expandedCommentPreviewIds` (`Set<String>` de IDs de documento em `comments`).
+  - **Quando mostrar “Ler mais”:** heurística no cliente — mensagem com mais de **120** caracteres **ou** com **4** ou mais linhas (`\n`). Não mede overflow com `TextPainter`.
+  - **Lista completa:** ícone de comentário no card abre [`CommentsScreen`](../lib/features/feed/presentation/screens/comments_screen.dart) (stream sem este limite de linhas por item).
+
 ---
 
 ## Testes e ambiente
