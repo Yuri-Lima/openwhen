@@ -1995,6 +1995,24 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get letterDetailSentView => 'SUA CARTA ENVIADA';
+
+  @override
+  String get feedReadMore => 'Ler mais';
+
+  @override
+  String get feedReadFullLetter => 'Ler carta completa';
+
+  @override
+  String get feedCardToAnonymous => 'Para: alguém especial';
+
+  @override
+  String get vaultLetterSheetHideReceiver => 'Ocultar nome do destinatário';
+
+  @override
+  String get vaultLetterSheetShowReceiver => 'Mostrar nome do destinatário';
+
+  @override
+  String get feedRemoveFromFeed => 'Remover do feed';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -3988,4 +4006,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get letterDetailSentView => 'SUA CARTA ENVIADA';
+
+  @override
+  String get feedReadMore => 'Ler mais';
+
+  @override
+  String get feedReadFullLetter => 'Ler carta completa';
+
+  @override
+  String get feedCardToAnonymous => 'Para: alguém especial';
+
+  @override
+  String get vaultLetterSheetHideReceiver => 'Ocultar nome do destinatário';
+
+  @override
+  String get vaultLetterSheetShowReceiver => 'Mostrar nome do destinatário';
+
+  @override
+  String get feedRemoveFromFeed => 'Remover do feed';
 }

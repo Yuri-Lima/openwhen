@@ -3736,6 +3736,42 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'SUA CARTA ENVIADA'**
   String get letterDetailSentView;
+
+  /// No description provided for @feedReadMore.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ler mais'**
+  String get feedReadMore;
+
+  /// No description provided for @feedReadFullLetter.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ler carta completa'**
+  String get feedReadFullLetter;
+
+  /// No description provided for @feedCardToAnonymous.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Para: alguém especial'**
+  String get feedCardToAnonymous;
+
+  /// No description provided for @vaultLetterSheetHideReceiver.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ocultar nome do destinatário'**
+  String get vaultLetterSheetHideReceiver;
+
+  /// No description provided for @vaultLetterSheetShowReceiver.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mostrar nome do destinatário'**
+  String get vaultLetterSheetShowReceiver;
+
+  /// No description provided for @feedRemoveFromFeed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover do feed'**
+  String get feedRemoveFromFeed;
 }
 
 class _AppLocalizationsDelegate

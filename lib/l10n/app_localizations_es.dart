@@ -2006,4 +2006,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get letterDetailSentView => 'TU CARTA ENVIADA';
+
+  @override
+  String get feedReadMore => 'Leer más';
+
+  @override
+  String get feedReadFullLetter => 'Leer carta completa';
+
+  @override
+  String get feedCardToAnonymous => 'Para: alguien especial';
+
+  @override
+  String get vaultLetterSheetHideReceiver => 'Ocultar nombre del destinatario';
+
+  @override
+  String get vaultLetterSheetShowReceiver => 'Mostrar nombre del destinatario';
+
+  @override
+  String get feedRemoveFromFeed => 'Eliminar del feed';
 }
