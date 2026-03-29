@@ -323,6 +323,45 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cuando alguien te envíe una carta\naparecerá aquí';
 
   @override
+  String get vaultEmptyReceivedCta =>
+      'Comparte tu perfil para que puedan enviarte cartas.';
+
+  @override
+  String get vaultEmptyReceivedCtaButton => 'Abrir perfil';
+
+  @override
+  String get vaultLetterChipPrivate => '🔒 Privada · Hacer pública';
+
+  @override
+  String get vaultLetterChipPublic => '🌍 Pública · Hacer privada';
+
+  @override
+  String get vaultLetterSheetMakePublic => 'Hacer pública';
+
+  @override
+  String get vaultLetterSheetMakePrivate => 'Hacer privada';
+
+  @override
+  String get vaultLetterSheetDelete => 'Quitar de la caja';
+
+  @override
+  String get vaultLetterSheetFavoriteSoon => 'Favorito (pronto)';
+
+  @override
+  String get vaultLetterDeleteTitle => '¿Quitar carta?';
+
+  @override
+  String get vaultLetterDeleteMessage =>
+      'Se elimina de tu caja y del feed público si estaba compartida.';
+
+  @override
+  String get vaultMenuHint =>
+      'Consejo: toca ⋯ en una tarjeta para privacidad o eliminar.';
+
+  @override
+  String get vaultMenuHintGotIt => 'Entendido';
+
+  @override
   String get vaultCountdownReady => '¡Lista para abrir!';
 
   @override

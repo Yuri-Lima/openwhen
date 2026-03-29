@@ -26,6 +26,7 @@ import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
 import 'shared/widgets/feedback_entry_button.dart';
+import 'core/navigation/home_tab_provider.dart';
 
 bool _onboardingShown = false;
 
@@ -184,8 +185,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = [
     const FeedScreen(),
     const VaultScreen(),
@@ -287,10 +286,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             final lettersCount = lettersSnap.data?.docs.length ?? 0;
             final capsulesCount = capsulesSnap.data?.docs.length ?? 0;
             final totalCount = lettersCount + capsulesCount;
+            final tabIndex = ref.watch(homeTabIndexProvider);
 
             return Scaffold(
               backgroundColor: p.bg,
-              body: _screens[_currentIndex],
+              body: _screens[tabIndex],
               floatingActionButton: FloatingActionButton(
                 onPressed: () => _showCreateOptions(context),
                 child: const Icon(Icons.edit_outlined),
@@ -301,7 +301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   border: Border(top: BorderSide(color: p.border)),
                 ),
                 child: BottomNavigationBar(
-                  currentIndex: _currentIndex == 0 ? 0 : _currentIndex == 1 ? 2 : 3,
+                  currentIndex: tabIndex == 0 ? 0 : tabIndex == 1 ? 2 : 3,
                   onTap: (i) {
                     if (i == 1) {
                       Navigator.push(
@@ -311,7 +311,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       );
                       return;
                     }
-                    setState(() => _currentIndex = i == 2 ? 1 : i == 3 ? 2 : i);
+                    ref.read(homeTabIndexProvider.notifier).setTab(
+                          i == 2 ? 1 : i == 3 ? 2 : 0,
+                        );
                   },
                   items: [
                     BottomNavigationBarItem(

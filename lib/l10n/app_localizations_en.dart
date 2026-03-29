@@ -321,6 +321,45 @@ class AppLocalizationsEn extends AppLocalizations {
       'When someone sends you a letter\nit will appear here';
 
   @override
+  String get vaultEmptyReceivedCta =>
+      'Share your profile so people can send you letters.';
+
+  @override
+  String get vaultEmptyReceivedCtaButton => 'Open profile';
+
+  @override
+  String get vaultLetterChipPrivate => '🔒 Private · Make public';
+
+  @override
+  String get vaultLetterChipPublic => '🌍 Public · Make private';
+
+  @override
+  String get vaultLetterSheetMakePublic => 'Make public';
+
+  @override
+  String get vaultLetterSheetMakePrivate => 'Make private';
+
+  @override
+  String get vaultLetterSheetDelete => 'Remove from vault';
+
+  @override
+  String get vaultLetterSheetFavoriteSoon => 'Favorite (coming soon)';
+
+  @override
+  String get vaultLetterDeleteTitle => 'Remove letter?';
+
+  @override
+  String get vaultLetterDeleteMessage =>
+      'This removes the letter from your vault and from the public feed if it was shared.';
+
+  @override
+  String get vaultMenuHint =>
+      'Tip: tap ⋯ on a card to change privacy or delete.';
+
+  @override
+  String get vaultMenuHintGotIt => 'Got it';
+
+  @override
   String get vaultCountdownReady => 'Ready to open!';
 
   @override

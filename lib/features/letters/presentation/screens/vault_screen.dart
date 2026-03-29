@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/navigation/home_tab_provider.dart';
+import '../../data/letter_repository_actions.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
@@ -27,6 +30,8 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   VaultFiltersState _vaultFilters = VaultFiltersState.initial;
+  /// `null` until prefs load; then whether the vault ⋯ hint was already seen.
+  bool? _vaultMenuHintSeen;
 
   @override
   void initState() {
@@ -34,6 +39,10 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (mounted) setState(() {});
+    });
+    SharedPreferences.getInstance().then((p) {
+      if (!mounted) return;
+      setState(() => _vaultMenuHintSeen = p.getBool('vault_menu_hint_seen') ?? false);
     });
   }
 
@@ -66,6 +75,166 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     final elapsed = DateTime.now().difference(createdAt).inSeconds;
     if (total <= 0) return 1.0;
     return (elapsed / total).clamp(0.0, 1.0);
+  }
+
+  Future<void> _dismissVaultMenuHint() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setBool('vault_menu_hint_seen', true);
+    if (mounted) setState(() => _vaultMenuHintSeen = true);
+  }
+
+  Future<void> _setLetterPublicFromVault(String docId, bool isPublic) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await setLetterPublic(docId: docId, isPublic: isPublic);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteLetterFromVault(String docId) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await deleteLetterDocument(docId);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+        );
+      }
+    }
+  }
+
+  void _confirmDeleteLetter(BuildContext context, String docId) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.vaultLetterDeleteTitle),
+        content: Text(l10n.vaultLetterDeleteMessage),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.actionCancel)),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _deleteLetterFromVault(docId);
+            },
+            child: Text(l10n.actionDelete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showReceivedLetterActionsSheet(
+    BuildContext context, {
+    required Map<String, dynamic> data,
+    required String docId,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final isPublic = data['isPublic'] == true;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: context.pal.bg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(isPublic ? Icons.lock_outline_rounded : Icons.public_rounded),
+              title: Text(isPublic ? l10n.vaultLetterSheetMakePrivate : l10n.vaultLetterSheetMakePublic),
+              onTap: () {
+                Navigator.pop(ctx);
+                _setLetterPublicFromVault(docId, !isPublic);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.delete_outline_rounded, color: Colors.red.shade700),
+              title: Text(
+                l10n.vaultLetterSheetDelete,
+                style: TextStyle(color: Colors.red.shade700),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _confirmDeleteLetter(context, docId);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.star_outline_rounded, color: context.pal.inkFaint),
+              title: Text(
+                l10n.vaultLetterSheetFavoriteSoon,
+                style: GoogleFonts.dmSans(color: context.pal.inkFaint),
+              ),
+              enabled: false,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVaultMenuHintBanner(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: context.pal.accentWarm,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.lightbulb_outline_rounded, size: 20, color: context.pal.accent),
+              const SizedBox(width: 10),
+              Expanded(child: Text(l10n.vaultMenuHint, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.ink, height: 1.35))),
+              TextButton(
+                onPressed: _dismissVaultMenuHint,
+                child: Text(l10n.vaultMenuHintGotIt, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyReceivedWithCta(AppLocalizations l10n) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('💌', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: 16),
+            Text(l10n.vaultEmptyReceivedTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
+            const SizedBox(height: 8),
+            Text(l10n.vaultEmptyReceivedSubtitle, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
+            const SizedBox(height: 8),
+            Text(l10n.vaultEmptyReceivedCta, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => ref.read(homeTabIndexProvider.notifier).setTab(2),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.pal.accent,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                elevation: 0,
+              ),
+              child: Text(l10n.vaultEmptyReceivedCtaButton, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -180,22 +349,27 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             }
             final raw = allDocs.values.toList();
             if (raw.isEmpty) {
-              return _buildEmpty(
-                emoji: '💌',
-                title: l10n.vaultEmptyReceivedTitle,
-                subtitle: l10n.vaultEmptyReceivedSubtitle,
-              );
+              return _buildEmptyReceivedWithCta(l10n);
             }
             final docs = filterAndSortWaiting(raw, _vaultFilters.waiting);
             if (docs.isEmpty) return _buildFilterEmpty(context);
+            final hasOpened = docs.any((d) {
+              final m = d.data() as Map<String, dynamic>;
+              return (m['status'] ?? 'locked') == 'opened';
+            });
+            final showHintBanner = _vaultMenuHintSeen == false && hasOpened;
             return ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-              itemCount: docs.length,
+              itemCount: docs.length + (showHintBanner ? 1 : 0),
               itemBuilder: (context, i) {
-                final data = docs[i].data() as Map<String, dynamic>;
+                if (showHintBanner && i == 0) {
+                  return _buildVaultMenuHintBanner(l10n);
+                }
+                final docIndex = showHintBanner ? i - 1 : i;
+                final data = docs[docIndex].data() as Map<String, dynamic>;
                 final status = data['status'] ?? 'locked';
                 if (status == 'opened') {
-                  return _buildOpenedCard(context: context, data: data, docId: docs[i].id, uid: uid);
+                  return _buildOpenedCard(context: context, data: data, docId: docs[docIndex].id);
                 }
                 final openDate = (data['openDate'] as Timestamp).toDate();
                 final createdAt = (data['createdAt'] as Timestamp).toDate();
@@ -203,7 +377,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                 return _buildLockedCard(
                   context: context,
                   data: data,
-                  docId: docs[i].id,
+                  docId: docs[docIndex].id,
                   openDate: openDate,
                   createdAt: createdAt,
                   canOpen: canOpen,
@@ -527,43 +701,98 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     );
   }
 
-  Widget _buildOpenedCard({required BuildContext context, required Map<String, dynamic> data, required String docId, required String uid}) {
+  Widget _buildOpenedCard({required BuildContext context, required Map<String, dynamic> data, required String docId}) {
     final l10n = AppLocalizations.of(context)!;
-    final isReceiver = data['receiverUid'] == uid;
-    return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: context.pal.card,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: context.pal.border),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: context.pal.accentWarm,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: context.pal.border),
+    final isPublic = data['isPublic'] == true;
+
+    void openDetail() {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId)));
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: context.pal.card,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: context.pal.border),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: context.pal.accentWarm,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: context.pal.border),
+                ),
+                child: Text(l10n.vaultLetterOpened, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
               ),
-              child: Text(l10n.vaultLetterOpened, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
-            ),
-            const Spacer(),
-            Text(isReceiver ? l10n.vaultFrom(data['senderName'] ?? '') : l10n.vaultTo(data['receiverName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
-          ]),
+              const Spacer(),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: GestureDetector(
+                    onTap: () => _setLetterPublicFromVault(docId, !isPublic),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isPublic ? const Color(0xFF10B981).withOpacity(0.1) : Colors.white.withOpacity(0.06),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isPublic ? const Color(0xFF10B981).withOpacity(0.35) : context.pal.border,
+                        ),
+                      ),
+                      child: Text(
+                        isPublic ? l10n.vaultLetterChipPublic : l10n.vaultLetterChipPrivate,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 11,
+                          color: isPublic ? const Color(0xFF10B981) : context.pal.inkSoft,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                icon: Icon(Icons.more_horiz_rounded, color: context.pal.inkSoft),
+                onPressed: () => _showReceivedLetterActionsSheet(context, data: data, docId: docId),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(l10n.vaultFrom(data['senderName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
           const SizedBox(height: 12),
-          Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
-          const SizedBox(height: 8),
-          Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
+          InkWell(
+            onTap: openDetail,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic)),
+                  const SizedBox(height: 8),
+                  Text(data['message'] ?? '', maxLines: 3, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId))),
+              onPressed: openDetail,
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: context.pal.border),
                 foregroundColor: context.pal.accent,
@@ -573,7 +802,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               child: Text(l10n.vaultReadFullLetter, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w500, color: context.pal.accent)),
             ),
           ),
-        ]),
+        ],
       ),
     );
   }

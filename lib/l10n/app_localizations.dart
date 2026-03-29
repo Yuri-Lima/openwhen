@@ -677,6 +677,78 @@ abstract class AppLocalizations {
   /// **'Quando alguem te enviar uma carta\nela aparecera aqui'**
   String get vaultEmptyReceivedSubtitle;
 
+  /// No description provided for @vaultEmptyReceivedCta.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhe seu perfil para as pessoas poderem te enviar cartas.'**
+  String get vaultEmptyReceivedCta;
+
+  /// No description provided for @vaultEmptyReceivedCtaButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir perfil'**
+  String get vaultEmptyReceivedCtaButton;
+
+  /// No description provided for @vaultLetterChipPrivate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'🔒 Privada · Tornar pública'**
+  String get vaultLetterChipPrivate;
+
+  /// No description provided for @vaultLetterChipPublic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'🌍 Pública · Tornar privada'**
+  String get vaultLetterChipPublic;
+
+  /// No description provided for @vaultLetterSheetMakePublic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tornar pública'**
+  String get vaultLetterSheetMakePublic;
+
+  /// No description provided for @vaultLetterSheetMakePrivate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tornar privada'**
+  String get vaultLetterSheetMakePrivate;
+
+  /// No description provided for @vaultLetterSheetDelete.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover do cofre'**
+  String get vaultLetterSheetDelete;
+
+  /// No description provided for @vaultLetterSheetFavoriteSoon.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Favoritar (em breve)'**
+  String get vaultLetterSheetFavoriteSoon;
+
+  /// No description provided for @vaultLetterDeleteTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover carta?'**
+  String get vaultLetterDeleteTitle;
+
+  /// No description provided for @vaultLetterDeleteMessage.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A carta sai do seu cofre e do feed público, se estiver compartilhada.'**
+  String get vaultLetterDeleteMessage;
+
+  /// No description provided for @vaultMenuHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Dica: toque em ⋯ no card para mudar privacidade ou excluir.'**
+  String get vaultMenuHint;
+
+  /// No description provided for @vaultMenuHintGotIt.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Entendi'**
+  String get vaultMenuHintGotIt;
+
   /// No description provided for @vaultCountdownReady.
   ///
   /// In pt_BR, this message translates to:

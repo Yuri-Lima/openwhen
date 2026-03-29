@@ -322,6 +322,45 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quando alguem te enviar uma carta\nela aparecera aqui';
 
   @override
+  String get vaultEmptyReceivedCta =>
+      'Compartilhe seu perfil para as pessoas poderem te enviar cartas.';
+
+  @override
+  String get vaultEmptyReceivedCtaButton => 'Abrir perfil';
+
+  @override
+  String get vaultLetterChipPrivate => '🔒 Privada · Tornar pública';
+
+  @override
+  String get vaultLetterChipPublic => '🌍 Pública · Tornar privada';
+
+  @override
+  String get vaultLetterSheetMakePublic => 'Tornar pública';
+
+  @override
+  String get vaultLetterSheetMakePrivate => 'Tornar privada';
+
+  @override
+  String get vaultLetterSheetDelete => 'Remover do cofre';
+
+  @override
+  String get vaultLetterSheetFavoriteSoon => 'Favoritar (em breve)';
+
+  @override
+  String get vaultLetterDeleteTitle => 'Remover carta?';
+
+  @override
+  String get vaultLetterDeleteMessage =>
+      'A carta sai do seu cofre e do feed público, se estiver compartilhada.';
+
+  @override
+  String get vaultMenuHint =>
+      'Dica: toque em ⋯ no card para mudar privacidade ou excluir.';
+
+  @override
+  String get vaultMenuHintGotIt => 'Entendi';
+
+  @override
   String get vaultCountdownReady => 'Pronta para abrir!';
 
   @override
@@ -2274,6 +2313,45 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get vaultEmptyReceivedSubtitle =>
       'Quando alguem te enviar uma carta\nela aparecera aqui';
+
+  @override
+  String get vaultEmptyReceivedCta =>
+      'Compartilhe seu perfil para as pessoas poderem te enviar cartas.';
+
+  @override
+  String get vaultEmptyReceivedCtaButton => 'Abrir perfil';
+
+  @override
+  String get vaultLetterChipPrivate => '🔒 Privada · Tornar pública';
+
+  @override
+  String get vaultLetterChipPublic => '🌍 Pública · Tornar privada';
+
+  @override
+  String get vaultLetterSheetMakePublic => 'Tornar pública';
+
+  @override
+  String get vaultLetterSheetMakePrivate => 'Tornar privada';
+
+  @override
+  String get vaultLetterSheetDelete => 'Remover do cofre';
+
+  @override
+  String get vaultLetterSheetFavoriteSoon => 'Favoritar (em breve)';
+
+  @override
+  String get vaultLetterDeleteTitle => 'Remover carta?';
+
+  @override
+  String get vaultLetterDeleteMessage =>
+      'A carta sai do seu cofre e do feed público, se estiver compartilhada.';
+
+  @override
+  String get vaultMenuHint =>
+      'Dica: toque em ⋯ no card para mudar privacidade ou excluir.';
+
+  @override
+  String get vaultMenuHintGotIt => 'Entendi';
 
   @override
   String get vaultCountdownReady => 'Pronta para abrir!';

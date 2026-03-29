@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/constants/firestore_collections.dart';
+import '../../data/letter_repository_actions.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/voice_url.dart';
@@ -45,13 +45,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
     setState(() => _isUpdating = true);
     try {
       final newValue = !_isPublic;
-      await FirebaseFirestore.instance
-          .collection(FirestoreCollections.letters)
-          .doc(widget.docId)
-          .update({
-        'isPublic': newValue,
-        'publishedAt': newValue ? FieldValue.serverTimestamp() : null,
-      });
+      await setLetterPublic(docId: widget.docId, isPublic: newValue);
       if (mounted) setState(() => _isPublic = newValue);
     } catch (_) {
       // silently ignore — UI stays on previous state
