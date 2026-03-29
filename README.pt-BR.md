@@ -39,6 +39,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Cofre** | Abas: aguardando, abertas, enviadas e **cápsulas**; **filtro e ordenação** (bottom sheet, no cliente sobre os dados já carregados) |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
 | **Feedback** | Toque na coruja do header para enviar feedback (mesmo bottom sheet); animação idle (oscilação + vibração) em intervalos aleatórios por visita ao ecrã. Utilizadores sem sessão também têm o FAB global. |
+| **Teclado** | Com o teclado virtual aberto, um botão **fechar teclado** aparece logo acima dele (overlay global no `MaterialApp.builder`); o mesmo comportamento em todo o app. |
 
 ---
 

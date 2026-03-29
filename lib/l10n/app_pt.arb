@@ -632,6 +632,9 @@
     }
   },
 
+  "keyboardDismissTooltip": "Ocultar teclado",
+  "keyboardDismissSemanticsLabel": "Fechar teclado",
+
   "subscriptionSectionTitle": "Plano e assinatura",
   "subscriptionScreenTitle": "Planos",
   "subscriptionPlanAmanhaName": "Amanhã",
