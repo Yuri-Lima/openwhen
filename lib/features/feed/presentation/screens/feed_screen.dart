@@ -14,6 +14,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
+import '../../../letters/presentation/screens/letter_detail_screen.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -237,6 +238,7 @@ class _FeedCard extends StatefulWidget {
 
 class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixin {
   bool _showAllComments = false;
+  bool _expanded = false;
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
 
@@ -329,9 +331,15 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                           Text(data['senderName'] ?? '',
                             style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500,
                               color: _text(context))),
-                          Text(l10n.feedCardTo(data['receiverName'] ?? ''),
-                            style: GoogleFonts.dmSans(fontSize: 11,
-                              color: _textFaint(context))),
+                          if ((data['hideReceiverName'] ?? false) != true)
+                            Text(l10n.feedCardTo(data['receiverName'] ?? ''),
+                              style: GoogleFonts.dmSans(fontSize: 11,
+                                color: _textFaint(context)))
+                          else
+                            Text(l10n.feedCardToAnonymous,
+                              style: GoogleFonts.dmSans(fontSize: 11,
+                                fontStyle: FontStyle.italic,
+                                color: _textFaint(context))),
                         ],
                       ),
                     ],
@@ -388,11 +396,36 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                     fontStyle: FontStyle.italic, height: 1.3)),
                 const SizedBox(height: 8),
                 Text(data['message'] ?? '',
-                  maxLines: 4, overflow: TextOverflow.ellipsis,
+                  maxLines: _expanded ? null : 4,
+                  overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
                   style: GoogleFonts.dmSans(fontSize: 14,
                     color: _textSoft(context),
                     height: 1.6)),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
+                // Botões: "Ler mais" ou "Ler carta completa"
+                if (!_expanded)
+                  GestureDetector(
+                    onTap: () => setState(() => _expanded = true),
+                    child: Text(l10n.feedReadMore,
+                      style: GoogleFonts.dmSans(fontSize: 13,
+                        color: _textFaint(context),
+                        fontWeight: FontWeight.w500)),
+                  )
+                else ...[
+                  GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => LetterDetailScreen(
+                        data: data,
+                        docId: widget.docId,
+                      ),
+                    )),
+                    child: Text(l10n.feedReadFullLetter,
+                      style: GoogleFonts.dmSans(fontSize: 13,
+                        color: context.pal.accent,
+                        fontWeight: FontWeight.w500)),
+                  ),
+                ],
+                const SizedBox(height: 6),
                 Text(
                   l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
                   style: GoogleFonts.dmSans(fontSize: 10,

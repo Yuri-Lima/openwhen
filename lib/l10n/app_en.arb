@@ -670,4 +670,10 @@
   "letterPrivacyActionMakePublic": "Make public",
   "letterPrivacyActionMakePrivate": "Make private",
   "letterDetailSentView": "YOUR SENT LETTER"
+,
+  "feedReadMore": "Read more",
+  "feedReadFullLetter": "Read full letter",
+  "feedCardToAnonymous": "To: someone special",
+  "vaultLetterSheetHideReceiver": "Hide recipient name",
+  "vaultLetterSheetShowReceiver": "Show recipient name"
 }
