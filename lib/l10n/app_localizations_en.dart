@@ -2000,4 +2000,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get letterDetailSentView => 'YOUR SENT LETTER';
+
+  @override
+  String get feedReadMore => 'Read more';
+
+  @override
+  String get feedReadFullLetter => 'Read full letter';
+
+  @override
+  String get feedCardToAnonymous => 'To: someone special';
+
+  @override
+  String get vaultLetterSheetHideReceiver => 'Hide recipient name';
+
+  @override
+  String get vaultLetterSheetShowReceiver => 'Show recipient name';
+
+  @override
+  String get feedRemoveFromFeed => 'Remove from feed';
 }

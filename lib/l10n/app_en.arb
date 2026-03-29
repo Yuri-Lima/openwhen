@@ -679,4 +679,6 @@
   "feedCardToAnonymous": "To: someone special",
   "vaultLetterSheetHideReceiver": "Hide recipient name",
   "vaultLetterSheetShowReceiver": "Show recipient name"
+,
+  "feedRemoveFromFeed": "Remove from feed"
 }

@@ -15,6 +15,7 @@ import '../../../../shared/utils/date_formatter.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
 import '../../../letters/presentation/screens/letter_detail_screen.dart';
+import '../../../letters/data/letter_repository_actions.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -346,28 +347,75 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   ),
                 ),
                 const Spacer(),
-                if (widget.reportsEnabled &&
-                    uid != null &&
-                    (data['senderUid'] as String? ?? '') != uid)
-                  PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
-                    onSelected: (value) {
-                      if (value == 'report') {
-                        showReportContentSheet(
-                          context,
-                          targetType: 'letter',
-                          targetId: widget.docId,
-                          letterId: widget.docId,
-                        );
-                      }
-                    },
-                    itemBuilder: (ctx) => [
-                      PopupMenuItem(
-                        value: 'report',
-                        child: Text(l10n.reportMenuLabel),
-                      ),
-                    ],
-                  ),
+                // ── Menu ··· do feed ──────────────────────────────────────
+                Builder(builder: (context) {
+                  final isReceiver = uid != null && data['receiverUid'] == uid;
+                  final isStranger = uid != null && data['senderUid'] != uid && !isReceiver;
+                  final isPublic = data['isPublic'] == true;
+                  final hideReceiver = (data['hideReceiverName'] ?? false) == true;
+
+                  if (isReceiver) {
+                    // Receptor: controla privacidade e exclusão do feed
+                    return PopupMenuButton<String>(
+                      icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
+                      onSelected: (value) async {
+                        if (value == 'toggle_public') {
+                          await setLetterPublic(docId: widget.docId, isPublic: !isPublic);
+                        } else if (value == 'toggle_receiver') {
+                          await setLetterHideReceiverName(docId: widget.docId, hide: !hideReceiver);
+                        } else if (value == 'delete') {
+                          await setLetterPublic(docId: widget.docId, isPublic: false);
+                        }
+                      },
+                      itemBuilder: (ctx) => [
+                        PopupMenuItem(
+                          value: 'toggle_public',
+                          child: Row(children: [
+                            Icon(isPublic ? Icons.lock_outline_rounded : Icons.public_rounded, size: 18),
+                            const SizedBox(width: 10),
+                            Text(isPublic ? l10n.vaultLetterSheetMakePrivate : l10n.vaultLetterSheetMakePublic),
+                          ]),
+                        ),
+                        if (isPublic) PopupMenuItem(
+                          value: 'toggle_receiver',
+                          child: Row(children: [
+                            Icon(hideReceiver ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 18),
+                            const SizedBox(width: 10),
+                            Text(hideReceiver ? l10n.vaultLetterSheetShowReceiver : l10n.vaultLetterSheetHideReceiver),
+                          ]),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(children: [
+                            Icon(Icons.remove_circle_outline_rounded, size: 18, color: Colors.red.shade700),
+                            const SizedBox(width: 10),
+                            Text(l10n.feedRemoveFromFeed, style: TextStyle(color: Colors.red.shade700)),
+                          ]),
+                        ),
+                      ],
+                    );
+                  }
+
+                  if (isStranger && widget.reportsEnabled) {
+                    return PopupMenuButton<String>(
+                      icon: Icon(Icons.more_vert, size: 20, color: _textFaint(context)),
+                      onSelected: (value) {
+                        if (value == 'report') {
+                          showReportContentSheet(context,
+                            targetType: 'letter',
+                            targetId: widget.docId,
+                            letterId: widget.docId,
+                          );
+                        }
+                      },
+                      itemBuilder: (ctx) => [
+                        PopupMenuItem(value: 'report', child: Text(l10n.reportMenuLabel)),
+                      ],
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                }),
                 if (widget.isFeatured) ...[
                   const SizedBox(width: 8),
                   Container(
