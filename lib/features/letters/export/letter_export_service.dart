@@ -123,7 +123,7 @@ String _safeFileSegment(String id) {
 
 /// Writes PDF to temp and shares (mobile/desktop); web uses share_plus fallback.
 Future<void> shareExportPdf({
-  required List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  required List<DocumentSnapshot<Map<String, dynamic>>> docs,
   required String localeName,
   required String subject,
 }) async {
@@ -133,10 +133,39 @@ Future<void> shareExportPdf({
   final f = File(p.join(dir.path, name));
   await f.writeAsBytes(bytes, flush: true);
   await Share.shareXFiles([XFile(f.path)], text: subject);
+  await deleteQuietly(f);
+}
+
+/// Fetches the letter from Firestore and shares one PDF (detail screen).
+Future<void> shareLetterPdf({
+  required String docId,
+  required String localeName,
+  required String subject,
+}) async {
+  final snap = await FirebaseFirestore.instance
+      .collection(FirestoreCollections.letters)
+      .doc(docId)
+      .get();
+  if (!snap.exists) {
+    throw StateError('Letter not found');
+  }
+  final m = snap.data();
+  if (m == null) {
+    throw StateError('Letter has no data');
+  }
+  final music = (m['musicUrl'] as String?)?.trim();
+  if (music != null && music.isNotEmpty && !isValidHttpsMusicUrl(music)) {
+    throw StateError('Invalid musicUrl');
+  }
+  await shareExportPdf(
+    docs: [snap],
+    localeName: localeName,
+    subject: subject,
+  );
 }
 
 Future<void> shareExportZip({
-  required List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  required List<DocumentSnapshot<Map<String, dynamic>>> docs,
   required String localeName,
   required String subject,
 }) async {
@@ -147,7 +176,7 @@ Future<void> shareExportZip({
 
 /// Raw ZIP bytes (tests / custom flows).
 Future<Uint8List> buildLettersZipBytes({
-  required List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  required List<DocumentSnapshot<Map<String, dynamic>>> docs,
   required String localeName,
 }) async {
   final f = await buildLettersExportZipFile(docs: docs, localeName: localeName);

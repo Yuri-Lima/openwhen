@@ -109,9 +109,9 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
     setState(() => _exportingPdf = true);
     try {
       await shareLetterPdf(
-        data: widget.data,
         docId: widget.docId,
         localeName: Localizations.localeOf(context).toString(),
+        subject: l10n.letterDetailExportPdfTitle,
       );
     } catch (e) {
       if (mounted) {

@@ -637,7 +637,22 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           const SizedBox(height: 12),
           if (!isOpen) ClipRRect(borderRadius: BorderRadius.circular(4), child: LinearProgressIndicator(value: _progress(createdAt, openDate), backgroundColor: const Color(0xFFF0EBE6), valueColor: AlwaysStoppedAnimation<Color>(canOpen ? context.pal.accent : context.pal.inkFaint), minHeight: 4)),
           const SizedBox(height: 8),
-          Text(isOpen ? l10n.vaultCapsuleOpenedOn(formatShortDate(openDate, locale)) : _countdown(openDate, l10n), style: GoogleFonts.dmSans(fontSize: 12, color: isOpen ? Colors.white.withOpacity(0.4) : (canOpen ? context.pal.accent : context.pal.inkSoft), fontWeight: FontWeight.w500)),
+          if (isOpen)
+            Text(l10n.vaultCapsuleOpenedOn(formatShortDate(openDate, locale)), style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.4), fontWeight: FontWeight.w500))
+          else
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    _countdown(openDate, l10n),
+                    style: GoogleFonts.dmSans(fontSize: 12, color: canOpen ? context.pal.accent : context.pal.inkSoft, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(formatShortDate(openDate, locale), style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
+              ],
+            ),
         ],
         if (canOpen && !isOpen) ...[
           const SizedBox(height: 16),
