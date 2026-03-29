@@ -306,16 +306,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String get vaultSubtitle => 'SUAS CARTAS E CAPSULAS';
 
   @override
-  String get vaultTabWaiting => 'Aguardando';
-
-  @override
-  String get vaultTabOpened => 'Abertas';
+  String get vaultTabReceived => 'Recebidas';
 
   @override
   String get vaultTabSent => 'Enviadas';
 
   @override
   String get vaultTabCapsules => 'Capsulas';
+
+  @override
+  String get vaultEmptyReceivedTitle => 'Nenhuma carta recebida ainda';
+
+  @override
+  String get vaultEmptyReceivedSubtitle =>
+      'Quando alguem te enviar uma carta\nela aparecera aqui';
 
   @override
   String get vaultCountdownReady => 'Pronta para abrir!';
@@ -429,6 +433,27 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get vaultCapsuleSealed => 'Selada';
+
+  @override
+  String get capsulePhotoAdd => 'Adicionar foto';
+
+  @override
+  String get capsulePhotoHint => 'Toque para adicionar uma foto a sua capsula';
+
+  @override
+  String get capsulePhotoWebDisabled =>
+      'Fotos disponiveis apenas no app mobile';
+
+  @override
+  String get capsulePhotoRemove => 'Remover foto';
+
+  @override
+  String get capsulePhotoErrorUpload => 'Erro ao enviar foto. Tente novamente.';
+
+  @override
+  String capsulePhotoMax(int count) {
+    return 'Maximo de $count fotos atingido';
+  }
 
   @override
   String get vaultFilterTitle => 'Filtrar e ordenar';
@@ -2216,16 +2241,20 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get vaultSubtitle => 'SUAS CARTAS E CAPSULAS';
 
   @override
-  String get vaultTabWaiting => 'Aguardando';
-
-  @override
-  String get vaultTabOpened => 'Abertas';
+  String get vaultTabReceived => 'Recebidas';
 
   @override
   String get vaultTabSent => 'Enviadas';
 
   @override
   String get vaultTabCapsules => 'Capsulas';
+
+  @override
+  String get vaultEmptyReceivedTitle => 'Nenhuma carta recebida ainda';
+
+  @override
+  String get vaultEmptyReceivedSubtitle =>
+      'Quando alguem te enviar uma carta\nela aparecera aqui';
 
   @override
   String get vaultCountdownReady => 'Pronta para abrir!';
@@ -2339,6 +2368,27 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get vaultCapsuleSealed => 'Selada';
+
+  @override
+  String get capsulePhotoAdd => 'Adicionar foto';
+
+  @override
+  String get capsulePhotoHint => 'Toque para adicionar uma foto a sua capsula';
+
+  @override
+  String get capsulePhotoWebDisabled =>
+      'Fotos disponiveis apenas no app mobile';
+
+  @override
+  String get capsulePhotoRemove => 'Remover foto';
+
+  @override
+  String get capsulePhotoErrorUpload => 'Erro ao enviar foto. Tente novamente.';
+
+  @override
+  String capsulePhotoMax(int count) {
+    return 'Maximo de $count fotos atingido';
+  }
 
   @override
   String get vaultFilterTitle => 'Filtrar e ordenar';

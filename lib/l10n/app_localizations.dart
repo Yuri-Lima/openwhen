@@ -647,17 +647,11 @@ abstract class AppLocalizations {
   /// **'SUAS CARTAS E CAPSULAS'**
   String get vaultSubtitle;
 
-  /// No description provided for @vaultTabWaiting.
+  /// No description provided for @vaultTabReceived.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Aguardando'**
-  String get vaultTabWaiting;
-
-  /// No description provided for @vaultTabOpened.
-  ///
-  /// In pt_BR, this message translates to:
-  /// **'Abertas'**
-  String get vaultTabOpened;
+  /// **'Recebidas'**
+  String get vaultTabReceived;
 
   /// No description provided for @vaultTabSent.
   ///
@@ -670,6 +664,18 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Capsulas'**
   String get vaultTabCapsules;
+
+  /// No description provided for @vaultEmptyReceivedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma carta recebida ainda'**
+  String get vaultEmptyReceivedTitle;
+
+  /// No description provided for @vaultEmptyReceivedSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Quando alguem te enviar uma carta\nela aparecera aqui'**
+  String get vaultEmptyReceivedSubtitle;
 
   /// No description provided for @vaultCountdownReady.
   ///
@@ -856,6 +862,42 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Selada'**
   String get vaultCapsuleSealed;
+
+  /// No description provided for @capsulePhotoAdd.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Adicionar foto'**
+  String get capsulePhotoAdd;
+
+  /// No description provided for @capsulePhotoHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Toque para adicionar uma foto a sua capsula'**
+  String get capsulePhotoHint;
+
+  /// No description provided for @capsulePhotoWebDisabled.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fotos disponiveis apenas no app mobile'**
+  String get capsulePhotoWebDisabled;
+
+  /// No description provided for @capsulePhotoRemove.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Remover foto'**
+  String get capsulePhotoRemove;
+
+  /// No description provided for @capsulePhotoErrorUpload.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Erro ao enviar foto. Tente novamente.'**
+  String get capsulePhotoErrorUpload;
+
+  /// No description provided for @capsulePhotoMax.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Maximo de {count} fotos atingido'**
+  String capsulePhotoMax(int count);
 
   /// No description provided for @vaultFilterTitle.
   ///

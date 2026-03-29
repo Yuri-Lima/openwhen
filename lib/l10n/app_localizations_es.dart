@@ -307,16 +307,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get vaultSubtitle => 'TUS CARTAS Y CÁPSULAS';
 
   @override
-  String get vaultTabWaiting => 'En espera';
-
-  @override
-  String get vaultTabOpened => 'Abiertas';
+  String get vaultTabReceived => 'Recibidas';
 
   @override
   String get vaultTabSent => 'Enviadas';
 
   @override
   String get vaultTabCapsules => 'Cápsulas';
+
+  @override
+  String get vaultEmptyReceivedTitle => 'Aún no hay cartas recibidas';
+
+  @override
+  String get vaultEmptyReceivedSubtitle =>
+      'Cuando alguien te envíe una carta\naparecerá aquí';
 
   @override
   String get vaultCountdownReady => '¡Lista para abrir!';
@@ -429,6 +433,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get vaultCapsuleSealed => 'Sellada';
+
+  @override
+  String get capsulePhotoAdd => 'Agregar foto';
+
+  @override
+  String get capsulePhotoHint => 'Toca para agregar una foto a tu cápsula';
+
+  @override
+  String get capsulePhotoWebDisabled =>
+      'Las fotos solo están disponibles en la app móvil';
+
+  @override
+  String get capsulePhotoRemove => 'Eliminar foto';
+
+  @override
+  String get capsulePhotoErrorUpload =>
+      'Error al subir la foto. Inténtalo de nuevo.';
+
+  @override
+  String capsulePhotoMax(int count) {
+    return 'Máximo de $count fotos alcanzado';
+  }
 
   @override
   String get vaultFilterTitle => 'Filtrar y ordenar';

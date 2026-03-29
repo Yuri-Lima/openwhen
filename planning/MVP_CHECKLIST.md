@@ -18,9 +18,9 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 Importante (logo após o núcleo do MVP)
 
-- [ ] Fotos na cápsula (mobile; comportamento explícito no web)
+- [x] Fotos na cápsula (mobile; web desabilitado com aviso)
 - [ ] Compartilhamento Stories/Reels
-- [ ] Tela **Cartas recebidas** dedicada
+- [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
 - [ ] Badges / gamificação leve
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
 - [ ] Feed em **3 camadas**

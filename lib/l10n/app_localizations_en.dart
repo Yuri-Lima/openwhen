@@ -305,16 +305,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vaultSubtitle => 'YOUR LETTERS AND CAPSULES';
 
   @override
-  String get vaultTabWaiting => 'Waiting';
-
-  @override
-  String get vaultTabOpened => 'Opened';
+  String get vaultTabReceived => 'Received';
 
   @override
   String get vaultTabSent => 'Sent';
 
   @override
   String get vaultTabCapsules => 'Capsules';
+
+  @override
+  String get vaultEmptyReceivedTitle => 'No received letters yet';
+
+  @override
+  String get vaultEmptyReceivedSubtitle =>
+      'When someone sends you a letter\nit will appear here';
 
   @override
   String get vaultCountdownReady => 'Ready to open!';
@@ -428,6 +432,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vaultCapsuleSealed => 'Sealed';
+
+  @override
+  String get capsulePhotoAdd => 'Add photo';
+
+  @override
+  String get capsulePhotoHint => 'Tap to add a photo to your capsule';
+
+  @override
+  String get capsulePhotoWebDisabled =>
+      'Photos are only available in the mobile app';
+
+  @override
+  String get capsulePhotoRemove => 'Remove photo';
+
+  @override
+  String get capsulePhotoErrorUpload =>
+      'Error uploading photo. Please try again.';
+
+  @override
+  String capsulePhotoMax(int count) {
+    return 'Maximum of $count photos reached';
+  }
 
   @override
   String get vaultFilterTitle => 'Filter and sort';
