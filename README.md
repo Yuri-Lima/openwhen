@@ -190,13 +190,14 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 
 ## Roadmap & progress
 
-**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Next:** 🟡 Important items (e.g. Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) for regression QA on real devices when shipping releases.
+**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). For **production** builds (`dart-define`, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). Regression QA on devices: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
 
 | Document | Purpose |
 |----------|---------|
 | [planning/ROADMAP.md](planning/ROADMAP.md) | Phased product roadmap |
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Day-to-day checklist |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Release history |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Production checklist: `dart-define`, Firebase files, Meta/Instagram, stores |
 
 ---
 
@@ -240,3 +241,4 @@ Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Colors, type, capsule themes |
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Strategy for investors |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Keep a Changelog style |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Build/release checklist (`FB_APP_ID`, Firebase, billing flags) |

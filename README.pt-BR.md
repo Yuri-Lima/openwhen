@@ -190,7 +190,7 @@ lib/
 
 ## Roadmap e progresso
 
-**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes (ex.: Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) para QA de regressão em dispositivo ao publicar releases.
+**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
 
 | Documento | Função |
 |-----------|--------|
@@ -240,3 +240,4 @@ Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Cores, tipografia, temas das cápsulas |
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Estratégia para investidores |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Estilo Keep a Changelog |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Checklist de produção (`dart-define`, Firebase, Meta/Instagram, lojas) |

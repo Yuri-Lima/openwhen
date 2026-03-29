@@ -1,5 +1,7 @@
 # OpenWhen — Testes em dispositivo real
 
+**Configuração de build para produção** (variáveis `dart-define`, ficheiros Firebase, Instagram): ver **[PRODUCTION.md](PRODUCTION.md)**.
+
 Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxos críticos do MVP já implementados — ver [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md)).
 
 ## Pré-requisitos
@@ -15,6 +17,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 3. `flutter run` (ou `flutter build apk --release` + instalar APK)
 4. Confirmar permissões: notificações (Android 13+), galeria para foto de perfil, **localização** ao criar carta/cápsula com partilha de GPS e ao abrir com `openRequiresProximity` (deve pedir localização no destinatário)
 5. Fluxos mínimos: login → feed → cofre → criar carta/cápsula **com** e **sem** localização / **com** restrição de 10 m → abrir no local e longe do ponto → perfil → alterar foto → configurações → permissão de push
+6. **Instagram Stories:** build com `--dart-define=FB_APP_ID=…` (Meta App ID). Instalar **Instagram** no dispositivo. Abrir detalhe de carta ou cápsula → partilhar → confirmar que a app Instagram abre no fluxo de Stories (ou, sem Instagram, que a folha de partilha mostra o PNG). Repetir no ecrã de QR Code (botão “Instagram Stories”).
 
 ## iOS
 
@@ -24,6 +27,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 4. `flutter run` em dispositivo físico (push não valida no simulador da mesma forma)
 5. Na primeira execução, aceitar alertas de fotos, notificações e **localização** quando testar envio com GPS ou abertura com proximidade
 6. Repetir os mesmos fluxos do Android (incluindo localização nos fluxos de carta/cápsula)
+7. **Instagram Stories:** igual ao passo 6 do Android (`FB_APP_ID` + app Instagram instalada)
 
 ## Firebase (produção)
 

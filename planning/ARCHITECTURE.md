@@ -17,6 +17,8 @@ lib/
 ├── firebase_options.dart          # Não versionado no remoto — obter com o time
 ├── core/
 │   ├── billing/                   # BillingProvider, StripeBillingProvider, tier guard, feature flags (BILLING_ENABLED)
+│   ├── config/
+│   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
 │   └── constants/
 │       └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 ├── features/
@@ -42,6 +44,11 @@ lib/
 │   └── profile/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
+    ├── social/                        # Partilha para Instagram Stories (Meta Sharing to Stories)
+    │   ├── story_share_content.dart   # Allowlist de campos para imagem 9:16 (sem mensagem/Q&A)
+    │   ├── story_asset_builder.dart   # Overlay off-screen → PNG temporário
+    │   ├── instagram_stories_platform.dart  # MethodChannel nativo
+    │   └── instagram_stories_share_service.dart  # Orquestra nativo + fallback share_plus + limpeza de ficheiros
     ├── theme/
     │   └── app_theme.dart
     ├── utils/
@@ -63,6 +70,12 @@ lib/
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
+
+### Partilha social / Instagram Stories
+
+- **Meta App ID:** o cliente precisa do Facebook / Meta **App ID** registado para “Sharing to Stories”. Injetar em build com `--dart-define=FB_APP_ID=seu_id` (ver [`lib/core/config/facebook_app_config.dart`](../lib/core/config/facebook_app_config.dart)). Sem `FB_APP_ID`, o fluxo usa apenas o fallback (folha de partilha com PNG + texto). Checklist completo de produção: [`planning/PRODUCTION.md`](PRODUCTION.md).
+- **iOS:** `LSApplicationQueriesSchemes` inclui `instagram` e `instagram-stories` em `Info.plist`; registo do channel em `AppDelegate` (`didInitializeImplicitFlutterEngine`).
+- **Android:** `FileProvider` em `AndroidManifest.xml`, `res/xml/file_paths.xml` (cache), `<queries>` para `com.instagram.android`; `MainActivity` implementa o mesmo `MethodChannel`.
 
 ### Overlays globais (`MaterialApp.builder`)
 
