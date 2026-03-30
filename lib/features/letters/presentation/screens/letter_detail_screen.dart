@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/letter_repository_actions.dart';
-import '../../export/letter_export_service.dart';
+import '../../export/letter_export_deferred.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/voice_url.dart';
@@ -117,7 +117,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
     final l10n = AppLocalizations.of(context)!;
     setState(() => _exportingPdf = true);
     try {
-      await shareLetterPdf(
+      await shareLetterPdfDeferred(
         docId: widget.docId,
         localeName: Localizations.localeOf(context).toString(),
         subject: l10n.letterDetailExportPdfTitle,

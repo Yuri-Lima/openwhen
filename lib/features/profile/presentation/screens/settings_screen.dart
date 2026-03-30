@@ -12,7 +12,7 @@ import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
 import '../../data/letter_export_data.dart';
-import '../../../letters/export/letter_export_service.dart';
+import '../../../letters/export/letter_export_deferred.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -787,7 +787,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     }
                     return;
                   }
-                  await shareExportZip(
+                  await shareExportZipDeferred(
                     docs: docs,
                     localeName: locale,
                     subject: l10n.settingsExportTitle,

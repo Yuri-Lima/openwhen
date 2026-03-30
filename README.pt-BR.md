@@ -13,7 +13,7 @@
 
 *Cartas temporizadas, cápsulas do tempo e uma camada social emocional — com QR Code físico ligando o mundo real ao app.*
 
-[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md) · [Negócio](planning/BUSINESS.md)
+[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md) · [Baseline de performance](planning/PERFORMANCE_BASELINE.md) · [Negócio](planning/BUSINESS.md)
 
 </div>
 
@@ -52,6 +52,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
 | **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
+| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
 
 A arquitetura é **por features** em `lib/features/`, com auth em camadas `data` / `domain` / `presentation`. Veja **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** para a árvore de pastas e coleções do Firestore.

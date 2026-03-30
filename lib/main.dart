@@ -17,13 +17,11 @@ import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/onboarding_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
-import 'features/letters/presentation/screens/write_letter_screen.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
-import 'features/profile/presentation/screens/search_screen.dart';
 import 'features/capsules/data/capsule_vault_streams.dart';
-import 'features/capsules/presentation/screens/create_capsule_screen.dart';
+import 'core/navigation/deferred_screens.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
 import 'shared/widgets/feedback_entry_button.dart';
@@ -129,9 +127,9 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       },
       routes: {
         '/register': (context) => const RegisterScreen(),
-        '/write': (context) => const WriteLetterScreen(),
-        '/search': (context) => const SearchScreen(),
-        '/create-capsule': (context) => const CreateCapsuleScreen(),
+        '/write': (context) => const DeferredWriteLetterPage(),
+        '/search': (context) => const DeferredSearchPage(),
+        '/create-capsule': (context) => const DeferredCreateCapsulePage(),
       },
       home: const AuthWrapper(),
     );
@@ -234,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Navigator.push(
                 ctx,
                 MaterialPageRoute(
-                    builder: (_) => const WriteLetterScreen()),
+                    builder: (_) => const DeferredWriteLetterPage()),
               );
             },
           ),
@@ -256,7 +254,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Navigator.push(
                 ctx,
                 MaterialPageRoute(
-                    builder: (_) => const CreateCapsuleScreen()),
+                    builder: (_) => const DeferredCreateCapsulePage()),
               );
             },
           ),
@@ -313,7 +311,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const SearchScreen()),
+                            builder: (_) => const DeferredSearchPage()),
                       );
                       return;
                     }

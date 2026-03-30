@@ -14,7 +14,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'letter_detail_screen.dart';
 import '../../../capsules/data/capsule_vault_streams.dart';
-import '../../../capsules/presentation/screens/create_capsule_screen.dart';
+import '../../../../core/navigation/deferred_screens.dart';
 import '../../../capsules/presentation/screens/capsule_detail_screen.dart';
 import '../../../../shared/utils/open_with_proximity.dart';
 import '../vault_list_filters.dart';
@@ -335,13 +335,24 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             ),
           ])),
         ),
-        Expanded(child: TabBarView(controller: _tabController, children: [
-          _buildReceivedTab(uid),
-          _buildSentTab(uid),
-          _buildCapsulesTab(uid),
-        ])),
+        Expanded(child: _buildActiveVaultTab(uid)),
       ]),
     );
+  }
+
+  /// Só monta a aba visível para evitar três listeners Firestore em simultâneo.
+  /// O swipe entre abas foi removido; navegação por toque nas tabs.
+  Widget _buildActiveVaultTab(String uid) {
+    switch (_tabController.index) {
+      case 0:
+        return _buildReceivedTab(uid);
+      case 1:
+        return _buildSentTab(uid);
+      case 2:
+        return _buildCapsulesTab(uid);
+      default:
+        return _buildReceivedTab(uid);
+    }
   }
 
   Widget _buildReceivedTab(String uid) {
@@ -913,7 +924,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       Text(l10n.vaultEmptyCapsulesSubtitle, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6)),
       const SizedBox(height: 24),
       ElevatedButton(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateCapsuleScreen())),
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DeferredCreateCapsulePage())),
         style: ElevatedButton.styleFrom(backgroundColor: context.pal.accent, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), elevation: 0),
         child: Text(l10n.vaultCreateCapsule, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
       ),

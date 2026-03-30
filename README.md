@@ -13,7 +13,7 @@
 
 *Timed letters, time capsules, and an emotional social layer — with a physical QR bridge to the people you care about.*
 
-[Product roadmap](planning/ROADMAP.md) · [MVP checklist](planning/MVP_CHECKLIST.md) · [Architecture](planning/ARCHITECTURE.md) · [Business](planning/BUSINESS.md)
+[Product roadmap](planning/ROADMAP.md) · [MVP checklist](planning/MVP_CHECKLIST.md) · [Architecture](planning/ARCHITECTURE.md) · [Performance baseline](planning/PERFORMANCE_BASELINE.md) · [Business](planning/BUSINESS.md)
 
 </div>
 
@@ -52,6 +52,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
 | **Location** | `geolocator` (+ platform location permissions) for optional share-at-send and proximity-to-open |
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
+| **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
 
 Architecture is **feature-first** under `lib/features/`, with auth split into `data` / `domain` / `presentation`. See **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** for folder layout and Firestore collections.

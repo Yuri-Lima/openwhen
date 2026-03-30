@@ -5,7 +5,20 @@
 - **Cliente:** Flutter (multiplataforma: web, iOS, Android, etc.).
 - **Backend:** Firebase (Auth, Cloud Firestore, Storage, Cloud Messaging).
 - **Estado:** Riverpod (`flutter_riverpod`).
-- **Navegação:** `MaterialApp` com `routes` nomeadas; telas adicionais via `Navigator` (`MaterialPageRoute`). O pacote `go_router` está no `pubspec` para evolução futura da navegação.
+- **Navegação:** `MaterialApp` com `routes` nomeadas; telas adicionais via `Navigator` (`MaterialPageRoute`). O pacote `go_router` está no `pubspec` para evolução futura da navegação (ver [Navegação e `go_router`](#navegação-e-go_router)).
+
+---
+
+## Performance e carregamento diferido
+
+- **Baseline:** como medir antes/depois (bundle web, DevTools, Firestore) — [`planning/PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md).
+- **Code splitting (web):** [`lib/core/navigation/deferred_screens.dart`](../lib/core/navigation/deferred_screens.dart) importa em modo `deferred` as telas **Escrever carta**, **Nova cápsula** e **Buscar**; cada uma mostra um `CircularProgressIndicator` até `loadLibrary()` completar. As rotas nomeadas `/write`, `/create-capsule` e `/search` em [`main.dart`](../lib/main.dart) usam estes shells.
+- **Exportação PDF/ZIP:** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta ou definições).
+- **Cofre — abas:** o corpo do cofre mostra **apenas a aba selecionada** (sem `TabBarView` que montava as três de uma vez), reduzindo listeners Firestore simultâneos. **Swipe horizontal entre abas** deixou de estar disponível; mudança só por toque nas tabs.
+
+### Navegação e `go_router`
+
+Uma migração futura para `go_router` pode declarar rotas com `pageBuilder` e reutilizar os mesmos padrões `deferred` (ou `NoTransitionPage` + carregamento assíncrono). Não há roteador `go_router` ativo no código; mantém-se `MaterialApp.routes` + `Navigator` até haver refactor dedicado.
 
 ---
 
@@ -16,6 +29,9 @@ lib/
 ├── main.dart
 ├── firebase_options.dart          # Não versionado no remoto — obter com o time
 ├── core/
+│   ├── navigation/
+│   │   ├── deferred_screens.dart  # Shells FutureBuilder + import deferred (WriteLetter, CreateCapsule, Search)
+│   │   └── home_tab_provider.dart # Índice do separador principal (Feed / Cofre / Perfil)
 │   ├── billing/                   # BillingProvider, StripeBillingProvider, tier guard, feature flags (BILLING_ENABLED)
 │   ├── config/
 │   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
@@ -30,11 +46,14 @@ lib/
 │   │       ├── providers/auth_provider.dart
 │   │       └── screens/ (splash, login, register, onboarding)
 │   ├── letters/
+│   │   ├── export/
+│   │   │   ├── letter_export_service.dart
+│   │   │   └── letter_export_deferred.dart  # API fina: loadLibrary + share* (chunk pdf/archive)
 │   │   ├── models/
 │   │   └── presentation/
 │   │       ├── screens/ (write, vault, detail, opening, requests, qr)
 │   │       ├── vault_list_filters.dart   # estado de filtros por aba + sort/filtro em memória sobre snapshots
-│   │       └── widgets/ (vault_filter_sheet — bottom sheet de filtro/ordenação)
+│   │       ├── widgets/ (vault_filter_sheet — bottom sheet de filtro/ordenação)
 │   │       └── voice_letter.dart    # conditional export: upload/delete ficheiro local (IO vs web stub)
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
@@ -181,11 +200,12 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 
 ## Fluxo principal na UI autenticada
 
-- **`HomeScreen`** (`main.dart`): bottom navigation (Feed, Buscar, Cofre, Perfil) + **FAB** que abre `showModalBottomSheet` com:
-  - Escrever carta → `WriteLetterScreen`
-  - Nova cápsula → `CreateCapsuleScreen`
+- **`HomeScreen`** (`main.dart`): bottom navigation (Feed, **Buscar**, Cofre, Perfil) + **FAB** que abre `showModalBottomSheet` com:
+  - Escrever carta → [`DeferredWriteLetterPage`](../lib/core/navigation/deferred_screens.dart) (`loadLibrary` + `WriteLetterScreen`)
+  - Nova cápsula → [`DeferredCreateCapsulePage`](../lib/core/navigation/deferred_screens.dart) (`loadLibrary` + `CreateCapsuleScreen`)
+  - O item **Buscar** na barra usa [`DeferredSearchPage`](../lib/core/navigation/deferred_screens.dart) (mesmo padrão). Rotas nomeadas `/write`, `/search`, `/create-capsule` apontam para os mesmos shells.
 
-- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; **aba Cápsulas** funde no cliente duas streams (`senderUid` + `locked` e `participantUids` array-contains + `isCollective` + `locked`, ver `capsule_vault_streams.dart`); deduplicação por `doc.id`. As outras abas mantêm as queries habituais. **Filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta. O **badge do Cofre** no `main.dart` usa a mesma lógica de contagem de cápsulas fechadas (cartas recebidas locked + cápsulas merged).
+- **`VaultScreen`** (`vault_screen.dart`): abas **Recebidas** / **Enviadas** / **Cápsulas**; só a aba visível monta os respetivos `StreamBuilder` (lazy por aba; sem swipe). A **aba Cápsulas** funde no cliente duas streams (`senderUid` + `locked` e `participantUids` array-contains + `isCollective` + `locked`, ver `capsule_vault_streams.dart`); deduplicação por `doc.id`. As outras abas mantêm as queries habituais. **Filtro e ordenação** aplicam-se no cliente (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): critérios por aba (ex.: intervalo de datas na Recebidas; origem recebidas/enviadas nas cartas já abertas; estado nas enviadas; temas nas cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta. O **badge do Cofre** no `main.dart` usa a mesma lógica de contagem de cápsulas fechadas (cartas recebidas locked + cápsulas merged). Ação rápida “nova cápsula” no cofre vazio também usa `DeferredCreateCapsulePage`.
 
 ### Feed
 
