@@ -8,6 +8,10 @@ class FirestoreCollections {
   static const String feedback = 'feedback';
   /// Ops / IA — escrita só Admin SDK; leitura no app via callable `adminListModerationIncidents`.
   static const String moderationIncidents = 'moderationIncidents';
+  /// Fila humana — escrita só Functions; leitura admin via callable.
+  static const String moderationReviews = 'moderationReviews';
+  /// Subcoleção de `users/{uid}` — notificações (ex.: moderação); escrita só Functions.
+  static const String userNotifications = 'notifications';
   static const String systemConfig = 'systemConfig';
 
   /// Remote feature flags (`reportsEnabled`, etc.); read-only for clients.

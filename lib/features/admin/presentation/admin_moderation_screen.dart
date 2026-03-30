@@ -8,7 +8,7 @@ import '../../../core/admin/admin_moderation_info.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/theme/app_theme.dart';
 
-/// Moderation queue (reports, feedback, moderation incidents) for users with `admin` claim.
+/// Moderation queue (reports, feedback, human review, AI ops incidents) for users with `admin` claim.
 class AdminModerationScreen extends ConsumerStatefulWidget {
   const AdminModerationScreen({super.key});
 
@@ -23,9 +23,11 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
 
   List<Map<String, dynamic>> _reports = [];
   List<Map<String, dynamic>> _feedback = [];
+  List<Map<String, dynamic>> _reviews = [];
   List<Map<String, dynamic>> _incidents = [];
   bool _loadingReports = true;
   bool _loadingFeedback = true;
+  bool _loadingReviews = true;
   bool _loadingIncidents = true;
   bool _loadingModerationInfo = true;
   AdminModerationInfo? _moderationInfo;
@@ -34,10 +36,11 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _loadModerationInfo();
     _loadReports();
     _loadFeedback();
+    _loadReviews();
     _loadIncidents();
   }
 
@@ -88,6 +91,17 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     if (mounted) setState(() => _loadingFeedback = false);
   }
 
+  Future<void> _loadReviews() async {
+    setState(() => _loadingReviews = true);
+    try {
+      final (list, _) = await _admin.listPendingModerationReviews();
+      if (mounted) setState(() => _reviews = list);
+    } catch (e) {
+      if (mounted) setState(() => _reviews = []);
+    }
+    if (mounted) setState(() => _loadingReviews = false);
+  }
+
   Future<void> _loadIncidents() async {
     setState(() => _loadingIncidents = true);
     try {
@@ -127,6 +141,7 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
           tabs: [
             Tab(text: l10n.adminModerationReportsTab),
             Tab(text: l10n.adminModerationFeedbackTab),
+            Tab(text: l10n.adminModerationReviewsTab),
             Tab(text: l10n.adminModerationIncidentsTab),
           ],
         ),
@@ -144,6 +159,7 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
               children: [
                 _buildReportsTab(),
                 _buildFeedbackTab(),
+                _buildReviewsTab(),
                 _buildIncidentsTab(),
               ],
             ),
@@ -309,6 +325,126 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                   Text(
                     '${r['message'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: context.pal.inkSoft),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _approveReview(String id) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await _admin.resolveModerationReview(reviewId: id, decision: 'approved');
+      if (mounted) await _loadReviews();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.adminModerationReviewsLoadError)),
+        );
+      }
+    }
+  }
+
+  Future<void> _rejectReviewDialog(String id) async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController();
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.adminModerationReject),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.adminModerationFeedbackLabel,
+            hintText: l10n.adminModerationFeedbackHint,
+          ),
+          maxLines: 4,
+          maxLength: 4000,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel)),
+          FilledButton(
+            onPressed: () {
+              if (controller.text.trim().isEmpty) return;
+              Navigator.pop(ctx, true);
+            },
+            child: Text(l10n.adminModerationReject),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final feedback = controller.text.trim();
+    if (feedback.isEmpty) return;
+    try {
+      await _admin.resolveModerationReview(
+        reviewId: id,
+        decision: 'rejected',
+        userFeedback: feedback,
+      );
+      if (mounted) await _loadReviews();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.adminModerationReviewsLoadError)),
+        );
+      }
+    }
+  }
+
+  Widget _buildReviewsTab() {
+    final l10n = AppLocalizations.of(context)!;
+    if (_loadingReviews) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_reviews.isEmpty) {
+      return Center(child: Text(l10n.adminModerationEmpty, style: TextStyle(color: context.pal.inkSoft)));
+    }
+    return RefreshIndicator(
+      onRefresh: _loadReviews,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _reviews.length,
+        itemBuilder: (context, i) {
+          final r = _reviews[i];
+          final id = r['id'] as String? ?? '';
+          final text = '${r['text'] ?? ''}';
+          return Card(
+            color: context.pal.card,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${r['authorDisplayName'] ?? ''} · letter ${r['letterId'] ?? ''}',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: context.pal.ink),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'flagged: ${r['flagged']} · review $id',
+                    style: TextStyle(fontSize: 11, color: context.pal.inkFaint),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(text, style: TextStyle(fontSize: 14, color: context.pal.inkSoft)),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: id.isEmpty ? null : () => _approveReview(id),
+                        child: Text(l10n.adminModerationApprove),
+                      ),
+                      const SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: id.isEmpty ? null : () => _rejectReviewDialog(id),
+                        child: Text(l10n.adminModerationReject),
+                      ),
+                    ],
                   ),
                 ],
               ),

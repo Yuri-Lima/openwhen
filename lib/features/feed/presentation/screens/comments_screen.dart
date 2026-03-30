@@ -103,13 +103,16 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
           text: text,
           contentType: 'comment',
           locale: Localizations.localeOf(context).toString(),
+          letterId: widget.letterId,
         );
         if (!mounted) return;
         if (!r.allowed) {
           setState(() => _isLoading = false);
           final msg = r.reason == 'moderation_unavailable'
               ? l10n.commentsModerationUnavailable
-              : l10n.commentsModerationAiBlocked;
+              : r.reason == 'pending_moderation_review'
+                  ? l10n.commentsModerationPendingReview
+                  : l10n.commentsModerationAiBlocked;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(msg, style: GoogleFonts.dmSans(fontSize: 13)),

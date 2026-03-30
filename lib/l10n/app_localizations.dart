@@ -3593,6 +3593,78 @@ abstract class AppLocalizations {
   /// **'Moderação (admin)'**
   String get adminEntrySettings;
 
+  /// No description provided for @adminModerationReviewsTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Revisão humana'**
+  String get adminModerationReviewsTab;
+
+  /// No description provided for @moderationNotificationsSection.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação'**
+  String get moderationNotificationsSection;
+
+  /// No description provided for @moderationNotificationsEntry.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Notificações de moderação'**
+  String get moderationNotificationsEntry;
+
+  /// No description provided for @moderationNotificationsTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Notificações de moderação'**
+  String get moderationNotificationsTitle;
+
+  /// No description provided for @moderationNotificationsEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma notificação.'**
+  String get moderationNotificationsEmpty;
+
+  /// No description provided for @commentsModerationPendingReview.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O comentário foi enviado para revisão. Será notificado quando for aprovado ou rejeitado.'**
+  String get commentsModerationPendingReview;
+
+  /// No description provided for @commentsModerationQueueFailed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível enviar para revisão. Tente novamente.'**
+  String get commentsModerationQueueFailed;
+
+  /// No description provided for @adminModerationApprove.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aprovar e publicar'**
+  String get adminModerationApprove;
+
+  /// No description provided for @adminModerationReject.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rejeitar'**
+  String get adminModerationReject;
+
+  /// No description provided for @adminModerationFeedbackLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mensagem ao utilizador (obrigatório ao rejeitar)'**
+  String get adminModerationFeedbackLabel;
+
+  /// No description provided for @adminModerationFeedbackHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Explique o que deve mudar…'**
+  String get adminModerationFeedbackHint;
+
+  /// No description provided for @adminModerationReviewsLoadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar a fila de revisão.'**
+  String get adminModerationReviewsLoadError;
+
   /// No description provided for @helpNotFoundTitle.
   ///
   /// In pt_BR, this message translates to:

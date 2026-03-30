@@ -60,6 +60,41 @@ class AdminFunctionsService {
     return raw.map((e) => Map<String, dynamic>.from(e as Map)).toList();
   }
 
+  /// Human moderation queue (`adminListPendingModerationReviews`).
+  Future<(List<Map<String, dynamic>>, String?)> listPendingModerationReviews({
+    int limit = 50,
+    String? cursorId,
+  }) async {
+    final result = await _functions.httpsCallable('adminListPendingModerationReviews').call(
+      <String, dynamic>{
+        'limit': limit,
+        if (cursorId != null) 'cursorId': cursorId,
+      },
+    );
+    final data = _asMap(result.data);
+    final raw = data['items'];
+    final items = raw is List
+        ? raw.map((e) => Map<String, dynamic>.from(e as Map)).toList()
+        : <Map<String, dynamic>>[];
+    final next = data['nextCursor'] as String?;
+    return (items, next);
+  }
+
+  Future<Map<String, dynamic>> resolveModerationReview({
+    required String reviewId,
+    required String decision,
+    String? userFeedback,
+  }) async {
+    final result = await _functions.httpsCallable('adminResolveModerationReview').call(
+      <String, dynamic>{
+        'reviewId': reviewId,
+        'decision': decision,
+        if (userFeedback != null) 'userFeedback': userFeedback,
+      },
+    );
+    return _asMap(result.data);
+  }
+
   Map<String, dynamic> _asMap(Object? data) {
     if (data is Map) {
       return Map<String, dynamic>.from(data);

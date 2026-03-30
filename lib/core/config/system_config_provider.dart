@@ -11,11 +11,17 @@ class SystemConfig {
   final bool aiModerationEnabled;
   /// When true and the moderation provider fails, block posting (strict). Defaults to true; set `false` in Firestore for soft fallback.
   final bool aiModerationFailClosed;
+  /// When true, borderline/flagged comments go to human review queue (requires `letterId` on moderateContent).
+  final bool humanModerationQueueEnabled;
+  /// If set, max OpenAI category score above this triggers review when queue is enabled. Omit for flag-only.
+  final double? moderationReviewScoreThreshold;
 
   const SystemConfig({
     required this.reportsEnabled,
     required this.aiModerationEnabled,
     required this.aiModerationFailClosed,
+    required this.humanModerationQueueEnabled,
+    required this.moderationReviewScoreThreshold,
   });
 
   factory SystemConfig.fromSnapshot(
@@ -24,15 +30,20 @@ class SystemConfig {
     if (!snapshot.exists || snapshot.data() == null) {
       return const SystemConfig(
         reportsEnabled: true,
-        aiModerationEnabled: false,
+        aiModerationEnabled: true,
         aiModerationFailClosed: true,
+        humanModerationQueueEnabled: true,
+        moderationReviewScoreThreshold: 0.2,
       );
     }
     final m = snapshot.data()!;
+    final thr = m['moderationReviewScoreThreshold'];
     return SystemConfig(
       reportsEnabled: m['reportsEnabled'] != false,
       aiModerationEnabled: m['aiModerationEnabled'] == true,
       aiModerationFailClosed: m['aiModerationFailClosed'] != false,
+      humanModerationQueueEnabled: m['humanModerationQueueEnabled'] == true,
+      moderationReviewScoreThreshold: thr is num ? thr.toDouble() : null,
     );
   }
 }

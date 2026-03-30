@@ -9,6 +9,7 @@ class ModerationCallResult {
     required this.source,
     this.reason,
     this.flagged,
+    this.reviewId,
   });
 
   final bool allowed;
@@ -16,6 +17,7 @@ class ModerationCallResult {
   final String source;
   final String? reason;
   final bool? flagged;
+  final String? reviewId;
 }
 
 class ModerationFunctionsService {
@@ -29,10 +31,12 @@ class ModerationFunctionsService {
     required String text,
     String? contentType,
     String? locale,
+    String? letterId,
   }) async {
     final payload = <String, dynamic>{'text': text};
     if (contentType != null) payload['contentType'] = contentType;
     if (locale != null) payload['locale'] = locale;
+    if (letterId != null) payload['letterId'] = letterId;
     final result = await _functions.httpsCallable('moderateContent').call(payload);
     final data = _asMap(result.data);
     return ModerationCallResult(
@@ -40,6 +44,7 @@ class ModerationFunctionsService {
       source: data['source'] as String? ?? 'provider',
       reason: data['reason'] as String?,
       flagged: data['flagged'] as bool?,
+      reviewId: data['reviewId'] as String?,
     );
   }
 

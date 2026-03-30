@@ -14,6 +14,11 @@ export {
   bootstrapAdminClaim,
 } from "./admin";
 
+export {
+  adminListPendingModerationReviews,
+  adminResolveModerationReview,
+} from "./moderation/admin_review";
+
 export {moderateContent} from "./moderation/moderate_content";
 
 setGlobalOptions({region: "us-central1"});

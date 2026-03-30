@@ -1915,6 +1915,46 @@ class AppLocalizationsEs extends AppLocalizations {
   String get adminEntrySettings => 'Moderación (admin)';
 
   @override
+  String get adminModerationReviewsTab => 'Revisión humana';
+
+  @override
+  String get moderationNotificationsSection => 'Moderación';
+
+  @override
+  String get moderationNotificationsEntry => 'Notificaciones de moderación';
+
+  @override
+  String get moderationNotificationsTitle => 'Notificaciones de moderación';
+
+  @override
+  String get moderationNotificationsEmpty => 'Sin notificaciones.';
+
+  @override
+  String get commentsModerationPendingReview =>
+      'Tu comentario se envió a revisión. Te avisaremos cuando sea aprobado o rechazado.';
+
+  @override
+  String get commentsModerationQueueFailed =>
+      'No se pudo enviar a revisión. Inténtalo de nuevo.';
+
+  @override
+  String get adminModerationApprove => 'Aprobar y publicar';
+
+  @override
+  String get adminModerationReject => 'Rechazar';
+
+  @override
+  String get adminModerationFeedbackLabel =>
+      'Mensaje al usuario (obligatorio al rechazar)';
+
+  @override
+  String get adminModerationFeedbackHint => 'Explica qué debe cambiar…';
+
+  @override
+  String get adminModerationReviewsLoadError =>
+      'No se pudo cargar la cola de revisión.';
+
+  @override
   String get helpNotFoundTitle => '¿No encontraste lo que buscabas?';
 
   @override

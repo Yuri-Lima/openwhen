@@ -1908,6 +1908,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminEntrySettings => 'Moderation (admin)';
 
   @override
+  String get adminModerationReviewsTab => 'Human review';
+
+  @override
+  String get moderationNotificationsSection => 'Moderation';
+
+  @override
+  String get moderationNotificationsEntry => 'Moderation notifications';
+
+  @override
+  String get moderationNotificationsTitle => 'Moderation notifications';
+
+  @override
+  String get moderationNotificationsEmpty => 'No notifications yet.';
+
+  @override
+  String get commentsModerationPendingReview =>
+      'Your comment was sent for review. You will be notified when it is approved or rejected.';
+
+  @override
+  String get commentsModerationQueueFailed =>
+      'Could not submit for review. Please try again.';
+
+  @override
+  String get adminModerationApprove => 'Approve and publish';
+
+  @override
+  String get adminModerationReject => 'Reject';
+
+  @override
+  String get adminModerationFeedbackLabel =>
+      'Message to user (required when rejecting)';
+
+  @override
+  String get adminModerationFeedbackHint => 'Explain what they should change…';
+
+  @override
+  String get adminModerationReviewsLoadError =>
+      'Could not load the review queue.';
+
+  @override
   String get helpNotFoundTitle => 'Didn\'t find what you were looking for?';
 
   @override

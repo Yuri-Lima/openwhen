@@ -2,7 +2,7 @@
 
 Callable and HTTP endpoints for **Stripe** subscriptions and **AI content moderation** (OpenAI Moderation API by default, adapter-ready for other providers). **No Google Secret Manager is required** — keys are read from **runtime environment variables** (set in Google Cloud Console for each function, or `.env` for the emulator).
 
-**Source layout:** `src/index.ts` (Stripe webhooks + billing callables), `src/admin.ts` (admin + moderation ops callables), `src/moderation/` (types, OpenAI adapter, incidents, `moderateContent`).
+**Source layout:** `src/index.ts` (Stripe webhooks + billing callables), `src/admin.ts` (admin + moderation ops callables), `src/moderation/` (types, OpenAI adapter, incidents, human review queue, `moderateContent`, `admin_review`).
 
 ```bash
 cd functions
@@ -27,11 +27,13 @@ Set these on each deployed function (or use a shared `.env` with the emulator on
 ### Moderation / superadmin
 
 - **`bootstrapAdminClaim`** (callable): body `{ "secret": "<same as ADMIN_BOOTSTRAP_SECRET>" }`. Caller must be authenticated. Sets Firebase Auth custom claim `admin: true` on that user. After calling, the client must refresh the ID token (`getIdToken(true)`) before `adminListPendingReports` and related callables succeed.
-- **`moderateContent`** (callable, signed-in users): body `{ "text": "...", "contentType": "comment"|"letter"|"capsule"?, "locale"?: "..." }`. Reads **`systemConfig/app`**: `aiModerationEnabled`, `aiModerationFailClosed`. When `aiModerationEnabled` is false, returns `{ allowed: true, source: "skipped" }` without calling OpenAI. When OpenAI fails or the key is missing, records **`moderationIncidents`** (deduped per kind + UTC hour) and either returns **`moderation_unavailable`** (**strict**, default when the field is omitted) or allows posting (**soft fallback**) when **`aiModerationFailClosed`** is explicitly **`false`** in Firestore.
+- **`moderateContent`** (callable, signed-in users): body `{ "text": "...", "contentType": "comment"|"letter"|"capsule"?, "locale"?: "...", "letterId"?: "..." }`. Reads **`systemConfig/app`**: `aiModerationEnabled`, `aiModerationFailClosed`, **`humanModerationQueueEnabled`**, **`moderationReviewScoreThreshold`** (optional number `> 0`; if omitted, only OpenAI `flagged` counts as an “indication”). When `aiModerationEnabled` is false, returns `{ allowed: true, source: "skipped" }` without calling OpenAI. When OpenAI fails or the key is missing, records **`moderationIncidents`** (deduped per kind + UTC hour) and either returns **`moderation_unavailable`** (**strict**, default when the field is omitted) or allows posting (**soft fallback**) when **`aiModerationFailClosed`** is explicitly **`false`** in Firestore. When **`humanModerationQueueEnabled`** is true and the model flags an indication on a **comment**, the function creates **`moderationReviews`** (pending) and a **`users/{uid}/notifications`** row, and returns `{ "allowed": false, "reason": "pending_moderation_review", "reviewId": "..." }` — **`letterId` is required** in that case. Otherwise, binary allow/block uses OpenAI `flagged` only.
 - **`adminGetModerationInfo`**: returns `{ providerId, credentialsConfigured }` from runtime env (no secrets). Lets admins see which moderation backend is active (e.g. `openai`) and whether `OPENAI_API_KEY` is set on the Functions runtime.
 - **`adminListPendingReports`**, **`adminResolveReport`**, **`adminListRecentFeedback`**, **`adminListModerationIncidents`**: require `admin: true` on the ID token. Implementação no app: **Configurações → Moderação (admin)** (visível só com claim). **Incidentes** list aggregated ops alerts (not user-submitted reports).
+- **`adminListPendingModerationReviews`**: `{ "limit"?: number, "cursorId"?: string }` → `{ items, nextCursor }`. Pending human review queue.
+- **`adminResolveModerationReview`**: `{ "reviewId", "decision": "approved"|"rejected", "userFeedback"?: string }`. **Rejected** requires non-empty **`userFeedback`**. **Approved** creates the **`comments`** doc, increments **`letters.commentCount`**, updates the review, and writes an inbox notification — all in one transaction. Idempotent if the review is no longer `pending`.
 
-**Firestore:** `moderationIncidents` is server-only (client rules deny read/write). Inspect in Firebase Console or via **`adminListModerationIncidents`**. After rotating **`OPENAI_API_KEY`**, redeploy or update env vars; 401-style failures create **`auth_invalid`** incidents until fixed.
+**Firestore:** `moderationIncidents` and **`moderationReviews`** are server-only (client rules deny read/write). User moderation outcomes are mirrored under **`users/{uid}/notifications`** (read/update `read` only for the owner). Inspect queues in Console or via admin callables. After rotating **`OPENAI_API_KEY`**, redeploy or update env vars; 401-style failures create **`auth_invalid`** incidents until fixed.
 
 Rotate or remove `ADMIN_BOOTSTRAP_SECRET` after o primeiro admin estiver criado; novos admins podem ser promovidos por um script Admin SDK ou por uma Function futura que só admins possam chamar.
 
@@ -59,8 +61,8 @@ Subscribe to at least: `checkout.session.completed`, `customer.subscription.crea
   ```
 
   When `BILLING_ENABLED` is false (default), the app uses `DisabledBillingProvider` (no checkout/portal calls); migration still runs when possible.
-- **Moderation:** `moderateContent` — `lib/core/moderation/moderation_functions_service.dart`. **Admin:** `AdminFunctionsService` in `lib/core/admin/admin_functions_service.dart` (`adminListPendingReports`, `adminResolveReport`, `adminListRecentFeedback`, `adminListModerationIncidents`, `adminGetModerationInfo`). Requires Firebase Auth custom claim `admin: true` on ID token for admin callables.
-- **Remote flags:** `systemConfig/app` in Firestore (`aiModerationEnabled`, `aiModerationFailClosed`, …) — read by `lib/core/config/system_config_provider.dart`; see [`planning/ARCHITECTURE.md`](../planning/ARCHITECTURE.md).
+- **Moderation:** `moderateContent` — `lib/core/moderation/moderation_functions_service.dart` (pass **`letterId`** for comments when the human queue may apply). **Admin:** `AdminFunctionsService` in `lib/core/admin/admin_functions_service.dart` (`adminListPendingReports`, `adminResolveReport`, `adminListRecentFeedback`, `adminListModerationIncidents`, `adminGetModerationInfo`, **`adminListPendingModerationReviews`**, **`adminResolveModerationReview`**). Inbox: `lib/features/profile/presentation/screens/moderation_notifications_screen.dart`. Requires Firebase Auth custom claim `admin: true` on ID token for admin callables.
+- **Remote flags:** `systemConfig/app` in Firestore (`aiModerationEnabled`, `aiModerationFailClosed`, **`humanModerationQueueEnabled`**, **`moderationReviewScoreThreshold`**, …) — read by `lib/core/config/system_config_provider.dart`; see [`planning/ARCHITECTURE.md`](../planning/ARCHITECTURE.md).
 
 ## Troubleshooting deploy (2nd Gen)
 

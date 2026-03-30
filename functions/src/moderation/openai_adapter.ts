@@ -16,6 +16,7 @@ export class ModerationProviderError extends Error {
 export interface OpenAIModerationResult {
   flagged: boolean;
   categories: Record<string, boolean>;
+  categoryScores: Record<string, number>;
 }
 
 /**
@@ -65,7 +66,11 @@ export async function moderateWithOpenAI(
   }
 
   let json: {
-    results?: Array<{flagged?: boolean; categories?: Record<string, boolean>}>;
+    results?: Array<{
+      flagged?: boolean;
+      categories?: Record<string, boolean>;
+      category_scores?: Record<string, number>;
+    }>;
   };
   try {
     json = (await res.json()) as typeof json;
@@ -84,8 +89,17 @@ export async function moderateWithOpenAI(
     );
   }
 
+  const rawScores = first.category_scores ?? {};
+  const categoryScores: Record<string, number> = {};
+  for (const [k, v] of Object.entries(rawScores)) {
+    if (typeof v === "number" && Number.isFinite(v)) {
+      categoryScores[k] = v;
+    }
+  }
+
   return {
     flagged: first.flagged === true,
     categories: first.categories ?? {},
+    categoryScores,
   };
 }

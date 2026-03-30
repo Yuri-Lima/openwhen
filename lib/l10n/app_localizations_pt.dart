@@ -1910,6 +1910,46 @@ class AppLocalizationsPt extends AppLocalizations {
   String get adminEntrySettings => 'Moderação (admin)';
 
   @override
+  String get adminModerationReviewsTab => 'Revisão humana';
+
+  @override
+  String get moderationNotificationsSection => 'Moderação';
+
+  @override
+  String get moderationNotificationsEntry => 'Notificações de moderação';
+
+  @override
+  String get moderationNotificationsTitle => 'Notificações de moderação';
+
+  @override
+  String get moderationNotificationsEmpty => 'Nenhuma notificação.';
+
+  @override
+  String get commentsModerationPendingReview =>
+      'O comentário foi enviado para revisão. Será notificado quando for aprovado ou rejeitado.';
+
+  @override
+  String get commentsModerationQueueFailed =>
+      'Não foi possível enviar para revisão. Tente novamente.';
+
+  @override
+  String get adminModerationApprove => 'Aprovar e publicar';
+
+  @override
+  String get adminModerationReject => 'Rejeitar';
+
+  @override
+  String get adminModerationFeedbackLabel =>
+      'Mensagem ao utilizador (obrigatório ao rejeitar)';
+
+  @override
+  String get adminModerationFeedbackHint => 'Explique o que deve mudar…';
+
+  @override
+  String get adminModerationReviewsLoadError =>
+      'Não foi possível carregar a fila de revisão.';
+
+  @override
   String get helpNotFoundTitle => 'Não encontrou o que procurava?';
 
   @override
@@ -4116,6 +4156,46 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get adminEntrySettings => 'Moderação (admin)';
+
+  @override
+  String get adminModerationReviewsTab => 'Revisão humana';
+
+  @override
+  String get moderationNotificationsSection => 'Moderação';
+
+  @override
+  String get moderationNotificationsEntry => 'Notificações de moderação';
+
+  @override
+  String get moderationNotificationsTitle => 'Notificações de moderação';
+
+  @override
+  String get moderationNotificationsEmpty => 'Nenhuma notificação.';
+
+  @override
+  String get commentsModerationPendingReview =>
+      'O comentário foi enviado para revisão. Será notificado quando for aprovado ou rejeitado.';
+
+  @override
+  String get commentsModerationQueueFailed =>
+      'Não foi possível enviar para revisão. Tente novamente.';
+
+  @override
+  String get adminModerationApprove => 'Aprovar e publicar';
+
+  @override
+  String get adminModerationReject => 'Rejeitar';
+
+  @override
+  String get adminModerationFeedbackLabel =>
+      'Mensagem ao utilizador (obrigatório ao rejeitar)';
+
+  @override
+  String get adminModerationFeedbackHint => 'Explique o que deve mudar…';
+
+  @override
+  String get adminModerationReviewsLoadError =>
+      'Não foi possível carregar a fila de revisão.';
 
   @override
   String get helpNotFoundTitle => 'Não encontrou o que procurava?';

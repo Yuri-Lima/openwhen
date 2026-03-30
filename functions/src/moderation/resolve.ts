@@ -68,6 +68,7 @@ export async function resolveModeration(
       providerId: "openai",
       flagged: raw.flagged,
       categories: raw.categories,
+      categoryScores: raw.categoryScores,
     };
   } catch (e) {
     const isProv = e instanceof ModerationProviderError;

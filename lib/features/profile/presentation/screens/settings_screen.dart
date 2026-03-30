@@ -23,6 +23,7 @@ import '../../../../core/billing/subscription_tier_provider.dart';
 import '../../../../core/billing/tier_guard.dart';
 import '../../../../core/admin/admin_claims.dart';
 import '../../../admin/presentation/admin_moderation_screen.dart';
+import 'moderation_notifications_screen.dart';
 import 'subscription_plans_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -418,6 +419,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         subtitle: l10n.settingsDeleteAccountSubtitle,
                         onTap: () => _showDeleteAccount(context),
                         labelColor: const Color(0xFFEF4444),
+                      ),
+                    ]),
+
+                    _buildSectionTitle(l10n.moderationNotificationsSection),
+                    _buildMenuCard([
+                      _buildMenuItem(
+                        icon: Icons.mark_chat_unread_outlined,
+                        iconColor: const Color(0xFF8B5CF6),
+                        iconBg: const Color(0xFFF3E8FF),
+                        label: l10n.moderationNotificationsEntry,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ModerationNotificationsScreen()),
+                        ),
                       ),
                     ]),
 

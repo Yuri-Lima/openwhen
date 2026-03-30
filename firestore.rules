@@ -57,6 +57,15 @@ service cloud.firestore {
           && request.resource.data.unlockedAt is timestamp;
         allow update, delete: if false;
       }
+
+      // Notificações (moderação, etc.) — escrita só Cloud Functions / Admin SDK
+      match /notifications/{notifId} {
+        allow read: if isUser(userId);
+        allow update: if isUser(userId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+          && request.resource.data.read == true;
+        allow create, delete: if false;
+      }
     }
 
     // Cartas
@@ -188,6 +197,11 @@ service cloud.firestore {
 
     // Incidentes de moderação (IA / ops) — só Admin SDK / Cloud Functions
     match /moderationIncidents/{incidentId} {
+      allow read, write: if false;
+    }
+
+    // Fila de revisão humana — só Admin SDK / Cloud Functions
+    match /moderationReviews/{reviewId} {
       allow read, write: if false;
     }
 
