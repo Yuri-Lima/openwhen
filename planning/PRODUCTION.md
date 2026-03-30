@@ -98,6 +98,10 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 - No **cliente Flutter**, billing só deve ser ativado com `--dart-define=BILLING_ENABLED=true` quando Stripe e funções estiverem configurados e testados.
 - Região das funções: alinhar `FUNCTIONS_REGION` com a região real deployada.
 
+### Nota (futuro): filas e workers
+
+Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, **filas com requisitos fortes** (ordem, retries elaborados, throughput alto) ou **integração fora do ecossistema Firebase/GCP**, vale relembrar: no Google Cloud o caminho habitual é **Pub/Sub** + subscribers (Cloud Functions ou Cloud Run), **Cloud Tasks** para tarefas adiadas com retries, e **Cloud Scheduler** para cron. **RabbitMQ** (ou outra fila AMQP) e **workers** dedicados só fazem sentido quando houver necessidade explícita ou equipa/infra já orientada a isso — acrescentam operação e integração extra face ao stack atual.
+
 ---
 
 ## 6. Notificações push (FCM)
@@ -131,5 +135,6 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 ## 9. Histórico de alterações deste guia
 
+- **2026-03:** nota futura “filas e workers” (Pub/Sub, Cloud Tasks, RabbitMQ) na secção 5.
 - **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).
 - **2026-03:** documento criado para consolidar `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION` e requisitos Firebase/lojas.
