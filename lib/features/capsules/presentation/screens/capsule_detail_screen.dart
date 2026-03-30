@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -100,6 +101,17 @@ class CapsuleDetailScreen extends StatelessWidget {
     final musicUrl = data['musicUrl'] as String?;
     final showMusicLink = isValidHttpsMusicUrl(musicUrl);
     final senderLoc = parseSenderLocationData(data['senderLocation']);
+    final myUid = FirebaseAuth.instance.currentUser?.uid;
+    final senderUid = data['senderUid'] as String?;
+    final isCreator = myUid != null && senderUid != null && myUid == senderUid;
+    final isCollective = data['isCollective'] == true;
+    final participantNamesRaw = data['participantNames'];
+    final participantNames = <String, String>{};
+    if (participantNamesRaw is Map) {
+      for (final e in participantNamesRaw.entries) {
+        participantNames[e.key.toString()] = e.value?.toString() ?? '';
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF080808),
@@ -255,6 +267,37 @@ class CapsuleDetailScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (isCollective && participantNames.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.capsuleDetailParticipantsHeading.toUpperCase(),
+                      style: GoogleFonts.dmSans(
+                        fontSize: 9,
+                        letterSpacing: 2,
+                        color: const Color(0xFF7A5C3A),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: participantNames.entries.map((e) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEDE4D3),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFFD4C4A8)),
+                          ),
+                          child: Text(
+                            e.value.isNotEmpty ? e.value : e.key,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: const Color(0xFF241608)),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                   if (photos.isNotEmpty) ...[
                     const SizedBox(height: 20),
                     SizedBox(
@@ -309,14 +352,16 @@ class CapsuleDetailScreen extends StatelessWidget {
                       locale: locale,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  _actionTile(
-                    icon: Icons.delete_outline,
-                    title: l10n.capsuleDetailDeleteTitle,
-                    subtitle: l10n.capsuleDetailDeleteSubtitle,
-                    destructive: true,
-                    onTap: () => _deleteCapsule(context),
-                  ),
+                  if (isCreator) ...[
+                    const SizedBox(height: 10),
+                    _actionTile(
+                      icon: Icons.delete_outline,
+                      title: l10n.capsuleDetailDeleteTitle,
+                      subtitle: l10n.capsuleDetailDeleteSubtitle,
+                      destructive: true,
+                      onTap: () => _deleteCapsule(context),
+                    ),
+                  ],
                 ],
               ),
             ),

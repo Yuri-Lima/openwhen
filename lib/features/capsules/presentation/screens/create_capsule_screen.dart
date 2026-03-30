@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +18,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
+import '../../../../shared/utils/capsule_content_mode.dart';
 
 class CapsuleTheme {
   final String id, emoji;
@@ -89,6 +92,15 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
   late final AnimationController _stepAnim;
   late final Animation<double> _fadeAnim;
 
+  /// `false` = só o utilizador; `true` = cápsula coletiva (convidados abrem na mesma data).
+  bool _collectiveMode = false;
+  final List<Map<String, dynamic>> _invitedUsers = [];
+  final _searchController = TextEditingController();
+  List<Map<String, dynamic>> _searchResults = [];
+  bool _searching = false;
+  bool _showResults = false;
+  Timer? _userSearchDebounce;
+
   @override
   void initState() {
     super.initState();
@@ -99,12 +111,77 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
 
   @override
   void dispose() {
+    _userSearchDebounce?.cancel();
+    _searchController.dispose();
     _stepAnim.dispose();
     _customEventCtrl.dispose();
     _titleCtrl.dispose();
     _messageCtrl.dispose();
     _musicUrlCtrl.dispose();
     super.dispose();
+  }
+
+  void _onSearchUsersChanged(String query) {
+    _userSearchDebounce?.cancel();
+    _userSearchDebounce = Timer(const Duration(milliseconds: 400), () {
+      if (mounted) _searchUsers(query);
+    });
+  }
+
+  Future<void> _searchUsers(String query) async {
+    if (query.length < 2) {
+      setState(() {
+        _searchResults = [];
+        _showResults = false;
+      });
+      return;
+    }
+    setState(() => _searching = true);
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    final q = query.toLowerCase().replaceAll('@', '');
+    final allDocs = <String, Map<String, dynamic>>{};
+    try {
+      final snap = await FirebaseFirestore.instance.collection(FirestoreCollections.users).get();
+      for (final doc in snap.docs) {
+        if (doc.id == currentUid) continue;
+        if (_invitedUsers.any((u) => u['uid'] == doc.id)) continue;
+        final data = doc.data();
+        final username = (data['username'] ?? '').toString().toLowerCase();
+        final name = (data['name'] ?? '').toString().toLowerCase();
+        final displayName = (data['displayName'] ?? '').toString().toLowerCase();
+        final email = (data['email'] ?? '').toString().toLowerCase();
+        if (username.contains(q) || name.contains(q) || displayName.contains(q) || email.contains(q)) {
+          allDocs[doc.id] = {'uid': doc.id, ...data};
+        }
+      }
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() {
+      _searchResults = allDocs.values.toList();
+      _searching = false;
+      _showResults = true;
+    });
+  }
+
+  void _selectInvitedUser(Map<String, dynamic> user) {
+    final uid = user['uid'] as String;
+    if (_invitedUsers.any((u) => u['uid'] == uid)) return;
+    if (_invitedUsers.length >= kCapsuleMaxParticipants - 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.createCapsuleMaxParticipants(kCapsuleMaxParticipants))),
+      );
+      return;
+    }
+    setState(() {
+      _invitedUsers.add(user);
+      _searchResults = [];
+      _showResults = false;
+      _searchController.clear();
+    });
+  }
+
+  void _removeInvited(int index) {
+    setState(() => _invitedUsers.removeAt(index));
   }
 
   void _goStep(int step) {
@@ -116,7 +193,10 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
 
   bool get _canAdvance {
     switch (_step) {
-      case 0: return _selectedTheme != null;
+      case 0:
+        if (_selectedTheme == null) return false;
+        if (_collectiveMode && _invitedUsers.isEmpty) return false;
+        return true;
       case 1: return _titleCtrl.text.trim().isNotEmpty && _messageCtrl.text.trim().length >= 10;
       case 2: return _openDate != null || _selectedPresetEvent != null || _customEventCtrl.text.trim().isNotEmpty;
       default: return false;
@@ -182,12 +262,25 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         eventLabel = _selectedPresetEvent ?? _customEventCtrl.text.trim();
       }
 
+      final isCollective = _collectiveMode && _invitedUsers.isNotEmpty;
+      final participantUids = <String>[uid];
+      final participantNames = <String, String>{uid: senderName};
+      for (final u in _invitedUsers) {
+        final iu = u['uid'] as String;
+        participantUids.add(iu);
+        participantNames[iu] = (u['displayName'] ?? u['name'] ?? '').toString();
+      }
+
       await FirebaseFirestore.instance.collection('capsules').doc(docId).set({
         'id': docId,
         'senderUid': uid,
         'senderName': senderName,
         'receiverUid': uid,
         'receiverName': senderName,
+        'isCollective': isCollective,
+        'participantUids': participantUids,
+        'participantNames': participantNames,
+        'contentMode': CapsuleContentMode.singleAuthor,
         'title': _titleCtrl.text.trim(),
         'message': _messageCtrl.text.trim(),
         'theme': _selectedTheme!.id,
@@ -360,6 +453,116 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       Text(l10n.createCapsuleThemeQuestion, style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: p.ink, fontStyle: FontStyle.italic, height: 1.2)),
       const SizedBox(height: 6),
       Text(l10n.createCapsuleThemeHint, style: GoogleFonts.dmSans(fontSize: 14, color: p.inkSoft)),
+      const SizedBox(height: 20),
+      Text(l10n.createCapsuleAudienceTitle, style: GoogleFonts.dmSans(fontSize: 12, color: p.inkFaint, letterSpacing: 0.8, fontWeight: FontWeight.w600)),
+      const SizedBox(height: 10),
+      Row(children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() {
+              _collectiveMode = false;
+              _invitedUsers.clear();
+              _searchController.clear();
+              _showResults = false;
+            }),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+              decoration: BoxDecoration(
+                color: !_collectiveMode ? p.accent.withOpacity(0.12) : p.card,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: !_collectiveMode ? p.accent : p.border, width: !_collectiveMode ? 2 : 1),
+              ),
+              child: Text(l10n.createCapsuleAudiencePersonal, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600, color: p.ink)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _collectiveMode = true),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+              decoration: BoxDecoration(
+                color: _collectiveMode ? p.accent.withOpacity(0.12) : p.card,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: _collectiveMode ? p.accent : p.border, width: _collectiveMode ? 2 : 1),
+              ),
+              child: Text(l10n.createCapsuleAudienceCollective, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600, color: p.ink)),
+            ),
+          ),
+        ),
+      ]),
+      if (_collectiveMode) ...[
+        const SizedBox(height: 12),
+        Text(l10n.createCapsuleCollectiveHint, style: GoogleFonts.dmSans(fontSize: 13, color: p.inkSoft, height: 1.45)),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: p.border)),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Row(children: [
+            Icon(Icons.search, color: p.inkFaint, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                onChanged: _onSearchUsersChanged,
+                style: GoogleFonts.dmSans(color: p.ink),
+                decoration: InputDecoration(
+                  hintText: l10n.createCapsuleInviteSearchHint,
+                  hintStyle: GoogleFonts.dmSans(color: p.inkFaint),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ),
+            if (_searching) SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: p.accent)),
+          ]),
+        ),
+        if (_showResults && _searchResults.isNotEmpty)
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: p.border)),
+            child: Column(
+              children: _searchResults.map((u) {
+                final nome = u['displayName'] ?? u['name'] ?? '';
+                final foto = u['photoUrl'];
+                final username = u['username'] ?? '';
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: p.accentWarm,
+                    backgroundImage: foto != null ? NetworkImage(foto as String) : null,
+                    child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: p.accent, fontWeight: FontWeight.bold)) : null,
+                  ),
+                  title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: p.ink)),
+                  subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: p.inkSoft)),
+                  onTap: () => _selectInvitedUser(u),
+                );
+              }).toList(),
+            ),
+          ),
+        if (_invitedUsers.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: List.generate(_invitedUsers.length, (i) {
+              final u = _invitedUsers[i];
+              final nome = u['displayName'] ?? u['name'] ?? '';
+              return Chip(
+                label: Text(nome, style: GoogleFonts.dmSans(fontSize: 13)),
+                onDeleted: () => _removeInvited(i),
+                deleteIcon: Icon(Icons.close_rounded, size: 18, color: p.inkSoft),
+                backgroundColor: p.accentWarm,
+                side: BorderSide(color: p.border),
+              );
+            }),
+          ),
+        ],
+      ],
       const SizedBox(height: 24),
       ...kCapsuleThemes.map((t) {
         final isSelected = _selectedTheme?.id == t.id;

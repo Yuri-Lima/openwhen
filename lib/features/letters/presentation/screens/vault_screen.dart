@@ -13,6 +13,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'letter_detail_screen.dart';
+import '../../../capsules/data/capsule_vault_streams.dart';
 import '../../../capsules/presentation/screens/create_capsule_screen.dart';
 import '../../../capsules/presentation/screens/capsule_detail_screen.dart';
 import '../../../../shared/utils/open_with_proximity.dart';
@@ -467,24 +468,28 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   }
 
   Widget _buildCapsulesTab(String uid) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection(FirestoreCollections.capsules)
-          .where('senderUid', isEqualTo: uid)
-          .where('status', isEqualTo: 'locked')
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-        final raw = snapshot.data?.docs ?? [];
-        if (raw.isEmpty) return _buildEmptyCapsules(context);
-        final docs = filterAndSortCapsules(raw, _vaultFilters.capsules);
-        if (docs.isEmpty) return _buildFilterEmpty(context);
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-          itemCount: docs.length,
-          itemBuilder: (context, i) {
-            final data = docs[i].data() as Map<String, dynamic>;
-            return _buildCapsuleCard(context: context, data: data, docId: docs[i].id);
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: lockedCapsulesSenderStream(uid),
+      builder: (context, senderSnap) {
+        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: lockedCapsulesCollectiveParticipantStream(uid),
+          builder: (context, participantSnap) {
+            if (senderSnap.connectionState == ConnectionState.waiting ||
+                participantSnap.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final raw = mergeLockedCapsuleVaultDocs(senderSnap.data, participantSnap.data);
+            if (raw.isEmpty) return _buildEmptyCapsules(context);
+            final docs = filterAndSortCapsules(raw, _vaultFilters.capsules);
+            if (docs.isEmpty) return _buildFilterEmpty(context);
+            return ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              itemCount: docs.length,
+              itemBuilder: (context, i) {
+                final data = docs[i].data() as Map<String, dynamic>;
+                return _buildCapsuleCard(context: context, data: data, docId: docs[i].id);
+              },
+            );
           },
         );
       },
@@ -586,6 +591,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     final canOpen = openDate != null && DateTime.now().isAfter(openDate);
     final questions = (data['questions'] as List?)?.length ?? 0;
     final photos = (data['photos'] as List?)?.length ?? 0;
+    final isCollectiveCapsule = data['isCollective'] == true;
 
     final themeMap = {
       'memories':      ('🧠', l10n.capsuleThemeMemories,       const Color(0xFF6B6560)),
@@ -612,6 +618,21 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             decoration: BoxDecoration(color: isOpen ? Colors.white.withOpacity(0.1) : td.$3.withOpacity(0.12), borderRadius: BorderRadius.circular(20)),
             child: Text('${td.$1} ${td.$2}', style: GoogleFonts.dmSans(fontSize: 11, color: isOpen ? Colors.white.withOpacity(0.7) : td.$3, fontWeight: FontWeight.w500)),
           ),
+          if (isCollectiveCapsule) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: isOpen ? Colors.white.withOpacity(0.12) : context.pal.accentWarm,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: isOpen ? Colors.white.withOpacity(0.25) : context.pal.border),
+              ),
+              child: Text(
+                l10n.vaultCapsuleCollectiveBadge,
+                style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w600, color: isOpen ? Colors.white.withOpacity(0.9) : context.pal.inkSoft),
+              ),
+            ),
+          ],
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -1065,6 +1065,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createCapsuleThemeHint => 'Choose a theme for your capsule.';
 
   @override
+  String get createCapsuleAudienceTitle => 'Who is this capsule for?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Just me';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Collective';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Invite people who will open this capsule with you on the same date. Only you write the content.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Search by name or @username';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Add at least one person for a collective capsule.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'A capsule can include at most $max people (including you).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Collective';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Together with';
+
+  @override
   String get createCapsuleThemeMemoriesLabel => 'Memories';
 
   @override

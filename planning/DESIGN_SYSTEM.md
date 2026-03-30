@@ -66,7 +66,7 @@ Definidos em `CreateCapsuleScreen` (`kCapsuleThemes`). Cada tema tem **5 pergunt
 
 | | Carta | Cápsula |
 |---|--------|---------|
-| Destinatário | Outra pessoa | Você mesmo ou grupo fechado |
+| Destinatário | Outra pessoa | Só você, ou **coletiva**: convidados abrem na mesma data (só o autor preenche o conteúdo) |
 | Publicar no feed | Escolha do usuário | Só após revisar ao abrir |
 | Conteúdo completo | Pode ser público | Usuário decide ao abrir |
 

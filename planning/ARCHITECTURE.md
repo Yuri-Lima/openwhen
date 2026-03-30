@@ -168,6 +168,14 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 | `musicUrl` | String opcional — mesmo padrão que em `letters` (link `https`, abertura externa) |
 | `senderLocation` | Igual a `letters` — opcional ao criar a cápsula. |
 | `openRequiresProximity` | Igual a `letters` — opcional; raio fixo **10 m** no código. |
+| `isCollective` | `bool` — `true` quando existem convidados além do criador (abertura em grupo). |
+| `participantUids` | `array<string>` — inclui sempre o criador; convidados são os restantes (máx. **20** nas regras). |
+| `participantNames` | `map<string,string>` opcional — snapshot de nomes no selo (`uid` → nome). |
+| `contentMode` | `singleAuthor` \| `multiContributor` — MVP usa `singleAuthor`; `multiContributor` reservado para fase em que cada um contribui antes de selar. |
+
+**Subcoleção (futuro):** `capsules/{capsuleId}/contributions/{participantUid}` — contrato para contribuições por utilizador; leitura alinhada aos participantes; escrita ainda `false` no cliente até `multiContributor`. Ver regras em `firestore.rules`.
+
+**Helpers:** `lib/shared/utils/capsule_content_mode.dart` (modo e participação); `lib/features/capsules/data/capsule_vault_streams.dart` (merge de duas queries: remetente + participante coletivo).
 
 ---
 
@@ -177,7 +185,7 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
   - Escrever carta → `WriteLetterScreen`
   - Nova cápsula → `CreateCapsuleScreen`
 
-- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; cada aba mantém a mesma query Firestore de sempre; **filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta.
+- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; **aba Cápsulas** funde no cliente duas streams (`senderUid` + `locked` e `participantUids` array-contains + `isCollective` + `locked`, ver `capsule_vault_streams.dart`); deduplicação por `doc.id`. As outras abas mantêm as queries habituais. **Filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta. O **badge do Cofre** no `main.dart` usa a mesma lógica de contagem de cápsulas fechadas (cartas recebidas locked + cápsulas merged).
 
 ### Feed
 

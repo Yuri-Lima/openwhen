@@ -22,6 +22,7 @@ import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/profile/presentation/screens/search_screen.dart';
+import 'features/capsules/data/capsule_vault_streams.dart';
 import 'features/capsules/presentation/screens/create_capsule_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
@@ -278,19 +279,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           .where('status', isEqualTo: 'locked')
           .snapshots(),
       builder: (context, lettersSnap) {
-        return StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection(FirestoreCollections.capsules)
-              .where('senderUid', isEqualTo: uid)
-              .where('status', isEqualTo: 'locked')
-              .snapshots(),
-          builder: (context, capsulesSnap) {
-            final lettersCount = lettersSnap.data?.docs.length ?? 0;
-            final capsulesCount = capsulesSnap.data?.docs.length ?? 0;
-            final totalCount = lettersCount + capsulesCount;
-            final tabIndex = ref.watch(homeTabIndexProvider);
+        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: lockedCapsulesSenderStream(uid),
+          builder: (context, capSenderSnap) {
+            return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: lockedCapsulesCollectiveParticipantStream(uid),
+              builder: (context, capParticipantSnap) {
+                final lettersCount = lettersSnap.data?.docs.length ?? 0;
+                final mergedCaps = mergeLockedCapsuleVaultDocs(
+                  capSenderSnap.data,
+                  capParticipantSnap.data,
+                );
+                final capsulesCount = mergedCaps.length;
+                final totalCount = lettersCount + capsulesCount;
+                final tabIndex = ref.watch(homeTabIndexProvider);
 
-            return Scaffold(
+                return Scaffold(
               backgroundColor: p.bg,
               body: _screens[tabIndex],
               floatingActionButton: FloatingActionButton(
@@ -342,6 +346,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
+            );
+              },
             );
           },
         );

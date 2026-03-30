@@ -2021,6 +2021,60 @@ abstract class AppLocalizations {
   /// **'Escolha um tema para sua cápsula.'**
   String get createCapsuleThemeHint;
 
+  /// No description provided for @createCapsuleAudienceTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta cápsula é para quem?'**
+  String get createCapsuleAudienceTitle;
+
+  /// No description provided for @createCapsuleAudiencePersonal.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Só para mim'**
+  String get createCapsuleAudiencePersonal;
+
+  /// No description provided for @createCapsuleAudienceCollective.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Coletiva'**
+  String get createCapsuleAudienceCollective;
+
+  /// No description provided for @createCapsuleCollectiveHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.'**
+  String get createCapsuleCollectiveHint;
+
+  /// No description provided for @createCapsuleInviteSearchHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Busque por nome ou @usuário'**
+  String get createCapsuleInviteSearchHint;
+
+  /// No description provided for @createCapsuleCollectiveNeedInvite.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Adicione pelo menos uma pessoa para uma cápsula coletiva.'**
+  String get createCapsuleCollectiveNeedInvite;
+
+  /// No description provided for @createCapsuleMaxParticipants.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Uma cápsula pode ter no máximo {max} pessoas (incluindo você).'**
+  String createCapsuleMaxParticipants(int max);
+
+  /// No description provided for @vaultCapsuleCollectiveBadge.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Coletiva'**
+  String get vaultCapsuleCollectiveBadge;
+
+  /// No description provided for @capsuleDetailParticipantsHeading.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Junto com'**
+  String get capsuleDetailParticipantsHeading;
+
   /// No description provided for @createCapsuleThemeMemoriesLabel.
   ///
   /// In pt_BR, this message translates to:

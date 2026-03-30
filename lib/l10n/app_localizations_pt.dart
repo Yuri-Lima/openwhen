@@ -1066,6 +1066,37 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createCapsuleThemeHint => 'Escolha um tema para sua cápsula.';
 
   @override
+  String get createCapsuleAudienceTitle => 'Esta cápsula é para quem?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Só para mim';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Coletiva';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Busque por nome ou @usuário';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Adicione pelo menos uma pessoa para uma cápsula coletiva.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'Uma cápsula pode ter no máximo $max pessoas (incluindo você).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Coletiva';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Junto com';
+
+  @override
   String get createCapsuleThemeMemoriesLabel => 'Memórias';
 
   @override
@@ -3217,6 +3248,37 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get createCapsuleThemeHint => 'Escolha um tema para sua cápsula.';
+
+  @override
+  String get createCapsuleAudienceTitle => 'Esta cápsula é para quem?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Só para mim';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Coletiva';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Busque por nome ou @usuário';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Adicione pelo menos uma pessoa para uma cápsula coletiva.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'Uma cápsula pode ter no máximo $max pessoas (incluindo você).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Coletiva';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Junto com';
 
   @override
   String get createCapsuleThemeMemoriesLabel => 'Memórias';
