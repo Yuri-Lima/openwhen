@@ -557,6 +557,108 @@ abstract class AppLocalizations {
   /// **'Família'**
   String get feedFilterFamily;
 
+  /// No description provided for @feedLayerExplore.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Explorar'**
+  String get feedLayerExplore;
+
+  /// No description provided for @feedLayerHighlights.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Destaques'**
+  String get feedLayerHighlights;
+
+  /// No description provided for @feedLayerFollowing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguindo'**
+  String get feedLayerFollowing;
+
+  /// No description provided for @feedFiltersButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Feed'**
+  String get feedFiltersButton;
+
+  /// No description provided for @feedFiltersSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolher feed'**
+  String get feedFiltersSheetTitle;
+
+  /// No description provided for @feedFiltersButtonSemantic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir filtros do tipo de feed'**
+  String get feedFiltersButtonSemantic;
+
+  /// No description provided for @feedCustomizePinnedFilters.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fixar filtros rápidos…'**
+  String get feedCustomizePinnedFilters;
+
+  /// No description provided for @feedCustomizePinnedFiltersHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolha até 3 chips de humor na barra'**
+  String get feedCustomizePinnedFiltersHint;
+
+  /// No description provided for @feedPinFiltersSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fixar filtros rápidos'**
+  String get feedPinFiltersSheetTitle;
+
+  /// No description provided for @feedPinFiltersMaxNote.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Até 3 filtros. A ordem segue a sua seleção.'**
+  String get feedPinFiltersMaxNote;
+
+  /// No description provided for @feedPinFiltersSave.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Guardar'**
+  String get feedPinFiltersSave;
+
+  /// No description provided for @feedFollowingEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma carta de quem você segue'**
+  String get feedFollowingEmptyTitle;
+
+  /// No description provided for @feedFollowingEmptySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Siga perfis para ver as cartas públicas deles aqui.'**
+  String get feedFollowingEmptySubtitle;
+
+  /// No description provided for @feedFollowingSignedOutTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Entre para ver este feed'**
+  String get feedFollowingSignedOutTitle;
+
+  /// No description provided for @feedFollowingSignedOutSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A aba Seguindo mostra cartas públicas de quem você segue.'**
+  String get feedFollowingSignedOutSubtitle;
+
+  /// No description provided for @feedLoadError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar o feed. Tente novamente.'**
+  String get feedLoadError;
+
+  /// No description provided for @feedLoadMore.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carregar mais'**
+  String get feedLoadMore;
+
   /// No description provided for @feedEmptyTitle.
   ///
   /// In pt_BR, this message translates to:
@@ -1598,8 +1700,32 @@ abstract class AppLocalizations {
   /// No description provided for @letterDetailShareSubtitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Stories, Reels ou link direto'**
+  /// **'Instagram Stories ou folha de partilha'**
   String get letterDetailShareSubtitle;
+
+  /// No description provided for @storyShareFallbackSnack.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Folha de partilha aberta — escolha o Instagram ou outra app.'**
+  String get storyShareFallbackSnack;
+
+  /// No description provided for @storyShareSheetTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar cápsula'**
+  String get storyShareSheetTitle;
+
+  /// No description provided for @storyShareInstagramOption.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Instagram Stories'**
+  String get storyShareInstagramOption;
+
+  /// No description provided for @storyShareTextOption.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Texto (perguntas e respostas)'**
+  String get storyShareTextOption;
 
   /// No description provided for @letterOpeningEmotionLove.
   ///
@@ -1895,6 +2021,60 @@ abstract class AppLocalizations {
   /// **'Escolha um tema para sua cápsula.'**
   String get createCapsuleThemeHint;
 
+  /// No description provided for @createCapsuleAudienceTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta cápsula é para quem?'**
+  String get createCapsuleAudienceTitle;
+
+  /// No description provided for @createCapsuleAudiencePersonal.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Só para mim'**
+  String get createCapsuleAudiencePersonal;
+
+  /// No description provided for @createCapsuleAudienceCollective.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Coletiva'**
+  String get createCapsuleAudienceCollective;
+
+  /// No description provided for @createCapsuleCollectiveHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.'**
+  String get createCapsuleCollectiveHint;
+
+  /// No description provided for @createCapsuleInviteSearchHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Busque por nome ou @usuário'**
+  String get createCapsuleInviteSearchHint;
+
+  /// No description provided for @createCapsuleCollectiveNeedInvite.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Adicione pelo menos uma pessoa para uma cápsula coletiva.'**
+  String get createCapsuleCollectiveNeedInvite;
+
+  /// No description provided for @createCapsuleMaxParticipants.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Uma cápsula pode ter no máximo {max} pessoas (incluindo você).'**
+  String createCapsuleMaxParticipants(int max);
+
+  /// No description provided for @vaultCapsuleCollectiveBadge.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Coletiva'**
+  String get vaultCapsuleCollectiveBadge;
+
+  /// No description provided for @capsuleDetailParticipantsHeading.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Junto com'**
+  String get capsuleDetailParticipantsHeading;
+
   /// No description provided for @createCapsuleThemeMemoriesLabel.
   ///
   /// In pt_BR, this message translates to:
@@ -2156,7 +2336,7 @@ abstract class AppLocalizations {
   /// No description provided for @capsuleDetailShareSubtitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Texto resumido da capsula'**
+  /// **'Instagram Stories ou folha de partilha'**
   String get capsuleDetailShareSubtitle;
 
   /// No description provided for @capsuleDetailDeleteTitle.
@@ -2284,6 +2464,84 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Abertas'**
   String get profileStatOpened;
+
+  /// No description provided for @profileBadgesTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'CONQUISTAS'**
+  String get profileBadgesTitle;
+
+  /// No description provided for @badgeFirstLetterSentTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira carta'**
+  String get badgeFirstLetterSentTitle;
+
+  /// No description provided for @badgeFirstLetterSentDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou sua primeira carta.'**
+  String get badgeFirstLetterSentDesc;
+
+  /// No description provided for @badgeFirstLetterOpenedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira abertura'**
+  String get badgeFirstLetterOpenedTitle;
+
+  /// No description provided for @badgeFirstLetterOpenedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você abriu sua primeira carta.'**
+  String get badgeFirstLetterOpenedDesc;
+
+  /// No description provided for @badgeFirstPublicTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Primeira no feed'**
+  String get badgeFirstPublicTitle;
+
+  /// No description provided for @badgeFirstPublicDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você compartilhou uma carta no feed público.'**
+  String get badgeFirstPublicDesc;
+
+  /// No description provided for @badgeLettersSentFiveTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'5 cartas'**
+  String get badgeLettersSentFiveTitle;
+
+  /// No description provided for @badgeLettersSentFiveDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou 5 cartas.'**
+  String get badgeLettersSentFiveDesc;
+
+  /// No description provided for @badgeLettersSentTenTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'10 cartas'**
+  String get badgeLettersSentTenTitle;
+
+  /// No description provided for @badgeLettersSentTenDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou 10 cartas.'**
+  String get badgeLettersSentTenDesc;
+
+  /// No description provided for @badgeVoiceLetterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Voz'**
+  String get badgeVoiceLetterTitle;
+
+  /// No description provided for @badgeVoiceLetterDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você enviou uma carta com áudio.'**
+  String get badgeVoiceLetterDesc;
 
   /// No description provided for @profileStatLetters.
   ///
@@ -2864,14 +3122,38 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportButton.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Exportar como PDF'**
+  /// **'Exportar como ZIP'**
   String get settingsExportButton;
+
+  /// No description provided for @settingsExportZipSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Um PDF por carta, mais áudio e imagem manuscrita quando houver.'**
+  String get settingsExportZipSubtitle;
+
+  /// No description provided for @settingsExportSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{count} cartas exportadas.'**
+  String settingsExportSuccess(int count);
 
   /// No description provided for @settingsExportSnack.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Exportação em breve! 📦'**
+  /// **'Preparando exportação…'**
   String get settingsExportSnack;
+
+  /// No description provided for @letterDetailExportPdfTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exportar PDF'**
+  String get letterDetailExportPdfTitle;
+
+  /// No description provided for @letterDetailExportPdfSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Baixe uma cópia portátil desta carta'**
+  String get letterDetailExportPdfSubtitle;
 
   /// No description provided for @settingsDeleteTitle.
   ///

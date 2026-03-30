@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter/rendering.dart';
@@ -9,6 +10,8 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
+import '../../../../shared/social/instagram_stories_share_service.dart';
+import '../../../../shared/social/story_share_content.dart';
 
 class QrCodeScreen extends StatefulWidget {
   final String docId;
@@ -31,6 +34,7 @@ class QrCodeScreen extends StatefulWidget {
 class _QrCodeScreenState extends State<QrCodeScreen> {
   final GlobalKey _qrKey = GlobalKey();
   bool _sharing = false;
+  bool _sharingInstagram = false;
 
   String get _deepLink => 'https://openwhen.app/letter/${widget.docId}';
 
@@ -69,6 +73,40 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
       subject: l10n.qrShareSubject,
     );
     if (mounted) setState(() => _sharing = false);
+  }
+
+  Future<void> _shareInstagramStory() async {
+    setState(() => _sharingInstagram = true);
+    try {
+      final l10n = AppLocalizations.of(context)!;
+      final locale = Localizations.localeOf(context).toString();
+      final dateSubtitle = l10n.requestsOpensOn(formatShortDate(widget.openDate, locale));
+      final content = StoryShareContent.letter(
+        docId: widget.docId,
+        title: widget.title,
+        dateSubtitle: dateSubtitle,
+      );
+      final box = context.findRenderObject() as RenderBox?;
+      final origin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+      final outcome = await InstagramStoriesShareService.share(
+        context: context,
+        content: content,
+        shareText: l10n.qrShareText(widget.title, _deepLink),
+        shareSubject: l10n.qrShareSubject,
+        sharePositionOrigin: origin,
+      );
+      if (!mounted) return;
+      if (outcome == StoriesShareOutcome.fallback) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.storyShareFallbackSnack, style: GoogleFonts.dmSans(fontSize: 13)),
+            backgroundColor: context.pal.ink,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sharingInstagram = false);
+    }
   }
 
   Future<void> _copyLink() async {
@@ -374,6 +412,41 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       ),
                     ],
                   ),
+                  if (!kIsWeb) ...[
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: _sharingInstagram ? null : _shareInstagramStory,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: context.pal.card,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: context.pal.accent.withOpacity(0.35)),
+                          boxShadow: [
+                            BoxShadow(color: context.pal.accent.withOpacity(0.12), blurRadius: 12, offset: const Offset(0, 4)),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _sharingInstagram
+                                ? SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(color: context.pal.accent, strokeWidth: 2),
+                                  )
+                                : Icon(Icons.camera_alt_outlined, size: 18, color: context.pal.accent),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.storyShareInstagramOption,
+                              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.ink, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                 ],
               ),

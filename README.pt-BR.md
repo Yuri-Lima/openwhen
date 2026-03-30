@@ -34,10 +34,10 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | Área | Destaques |
 |------|-----------|
 | **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; campo **mensagem digitada** começa **recolhido** e expande ao toque; **mensagem de voz** opcional (máx. **1 minuto** definido pelo produto, gravação no dispositivo, upload no Storage) com reprodução no app na abertura/detalhe; **link de música** opcional (só `https`, abre fora do app — sem streaming de música no app); **localização** opcional no envio (`geolocator`): diálogos perguntam se compartilha coordenadas com o destinatário (no detalhe, toque copia URL do **Google Maps**) e se a abertura exige estar a **≤ 10 m** do ponto (verificação no cliente ao abrir pelo Cofre — não é garantia de servidor) |
-| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; mesmo padrão de link de música opcional; mesma **localização opcional + opção de abertura em 10 m** das cartas |
-| **Social** | Feed estilo Instagram, curtidas e comentários, seguidores, privacidade, moderação |
+| **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; **cápsula coletiva** (convidar quem abre na mesma data; só o autor escreve); mesmo padrão de link de música opcional; mesma **localização opcional + opção de abertura em 10 m** das cartas |
+| **Social** | **Feed** em três camadas (Explorar / Destaques / Seguindo), filtros emocionais (até **3** chips fixados) + ícone de filtros; curtidas e comentários (no card: até 2, “ver todos” até 20; textos longos com **Ler mais** por comentário), seguidores, privacidade, moderação |
 | **Cofre** | Abas: aguardando, abertas, enviadas e **cápsulas**; **filtro e ordenação** (bottom sheet, no cliente sobre os dados já carregados) |
-| **Perfil** | Perfil próprio e de outros, busca por @username, configurações, páginas legais |
+| **Perfil** | Perfil próprio e de outros, busca por @username, configurações (**exportar cartas abertas** em PDF/ZIP com URLs validadas), páginas legais |
 | **Feedback** | Toque na coruja do header para enviar feedback (mesmo bottom sheet); animação idle (oscilação + vibração) em intervalos aleatórios por visita ao ecrã. Utilizadores sem sessão também têm o FAB global. |
 | **Teclado** | Com o teclado virtual aberto, um botão **fechar teclado** aparece logo acima dele (overlay global no `MaterialApp.builder`); o mesmo comportamento em todo o app. |
 
@@ -190,7 +190,7 @@ lib/
 
 ## Roadmap e progresso
 
-**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes (ex.: Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) para QA de regressão em dispositivo ao publicar releases.
+**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
 
 | Documento | Função |
 |-----------|--------|
@@ -240,3 +240,4 @@ Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Cores, tipografia, temas das cápsulas |
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Estratégia para investidores |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Estilo Keep a Changelog |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Checklist de produção (`dart-define`, Firebase, Meta/Instagram, lojas) |

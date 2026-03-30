@@ -252,6 +252,62 @@ class AppLocalizationsPt extends AppLocalizations {
   String get feedFilterFamily => 'Família';
 
   @override
+  String get feedLayerExplore => 'Explorar';
+
+  @override
+  String get feedLayerHighlights => 'Destaques';
+
+  @override
+  String get feedLayerFollowing => 'Seguindo';
+
+  @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Escolher feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Abrir filtros do tipo de feed';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Fixar filtros rápidos…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Escolha até 3 chips de humor na barra';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Fixar filtros rápidos';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Até 3 filtros. A ordem segue a sua seleção.';
+
+  @override
+  String get feedPinFiltersSave => 'Guardar';
+
+  @override
+  String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Siga perfis para ver as cartas públicas deles aqui.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Entre para ver este feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'A aba Seguindo mostra cartas públicas de quem você segue.';
+
+  @override
+  String get feedLoadError =>
+      'Não foi possível carregar o feed. Tente novamente.';
+
+  @override
+  String get feedLoadMore => 'Carregar mais';
+
+  @override
   String get feedEmptyTitle => 'Nenhuma carta pública ainda';
 
   @override
@@ -823,7 +879,21 @@ class AppLocalizationsPt extends AppLocalizations {
   String get letterDetailShareTitle => 'Compartilhar carta';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels ou link direto';
+  String get letterDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Folha de partilha aberta — escolha o Instagram ou outra app.';
+
+  @override
+  String get storyShareSheetTitle => 'Compartilhar cápsula';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Texto (perguntas e respostas)';
 
   @override
   String get letterOpeningEmotionLove => 'Uma carta de amor espera por você 💕';
@@ -996,6 +1066,37 @@ class AppLocalizationsPt extends AppLocalizations {
   String get createCapsuleThemeHint => 'Escolha um tema para sua cápsula.';
 
   @override
+  String get createCapsuleAudienceTitle => 'Esta cápsula é para quem?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Só para mim';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Coletiva';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Busque por nome ou @usuário';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Adicione pelo menos uma pessoa para uma cápsula coletiva.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'Uma cápsula pode ter no máximo $max pessoas (incluindo você).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Coletiva';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Junto com';
+
+  @override
   String get createCapsuleThemeMemoriesLabel => 'Memórias';
 
   @override
@@ -1136,7 +1237,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get capsuleDetailOnFeed => 'No feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Texto resumido da capsula';
+  String get capsuleDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
 
   @override
   String get capsuleDetailDeleteTitle => 'Excluir capsula';
@@ -1200,6 +1302,46 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get profileStatOpened => 'Abertas';
+
+  @override
+  String get profileBadgesTitle => 'CONQUISTAS';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'Primeira carta';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'Você enviou sua primeira carta.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'Primeira abertura';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'Você abriu sua primeira carta.';
+
+  @override
+  String get badgeFirstPublicTitle => 'Primeira no feed';
+
+  @override
+  String get badgeFirstPublicDesc =>
+      'Você compartilhou uma carta no feed público.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 cartas';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'Você enviou 5 cartas.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 cartas';
+
+  @override
+  String get badgeLettersSentTenDesc => 'Você enviou 10 cartas.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voz';
+
+  @override
+  String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
 
   @override
   String get profileStatLetters => 'Cartas';
@@ -1505,10 +1647,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
 
   @override
-  String get settingsExportButton => 'Exportar como PDF';
+  String get settingsExportButton => 'Exportar como ZIP';
 
   @override
-  String get settingsExportSnack => 'Exportação em breve! 📦';
+  String get settingsExportZipSubtitle =>
+      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return '$count cartas exportadas.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparando exportação…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Exportar PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Baixe uma cópia portátil desta carta';
 
   @override
   String get settingsDeleteTitle => 'Deletar conta';
@@ -2278,6 +2436,62 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get feedFilterFamily => 'Família';
 
   @override
+  String get feedLayerExplore => 'Explorar';
+
+  @override
+  String get feedLayerHighlights => 'Destaques';
+
+  @override
+  String get feedLayerFollowing => 'Seguindo';
+
+  @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Escolher feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Abrir filtros do tipo de feed';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Fixar filtros rápidos…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Escolha até 3 chips de humor na barra';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Fixar filtros rápidos';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Até 3 filtros. A ordem segue a sua seleção.';
+
+  @override
+  String get feedPinFiltersSave => 'Guardar';
+
+  @override
+  String get feedFollowingEmptyTitle => 'Nenhuma carta de quem você segue';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Siga perfis para ver as cartas públicas deles aqui.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Entre para ver este feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'A aba Seguindo mostra cartas públicas de quem você segue.';
+
+  @override
+  String get feedLoadError =>
+      'Não foi possível carregar o feed. Tente novamente.';
+
+  @override
+  String get feedLoadMore => 'Carregar mais';
+
+  @override
   String get feedEmptyTitle => 'Nenhuma carta pública ainda';
 
   @override
@@ -2849,7 +3063,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get letterDetailShareTitle => 'Compartilhar carta';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels ou link direto';
+  String get letterDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Folha de partilha aberta — escolha o Instagram ou outra app.';
+
+  @override
+  String get storyShareSheetTitle => 'Compartilhar cápsula';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Texto (perguntas e respostas)';
 
   @override
   String get letterOpeningEmotionLove => 'Uma carta de amor espera por você 💕';
@@ -3022,6 +3250,37 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get createCapsuleThemeHint => 'Escolha um tema para sua cápsula.';
 
   @override
+  String get createCapsuleAudienceTitle => 'Esta cápsula é para quem?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Só para mim';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Coletiva';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Convide quem vai abrir esta cápsula consigo na mesma data. Só você escreve o conteúdo.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Busque por nome ou @usuário';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Adicione pelo menos uma pessoa para uma cápsula coletiva.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'Uma cápsula pode ter no máximo $max pessoas (incluindo você).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Coletiva';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Junto com';
+
+  @override
   String get createCapsuleThemeMemoriesLabel => 'Memórias';
 
   @override
@@ -3162,7 +3421,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get capsuleDetailOnFeed => 'No feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Texto resumido da capsula';
+  String get capsuleDetailShareSubtitle =>
+      'Instagram Stories ou folha de partilha';
 
   @override
   String get capsuleDetailDeleteTitle => 'Excluir capsula';
@@ -3226,6 +3486,46 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get profileStatOpened => 'Abertas';
+
+  @override
+  String get profileBadgesTitle => 'CONQUISTAS';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'Primeira carta';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'Você enviou sua primeira carta.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'Primeira abertura';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'Você abriu sua primeira carta.';
+
+  @override
+  String get badgeFirstPublicTitle => 'Primeira no feed';
+
+  @override
+  String get badgeFirstPublicDesc =>
+      'Você compartilhou uma carta no feed público.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 cartas';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'Você enviou 5 cartas.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 cartas';
+
+  @override
+  String get badgeLettersSentTenDesc => 'Você enviou 10 cartas.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voz';
+
+  @override
+  String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
 
   @override
   String get profileStatLetters => 'Cartas';
@@ -3531,10 +3831,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
 
   @override
-  String get settingsExportButton => 'Exportar como PDF';
+  String get settingsExportButton => 'Exportar como ZIP';
 
   @override
-  String get settingsExportSnack => 'Exportação em breve! 📦';
+  String get settingsExportZipSubtitle =>
+      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return '$count cartas exportadas.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparando exportação…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Exportar PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Baixe uma cópia portátil desta carta';
 
   @override
   String get settingsDeleteTitle => 'Deletar conta';

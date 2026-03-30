@@ -40,6 +40,23 @@ service cloud.firestore {
         userBillingFieldsUnchanged() || userBillingOnlyFreeTierMigration()
       );
       allow delete: if isUser(userId);
+
+      // Conquistas — apenas criação pelo próprio utilizador; ids fixos (anti-fraude leve)
+      match /badgeUnlocks/{badgeId} {
+        allow read: if signedIn();
+        allow create: if isUser(userId)
+          && badgeId in [
+            'first_letter_sent',
+            'first_letter_opened',
+            'first_public',
+            'letters_sent_five',
+            'letters_sent_ten',
+            'voice_letter'
+          ]
+          && request.resource.data.keys().hasOnly(['unlockedAt'])
+          && request.resource.data.unlockedAt is timestamp;
+        allow update, delete: if false;
+      }
     }
 
     // Cartas
@@ -56,18 +73,63 @@ service cloud.firestore {
       );
     }
 
+    function capsuleParticipantRead() {
+      return resource.data.keys().hasAny(['participantUids'])
+        && request.auth.uid in resource.data.participantUids;
+    }
+
+    function capsuleLegacyRead() {
+      return resource.data.senderUid == request.auth.uid
+        || resource.data.receiverUid == request.auth.uid;
+    }
+
+    function capsuleParticipantUpdateFieldsOnly() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['status', 'openedAt', 'isPublic', 'publishedAt']);
+    }
+
     // Cápsulas
     match /capsules/{capsuleId} {
       allow read: if signedIn() && (
-        resource.data.senderUid == request.auth.uid ||
-        resource.data.receiverUid == request.auth.uid ||
+        capsuleLegacyRead() ||
+        capsuleParticipantRead() ||
         (resource.data.isPublic == true && resource.data.status == 'opened')
       );
-      allow create: if signedIn() && request.resource.data.senderUid == request.auth.uid;
-      allow update, delete: if signedIn() && (
-        resource.data.senderUid == request.auth.uid ||
-        resource.data.receiverUid == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.senderUid == request.auth.uid
+        && (
+          !request.resource.data.keys().hasAny(['participantUids'])
+          || (
+            request.resource.data.participantUids is list
+            && request.auth.uid in request.resource.data.participantUids
+            && request.resource.data.participantUids.size() >= 1
+            && request.resource.data.participantUids.size() <= 20
+            && (!request.resource.data.keys().hasAny(['contentMode'])
+              || request.resource.data.contentMode == 'singleAuthor')
+          )
+        );
+      allow update: if signedIn() && (
+        resource.data.senderUid == request.auth.uid
+        || (
+          resource.data.keys().hasAny(['participantUids'])
+          && request.auth.uid in resource.data.participantUids
+          && capsuleParticipantUpdateFieldsOnly()
+        )
       );
+      allow delete: if signedIn() && resource.data.senderUid == request.auth.uid;
+
+      // Futuro: contribuições por participante (multiContributor). Escrita desligada no cliente até essa fase.
+      match /contributions/{contributorUid} {
+        allow read: if signedIn() && (
+          get(/databases/$(database)/documents/capsules/$(capsuleId)).data.senderUid == request.auth.uid
+          || get(/databases/$(database)/documents/capsules/$(capsuleId)).data.receiverUid == request.auth.uid
+          || (
+            get(/databases/$(database)/documents/capsules/$(capsuleId)).data.keys().hasAny(['participantUids'])
+            && request.auth.uid in get(/databases/$(database)/documents/capsules/$(capsuleId)).data.participantUids
+          )
+        );
+        allow create, update, delete: if false;
+      }
     }
 
     // Comentários

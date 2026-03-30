@@ -34,10 +34,10 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | Area | Highlights |
 |------|------------|
 | **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
-| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
-| **Social** | Instagram-style feed, likes & comments, follows, privacy controls, moderation |
+| **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **collective capsule** (invite others to open together; author writes content); optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
+| **Social** | **Feed** with three layers (Explore / Highlights / Following), emotion filters (up to **3** pinned chips) + filter icon; likes & comments (card preview: up to 2 comments, “view all” up to 20; long comments clamp to 4 lines with **Read more**); follows, privacy, moderation |
 | **Vault** | Tabs for waiting, opened, sent, and **capsules**; advanced **filter and sort** (bottom sheet, client-side on snapshot data) |
-| **Profile** | Own profile, other users, search by @username, settings, legal pages |
+| **Profile** | Own profile, other users, search by @username, settings (includes **export opened letters** as PDF/ZIP with allowlisted links), legal pages |
 | **Feedback** | Tap the header owl to send feedback (shared bottom sheet); idle wobble + buzz on random intervals per screen visit. Logged-out users also get the global FAB. |
 | **Keyboard** | While the soft keyboard is open, a small **dismiss keyboard** control appears just above it (global `MaterialApp.builder` overlay); same behavior everywhere. |
 
@@ -190,13 +190,14 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 
 ## Roadmap & progress
 
-**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Next:** 🟡 Important items (e.g. Stories/Reels). Use [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md) for regression QA on real devices when shipping releases.
+**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). For **production** builds (`dart-define`, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). Regression QA on devices: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
 
 | Document | Purpose |
 |----------|---------|
 | [planning/ROADMAP.md](planning/ROADMAP.md) | Phased product roadmap |
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Day-to-day checklist |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Release history |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Production checklist: `dart-define`, Firebase files, Meta/Instagram, stores |
 
 ---
 
@@ -240,3 +241,4 @@ Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Colors, type, capsule themes |
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Strategy for investors |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Keep a Changelog style |
+| [planning/PRODUCTION.md](planning/PRODUCTION.md) | Build/release checklist (`FB_APP_ID`, Firebase, billing flags) |

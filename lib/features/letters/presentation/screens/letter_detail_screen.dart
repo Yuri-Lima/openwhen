@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/letter_repository_actions.dart';
+import '../../export/letter_export_service.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/voice_url.dart';
@@ -12,6 +15,8 @@ import '../../../../shared/widgets/music_link_tile.dart';
 import '../../../../shared/widgets/voice_letter_tile.dart';
 import '../../../../shared/widgets/location_share_tile.dart';
 import '../../../../shared/utils/sender_location.dart';
+import '../../../../shared/social/instagram_stories_share_service.dart';
+import '../../../../shared/social/story_share_content.dart';
 import 'qr_code_screen.dart';
 
 class LetterDetailScreen extends StatefulWidget {
@@ -27,6 +32,8 @@ class LetterDetailScreen extends StatefulWidget {
 class _LetterDetailScreenState extends State<LetterDetailScreen> {
   late bool _isPublic;
   bool _isUpdating = false;
+  bool _sharingStory = false;
+  bool _exportingPdf = false;
 
   String get _currentUid => FirebaseAuth.instance.currentUser?.uid ?? '';
 
@@ -38,6 +45,83 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   void initState() {
     super.initState();
     _isPublic = widget.data['isPublic'] ?? false;
+  }
+
+  Future<void> _shareToInstagramStory(BuildContext triggerContext) async {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final deepLink = 'https://openwhen.app/letter/${widget.docId}';
+
+    if (kIsWeb) {
+      await Share.share(
+        l10n.qrShareLinkOnly(widget.data['title'] ?? '', deepLink),
+        subject: l10n.qrShareSubject,
+      );
+      return;
+    }
+
+    final openDate = widget.data['openDate'] != null
+        ? (widget.data['openDate'] as Timestamp).toDate()
+        : DateTime.now();
+    final openedAt = widget.data['openedAt'] != null
+        ? (widget.data['openedAt'] as Timestamp).toDate()
+        : DateTime.now();
+
+    final dateSubtitle = _isOpened
+        ? l10n.letterDetailOpenedOn(formatShortDate(openedAt, locale))
+        : l10n.requestsOpensOn(formatShortDate(openDate, locale));
+
+    final content = StoryShareContent.letter(
+      docId: widget.docId,
+      title: widget.data['title'] ?? '',
+      dateSubtitle: dateSubtitle,
+    );
+
+    final box = triggerContext.findRenderObject() as RenderBox?;
+    final origin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+    setState(() => _sharingStory = true);
+    try {
+      final outcome = await InstagramStoriesShareService.share(
+        context: context,
+        content: content,
+        shareText: l10n.qrShareText(widget.data['title'] ?? '', deepLink),
+        shareSubject: l10n.qrShareSubject,
+        sharePositionOrigin: origin,
+      );
+      if (!mounted) return;
+      if (outcome == StoriesShareOutcome.fallback) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.storyShareFallbackSnack, style: GoogleFonts.dmSans(fontSize: 13)),
+            backgroundColor: context.pal.ink,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sharingStory = false);
+    }
+  }
+
+  Future<void> _exportLetterPdf() async {
+    if (_exportingPdf) return;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _exportingPdf = true);
+    try {
+      await shareLetterPdf(
+        docId: widget.docId,
+        localeName: Localizations.localeOf(context).toString(),
+        subject: l10n.letterDetailExportPdfTitle,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()), style: GoogleFonts.dmSans(fontSize: 13))),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _exportingPdf = false);
+    }
   }
 
   Future<void> _toggleVisibility() async {
@@ -284,18 +368,47 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                         ],
 
                         // ── Compartilhar ───────────────────────────────────────
-                        GestureDetector(
-                          onTap: () {},
-                          child: _buildTile(
-                            icon: Icons.share_outlined,
-                            iconColor: Colors.white.withOpacity(0.5),
-                            iconBg: Colors.white.withOpacity(0.05),
-                            iconBorder: Colors.white.withOpacity(0.1),
-                            title: l10n.letterDetailShareTitle,
-                            subtitle: l10n.letterDetailShareSubtitle,
-                            muted: true,
+                        Builder(
+                          builder: (ctx) => GestureDetector(
+                            onTap: _sharingStory ? null : () => _shareToInstagramStory(ctx),
+                            child: _buildTile(
+                              icon: Icons.share_outlined,
+                              iconColor: context.pal.accent,
+                              iconBg: context.pal.accent.withOpacity(0.15),
+                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              title: l10n.letterDetailShareTitle,
+                              subtitle: l10n.letterDetailShareSubtitle,
+                              trailing: _sharingStory
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : null,
+                            ),
                           ),
                         ),
+                        if (_isOpened && (_isSender || _isReceiver)) ...[
+                          const SizedBox(height: 12),
+                          GestureDetector(
+                            onTap: _exportingPdf ? null : _exportLetterPdf,
+                            child: _buildTile(
+                              icon: Icons.picture_as_pdf_outlined,
+                              iconColor: context.pal.accent,
+                              iconBg: context.pal.accent.withOpacity(0.15),
+                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              title: l10n.letterDetailExportPdfTitle,
+                              subtitle: l10n.letterDetailExportPdfSubtitle,
+                              trailing: _exportingPdf
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -399,6 +512,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
     required String title,
     required String subtitle,
     bool muted = false,
+    Widget? trailing,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -437,7 +551,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
+          trailing ?? Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
         ],
       ),
     );

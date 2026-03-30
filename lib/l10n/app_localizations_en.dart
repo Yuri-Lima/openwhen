@@ -251,6 +251,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedFilterFamily => 'Family';
 
   @override
+  String get feedLayerExplore => 'Explore';
+
+  @override
+  String get feedLayerHighlights => 'Highlights';
+
+  @override
+  String get feedLayerFollowing => 'Following';
+
+  @override
+  String get feedFiltersButton => 'Feed';
+
+  @override
+  String get feedFiltersSheetTitle => 'Choose feed';
+
+  @override
+  String get feedFiltersButtonSemantic => 'Open feed type filters';
+
+  @override
+  String get feedCustomizePinnedFilters => 'Pin quick filters…';
+
+  @override
+  String get feedCustomizePinnedFiltersHint =>
+      'Choose up to 3 mood chips for the bar';
+
+  @override
+  String get feedPinFiltersSheetTitle => 'Pin quick filters';
+
+  @override
+  String get feedPinFiltersMaxNote =>
+      'Pick up to 3 filters. Order is kept as you select them.';
+
+  @override
+  String get feedPinFiltersSave => 'Save';
+
+  @override
+  String get feedFollowingEmptyTitle => 'No letters from people you follow';
+
+  @override
+  String get feedFollowingEmptySubtitle =>
+      'Follow profiles to see their public letters here.';
+
+  @override
+  String get feedFollowingSignedOutTitle => 'Sign in to see this feed';
+
+  @override
+  String get feedFollowingSignedOutSubtitle =>
+      'The Following tab shows public letters from people you follow.';
+
+  @override
+  String get feedLoadError => 'Could not load the feed. Pull to retry.';
+
+  @override
+  String get feedLoadMore => 'Load more';
+
+  @override
   String get feedEmptyTitle => 'No public letters yet';
 
   @override
@@ -823,7 +878,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get letterDetailShareTitle => 'Share letter';
 
   @override
-  String get letterDetailShareSubtitle => 'Stories, Reels, or direct link';
+  String get letterDetailShareSubtitle => 'Instagram Stories or share sheet';
+
+  @override
+  String get storyShareFallbackSnack =>
+      'Share sheet opened — pick Instagram or another app.';
+
+  @override
+  String get storyShareSheetTitle => 'Share capsule';
+
+  @override
+  String get storyShareInstagramOption => 'Instagram Stories';
+
+  @override
+  String get storyShareTextOption => 'Plain text (Q&A)';
 
   @override
   String get letterOpeningEmotionLove => 'A love letter is waiting for you 💕';
@@ -997,6 +1065,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createCapsuleThemeHint => 'Choose a theme for your capsule.';
 
   @override
+  String get createCapsuleAudienceTitle => 'Who is this capsule for?';
+
+  @override
+  String get createCapsuleAudiencePersonal => 'Just me';
+
+  @override
+  String get createCapsuleAudienceCollective => 'Collective';
+
+  @override
+  String get createCapsuleCollectiveHint =>
+      'Invite people who will open this capsule with you on the same date. Only you write the content.';
+
+  @override
+  String get createCapsuleInviteSearchHint => 'Search by name or @username';
+
+  @override
+  String get createCapsuleCollectiveNeedInvite =>
+      'Add at least one person for a collective capsule.';
+
+  @override
+  String createCapsuleMaxParticipants(int max) {
+    return 'A capsule can include at most $max people (including you).';
+  }
+
+  @override
+  String get vaultCapsuleCollectiveBadge => 'Collective';
+
+  @override
+  String get capsuleDetailParticipantsHeading => 'Together with';
+
+  @override
   String get createCapsuleThemeMemoriesLabel => 'Memories';
 
   @override
@@ -1137,7 +1236,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get capsuleDetailOnFeed => 'On feed';
 
   @override
-  String get capsuleDetailShareSubtitle => 'Summarized text of the capsule';
+  String get capsuleDetailShareSubtitle => 'Instagram Stories or share sheet';
 
   @override
   String get capsuleDetailDeleteTitle => 'Delete capsule';
@@ -1201,6 +1300,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileStatOpened => 'Opened';
+
+  @override
+  String get profileBadgesTitle => 'BADGES';
+
+  @override
+  String get badgeFirstLetterSentTitle => 'First letter';
+
+  @override
+  String get badgeFirstLetterSentDesc => 'You sent your first letter.';
+
+  @override
+  String get badgeFirstLetterOpenedTitle => 'First open';
+
+  @override
+  String get badgeFirstLetterOpenedDesc => 'You opened your first letter.';
+
+  @override
+  String get badgeFirstPublicTitle => 'First share';
+
+  @override
+  String get badgeFirstPublicDesc => 'You shared a letter to the public feed.';
+
+  @override
+  String get badgeLettersSentFiveTitle => '5 letters';
+
+  @override
+  String get badgeLettersSentFiveDesc => 'You sent 5 letters.';
+
+  @override
+  String get badgeLettersSentTenTitle => '10 letters';
+
+  @override
+  String get badgeLettersSentTenDesc => 'You sent 10 letters.';
+
+  @override
+  String get badgeVoiceLetterTitle => 'Voice';
+
+  @override
+  String get badgeVoiceLetterDesc => 'You sent a letter with voice.';
 
   @override
   String get profileStatLetters => 'Letters';
@@ -1507,10 +1645,26 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your opened letters will be exported in PDF format. This may take a few minutes.';
 
   @override
-  String get settingsExportButton => 'Export as PDF';
+  String get settingsExportButton => 'Export as ZIP';
 
   @override
-  String get settingsExportSnack => 'Export coming soon! 📦';
+  String get settingsExportZipSubtitle =>
+      'PDF per letter plus voice and handwritten images when available.';
+
+  @override
+  String settingsExportSuccess(int count) {
+    return 'Exported $count letters.';
+  }
+
+  @override
+  String get settingsExportSnack => 'Preparing export…';
+
+  @override
+  String get letterDetailExportPdfTitle => 'Export PDF';
+
+  @override
+  String get letterDetailExportPdfSubtitle =>
+      'Download a portable copy of this letter';
 
   @override
   String get settingsDeleteTitle => 'Delete account';

@@ -39,6 +39,8 @@ class NotificationService {
     }
 
     try {
+      // Badge number is client/OS-driven from FCM payloads. Exact tab counts
+      // across devices belong in Cloud Functions + explicit badge updates (if required).
       await _messaging.setForegroundNotificationPresentationOptions(
         alert: true,
         badge: true,

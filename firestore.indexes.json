@@ -34,6 +34,25 @@
       ]
     },
     {
+      "collectionGroup": "letters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isPublic", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "senderUid", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "letters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isPublic", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "senderUid", "order": "ASCENDING" },
+        { "fieldPath": "openedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "follows",
       "queryScope": "COLLECTION",
       "fields": [
@@ -55,6 +74,15 @@
       "fields": [
         { "fieldPath": "senderUid", "order": "ASCENDING" },
         { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "capsules",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "participantUids", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "isCollective", "order": "ASCENDING" }
       ]
     },
     {

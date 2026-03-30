@@ -20,6 +20,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
+import '../../../gamification/badge_unlock_service.dart';
 import '../voice_letter.dart';
 
 class EmotionalState {
@@ -97,6 +98,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   bool _isRecording = false;
   int _recordingSeconds = 0;
   Timer? _recordingTimer;
+  Timer? _userSearchDebounce;
 
   void _onMessageChanged() => setState(() {});
 
@@ -109,6 +111,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   @override
   void dispose() {
     _recordingTimer?.cancel();
+    _userSearchDebounce?.cancel();
     if (_isRecording) {
       unawaited(_audioRecorder.stop());
     }
@@ -259,9 +262,27 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     }
   }
 
+  void _onSearchUsersChanged(String query) {
+    _userSearchDebounce?.cancel();
+    if (query.length < 2) {
+      setState(() {
+        _searchResults = [];
+        _showResults = false;
+        _searching = false;
+      });
+      return;
+    }
+    _userSearchDebounce = Timer(const Duration(milliseconds: 450), () {
+      unawaited(_searchUsers(query));
+    });
+  }
+
   Future<void> _searchUsers(String query) async {
     if (query.length < 2) {
-      setState(() { _searchResults = []; _showResults = false; });
+      setState(() {
+        _searchResults = [];
+        _showResults = false;
+      });
       return;
     }
     setState(() => _searching = true);
@@ -474,6 +495,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             'openRequiresProximity': locOpts.openRequiresProximity,
           },
       });
+
+      await BadgeUnlockHooks.afterLetterSent(
+        senderUid: currentUser.uid,
+        hasVoice: voiceUrlToSave != null,
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -918,7 +944,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           const SizedBox(width: 8),
                           Expanded(child: TextField(
                             controller: _searchController,
-                            onChanged: _searchUsers,
+                            onChanged: _onSearchUsersChanged,
                             style: GoogleFonts.dmSans(color: context.pal.ink),
                             decoration: InputDecoration(
                               hintText: l10n.writeLetterSearchHint,

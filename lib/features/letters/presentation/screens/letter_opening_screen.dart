@@ -4,6 +4,7 @@ import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../gamification/badge_unlock_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
@@ -192,10 +193,15 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     await _shakeCtrl.forward();
     _spawnParticles();
 
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection(FirestoreCollections.letters)
         .doc(widget.docId)
         .update({'status': 'opened', 'openedAt': Timestamp.now()});
+
+    final receiverUid = widget.data['receiverUid'] as String?;
+    if (receiverUid != null && receiverUid.isNotEmpty) {
+      await BadgeUnlockHooks.afterLetterOpenedByReceiver(receiverUid);
+    }
 
     await Future.delayed(const Duration(milliseconds: 200));
 

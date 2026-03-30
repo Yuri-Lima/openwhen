@@ -17,6 +17,8 @@ lib/
 ├── firebase_options.dart          # Não versionado no remoto — obter com o time
 ├── core/
 │   ├── billing/                   # BillingProvider, StripeBillingProvider, tier guard, feature flags (BILLING_ENABLED)
+│   ├── config/
+│   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
 │   └── constants/
 │       └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 ├── features/
@@ -37,11 +39,20 @@ lib/
 │   ├── capsules/
 │   │   └── presentation/screens/ (create_capsule)
 │   ├── feed/
+│   │   ├── domain/ (feed_letter_filter, feed_following_merge — filtro cliente e merge de chunks)
 │   │   ├── models/
-│   │   └── presentation/screens/ (feed, comments)
+│   │   └── presentation/
+│   │       ├── providers/ (feed_pinned_filters_provider — chips fixados, SharedPreferences)
+│   │       ├── screens/ (feed, comments)
+│   │       └── widgets/ (explore_feed_paged, following_feed_body, pinned_feed_filters_sheet)
 │   └── profile/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
+    ├── social/                        # Partilha para Instagram Stories (Meta Sharing to Stories)
+    │   ├── story_share_content.dart   # Allowlist de campos para imagem 9:16 (sem mensagem/Q&A)
+    │   ├── story_asset_builder.dart   # Overlay off-screen → PNG temporário
+    │   ├── instagram_stories_platform.dart  # MethodChannel nativo
+    │   └── instagram_stories_share_service.dart  # Orquestra nativo + fallback share_plus + limpeza de ficheiros
     ├── theme/
     │   └── app_theme.dart
     ├── utils/
@@ -63,6 +74,12 @@ lib/
 ```
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
+
+### Partilha social / Instagram Stories
+
+- **Meta App ID:** o cliente precisa do Facebook / Meta **App ID** registado para “Sharing to Stories”. Injetar em build com `--dart-define=FB_APP_ID=seu_id` (ver [`lib/core/config/facebook_app_config.dart`](../lib/core/config/facebook_app_config.dart)). Sem `FB_APP_ID`, o fluxo usa apenas o fallback (folha de partilha com PNG + texto). Checklist completo de produção: [`planning/PRODUCTION.md`](PRODUCTION.md).
+- **iOS:** `LSApplicationQueriesSchemes` inclui `instagram` e `instagram-stories` em `Info.plist`; registo do channel em `AppDelegate` (`didInitializeImplicitFlutterEngine`).
+- **Android:** `FileProvider` em `AndroidManifest.xml`, `res/xml/file_paths.xml` (cache), `<queries>` para `com.instagram.android`; `MainActivity` implementa o mesmo `MethodChannel`.
 
 ### Overlays globais (`MaterialApp.builder`)
 
@@ -151,6 +168,14 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 | `musicUrl` | String opcional — mesmo padrão que em `letters` (link `https`, abertura externa) |
 | `senderLocation` | Igual a `letters` — opcional ao criar a cápsula. |
 | `openRequiresProximity` | Igual a `letters` — opcional; raio fixo **10 m** no código. |
+| `isCollective` | `bool` — `true` quando existem convidados além do criador (abertura em grupo). |
+| `participantUids` | `array<string>` — inclui sempre o criador; convidados são os restantes (máx. **20** nas regras). |
+| `participantNames` | `map<string,string>` opcional — snapshot de nomes no selo (`uid` → nome). |
+| `contentMode` | `singleAuthor` \| `multiContributor` — MVP usa `singleAuthor`; `multiContributor` reservado para fase em que cada um contribui antes de selar. |
+
+**Subcoleção (futuro):** `capsules/{capsuleId}/contributions/{participantUid}` — contrato para contribuições por utilizador; leitura alinhada aos participantes; escrita ainda `false` no cliente até `multiContributor`. Ver regras em `firestore.rules`.
+
+**Helpers:** `lib/shared/utils/capsule_content_mode.dart` (modo e participação); `lib/features/capsules/data/capsule_vault_streams.dart` (merge de duas queries: remetente + participante coletivo).
 
 ---
 
@@ -160,7 +185,19 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
   - Escrever carta → `WriteLetterScreen`
   - Nova cápsula → `CreateCapsuleScreen`
 
-- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; cada aba mantém a mesma query Firestore de sempre; **filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta.
+- **`VaultScreen`** (`vault_screen.dart`): abas Aguardando / Abertas / Enviadas / Cápsulas; **aba Cápsulas** funde no cliente duas streams (`senderUid` + `locked` e `participantUids` array-contains + `isCollective` + `locked`, ver `capsule_vault_streams.dart`); deduplicação por `doc.id`. As outras abas mantêm as queries habituais. **Filtro e ordenação avançados aplicam-se no cliente** sobre os documentos recebidos (`vault_list_filters.dart`). O ícone de ajustes abre `showVaultFilterSheet` (`widgets/vault_filter_sheet.dart`): busca por texto, ordenação, intervalo de data de abertura (aba Aguardando), origem recebidas/enviadas (Abertas), só pendentes de aceite (Enviadas), temas (Cápsulas). Indicador (`Badge`) quando a aba atual tem filtros não padrão; mensagem localizada se o filtro esvazia a lista sem haver dados reais em falta. O **badge do Cofre** no `main.dart` usa a mesma lógica de contagem de cápsulas fechadas (cartas recebidas locked + cápsulas merged).
+
+### Feed
+
+- **`FeedScreen` / `_FeedCard`** ([`feed_screen.dart`](../lib/features/feed/presentation/screens/feed_screen.dart)): lista de cartas públicas; cada card pode mostrar um **preview de comentários** (`_buildCommentsPreview`).
+  - **Três camadas (fonte de dados):** o utilizador escolhe no bottom sheet **Explorar** | **Destaques** | **Seguindo** (ícone de filtros à direita, fixo; só ícone). **Explorar** — [`explore_feed_paged.dart`](../lib/features/feed/presentation/widgets/explore_feed_paged.dart): primeira página em tempo real (`snapshots`) + páginas extra com `startAfter`; carregamento incremental ao aproximar do fim do scroll (`ScrollController`, sem botão “carregar mais”). **Destaques** — mesma query limitada + janela `openedAt` que o feed global, depois ordenação no cliente por `likeCount` e `openedAt` com teto em [`FeedConfig.highlightsMaxVisible`](../lib/core/constants/feed_config.dart). **Seguindo** — [`following_feed_body.dart`](../lib/features/feed/presentation/widgets/following_feed_body.dart): IDs de `follows`, consultas `letters` em blocos `whereIn` (≤10) e merge em [`feed_following_merge.dart`](../lib/features/feed/domain/feed_following_merge.dart); sem sessão mostra estado “entrar”.
+  - **Filtros emocionais (cliente):** quatro significados semânticos (Para todos / Amor / Amizade / Família) mapeiam para `emotionalState` e listas em `_filterEmotions` no ecrã. O utilizador **fixa até 3** chips na barra — preferência em [`feed_pinned_filters_provider.dart`](../lib/features/feed/presentation/providers/feed_pinned_filters_provider.dart) (`SharedPreferences`, chave `feed_pinned_filter_ids_v1`); edição no sheet [`pinned_feed_filters_sheet.dart`](../lib/features/feed/presentation/widgets/pinned_feed_filters_sheet.dart), acessível a partir do mesmo bottom sheet do tipo de feed (“Fixar filtros rápidos”). Os chips deslocam-se horizontalmente; o botão de filtros permanece à direita (`Row` + `Expanded`).
+  - **Bloqueios:** [`feed_letter_filter.dart`](../lib/features/feed/domain/feed_letter_filter.dart) — cartas de remetentes em `blocks` não são mostradas.
+  - **Custo / escala:** todas as camadas respeitam `limit` + janela em `openedAt` onde aplicável ([`feed_config.dart`](../lib/core/constants/feed_config.dart)). Destaques não fazem sort global infinito no servidor. Seguindo: até **ceil(n/10)** listeners/query por atualização (n = número de contas seguidas), documentado em [`PRODUCTION.md`](PRODUCTION.md).
+  - **Quantidade (comentários no card):** query Firestore com `limit(2)` por defeito; se `commentCount > 2`, aparece o link localizado **Ver todos os N comentários** (`feedViewAllComments`), que passa a `limit(20)` no mesmo preview (estado `_showAllComments` no card).
+  - **Texto longo por comentário:** cada linha do preview usa `Text.rich` com no máximo **4 linhas** e `TextOverflow.ellipsis` até o utilizador expandir **esse** comentário (toque em **Ler mais** — mesma string `feedReadMore` que o corpo da carta). IDs expandidos ficam em `_expandedCommentPreviewIds` (`Set<String>` de IDs de documento em `comments`).
+  - **Quando mostrar “Ler mais”:** heurística no cliente — mensagem com mais de **120** caracteres **ou** com **4** ou mais linhas (`\n`). Não mede overflow com `TextPainter`.
+  - **Lista completa:** ícone de comentário no card abre [`CommentsScreen`](../lib/features/feed/presentation/screens/comments_screen.dart) (stream sem este limite de linhas por item).
 
 ---
 

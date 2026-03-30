@@ -3,8 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/constants/feed_config.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
+import '../../domain/feed_letter_filter.dart';
+import '../../domain/feed_following_merge.dart';
+import '../widgets/explore_feed_paged.dart';
+import '../widgets/following_feed_body.dart';
+import '../widgets/pinned_feed_filters_sheet.dart';
+import '../providers/feed_pinned_filters_provider.dart';
 import '../../../../shared/moderation/report_flow.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -26,6 +33,35 @@ class FeedScreen extends ConsumerStatefulWidget {
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   int _selectedFilter = 0;
+  /// 0 = Explorar, 1 = Destaques, 2 = Seguindo
+  int _feedLayer = 0;
+
+  /// Rolling window lower bound, fixed for this screen lifetime so the Firestore
+  /// listener is not recreated every frame (would duplicate reads).
+  late final Timestamp _feedOpenedAtMin = Timestamp.fromDate(
+    DateTime.now().subtract(const Duration(days: FeedConfig.openedAtWindowDays)),
+  );
+
+  Query<Map<String, dynamic>> _publicFeedQuery() {
+    return FirebaseFirestore.instance
+        .collection(FirestoreCollections.letters)
+        .where('isPublic', isEqualTo: true)
+        .where('status', isEqualTo: 'opened')
+        .where('openedAt', isGreaterThanOrEqualTo: _feedOpenedAtMin)
+        .orderBy('openedAt', descending: true)
+        .limit(FeedConfig.publicMaxDocuments);
+  }
+
+  /// Explorar: smaller page + `startAfter` for load-more (see [ExploreFeedPaged]).
+  Query<Map<String, dynamic>> _explorePageQuery() {
+    return FirebaseFirestore.instance
+        .collection(FirestoreCollections.letters)
+        .where('isPublic', isEqualTo: true)
+        .where('status', isEqualTo: 'opened')
+        .where('openedAt', isGreaterThanOrEqualTo: _feedOpenedAtMin)
+        .orderBy('openedAt', descending: true)
+        .limit(FeedConfig.explorePageSize);
+  }
 
   static const Map<int, List<String>> _filterEmotions = {
     1: ['love'],
@@ -33,11 +69,153 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     3: ['nostalgia', 'farewell'],
   };
 
+  String _filterLabelForId(int id, AppLocalizations l10n) {
+    switch (id) {
+      case 0:
+        return l10n.feedFilterAll;
+      case 1:
+        return l10n.feedFilterLove;
+      case 2:
+        return l10n.feedFilterFriendship;
+      case 3:
+        return l10n.feedFilterFamily;
+      default:
+        return l10n.feedFilterAll;
+    }
+  }
+
+  void _showPinnedFiltersSheet(BuildContext context) {
+    final pinned = ref.read(feedPinnedFiltersProvider);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.pal.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => PinnedFeedFiltersSheet(
+        initialPins: pinned,
+        onSave: (pins) {
+          ref.read(feedPinnedFiltersProvider.notifier).setPins(pins);
+        },
+      ),
+    );
+  }
+
+  void _showFeedLayerSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.pal.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 12, 8, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: context.pal.border,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      l10n.feedFiltersSheetTitle,
+                      style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 20,
+                        color: context.pal.ink,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ListTile(
+                    selected: _feedLayer == 0,
+                    selectedTileColor: context.pal.accent.withValues(alpha: 0.12),
+                    title: Text(
+                      l10n.feedLayerExplore,
+                      style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.ink),
+                    ),
+                    onTap: () {
+                      setState(() => _feedLayer = 0);
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+                  ListTile(
+                    selected: _feedLayer == 1,
+                    selectedTileColor: context.pal.accent.withValues(alpha: 0.12),
+                    title: Text(
+                      l10n.feedLayerHighlights,
+                      style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.ink),
+                    ),
+                    onTap: () {
+                      setState(() => _feedLayer = 1);
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+                  ListTile(
+                    selected: _feedLayer == 2,
+                    selectedTileColor: context.pal.accent.withValues(alpha: 0.12),
+                    title: Text(
+                      l10n.feedLayerFollowing,
+                      style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.ink),
+                    ),
+                    onTap: () {
+                      setState(() => _feedLayer = 2);
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+                  const Divider(height: 24),
+                  ListTile(
+                    leading: Icon(Icons.push_pin_outlined, color: context.pal.accent),
+                    title: Text(
+                      l10n.feedCustomizePinnedFilters,
+                      style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.ink, fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      l10n.feedCustomizePinnedFiltersHint,
+                      style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
+                    ),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (context.mounted) _showPinnedFiltersSheet(context);
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final reportsEnabled = ref.watch(systemConfigProvider).value?.reportsEnabled ?? true;
-    final filters = [l10n.feedFilterAll, l10n.feedFilterLove, l10n.feedFilterFriendship, l10n.feedFilterFamily];
+    final pinned = ref.watch(feedPinnedFiltersProvider);
+    ref.listen(feedPinnedFiltersProvider, (previous, next) {
+      if (!next.contains(_selectedFilter)) {
+        setState(() => _selectedFilter = next.first);
+      }
+    });
     return Scaffold(
       backgroundColor: context.pal.bg,
       body: Column(
@@ -95,71 +273,188 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       ],
                     ),
                   ),
-                  // Filtros
+                  // Pinned mood chips scroll; filter icon fixed at the right edge
                   SizedBox(
-                    height: 44,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      itemCount: filters.length,
-                      itemBuilder: (_, i) => GestureDetector(
-                        onTap: () => setState(() => _selectedFilter = i),
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _selectedFilter == i ? context.pal.accent : Colors.white.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: _selectedFilter == i ? context.pal.accent : Colors.white.withOpacity(0.08)),
+                    height: 46,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.fromLTRB(12, 0, 4, 8),
+                            itemCount: pinned.length,
+                            itemBuilder: (_, i) {
+                              final filterId = pinned[i];
+                              final selected = _selectedFilter == filterId;
+                              return Align(
+                                alignment: Alignment.center,
+                                child: GestureDetector(
+                                  onTap: () => setState(() => _selectedFilter = filterId),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: selected ? context.pal.accent : Colors.white.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(color: selected ? context.pal.accent : Colors.white.withOpacity(0.08)),
+                                    ),
+                                    child: Text(
+                                      _filterLabelForId(filterId, l10n),
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: 11,
+                                        height: 1.0,
+                                        color: selected ? context.pal.white : Colors.white.withOpacity(0.4),
+                                        fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          child: Text(filters[i], style: GoogleFonts.dmSans(fontSize: 12,
-                            color: _selectedFilter == i ? context.pal.white : Colors.white.withOpacity(0.4),
-                            fontWeight: _selectedFilter == i ? FontWeight.w500 : FontWeight.w400)),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12, bottom: 8),
+                          child: Center(
+                            child: Semantics(
+                              button: true,
+                              label: l10n.feedFiltersButtonSemantic,
+                              child: GestureDetector(
+                                onTap: () => _showFeedLayerSheet(context),
+                                child: Container(
+                                  padding: const EdgeInsets.all(7),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: Colors.white.withOpacity(0.2)),
+                                  ),
+                                  child: Icon(
+                                    Icons.tune,
+                                    size: 18,
+                                    color: Colors.white.withOpacity(0.9),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          // Feed
+          // Feed — bounded query (limit + openedAt window); blocked senders hidden per viewer.
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection(FirestoreCollections.letters)
-                  .where('isPublic', isEqualTo: true)
-                  .where('status', isEqualTo: 'opened')
-                  .orderBy('openedAt', descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final allDocs = snapshot.data?.docs ?? [];
-                if (allDocs.isEmpty) return _buildEmpty();
+            child: Builder(
+              builder: (context) {
+                final uid = FirebaseAuth.instance.currentUser?.uid;
 
-                final allowedKeys = _filterEmotions[_selectedFilter];
-                final docs = allowedKeys == null
-                    ? allDocs
-                    : allDocs.where((d) {
-                        final emotion = (d.data() as Map<String, dynamic>)['emotionalState'] as String?;
-                        return emotion != null && allowedKeys.contains(emotion);
-                      }).toList();
-
-                if (docs.isEmpty) return _buildFilterEmpty();
-
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
-                  itemCount: docs.length,
-                  itemBuilder: (_, i) {
-                    final data = docs[i].data() as Map<String, dynamic>;
-                    return _FeedCard(
-                      data: data,
-                      docId: docs[i].id,
-                      isFeatured: i == 0,
-                      reportsEnabled: reportsEnabled,
+                Widget feedForBlocked(Set<String> blocked) {
+                  if (_feedLayer == 2) {
+                    if (uid == null) {
+                      return _buildFollowingSignedOut();
+                    }
+                    return FollowingFeedBody(
+                      followerUid: uid,
+                      openedAtMin: _feedOpenedAtMin,
+                      blockedSenderUids: blocked,
+                      builder: (context, docs) {
+                        if (docs.isEmpty) return _buildFollowingEmpty();
+                        return _buildLetterListFromDocs(
+                          docs,
+                          reportsEnabled: reportsEnabled,
+                        );
+                      },
                     );
+                  }
+
+                  if (_feedLayer == 0) {
+                    return ExploreFeedPaged(
+                      baseQuery: _explorePageQuery(),
+                      blockedSenderUids: blocked,
+                      reportsEnabled: reportsEnabled,
+                      buildLetterList: _buildLetterListFromDocs,
+                      buildEmpty: _buildEmpty,
+                      buildFilterEmpty: _buildFilterEmpty,
+                      buildError: () => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Text(
+                            AppLocalizations.of(context)!.feedLoadError,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: _publicFeedQuery().snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Text(
+                              AppLocalizations.of(context)!.feedLoadError,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final allDocs = snapshot.data?.docs ?? [];
+                      if (allDocs.isEmpty) return _buildEmpty();
+
+                      var visibleDocs = allDocs.where((d) {
+                        final data = d.data();
+                        return isFeedLetterVisibleForViewer(
+                          letterData: data,
+                          blockedSenderUids: blocked,
+                        );
+                      }).toList();
+                      if (visibleDocs.isEmpty) return _buildEmpty();
+
+                      if (_feedLayer == 1) {
+                        visibleDocs = sortByLikeCountThenOpenedAt(
+                          visibleDocs,
+                          maxItems: FeedConfig.highlightsMaxVisible,
+                        );
+                      }
+
+                      return _buildLetterListFromDocs(
+                        visibleDocs,
+                        reportsEnabled: reportsEnabled,
+                      );
+                    },
+                  );
+                }
+
+                if (uid == null) {
+                  return feedForBlocked(<String>{});
+                }
+                return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('blocks')
+                      .where('blockedBy', isEqualTo: uid)
+                      .snapshots(),
+                  builder: (context, blocksSnap) {
+                    final blocked = <String>{};
+                    for (final d in blocksSnap.data?.docs ?? []) {
+                      final m = d.data();
+                      final blockedUid = m['blockedUid'] as String?;
+                      if (blockedUid != null && blockedUid.isNotEmpty) blocked.add(blockedUid);
+                    }
+                    return feedForBlocked(blocked);
                   },
                 );
               },
@@ -179,6 +474,90 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     ),
     child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
   );
+
+  Widget _buildLetterListFromDocs(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, {
+    required bool reportsEnabled,
+    ScrollController? scrollController,
+  }) {
+    final allowedKeys = _filterEmotions[_selectedFilter];
+    final filtered = allowedKeys == null
+        ? docs
+        : docs.where((d) {
+            final emotion = d.data()['emotionalState'] as String?;
+            return emotion != null && allowedKeys.contains(emotion);
+          }).toList();
+
+    if (filtered.isEmpty) return _buildFilterEmpty();
+
+    return ListView.builder(
+      controller: scrollController,
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
+      itemCount: filtered.length,
+      itemBuilder: (_, i) {
+        final data = filtered[i].data();
+        return _FeedCard(
+          data: data,
+          docId: filtered[i].id,
+          isFeatured: i == 0,
+          reportsEnabled: reportsEnabled,
+        );
+      },
+    );
+  }
+
+  Widget _buildFollowingSignedOut() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('👋', style: TextStyle(fontSize: 40)),
+            const SizedBox(height: 12),
+            Text(
+              l10n.feedFollowingSignedOutTitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: context.pal.ink, fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.feedFollowingSignedOutSubtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFollowingEmpty() {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('💌', style: TextStyle(fontSize: 48)),
+          const SizedBox(height: 16),
+          Text(
+            l10n.feedFollowingEmptyTitle,
+            style: GoogleFonts.dmSerifDisplay(fontSize: 18, color: context.pal.ink, fontStyle: FontStyle.italic),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              l10n.feedFollowingEmptySubtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildEmpty() {
     final l10n = AppLocalizations.of(context)!;
@@ -239,6 +618,7 @@ class _FeedCard extends StatefulWidget {
 
 class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixin {
   bool _showAllComments = false;
+  final Set<String> _expandedCommentPreviewIds = <String>{};
   bool _expanded = false;
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
@@ -689,23 +1069,51 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
             Divider(height: 1, color: widget.isFeatured ? Colors.white.withOpacity(0.08) : context.pal.border),
             ...docs.map((doc) {
               final c = doc.data() as Map<String, dynamic>;
+              final message = c['message'] as String? ?? '';
+              final commentExpanded = _expandedCommentPreviewIds.contains(doc.id);
+              final showReadMore = !commentExpanded &&
+                  (message.length > 120 || message.split('\n').length >= 4);
               return Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
                       TextSpan(
-                        text: '${c['userName'] ?? ''}  ',
-                        style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600,
-                          color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink),
+                        children: [
+                          TextSpan(
+                            text: '${c['userName'] ?? ''}  ',
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink,
+                            ),
+                          ),
+                          TextSpan(
+                            text: message,
+                            style: GoogleFonts.dmSans(fontSize: 13, color: _textSoft(context)),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: c['message'] ?? '',
-                        style: GoogleFonts.dmSans(fontSize: 13,
-                          color: _textSoft(context)),
+                      maxLines: commentExpanded ? null : 4,
+                      overflow: commentExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                    ),
+                    if (showReadMore)
+                      GestureDetector(
+                        onTap: () => setState(() => _expandedCommentPreviewIds.add(doc.id)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            l10n.feedReadMore,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 13,
+                              color: _textFaint(context),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               );
             }),

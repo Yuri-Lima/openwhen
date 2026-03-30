@@ -19,12 +19,12 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟡 Importante (logo após o núcleo do MVP)
 
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
-- [ ] Compartilhamento Stories/Reels
+- [x] Compartilhamento Stories/Reels
 - [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
-- [ ] Badges / gamificação leve
+- [x] Badges / gamificação leve
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
-- [ ] Feed em **3 camadas**
-- [ ] Exportar cartas (PDF / ZIP)
+- [x] Feed em **3 camadas**
+- [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**
   - [x] `flutter_localizations` + `gen-l10n` (ARB `app_pt_BR`, `app_en`, `app_es`)
   - [x] **Idioma padrão:** detectar locale do sistema (`PlatformDispatcher`); mapear `pt*` → pt-BR, `es*` → es, `en*` → en; demais → fallback pt-BR
@@ -36,7 +36,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟢 Pós-MVP
 
-- [ ] Cápsula coletiva
+- [x] **Cápsula coletiva** (grupo que abre junto; só o criador escreve) — `participantUids`, `isCollective`, `participantNames`, `contentMode: singleAuthor`; Cofre e badge com merge de queries (`capsule_vault_streams.dart`); regras `firestore.rules` + índice composto `participantUids` + `status` + `isCollective`
+- [ ] **Contribuições múltiplas antes de selar** — cada participante adiciona respostas/blocos; subcoleção `contributions` + `contentMode: multiContributor`; ver [`ROADMAP.md`](ROADMAP.md) Fase 3
 - [ ] Música de fundo (reprodução dentro do app — distinto do **link externo** opcional já suportado em cartas/cápsulas)
 - [ ] Moderação por IA
 - [ ] Premium pay-per-feature (após ~10k usuários)
@@ -94,7 +95,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [x] Fluxo criar cápsula (Tema → Perguntas → Detalhes)
 - [x] Persistência em Firestore (`capsules`)
-- [x] Listagem no Cofre (aba Cápsulas)
+- [x] Listagem no Cofre (aba Cápsulas; inclui cápsula coletiva para criador e convidados — streams fundidas)
 - [x] FAB com bottom sheet: Carta ou Cápsula
 - [x] Mesma **localização opcional** e **restrição 10 m** que nas cartas (campos Firestore alinhados)
 
@@ -102,7 +103,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [x] Feed estilo Instagram
 - [x] Curtidas e comentários em tempo real
-- [x] Filtros por emoção (feed)
+- [x] Filtros por emoção (feed) — até **3** chips fixados pelo utilizador (`feed_pinned_filters_provider`); tipo de feed (Explorar / Destaques / Seguindo) no bottom sheet
 - [x] Seguidores (`follows`)
 - [x] Conta pública/privada
 - [x] Perfil próprio e de outros
@@ -127,4 +128,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** em andamento — primeiro pendente na lista acima: **Compartilhamento Stories/Reels** (alinhado a [`ROADMAP.md`](ROADMAP.md) Fase 2).
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — todos os itens marcados como concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
