@@ -41,6 +41,15 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   bool get _isSender   => widget.data['senderUid'] == _currentUid;
   bool get _isOpened   => (widget.data['status'] ?? 'locked') == 'opened';
 
+  /// Nome do remetente visível na carta.
+  /// Receptor e remetente sempre veem o nome real.
+  /// Terceiros respeitam o campo hideSenderName.
+  String _senderDisplayName(AppLocalizations l10n) {
+    if (_isReceiver || _isSender) return widget.data['senderName'] ?? '';
+    final hidden = (widget.data['hideSenderName'] ?? false) == true;
+    return hidden ? l10n.feedSenderAnonymous : (widget.data['senderName'] ?? '');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -281,7 +290,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                                   Text(l10n.letterDetailHeaderFrom,
                                     style: TextStyle(fontSize: 9, letterSpacing: 4, color: context.pal.accent.withOpacity(0.8))),
                                   const SizedBox(height: 8),
-                                  Text(widget.data['senderName'] ?? '',
+                                  Text(_senderDisplayName(l10n),
                                     style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: const Color(0xFF160D04))),
                                   const SizedBox(height: 4),
                                   Text(l10n.letterDetailTo(widget.data['receiverName'] ?? ''),
@@ -300,7 +309,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        Text('— ${widget.data['senderName'] ?? ''}',
+                                        Text('— ${_senderDisplayName(l10n)}',
                                           style: GoogleFonts.dmSerifDisplay(fontSize: 16, fontStyle: FontStyle.italic, color: const Color(0xFF4A2E14))),
                                         const SizedBox(height: 4),
                                         Text(l10n.letterDetailWrittenOn(formatShortDate(createdAt, locale)),
