@@ -38,6 +38,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Fixed
 
+- **Admin — ecrã Moderação:** `TabBar` com `isScrollable: true` (rótulos completos, deslize horizontal nas abas); corpo dos cartões (denúncia, feedback, revisão humana, alertas IA) com `_BidirectionalScrollText` — texto seleccionável, quebra à largura do cartão e scroll horizontal para linhas muito longas (`admin_moderation_screen.dart`).
 - **Onboarding:** overflow vertical em ecrãs curtos — `PageView` com `Positioned.fill` + página com scroll e altura mínima (`onboarding_screen.dart`).
 
 ---

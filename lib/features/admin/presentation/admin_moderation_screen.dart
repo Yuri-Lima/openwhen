@@ -135,9 +135,14 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
         ),
         bottom: TabBar(
           controller: _tabController,
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           labelColor: context.pal.white,
           unselectedLabelColor: Colors.white54,
           indicatorColor: context.pal.accent,
+          labelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600),
+          unselectedLabelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w500),
           tabs: [
             Tab(text: l10n.adminModerationReportsTab),
             Tab(text: l10n.adminModerationFeedbackTab),
@@ -258,8 +263,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                   Text(_ts(r), style: TextStyle(fontSize: 11, color: context.pal.inkFaint)),
                   if ((r['detail'] as String?)?.isNotEmpty == true) ...[
                     const SizedBox(height: 8),
-                    Text(
-                      r['detail'] as String,
+                    _BidirectionalScrollText(
+                      text: r['detail'] as String,
                       style: TextStyle(fontSize: 13, color: context.pal.inkSoft),
                     ),
                   ],
@@ -322,8 +327,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                   const SizedBox(height: 4),
                   Text(_ts(r), style: TextStyle(fontSize: 11, color: context.pal.inkFaint)),
                   const SizedBox(height: 8),
-                  Text(
-                    '${r['message'] ?? ''}',
+                  _BidirectionalScrollText(
+                    text: '${r['message'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: context.pal.inkSoft),
                   ),
                 ],
@@ -431,7 +436,10 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                     style: TextStyle(fontSize: 11, color: context.pal.inkFaint),
                   ),
                   const SizedBox(height: 8),
-                  Text(text, style: TextStyle(fontSize: 14, color: context.pal.inkSoft)),
+                  _BidirectionalScrollText(
+                    text: text,
+                    style: TextStyle(fontSize: 14, color: context.pal.inkSoft),
+                  ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -492,8 +500,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                     Text('count: $count', style: TextStyle(fontSize: 12, color: context.pal.inkSoft)),
                   Text(_tsIncident(r), style: TextStyle(fontSize: 11, color: context.pal.inkFaint)),
                   const SizedBox(height: 8),
-                  Text(
-                    '${r['message'] ?? ''}',
+                  _BidirectionalScrollText(
+                    text: '${r['message'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: context.pal.inkSoft),
                   ),
                 ],
@@ -516,5 +524,41 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     }
     if (last is String) return last;
     return _ts(r);
+  }
+}
+
+/// Wraps at list width; horizontal pan when a line is wider (e.g. long URLs). [ListView] supplies vertical scroll.
+class _BidirectionalScrollText extends StatelessWidget {
+  const _BidirectionalScrollText({
+    required this.text,
+    required this.style,
+  });
+
+  final String text;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        if (!w.isFinite || w <= 0) {
+          return SelectionArea(child: Text(text, style: style));
+        }
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: w),
+            child: SelectionArea(
+              child: Text(
+                text,
+                style: style,
+                softWrap: true,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
