@@ -35,7 +35,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 |------|-----------|
 | **Cartas** | Escrever, agendar, animação de abertura por emoção (lacre + coruja), gerar QR e compartilhar; campo **mensagem digitada** começa **recolhido** e expande ao toque; **mensagem de voz** opcional (máx. **1 minuto** definido pelo produto, gravação no dispositivo, upload no Storage) com reprodução no app na abertura/detalhe; **link de música** opcional (só `https`, abre fora do app — sem streaming de música no app); **localização** opcional no envio (`geolocator`): diálogos perguntam se compartilha coordenadas com o destinatário (no detalhe, toque copia URL do **Google Maps**) e se a abertura exige estar a **≤ 10 m** do ponto (verificação no cliente ao abrir pelo Cofre — não é garantia de servidor) |
 | **Cápsulas do tempo** | Temas (memórias, metas, sentimentos, relacionamentos, crescimento), 2–5 perguntas e respostas, abertura por data/evento; **cápsula coletiva** (convidar quem abre na mesma data; só o autor escreve); mesmo padrão de link de música opcional; mesma **localização opcional + opção de abertura em 10 m** das cartas |
-| **Social** | **Feed** em três camadas (Explorar / Destaques / Seguindo), filtros emocionais (até **3** chips fixados) + ícone de filtros; curtidas e comentários (no card: até 2, “ver todos” até 20; textos longos com **Ler mais** por comentário), seguidores, privacidade, moderação |
+| **Social** | **Feed** em três camadas (Explorar / Destaques / Seguindo), filtros emocionais (até **3** chips fixados) + ícone de filtros; curtidas e comentários (no card: até 2, “ver todos” até 20; textos longos com **Ler mais** por comentário), seguidores, privacidade; moderação (lista lexical, denúncias, **moderação por IA** opcional via Cloud Functions se activo em `systemConfig/app`) |
 | **Cofre** | Abas: aguardando, abertas, enviadas e **cápsulas**; **filtro e ordenação** (bottom sheet, no cliente sobre os dados já carregados) |
 | **Perfil** | Perfil próprio e de outros, busca por @username, configurações (**exportar cartas abertas** em PDF/ZIP com URLs validadas), páginas legais |
 | **Feedback** | Toque na coruja do header para enviar feedback (mesmo bottom sheet); animação idle (oscilação + vibração) em intervalos aleatórios por visita ao ecrã. Utilizadores sem sessão também têm o FAB global. |
@@ -49,7 +49,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 |--------|---------|
 | **UI** | Flutter (Material 3) |
 | **Estado** | Riverpod |
-| **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
+| **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** para Stripe e moderação de conteúdo (ver [`functions/README.md`](functions/README.md)) |
 | **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
 | **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
@@ -172,7 +172,12 @@ Use os [emuladores](https://firebase.google.com/docs/emulator-suite) para testar
 lib/
 ├── main.dart
 ├── firebase_options.dart          # local, fora do repo
-├── core/constants/
+├── core/
+│   ├── admin/                     # AdminFunctionsService (filas de moderação, info de IA)
+│   ├── billing/
+│   ├── config/                    # system_config_provider (flags remotas)
+│   ├── constants/
+│   └── moderation/                # callable moderateContent
 ├── features/
 │   ├── auth/
 │   ├── letters/

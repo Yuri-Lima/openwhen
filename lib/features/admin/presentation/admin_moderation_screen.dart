@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/admin/admin_functions_service.dart';
+import '../../../core/admin/admin_moderation_info.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/theme/app_theme.dart';
 
-/// Minimal moderation queue (reports + feedback) for users with `admin` claim.
+/// Moderation queue (reports, feedback, moderation incidents) for users with `admin` claim.
 class AdminModerationScreen extends ConsumerStatefulWidget {
   const AdminModerationScreen({super.key});
 
@@ -22,16 +23,33 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
 
   List<Map<String, dynamic>> _reports = [];
   List<Map<String, dynamic>> _feedback = [];
+  List<Map<String, dynamic>> _incidents = [];
   bool _loadingReports = true;
   bool _loadingFeedback = true;
+  bool _loadingIncidents = true;
+  bool _loadingModerationInfo = true;
+  AdminModerationInfo? _moderationInfo;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+    _loadModerationInfo();
     _loadReports();
     _loadFeedback();
+    _loadIncidents();
+  }
+
+  Future<void> _loadModerationInfo() async {
+    setState(() => _loadingModerationInfo = true);
+    try {
+      final info = await _admin.getModerationInfo();
+      if (mounted) setState(() => _moderationInfo = info);
+    } catch (_) {
+      if (mounted) setState(() => _moderationInfo = null);
+    }
+    if (mounted) setState(() => _loadingModerationInfo = false);
   }
 
   @override
@@ -70,6 +88,17 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     if (mounted) setState(() => _loadingFeedback = false);
   }
 
+  Future<void> _loadIncidents() async {
+    setState(() => _loadingIncidents = true);
+    try {
+      final list = await _admin.listModerationIncidents();
+      if (mounted) setState(() => _incidents = list);
+    } catch (e) {
+      if (mounted) setState(() => _incidents = []);
+    }
+    if (mounted) setState(() => _loadingIncidents = false);
+  }
+
   String _ts(Map<String, dynamic> m) {
     final c = m['createdAt'];
     if (c is Timestamp) {
@@ -98,15 +127,71 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
           tabs: [
             Tab(text: l10n.adminModerationReportsTab),
             Tab(text: l10n.adminModerationFeedbackTab),
+            Tab(text: l10n.adminModerationIncidentsTab),
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildReportsTab(),
-          _buildFeedbackTab(),
+          if (_loadingModerationInfo)
+            const LinearProgressIndicator(minHeight: 2)
+          else if (_moderationInfo != null)
+            _buildModerationProviderBanner(context, l10n, _moderationInfo!),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildReportsTab(),
+                _buildFeedbackTab(),
+                _buildIncidentsTab(),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildModerationProviderBanner(
+    BuildContext context,
+    AppLocalizations l10n,
+    AdminModerationInfo info,
+  ) {
+    final providerLabel = info.providerId == 'openai'
+        ? l10n.adminModerationProviderOpenai
+        : info.providerId;
+    final credOk = info.credentialsConfigured;
+    return Material(
+      color: context.pal.card,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.adminModerationAiBannerTitle,
+              style: GoogleFonts.dmSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: context.pal.inkSoft,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              providerLabel,
+              style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.ink),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              credOk ? l10n.adminModerationCredentialsOk : l10n.adminModerationCredentialsMissing,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                color: credOk ? context.pal.inkSoft : context.pal.accent,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -232,5 +317,68 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
         },
       ),
     );
+  }
+
+  Widget _buildIncidentsTab() {
+    final l10n = AppLocalizations.of(context)!;
+    if (_loadingIncidents) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_incidents.isEmpty) {
+      return Center(child: Text(l10n.adminModerationEmpty, style: TextStyle(color: context.pal.inkSoft)));
+    }
+    return RefreshIndicator(
+      onRefresh: _loadIncidents,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _incidents.length,
+        itemBuilder: (context, i) {
+          final r = _incidents[i];
+          final count = r['count'];
+          return Card(
+            color: context.pal.card,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${r['kind'] ?? ''} · ${r['severity'] ?? ''}',
+                    style: TextStyle(fontWeight: FontWeight.w600, color: context.pal.ink),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${r['providerId'] ?? ''}',
+                    style: TextStyle(fontSize: 12, color: context.pal.inkSoft),
+                  ),
+                  if (count != null)
+                    Text('count: $count', style: TextStyle(fontSize: 12, color: context.pal.inkSoft)),
+                  Text(_tsIncident(r), style: TextStyle(fontSize: 11, color: context.pal.inkFaint)),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${r['message'] ?? ''}',
+                    style: TextStyle(fontSize: 14, color: context.pal.inkSoft),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _tsIncident(Map<String, dynamic> r) {
+    final last = r['lastOccurredAt'];
+    if (last is Timestamp) {
+      return last.toDate().toIso8601String();
+    }
+    if (last is Map && last['_seconds'] != null) {
+      final s = last['_seconds'] as num;
+      return DateTime.fromMillisecondsSinceEpoch((s * 1000).toInt()).toIso8601String();
+    }
+    if (last is String) return last;
+    return _ts(r);
   }
 }

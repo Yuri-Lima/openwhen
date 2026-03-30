@@ -2,7 +2,7 @@
 
 Este documento reúne **tudo o que precisa de estar definido** para compilar, publicar e operar o app em **modo produção**: ficheiros locais, variáveis de build (`dart-define`), Firebase, Meta/Instagram, billing opcional, assinaturas móveis e referências ao resto da documentação.
 
-**Relacionado:** [README.md](../README.md) (Firebase, CLI), [DEVICE_TESTING.md](DEVICE_TESTING.md) (QA em dispositivo), [ARCHITECTURE.md](ARCHITECTURE.md) (stack e Instagram Stories), [functions/README.md](../functions/README.md) (Stripe e Cloud Functions).
+**Relacionado:** [README.md](../README.md) (Firebase, CLI), [DEVICE_TESTING.md](DEVICE_TESTING.md) (QA em dispositivo), [ARCHITECTURE.md](ARCHITECTURE.md) (stack, moderação, Instagram Stories), [functions/README.md](../functions/README.md) (Stripe, moderação por IA e Cloud Functions).
 
 ---
 
@@ -34,7 +34,7 @@ O código lê constantes em tempo de compilação. **Passar todas as que forem n
 
 - **`FB_APP_ID` em falta:** a partilha para Instagram Stories continua a funcionar via **fallback** (folha de partilha do sistema com PNG + texto). O fluxo **nativo** (abrir diretamente o Instagram Stories) **não** é usado.
 - **`BILLING_ENABLED` omitido ou `false`:** não há chamadas a checkout/portal Stripe; evita erros até billing estar configurado.
-- **`FUNCTIONS_REGION` omitido:** usa-se `us-central1` para chamadas `cloud_functions` (billing).
+- **`FUNCTIONS_REGION` omitido:** usa-se `us-central1` para chamadas `cloud_functions` (billing, moderação, admin).
 
 ### Exemplos de comando
 
@@ -79,6 +79,7 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 |------|----------------|
 | Deploy de regras Firestore e Storage | `firebase deploy --only firestore:rules,storage` (e índices se necessário: `firestore:indexes`) |
 | Validar permissões | Garantir que fluxos principais não devolvem `PERMISSION_DENIED` (ver [DEVICE_TESTING.md](DEVICE_TESTING.md)) |
+| **`systemConfig/app`** | Documento de flags remotas: `reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc. Criar/editar na consola ou Admin SDK (o cliente não escreve). Ver [ARCHITECTURE.md](ARCHITECTURE.md) (secção “Config remota”). |
 
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
@@ -92,11 +93,11 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 ---
 
-## 5. Cloud Functions e billing (Stripe) — opcional até monetização
+## 5. Cloud Functions — billing (Stripe) e moderação por IA
 
-- Variáveis de **runtime** no Google Cloud (Stripe, webhook, etc.): tabela e deploy em **[`functions/README.md`](../functions/README.md)**.
-- No **cliente Flutter**, billing só deve ser ativado com `--dart-define=BILLING_ENABLED=true` quando Stripe e funções estiverem configurados e testados.
-- Região das funções: alinhar `FUNCTIONS_REGION` com a região real deployada.
+- **Stripe:** variáveis de **runtime** no Google Cloud (tabela em **[`functions/README.md`](../functions/README.md)**). No **cliente**, billing só com `--dart-define=BILLING_ENABLED=true` quando Stripe e funções estiverem prontos.
+- **Moderação por IA:** `OPENAI_API_KEY` e opcionalmente `MODERATION_PROVIDER` nas mesmas Functions; o cliente chama `moderateContent` quando `aiModerationEnabled` é `true` em **`systemConfig/app`**. Sem chave, o servidor aplica fallback conforme `aiModerationFailClosed` e regista incidentes em `moderationIncidents`. Superadmin vê provedor e estado das credenciais via `adminGetModerationInfo` (app **Configurações → Moderação**). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md), [functions/README.md](../functions/README.md).
+- **Região:** alinhar `FUNCTIONS_REGION` no build Flutter com a região deployada (`us-central1` por defeito).
 
 ### Nota (futuro): filas e workers
 
@@ -128,6 +129,7 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 - [ ] `firebase deploy` das regras (e índices) validado.
 - [ ] `FB_APP_ID` definido nos builds que devem abrir Instagram nativamente (ou aceite explícito de só fallback).
 - [ ] Se billing ativo: `BILLING_ENABLED=true`, `FUNCTIONS_REGION` correto, variáveis em Cloud Functions (Stripe) configuradas.
+- [ ] Se moderação por IA ativa: `OPENAI_API_KEY` (e `MODERATION_PROVIDER` se não for o default) nas Cloud Functions; `systemConfig/app` com `aiModerationEnabled` / `aiModerationFailClosed` conforme política; `firebase deploy --only functions` após alterar envs.
 - [ ] Push: APNs (iOS) e testes em dispositivo real ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
 - [ ] Assinatura release Android/iOS e metadados de loja preparados.
 
@@ -138,3 +140,4 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 - **2026-03:** nota futura “filas e workers” (Pub/Sub, Cloud Tasks, RabbitMQ) na secção 5.
 - **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).
 - **2026-03:** documento criado para consolidar `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION` e requisitos Firebase/lojas.
+- **2026-03 (moderação IA):** secção 5 alargada (Stripe + moderação); Firestore `systemConfig/app`; checklist com IA; relações com ARCHITECTURE / functions README.

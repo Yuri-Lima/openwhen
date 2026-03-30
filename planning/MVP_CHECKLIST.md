@@ -39,7 +39,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Cápsula coletiva** (grupo que abre junto; só o criador escreve) — `participantUids`, `isCollective`, `participantNames`, `contentMode: singleAuthor`; Cofre e badge com merge de queries (`capsule_vault_streams.dart`); regras `firestore.rules` + índice composto `participantUids` + `status` + `isCollective`
 - [ ] **Contribuições múltiplas antes de selar** — cada participante adiciona respostas/blocos; subcoleção `contributions` + `contentMode: multiContributor`; ver [`ROADMAP.md`](ROADMAP.md) Fase 3
 - [ ] Música de fundo (reprodução dentro do app — distinto do **link externo** opcional já suportado em cartas/cápsulas)
-- [ ] Moderação por IA
+- [x] **Moderação por IA** (base) — Cloud Functions `moderateContent` + adapter OpenAI (`functions/src/moderation/`); `systemConfig/app` (`aiModerationEnabled`, `aiModerationFailClosed`); comentários em [`comments_screen.dart`](../lib/features/feed/presentation/screens/comments_screen.dart); incidentes `moderationIncidents` + aba admin; [`functions/README.md`](../functions/README.md) · [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - [ ] Premium pay-per-feature (após ~10k usuários)
 
 ---

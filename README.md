@@ -35,7 +35,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 |------|------------|
 | **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
 | **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **collective capsule** (invite others to open together; author writes content); optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
-| **Social** | **Feed** with three layers (Explore / Highlights / Following), emotion filters (up to **3** pinned chips) + filter icon; likes & comments (card preview: up to 2 comments, “view all” up to 20; long comments clamp to 4 lines with **Read more**); follows, privacy, moderation |
+| **Social** | **Feed** with three layers (Explore / Highlights / Following), emotion filters (up to **3** pinned chips) + filter icon; likes & comments (card preview: up to 2 comments, “view all” up to 20; long comments clamp to 4 lines with **Read more**); follows, privacy; moderation (lexical filter, user reports, optional **AI moderation** via Cloud Functions when enabled in `systemConfig/app`) |
 | **Vault** | Tabs for waiting, opened, sent, and **capsules**; advanced **filter and sort** (bottom sheet, client-side on snapshot data) |
 | **Profile** | Own profile, other users, search by @username, settings (includes **export opened letters** as PDF/ZIP with allowlisted links), legal pages |
 | **Feedback** | Tap the header owl to send feedback (shared bottom sheet); idle wobble + buzz on random intervals per screen visit. Logged-out users also get the global FAB. |
@@ -49,7 +49,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 |-------|--------|
 | **UI** | Flutter (Material 3) |
 | **State** | Riverpod |
-| **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging |
+| **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** for Stripe billing and content moderation (see [`functions/README.md`](functions/README.md)) |
 | **Location** | `geolocator` (+ platform location permissions) for optional share-at-send and proximity-to-open |
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
 | **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
@@ -172,7 +172,12 @@ Use the [emulators](https://firebase.google.com/docs/emulator-suite) to exercise
 lib/
 ├── main.dart
 ├── firebase_options.dart          # local, not in repo
-├── core/constants/
+├── core/
+│   ├── admin/                     # AdminFunctionsService (moderation queues, AI ops info)
+│   ├── billing/
+│   ├── config/                    # system_config_provider (remote flags)
+│   ├── constants/
+│   └── moderation/                # moderateContent callable
 ├── features/
 │   ├── auth/
 │   ├── letters/

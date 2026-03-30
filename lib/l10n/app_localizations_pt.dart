@@ -356,6 +356,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Sua mensagem contém palavras inadequadas. O OpenWhen é um espaço de amor e respeito. 💌';
 
   @override
+  String get commentsModerationAiBlocked =>
+      'Este comentário não passou na moderação automática. Reformule com respeito.';
+
+  @override
+  String get commentsModerationUnavailable =>
+      'A moderação automática não está disponível no momento. Tente de novo em instantes.';
+
+  @override
   String get vaultTitle => 'Meu Cofre';
 
   @override
@@ -1870,6 +1878,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get adminModerationFeedbackTab => 'Feedback';
 
   @override
+  String get adminModerationIncidentsTab => 'Alertas IA';
+
+  @override
+  String get adminModerationAiBannerTitle => 'Moderação por IA (servidor)';
+
+  @override
+  String get adminModerationProviderOpenai => 'OpenAI Moderation API';
+
+  @override
+  String get adminModerationCredentialsOk => 'Credenciais configuradas';
+
+  @override
+  String get adminModerationCredentialsMissing =>
+      'Credenciais em falta (env das Functions)';
+
+  @override
   String get adminModerationEmpty => 'Nada pendente.';
 
   @override
@@ -2538,6 +2562,14 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get commentsModerationWarning =>
       'Sua mensagem contém palavras inadequadas. O OpenWhen é um espaço de amor e respeito. 💌';
+
+  @override
+  String get commentsModerationAiBlocked =>
+      'Este comentário não passou na moderação automática. Reformule com respeito.';
+
+  @override
+  String get commentsModerationUnavailable =>
+      'A moderação automática não está disponível no momento. Tente de novo em instantes.';
 
   @override
   String get vaultTitle => 'Meu Cofre';
@@ -4052,6 +4084,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get adminModerationFeedbackTab => 'Feedback';
+
+  @override
+  String get adminModerationIncidentsTab => 'Alertas IA';
+
+  @override
+  String get adminModerationAiBannerTitle => 'Moderação por IA (servidor)';
+
+  @override
+  String get adminModerationProviderOpenai => 'OpenAI Moderation API';
+
+  @override
+  String get adminModerationCredentialsOk => 'Credenciais configuradas';
+
+  @override
+  String get adminModerationCredentialsMissing =>
+      'Credenciais em falta (env das Functions)';
 
   @override
   String get adminModerationEmpty => 'Nada pendente.';

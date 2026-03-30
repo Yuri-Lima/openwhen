@@ -737,6 +737,18 @@ abstract class AppLocalizations {
   /// **'Sua mensagem contém palavras inadequadas. O OpenWhen é um espaço de amor e respeito. 💌'**
   String get commentsModerationWarning;
 
+  /// No description provided for @commentsModerationAiBlocked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este comentário não passou na moderação automática. Reformule com respeito.'**
+  String get commentsModerationAiBlocked;
+
+  /// No description provided for @commentsModerationUnavailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A moderação automática não está disponível no momento. Tente de novo em instantes.'**
+  String get commentsModerationUnavailable;
+
   /// No description provided for @vaultTitle.
   ///
   /// In pt_BR, this message translates to:
@@ -3520,6 +3532,36 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Feedback'**
   String get adminModerationFeedbackTab;
+
+  /// No description provided for @adminModerationIncidentsTab.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Alertas IA'**
+  String get adminModerationIncidentsTab;
+
+  /// No description provided for @adminModerationAiBannerTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Moderação por IA (servidor)'**
+  String get adminModerationAiBannerTitle;
+
+  /// No description provided for @adminModerationProviderOpenai.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'OpenAI Moderation API'**
+  String get adminModerationProviderOpenai;
+
+  /// No description provided for @adminModerationCredentialsOk.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Credenciais configuradas'**
+  String get adminModerationCredentialsOk;
+
+  /// No description provided for @adminModerationCredentialsMissing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Credenciais em falta (env das Functions)'**
+  String get adminModerationCredentialsMissing;
 
   /// No description provided for @adminModerationEmpty.
   ///

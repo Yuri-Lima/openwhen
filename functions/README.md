@@ -1,6 +1,8 @@
-# Firebase Cloud Functions (billing)
+# Firebase Cloud Functions (billing + moderation)
 
-Callable and HTTP endpoints for **Stripe** subscriptions. **No Google Secret Manager is required** — keys are read from **runtime environment variables** (set in Google Cloud Console for each function, or `.env` for the emulator).
+Callable and HTTP endpoints for **Stripe** subscriptions and **AI content moderation** (OpenAI Moderation API by default, adapter-ready for other providers). **No Google Secret Manager is required** — keys are read from **runtime environment variables** (set in Google Cloud Console for each function, or `.env` for the emulator).
+
+**Source layout:** `src/index.ts` (Stripe webhooks + billing callables), `src/admin.ts` (admin + moderation ops callables), `src/moderation/` (types, OpenAI adapter, incidents, `moderateContent`).
 
 ```bash
 cd functions
@@ -18,12 +20,18 @@ Set these on each deployed function (or use a shared `.env` with the emulator on
 | `STRIPE_WEBHOOK_SECRET` | Webhook verification only | `whsec_...` |
 | `STRIPE_PRICE_PLUS` | Checkout | Price id for **Brisa** (`plus`) |
 | `STRIPE_PRICE_PRO` | Checkout | Price id for **Horizonte** (`pro`) |
-| `ADMIN_BOOTSTRAP_SECRET` | No (moderation only) | Long random string; used **once** with callable `bootstrapAdminClaim` to set `admin: true` on the **signed-in** user’s custom claims |
+| `ADMIN_BOOTSTRAP_SECRET` | No (admin bootstrap) | Long random string; used **once** with callable `bootstrapAdminClaim` to set `admin: true` on the **signed-in** user’s custom claims |
+| `OPENAI_API_KEY` | When `MODERATION_PROVIDER=openai` (default) | `sk-...` — used by **`moderateContent`** (Moderation API). If missing, the function applies **fallback** (see Moderation section) and writes an aggregated row to **`moderationIncidents`**. |
+| `MODERATION_PROVIDER` | No | Default `openai` if unset. Other values are reserved for future adapters; until implemented, incidents are recorded and fallback applies. |
 
 ### Moderation / superadmin
 
 - **`bootstrapAdminClaim`** (callable): body `{ "secret": "<same as ADMIN_BOOTSTRAP_SECRET>" }`. Caller must be authenticated. Sets Firebase Auth custom claim `admin: true` on that user. After calling, the client must refresh the ID token (`getIdToken(true)`) before `adminListPendingReports` and related callables succeed.
-- **`adminListPendingReports`**, **`adminResolveReport`**, **`adminListRecentFeedback`**: require `admin: true` on the ID token. Implementação no app: **Configurações → Moderação (admin)** (visível só com claim).
+- **`moderateContent`** (callable, signed-in users): body `{ "text": "...", "contentType": "comment"|"letter"|"capsule"?, "locale"?: "..." }`. Reads **`systemConfig/app`**: `aiModerationEnabled`, `aiModerationFailClosed`. When `aiModerationEnabled` is false, returns `{ allowed: true, source: "skipped" }` without calling OpenAI. When OpenAI fails or the key is missing, records **`moderationIncidents`** (deduped per kind + UTC hour) and either returns **`moderation_unavailable`** (**strict**, default when the field is omitted) or allows posting (**soft fallback**) when **`aiModerationFailClosed`** is explicitly **`false`** in Firestore.
+- **`adminGetModerationInfo`**: returns `{ providerId, credentialsConfigured }` from runtime env (no secrets). Lets admins see which moderation backend is active (e.g. `openai`) and whether `OPENAI_API_KEY` is set on the Functions runtime.
+- **`adminListPendingReports`**, **`adminResolveReport`**, **`adminListRecentFeedback`**, **`adminListModerationIncidents`**: require `admin: true` on the ID token. Implementação no app: **Configurações → Moderação (admin)** (visível só com claim). **Incidentes** list aggregated ops alerts (not user-submitted reports).
+
+**Firestore:** `moderationIncidents` is server-only (client rules deny read/write). Inspect in Firebase Console or via **`adminListModerationIncidents`**. After rotating **`OPENAI_API_KEY`**, redeploy or update env vars; 401-style failures create **`auth_invalid`** incidents until fixed.
 
 Rotate or remove `ADMIN_BOOTSTRAP_SECRET` after o primeiro admin estiver criado; novos admins podem ser promovidos por um script Admin SDK ou por uma Function futura que só admins possam chamar.
 
@@ -43,14 +51,16 @@ Subscribe to at least: `checkout.session.completed`, `customer.subscription.crea
 
 ## Flutter
 
-- Calls `createCheckoutSession`, `createPortalSession`, and `migrateUserBillingDefaults` via `cloud_functions` (region `us-central1` by default; override with `--dart-define=FUNCTIONS_REGION=...`).
-- **Billing UI / Stripe checkout is off by default** so you can develop without Stripe. Enable with:
+- **Region:** `cloud_functions` uses `us-central1` by default; override with `--dart-define=FUNCTIONS_REGION=...` (see `lib/core/billing/firebase_functions_region.dart`).
+- **Billing:** `createCheckoutSession`, `createPortalSession`, `migrateUserBillingDefaults` — see `lib/core/billing/`. **Billing UI is off by default** (`BILLING_ENABLED=false`); enable with:
 
   ```bash
   flutter run --dart-define=BILLING_ENABLED=true
   ```
 
   When `BILLING_ENABLED` is false (default), the app uses `DisabledBillingProvider` (no checkout/portal calls); migration still runs when possible.
+- **Moderation:** `moderateContent` — `lib/core/moderation/moderation_functions_service.dart`. **Admin:** `AdminFunctionsService` in `lib/core/admin/admin_functions_service.dart` (`adminListPendingReports`, `adminResolveReport`, `adminListRecentFeedback`, `adminListModerationIncidents`, `adminGetModerationInfo`). Requires Firebase Auth custom claim `admin: true` on ID token for admin callables.
+- **Remote flags:** `systemConfig/app` in Firestore (`aiModerationEnabled`, `aiModerationFailClosed`, …) — read by `lib/core/config/system_config_provider.dart`; see [`planning/ARCHITECTURE.md`](../planning/ARCHITECTURE.md).
 
 ## Troubleshooting deploy (2nd Gen)
 

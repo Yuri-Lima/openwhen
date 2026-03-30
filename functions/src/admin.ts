@@ -3,6 +3,9 @@ import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
+import {MODERATION_INCIDENTS_COLLECTION} from "./moderation/incidents";
+import {getModerationProviderId, getOpenAIApiKey} from "./moderation/factory";
+
 function firestore() {
   return getFirestore();
 }
@@ -116,6 +119,59 @@ export const adminListRecentFeedback = onCall(
     const snap = await firestore()
       .collection("feedback")
       .orderBy("createdAt", "desc")
+      .limit(limit)
+      .get();
+
+    return {
+      items: snap.docs.map((d) => {
+        const data = d.data();
+        return {id: d.id, ...data};
+      }),
+    };
+  }
+);
+
+/**
+ * Safe ops info for admins: configured provider id and whether credentials exist
+ * (no secrets returned).
+ */
+export const adminGetModerationInfo = onCall(
+  {
+    cors: true,
+  },
+  async (request) => {
+    if (!request.auth?.uid) {
+      throw new HttpsError("unauthenticated", "Sign in required");
+    }
+    assertAdmin(request.auth.token as Record<string, unknown>);
+
+    const providerId = getModerationProviderId();
+    let credentialsConfigured = false;
+    if (providerId === "openai") {
+      credentialsConfigured = !!getOpenAIApiKey();
+    }
+
+    return {
+      providerId,
+      credentialsConfigured,
+    };
+  }
+);
+
+export const adminListModerationIncidents = onCall(
+  {
+    cors: true,
+  },
+  async (request) => {
+    if (!request.auth?.uid) {
+      throw new HttpsError("unauthenticated", "Sign in required");
+    }
+    assertAdmin(request.auth.token as Record<string, unknown>);
+
+    const limit = Math.min(Number(request.data?.limit) || 50, 100);
+    const snap = await firestore()
+      .collection(MODERATION_INCIDENTS_COLLECTION)
+      .orderBy("lastOccurredAt", "desc")
       .limit(limit)
       .get();
 

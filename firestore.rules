@@ -186,6 +186,11 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Incidentes de moderação (IA / ops) — só Admin SDK / Cloud Functions
+    match /moderationIncidents/{incidentId} {
+      allow read, write: if false;
+    }
+
     // Config remota legível por utilizadores autenticados (escrita só Admin SDK / Functions)
     match /systemConfig/{docId} {
       allow read: if signedIn();

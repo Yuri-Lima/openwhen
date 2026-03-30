@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
+import '../../../../core/moderation/moderation_functions_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/moderation/report_flow.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -88,6 +89,52 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
         ),
       );
       return;
+    }
+
+    final cfg = ref.read(systemConfigProvider).value;
+    final aiOn = cfg?.aiModerationEnabled == true;
+    final failClosed = cfg?.aiModerationFailClosed != false;
+
+    if (aiOn) {
+      setState(() => _isLoading = true);
+      try {
+        final mod = ModerationFunctionsService();
+        final r = await mod.moderateText(
+          text: text,
+          contentType: 'comment',
+          locale: Localizations.localeOf(context).toString(),
+        );
+        if (!mounted) return;
+        if (!r.allowed) {
+          setState(() => _isLoading = false);
+          final msg = r.reason == 'moderation_unavailable'
+              ? l10n.commentsModerationUnavailable
+              : l10n.commentsModerationAiBlocked;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(msg, style: GoogleFonts.dmSans(fontSize: 13)),
+              backgroundColor: context.pal.accent,
+            ),
+          );
+          return;
+        }
+      } catch (_) {
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        if (failClosed) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                l10n.commentsModerationUnavailable,
+                style: GoogleFonts.dmSans(fontSize: 13),
+              ),
+              backgroundColor: context.pal.accent,
+            ),
+          );
+          return;
+        }
+      }
+      if (!mounted) return;
     }
 
     setState(() => _isLoading = true);

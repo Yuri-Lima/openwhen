@@ -6,11 +6,15 @@ import {setGlobalOptions} from "firebase-functions/v2/options";
 import Stripe from "stripe";
 
 export {
+  adminGetModerationInfo,
+  adminListModerationIncidents,
   adminListPendingReports,
   adminListRecentFeedback,
   adminResolveReport,
   bootstrapAdminClaim,
 } from "./admin";
+
+export {moderateContent} from "./moderation/moderate_content";
 
 setGlobalOptions({region: "us-central1"});
 

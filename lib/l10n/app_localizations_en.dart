@@ -354,6 +354,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your message contains inappropriate words. OpenWhen is a space of love and respect. 💌';
 
   @override
+  String get commentsModerationAiBlocked =>
+      'This comment did not pass automatic moderation. Please rephrase respectfully.';
+
+  @override
+  String get commentsModerationUnavailable =>
+      'Automatic moderation is unavailable right now. Please try again shortly.';
+
+  @override
   String get vaultTitle => 'My Vault';
 
   @override
@@ -1867,6 +1875,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminModerationFeedbackTab => 'Feedback';
+
+  @override
+  String get adminModerationIncidentsTab => 'AI alerts';
+
+  @override
+  String get adminModerationAiBannerTitle => 'AI moderation (server)';
+
+  @override
+  String get adminModerationProviderOpenai => 'OpenAI Moderation API';
+
+  @override
+  String get adminModerationCredentialsOk => 'Credentials configured';
+
+  @override
+  String get adminModerationCredentialsMissing =>
+      'Credentials missing (Functions env)';
 
   @override
   String get adminModerationEmpty => 'Nothing pending.';
