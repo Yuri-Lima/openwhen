@@ -71,6 +71,8 @@ lib/
 │   └── profile/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
+    ├── icons/
+    │   └── openwhen_icons.dart        # Caminhos `assets/icons/*.svg`; widget `OpenWhenSvgIcon` (flutter_svg)
     ├── social/                        # Partilha para Instagram Stories (Meta Sharing to Stories)
     │   ├── story_share_content.dart   # Allowlist de campos para imagem 9:16 (sem mensagem/Q&A)
     │   ├── story_asset_builder.dart   # Overlay off-screen → PNG temporário
@@ -95,6 +97,8 @@ lib/
         ├── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
         └── location_share_tile.dart   # Tile escuro: toque copia link Maps (detalhe carta/cápsula)
 ```
+
+**Assets na raiz do repositório:** `assets/icons/` — SVGs do kit (`currentColor`); `assets/branding/app_icon.png` — ícone mestre 1024×1024 para **flutter_launcher_icons** (Android `mipmap-*`, iOS `AppIcon.appiconset`). Após alterar a PNG: `dart run flutter_launcher_icons`.
 
 Padrão **feature-first**: cada feature agrupa o que for necessário; auth mantém camadas `data` / `domain` / `presentation`.
 

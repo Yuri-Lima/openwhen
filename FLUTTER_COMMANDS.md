@@ -13,6 +13,7 @@ Projeto Flutter padrão; rode os comandos na raiz do repositório (onde está o 
 | `flutter build ios` | Build de release iOS (no macOS, com Xcode). |
 | `flutter clean` | Limpa artefatos de build; útil se algo parecer “preso” no cache. |
 | `flutter gen-l10n` | Regenera `lib/l10n/app_localizations*.dart` após editar ficheiros `.arb` (ver `l10n.yaml`). |
+| `dart run flutter_launcher_icons` | Regenera ícones do launcher Android (`mipmap-*`) e iOS (`AppIcon.appiconset`) a partir de `assets/branding/app_icon.png` (config em `pubspec.yaml`). Rode na raiz após alterar a arte-mestre. |
 
 ## Build / run com variáveis (`--dart-define`)
 

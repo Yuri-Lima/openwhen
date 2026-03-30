@@ -54,6 +54,8 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
 | **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
+| **Icons (UI)** | `flutter_svg` + SVG kit under `assets/icons/` — see **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
+| **App launcher** | `flutter_launcher_icons` (dev) — source `assets/branding/app_icon.png`; regenerate with `dart run flutter_launcher_icons` |
 
 Architecture is **feature-first** under `lib/features/`, with auth split into `data` / `domain` / `presentation`. See **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** for folder layout and Firestore collections.
 
@@ -169,25 +171,30 @@ Use the [emulators](https://firebase.google.com/docs/emulator-suite) to exercise
 ## Project structure (abbreviated)
 
 ```
-lib/
-├── main.dart
-├── firebase_options.dart          # local, not in repo
-├── core/
-│   ├── admin/                     # AdminFunctionsService (moderation queues, AI ops info)
-│   ├── billing/
-│   ├── config/                    # system_config_provider (remote flags)
-│   ├── constants/
-│   └── moderation/                # moderateContent callable
-├── features/
-│   ├── auth/
-│   ├── letters/
-│   ├── capsules/
-│   ├── feed/
-│   └── profile/
-└── shared/
-    ├── theme/
-    ├── utils/          # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
-    └── widgets/        # e.g. location_share_tile (copy Maps link)
+openwhen/
+├── assets/
+│   ├── branding/                  # app_icon.png (1024×1024) for launcher generation
+│   └── icons/                     # SVG icon kit (currentColor)
+├── lib/
+│   ├── main.dart
+│   ├── firebase_options.dart      # local, not in repo
+│   ├── core/
+│   │   ├── admin/                 # AdminFunctionsService (moderation queues, AI ops info)
+│   │   ├── billing/
+│   │   ├── config/                # system_config_provider (remote flags)
+│   │   ├── constants/
+│   │   └── moderation/            # moderateContent callable
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── letters/
+│   │   ├── capsules/
+│   │   ├── feed/
+│   │   └── profile/
+│   └── shared/
+│       ├── icons/                 # openwhen_icons.dart — OpenWhenIcons paths, OpenWhenSvgIcon
+│       ├── theme/
+│       ├── utils/                 # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
+│       └── widgets/               # e.g. location_share_tile (copy Maps link)
 ```
 
 Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** · Design tokens: **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)**
