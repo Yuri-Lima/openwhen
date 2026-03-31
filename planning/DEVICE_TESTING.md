@@ -9,6 +9,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 - Flutter SDK e Xcode (iOS) / Android Studio (Android)
 - Arquivos locais: `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`
 - Conta Apple Developer para push em iOS (APNs configurado no Firebase Console)
+- Checklist completa antes de produção / lojas: **[PRODUCTION.md](PRODUCTION.md)** (secção 8)
 
 ## Android
 
