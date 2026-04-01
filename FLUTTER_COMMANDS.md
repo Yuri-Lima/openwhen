@@ -13,9 +13,41 @@ Projeto Flutter padrão; rode os comandos na raiz do repositório (onde está o 
 | `flutter run -d <id>` | Roda em um device específico (veja o ID com `flutter devices`). |
 | `flutter build apk` | Build de release Android. |
 | `flutter build ios` | Build de release iOS (no macOS, com Xcode). |
+| `flutter build ipa` | Gera um **.ipa** pronto para **TestFlight** / **App Store Connect** (só macOS + Xcode). Ver secção abaixo. |
 | `flutter clean` | Limpa artefatos de build; útil se algo parecer “preso” no cache. |
 | `flutter gen-l10n` | Regenera `lib/l10n/app_localizations*.dart` após editar ficheiros `.arb` (ver `l10n.yaml`). |
 | `dart run flutter_launcher_icons` | Regenera ícones do launcher Android (`mipmap-*`) e iOS (`AppIcon.appiconset`) a partir de `assets/branding/app_icon.png` (config em `pubspec.yaml`). Rode na raiz após alterar a arte-mestre. |
+
+### `flutter build ipa` (iOS — pacote para a Apple)
+
+Usa o **Xcode** por baixo dos panos para compilar o `Runner` e produzir um ficheiro **`.ipa`** (aplicação assinada) que podes enviar para a **App Store Connect** (via Xcode Organizer, **Transporter**, ou CI).
+
+| Aspeto | Detalhe |
+|--------|---------|
+| **Plataforma** | Só **macOS**, com **Xcode** instalado e aceite da licença (`sudo xcodebuild -license` se necessário). |
+| **Assinatura** | O projeto deve ter **Signing & Capabilities** correto no `ios/Runner.xcodeproj` (Team, bundle ID, perfis). O Flutter reutiliza essa configuração. |
+| **Saída típica** | `build/ios/ipa/*.ipa` (nome costuma incluir o `CFBundleName` / app). |
+| **vs `flutter build ios`** | `build ios` gera o **app** em `build/ios/iphoneos/`; **`build ipa`** empacota em **.ipa** para distribuição na Apple. |
+| **Versão** | `version` em `pubspec.yaml` → **CFBundleShortVersionString**; **build number** → número de build (incrementa a cada upload para a mesma versão na App Store Connect). |
+
+Comandos úteis:
+
+```bash
+# Release padrão (adequado para TestFlight / submissão)
+flutter build ipa --release
+
+# Com as mesmas dart-defines que no APK (ex.: Instagram Stories, região Functions)
+flutter build ipa --release \
+  --dart-define=FB_APP_ID=1234567890123456 \
+  --dart-define=FUNCTIONS_REGION=us-central1
+```
+
+Opções frequentes (ver `flutter build ipa -h`):
+
+- **`--export-options-plist=<caminho>`** — ficheiro plist com método de exportação (`app-store`, `ad-hoc`, `development`, etc.), team ID, etc., se precisares de controlar o **export** além do default.
+- **`--build-name` / `--build-number`** — sobrescrever versão/build sem editar o `pubspec.yaml` para esse build.
+
+Depois do build: envia o **.ipa** para o App Store Connect (Xcode **Window → Organizer**, app **Transporter**, ou `xcrun altool` / API). Documentação Apple: [Upload builds](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/).
 
 ## Build / run com variáveis (`--dart-define`)
 
