@@ -2,6 +2,8 @@
 
 Projeto Flutter padrão; rode os comandos na raiz do repositório (onde está o `pubspec.yaml`).
 
+**Baseline de SDK:** [`README.md`](README.md) (badges e pré-requisitos). Para o ambiente local: `flutter --version` (Dart mínimo no `pubspec.yaml`: `^3.11.1`).
+
 ## Essenciais
 
 | Comando | Uso |

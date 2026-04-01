@@ -27,7 +27,7 @@ Uma migração futura para `go_router` pode declarar rotas com `pageBuilder` e r
 ```
 lib/
 ├── main.dart
-├── firebase_options.dart          # Não versionado no remoto — obter com o time
+├── firebase_options.dart          # FlutterFire — versionado para openwhen-923f5; regenerar com FlutterFire CLI se mudar de projeto
 ├── core/
 │   ├── navigation/
 │   │   ├── deferred_screens.dart  # Shells FutureBuilder + import deferred (WriteLetter, CreateCapsule, Search)

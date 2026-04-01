@@ -6,7 +6,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 
 ---
 
-## 1. Ficheiros obrigatórios (não versionados no remoto)
+## 1. Ficheiros obrigatórios no cliente (Firebase)
 
 | Ficheiro | Função |
 |----------|--------|
@@ -14,7 +14,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 | `android/app/google-services.json` | Projeto Firebase Android. |
 | `ios/Runner/GoogleService-Info.plist` | Projeto Firebase iOS. |
 
-Sem estes ficheiros, o build ou o runtime Firebase falham. Obter com a equipa ou regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto Firebase de produção.
+Neste repositório, os três ficheiros estão **versionados** para o projeto **`openwhen-923f5`**. Sem eles (ou sem versões coerentes entre si), o build ou o runtime Firebase falham. Para **outro** projeto Firebase (ou após mudar bundle IDs / package name), regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção.
 
 Identificadores do projeto atual estão descritos em [README.md](../README.md#firebase-configuration) (tabela Project identifiers).
 
@@ -126,7 +126,7 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 ## 8. Checklist de produção (completa)
 
-Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-não-versionados-no-remoto)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: [DEVICE_TESTING.md](DEVICE_TESTING.md); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
+Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: [DEVICE_TESTING.md](DEVICE_TESTING.md); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
 
 **Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
 
@@ -143,14 +143,14 @@ flowchart LR
 ### A. Identidade e build
 
 - [ ] **Bundle ID** (iOS) e **`applicationId`** / `namespace` (Android) finais; registados no Firebase, App Store Connect e Google Play Console.
-- [ ] Após alterar identificadores: regenerar **`firebase_options.dart`** e ficheiros nativos (`google-services.json`, `GoogleService-Info.plist`) com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção (ver secção [1](#1-ficheiros-obrigatórios-não-versionados-no-remoto)).
+- [ ] Após alterar identificadores: regenerar **`firebase_options.dart`** e ficheiros nativos (`google-services.json`, `GoogleService-Info.plist`) com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção (ver secção [1](#1-ficheiros-obrigatórios-no-cliente-firebase)).
 - [ ] **Keystore** de release Android configurado e `signingConfigs` de **release** a apontar para esse keystore (não usar apenas a assinatura debug em builds de loja; ver secção [7](#7-assinatura-e-publicação-nas-lojas-resumo)).
 - [ ] **`pubspec.yaml`:** `version` (`nome+build`) atualizado para a submissão (version code Android / build number iOS).
 - [ ] Comandos **`flutter build … --release`** incluem todos os `--dart-define` necessários (secção [2](#2-variáveis-de-build-flutter---dart-define)); CI/CD com as mesmas variáveis.
 
 ### B. Segredos e ficheiros locais
 
-- [ ] `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist` presentes e alinhados ao **projeto Firebase de produção** (secção [1](#1-ficheiros-obrigatórios-não-versionados-no-remoto)).
+- [ ] `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist` presentes e alinhados ao **projeto Firebase de produção** (secção [1](#1-ficheiros-obrigatórios-no-cliente-firebase)).
 - [ ] Nenhum **segredo** de servidor (Stripe secret, OpenAI, etc.) no código cliente ou no repositório público — apenas em Cloud Functions / ambiente seguro ([`functions/README.md`](../functions/README.md)).
 
 ### C. Firebase e backend
