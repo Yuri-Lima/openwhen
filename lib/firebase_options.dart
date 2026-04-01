@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDHKuny9dRSaNUs2Yr30PWAZfMRP9jGyxw',
-    appId: '1:393943450881:android:aea64a5d15ffffbef78700',
+    appId: '1:393943450881:android:6214bc3f37c32a58f78700',
     messagingSenderId: '393943450881',
     projectId: 'openwhen-923f5',
     storageBucket: 'openwhen-923f5.firebasestorage.app',
@@ -60,20 +60,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAtOU1vrWy3bvVuK08g0CkgkuFoxQ7_tHs',
-    appId: '1:393943450881:ios:2fc0ab87b3caa6b4f78700',
+    appId: '1:393943450881:ios:3a3977948654cd18f78700',
     messagingSenderId: '393943450881',
     projectId: 'openwhen-923f5',
     storageBucket: 'openwhen-923f5.firebasestorage.app',
-    iosBundleId: 'com.openwhen.mobile',
+    iosBundleId: 'com.openwhen.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAtOU1vrWy3bvVuK08g0CkgkuFoxQ7_tHs',
-    appId: '1:393943450881:ios:2fc0ab87b3caa6b4f78700',
+    appId: '1:393943450881:ios:3a3977948654cd18f78700',
     messagingSenderId: '393943450881',
     projectId: 'openwhen-923f5',
     storageBucket: 'openwhen-923f5.firebasestorage.app',
-    iosBundleId: 'com.openwhen.mobile',
+    iosBundleId: 'com.openwhen.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

@@ -1,4 +1,4 @@
-package com.openwhen.mobile
+package com.openwhen.app
 
 import android.content.Intent
 import androidx.core.content.FileProvider
