@@ -52,7 +52,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** for Stripe billing and content moderation (see [`functions/README.md`](functions/README.md)) |
 | **Location** | `geolocator` (+ platform location permissions) for optional share-at-send and proximity-to-open |
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
-| **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
+| **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab; **user search** uses indexed Firestore queries with a result cap (not a full `users` collection scan) — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
 | **Icons (UI)** | `flutter_svg` + SVG kit under `assets/icons/` — see **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
 | **App launcher** | `flutter_launcher_icons` (dev) — source `assets/branding/app_icon.png`; regenerate with `dart run flutter_launcher_icons` |

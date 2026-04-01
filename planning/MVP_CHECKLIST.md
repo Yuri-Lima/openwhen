@@ -113,6 +113,10 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Configurações
 - [x] Termos, Privacidade, Sobre, Ajuda
 
+### Escala (Firestore)
+
+- [x] **Busca de utilizadores** — *Problema até ~abril/2026:* `collection(users).get()` na Buscar, convites de cápsula coletiva e destinatário da carta. *Correção:* `lib/core/user_search/` (`UserSearchService`, `searchTokens`, queries limitadas). Ver [`CHANGELOG.md`](CHANGELOG.md) e [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
 ### Bugfixes recentes
 
 - [x] **Analytics (login)** — `logLogin()` só depois de `login()` bem-sucedido (`AsyncValue` sem erro); falha de credenciais mostra `SnackBar` (o notifier usa `guard` e não relança exceção)

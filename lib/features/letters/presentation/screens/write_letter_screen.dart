@@ -13,6 +13,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/user_search/user_search_result.dart';
+import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
@@ -80,11 +82,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   String? _receiverUid;
   String? _receiverName;
   String? _receiverUsername;
-  String? _receiverPhotoUrl;
   bool _receiverHasAccount = false;
 
   // Busca
-  List<Map<String, dynamic>> _searchResults = [];
+  final _userSearch = UserSearchService();
+  List<UserSearchResult> _searchResults = [];
   bool _searching = false;
   bool _showResults = false;
 
@@ -288,43 +290,31 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       return;
     }
     setState(() => _searching = true);
-    final currentUid = FirebaseAuth.instance.currentUser?.uid;
-    final allDocs = <String, Map<String, dynamic>>{};
-    final q = query.toLowerCase().replaceAll('@', '');
-
     try {
-      final snap = await FirebaseFirestore.instance
-          .collection(FirestoreCollections.users)
-          .get();
-
-      for (final doc in snap.docs) {
-        if (doc.id == currentUid) continue;
-        final data = doc.data();
-        final username = (data['username'] ?? '').toString().toLowerCase();
-        final name = (data['name'] ?? '').toString().toLowerCase();
-        final displayName = (data['displayName'] ?? '').toString().toLowerCase();
-        final email = (data['email'] ?? '').toString().toLowerCase();
-        if (username.contains(q) || name.contains(q) || displayName.contains(q) || email.contains(q)) {
-          allDocs[doc.id] = {'uid': doc.id, ...data};
-        }
-      }
+      final results = await _userSearch.search(query);
+      if (!mounted) return;
+      setState(() {
+        _searchResults = results;
+        _searching = false;
+        _showResults = true;
+      });
     } catch (e) {
-      print('Erro busca: $e');
+      debugPrint('Erro busca: $e');
+      if (mounted) {
+        setState(() {
+          _searchResults = [];
+          _searching = false;
+          _showResults = false;
+        });
+      }
     }
-
-    setState(() {
-      _searchResults = allDocs.values.toList();
-      _searching = false;
-      _showResults = true;
-    });
   }
 
-  void _selectUser(Map<String, dynamic> user) {
+  void _selectUser(UserSearchResult user) {
     setState(() {
-      _receiverUid = user['uid'];
-      _receiverName = user['displayName'] ?? user['name'] ?? '';
-      _receiverUsername = user['username'] ?? '';
-      _receiverPhotoUrl = user['photoUrl'];
+      _receiverUid = user.uid;
+      _receiverName = user.publicName;
+      _receiverUsername = user.username;
       _receiverHasAccount = true;
       _searchResults = [];
       _showResults = false;
@@ -345,7 +335,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverUid = null;
       _receiverName = email;
       _receiverUsername = '';
-      _receiverPhotoUrl = null;
       _receiverHasAccount = false;
     });
   }
@@ -355,7 +344,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverUid = null;
       _receiverName = null;
       _receiverUsername = null;
-      _receiverPhotoUrl = null;
       _receiverHasAccount = false;
       _emailController.clear();
     });
@@ -972,9 +960,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                           margin: const EdgeInsets.only(top: 4),
                           decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
                           child: Column(children: _searchResults.map((u) {
-                            final nome = u['displayName'] ?? u['name'] ?? '';
-                            final foto = u['photoUrl'];
-                            final username = u['username'] ?? '';
+                            final nome = u.publicName;
+                            final foto = u.photoUrl;
+                            final username = u.username;
                             return ListTile(
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                               leading: CircleAvatar(

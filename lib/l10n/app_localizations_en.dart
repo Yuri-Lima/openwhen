@@ -1420,6 +1420,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchEmpty => 'No results';
 
   @override
+  String get searchMinCharsHint => 'Enter at least 2 characters to search';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

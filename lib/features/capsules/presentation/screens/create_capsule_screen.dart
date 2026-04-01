@@ -10,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/user_search/user_search_result.dart';
+import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../core/services/analytics_service.dart';
@@ -97,7 +99,8 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
   bool _collectiveMode = false;
   final List<Map<String, dynamic>> _invitedUsers = [];
   final _searchController = TextEditingController();
-  List<Map<String, dynamic>> _searchResults = [];
+  final _userSearch = UserSearchService();
+  List<UserSearchResult> _searchResults = [];
   bool _searching = false;
   bool _showResults = false;
   Timer? _userSearchDebounce;
@@ -138,34 +141,30 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       return;
     }
     setState(() => _searching = true);
-    final currentUid = FirebaseAuth.instance.currentUser?.uid;
-    final q = query.toLowerCase().replaceAll('@', '');
-    final allDocs = <String, Map<String, dynamic>>{};
+    final exclude = <String>{
+      ?FirebaseAuth.instance.currentUser?.uid,
+      ..._invitedUsers.map((u) => u['uid'] as String),
+    };
     try {
-      final snap = await FirebaseFirestore.instance.collection(FirestoreCollections.users).get();
-      for (final doc in snap.docs) {
-        if (doc.id == currentUid) continue;
-        if (_invitedUsers.any((u) => u['uid'] == doc.id)) continue;
-        final data = doc.data();
-        final username = (data['username'] ?? '').toString().toLowerCase();
-        final name = (data['name'] ?? '').toString().toLowerCase();
-        final displayName = (data['displayName'] ?? '').toString().toLowerCase();
-        final email = (data['email'] ?? '').toString().toLowerCase();
-        if (username.contains(q) || name.contains(q) || displayName.contains(q) || email.contains(q)) {
-          allDocs[doc.id] = {'uid': doc.id, ...data};
-        }
-      }
-    } catch (_) {}
-    if (!mounted) return;
-    setState(() {
-      _searchResults = allDocs.values.toList();
-      _searching = false;
-      _showResults = true;
-    });
+      final results = await _userSearch.search(query, excludeUids: exclude);
+      if (!mounted) return;
+      setState(() {
+        _searchResults = results;
+        _searching = false;
+        _showResults = true;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _searchResults = [];
+        _searching = false;
+        _showResults = false;
+      });
+    }
   }
 
-  void _selectInvitedUser(Map<String, dynamic> user) {
-    final uid = user['uid'] as String;
+  void _selectInvitedUser(UserSearchResult user) {
+    final uid = user.uid;
     if (_invitedUsers.any((u) => u['uid'] == uid)) return;
     if (_invitedUsers.length >= kCapsuleMaxParticipants - 1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -174,7 +173,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       return;
     }
     setState(() {
-      _invitedUsers.add(user);
+      _invitedUsers.add(user.toLegacyMap());
       _searchResults = [];
       _showResults = false;
       _searchController.clear();
@@ -254,7 +253,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     setState(() => _saving = true);
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userDoc = await FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(uid).get();
       final senderName = userDoc.data()?['displayName'] ?? userDoc.data()?['name'] ?? '';
       final docId = const Uuid().v4();
 
@@ -528,15 +527,15 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
             decoration: BoxDecoration(color: p.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: p.border)),
             child: Column(
               children: _searchResults.map((u) {
-                final nome = u['displayName'] ?? u['name'] ?? '';
-                final foto = u['photoUrl'];
-                final username = u['username'] ?? '';
+                final nome = u.publicName;
+                final foto = u.photoUrl;
+                final username = u.username;
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   leading: CircleAvatar(
                     radius: 20,
                     backgroundColor: p.accentWarm,
-                    backgroundImage: foto != null ? NetworkImage(foto as String) : null,
+                    backgroundImage: foto != null ? NetworkImage(foto) : null,
                     child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: p.accent, fontWeight: FontWeight.bold)) : null,
                   ),
                   title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: p.ink)),

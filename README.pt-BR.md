@@ -52,7 +52,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** para Stripe e moderação de conteúdo (ver [`functions/README.md`](functions/README.md)) |
 | **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
-| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
+| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível; **busca de utilizadores** usa queries Firestore indexadas com limite de resultados (não leitura completa da coleção `users`) — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
 | **Ícones (UI)** | `flutter_svg` + kit SVG em `assets/icons/` — ver **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
 | **Ícone do app (launcher)** | `flutter_launcher_icons` (dev) — fonte `assets/branding/app_icon.png`; regenere com `dart run flutter_launcher_icons` |

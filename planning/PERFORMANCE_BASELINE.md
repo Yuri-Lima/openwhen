@@ -23,6 +23,11 @@ Após `flutter build web --release`:
 
 **Heurística esperada:** com abas do cofre lazy, ao abrir só a aba visível devem existir queries/listeners dessa aba (não das três em simultâneo).
 
+## Firestore — busca de utilizadores
+
+- **Antes (~abril/2026):** a tela Buscar, convites em cápsula coletiva e busca de destinatário na carta usavam `collection('users').get()` — leitura **O(N)** no total de utilizadores por ação.
+- **Agora:** [`UserSearchService`](../lib/core/user_search/user_search_service.dart) — no máximo **~2** queries indexadas por pesquisa (prefixo `username` + `searchTokens`), cada uma com **limit** (30); ver [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`CHANGELOG.md`](CHANGELOG.md).
+
 ## Registo sugerido
 
 | Data | Commit | main.dart.js (bytes) | Chunks deferidos (nomes + bytes) | Notas |

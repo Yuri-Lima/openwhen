@@ -1425,6 +1425,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchEmpty => 'Sin resultados';
 
   @override
+  String get searchMinCharsHint => 'Escribe al menos 2 caracteres para buscar';
+
+  @override
   String get settingsTitle => 'Configuración';
 
   @override

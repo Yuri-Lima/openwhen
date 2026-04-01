@@ -461,6 +461,7 @@
   "searchTitle": "Search people",
   "searchHint": "Search by name or @username...",
   "searchEmpty": "No results",
+  "searchMinCharsHint": "Enter at least 2 characters to search",
 
   "settingsTitle": "Settings",
   "themeSection": "APP THEME",
