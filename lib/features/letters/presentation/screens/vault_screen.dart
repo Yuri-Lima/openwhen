@@ -162,23 +162,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                 _setLetterPublicFromVault(docId, !isPublic);
               },
             ),
-            if (isPublic) ListTile(
-              leading: Icon(
-                (data['hideReceiverName'] ?? false) == true
-                    ? Icons.visibility_rounded
-                    : Icons.visibility_off_rounded,
-                color: context.pal.inkSoft,
-              ),
-              title: Text(
-                (data['hideReceiverName'] ?? false) == true
-                    ? l10n.vaultLetterSheetShowReceiver
-                    : l10n.vaultLetterSheetHideReceiver,
-              ),
-              onTap: () {
-                Navigator.pop(ctx);
-                _setHideReceiverFromVault(docId, !((data['hideReceiverName'] ?? false) as bool));
-              },
-            ),
+
             ListTile(
               leading: Icon(Icons.delete_outline_rounded, color: Colors.red.shade700),
               title: Text(

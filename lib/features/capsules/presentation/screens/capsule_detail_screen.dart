@@ -283,16 +283,47 @@ class CapsuleDetailScreen extends StatelessWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: participantNames.entries.map((e) {
+                        final uid = e.key;
+                        final name = e.value.isNotEmpty ? e.value : uid;
+                        final openedByRaw = data['openedBy'];
+                        final openedBy = openedByRaw is List
+                            ? openedByRaw.map((x) => x.toString()).toList()
+                            : <String>[];
+                        final hasOpened = openedBy.contains(uid);
+                        final isCurrentUser = uid == FirebaseAuth.instance.currentUser?.uid;
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEDE4D3),
+                            color: hasOpened
+                                ? const Color(0xFFD1FAE5)
+                                : const Color(0xFFEDE4D3),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFD4C4A8)),
+                            border: Border.all(
+                              color: hasOpened
+                                  ? const Color(0xFF10B981)
+                                  : const Color(0xFFD4C4A8),
+                            ),
                           ),
-                          child: Text(
-                            e.value.isNotEmpty ? e.value : e.key,
-                            style: GoogleFonts.dmSans(fontSize: 12, color: const Color(0xFF241608)),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                hasOpened ? '✓ ' : '⏳ ',
+                                style: const TextStyle(fontSize: 11),
+                              ),
+                              Text(
+                                isCurrentUser ? 'Você' : name,
+                                style: GoogleFonts.dmSans(
+                                  fontSize: 12,
+                                  color: hasOpened
+                                      ? const Color(0xFF065F46)
+                                      : const Color(0xFF241608),
+                                  fontWeight: isCurrentUser
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),
