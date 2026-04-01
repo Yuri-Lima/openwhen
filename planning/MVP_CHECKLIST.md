@@ -115,6 +115,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ### Bugfixes recentes
 
+- [x] **Analytics (login)** — `logLogin()` só depois de `login()` bem-sucedido (`AsyncValue` sem erro); falha de credenciais mostra `SnackBar` (o notifier usa `guard` e não relança exceção)
 - [x] **Onboarding** — `Column` overflow em ecrãs baixos: `PageView` com `Positioned.fill`, conteúdo com `SingleChildScrollView` + `ConstrainedBox(minHeight:)` (`onboarding_screen.dart`)
 - [x] **Sair da conta** não redirecionava (popUntil até raiz após signOut em `settings_screen.dart`)
 - [x] **Contraste em temas escuros** — splash, onboarding e hero do login usavam `context.pal.ink` (cor de texto) como fundo, ficando claro em midnight/dark; corrigido para `context.pal.headerGradient.first`
