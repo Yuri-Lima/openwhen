@@ -15,6 +15,7 @@ import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -510,6 +511,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           backgroundColor: context.pal.accent,
         ));
         AnalyticsService.logLetterCreated(_selectedEmotion?.key ?? 'unknown');
+        // Agenda lembrete 1 dia antes de abrir
+        await NotificationService.scheduleLetterReminder(
+          id: _openDate.millisecondsSinceEpoch ~/ 1000,
+          title: _titleController.text.trim(),
+          openDate: _openDate,
+        );
         Navigator.pop(context);
       }
     } catch (e) {

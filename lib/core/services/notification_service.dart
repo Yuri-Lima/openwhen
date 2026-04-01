@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -123,6 +125,47 @@ class NotificationService {
     } catch (e) {
       if (kDebugMode) debugPrint('FCM getToken: $e');
     }
+  }
+
+  /// Agenda notificação local de lembrete 1 dia antes da carta abrir
+  static Future<void> scheduleLetterReminder({
+    required int id,
+    required String title,
+    required DateTime openDate,
+  }) async {
+    if (kIsWeb) return;
+    if (!Platform.isAndroid && !Platform.isIOS) return;
+
+    final reminderDate = openDate.subtract(const Duration(days: 1));
+    if (reminderDate.isBefore(DateTime.now())) return;
+
+    tz_data.initializeTimeZones();
+    final tzDate = tz.TZDateTime.from(reminderDate, tz.local);
+
+    await _localNotifications.zonedSchedule(
+      id: id,
+      title: '💌 Sua carta abre amanhã!',
+      body: '\"$title\" estará disponível amanhã. Prepare-se para sentir.',
+      scheduledDate: tzDate,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          _androidChannel.id,
+          _androidChannel.name,
+          channelDescription: _androidChannel.description,
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
+
+  /// Cancela lembrete agendado
+  static Future<void> cancelReminder(int id) async {
+    if (kIsWeb) return;
+    await _localNotifications.cancel(id: id);
   }
 
   static Future<void> _onForegroundMessage(RemoteMessage message) async {
