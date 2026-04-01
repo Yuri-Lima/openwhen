@@ -18,6 +18,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 Importante (logo após o núcleo do MVP)
 
+- [ ] **Sign in with Apple** — Firebase Auth (`OAuthProvider` + nonce), pacote `sign_in_with_apple`, capability no App ID, provedor Apple no Firebase Console, ligar o botão em `login_screen.dart` (hoje só UI)
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
 - [x] Compartilhamento Stories/Reels
 - [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
@@ -133,4 +134,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — todos os itens marcados como concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
