@@ -529,6 +529,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _signOutAndNavigate(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.pal.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'Sair da conta',
+          style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic),
+        ),
+        content: Text(
+          'Tem certeza que deseja sair?',
+          style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('Cancelar', style: GoogleFonts.dmSans(color: context.pal.inkSoft)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text('Sair', style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
     await ref.read(authNotifierProvider.notifier).signOut();
     if (!context.mounted) return;
     await _handleSignOutResult(context);

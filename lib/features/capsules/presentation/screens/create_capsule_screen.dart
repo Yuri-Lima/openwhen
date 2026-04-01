@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -306,7 +307,8 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
 
       if (mounted) {
         setState(() => _saving = false);
-        _showSuccess();
+        AnalyticsService.logCapsuleCreated(_selectedTheme?.id ?? 'unknown');
+      _showSuccess();
       }
     } catch (e) {
       setState(() => _saving = false);

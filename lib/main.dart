@@ -11,6 +11,7 @@ import 'l10n/app_localizations.dart';
 import 'shared/locale/locale_provider.dart';
 import 'core/constants/firestore_collections.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/analytics_service.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
@@ -100,6 +101,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     );
 
     return MaterialApp(
+      navigatorObservers: [AnalyticsService.observer],
       navigatorKey: _appNavigatorKey,
       title: 'OpenWhen',
       debugShowCheckedModeBanner: false,

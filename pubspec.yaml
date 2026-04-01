@@ -49,6 +49,7 @@ dependencies:
   http: ^1.2.2
   path: ^1.9.1
   flutter_svg: ^2.2.3
+  firebase_analytics: ^12.2.0
 
 dev_dependencies:
   flutter_test:

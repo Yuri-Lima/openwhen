@@ -3,6 +3,7 @@ import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
@@ -53,6 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     }
     setState(() => _isLoading = true);
     try {
+      await AnalyticsService.logLogin();
       await ref.read(authNotifierProvider.notifier).login(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),

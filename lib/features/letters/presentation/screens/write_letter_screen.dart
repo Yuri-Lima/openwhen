@@ -14,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -508,6 +509,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
               : l10n.writeLetterSnackSentExternal),
           backgroundColor: context.pal.accent,
         ));
+        AnalyticsService.logLetterCreated(_selectedEmotion?.key ?? 'unknown');
         Navigator.pop(context);
       }
     } catch (e) {
