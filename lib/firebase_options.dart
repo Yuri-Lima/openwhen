@@ -60,11 +60,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAtOU1vrWy3bvVuK08g0CkgkuFoxQ7_tHs',
-    appId: '1:393943450881:ios:3a3977948654cd18f78700',
+    appId: '1:393943450881:ios:977521ca30587c3bf78700',
     messagingSenderId: '393943450881',
     projectId: 'openwhen-923f5',
     storageBucket: 'openwhen-923f5.firebasestorage.app',
-    iosBundleId: 'com.openwhen.app',
+    iosBundleId: 'OPENWHEN-APP-2026',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
