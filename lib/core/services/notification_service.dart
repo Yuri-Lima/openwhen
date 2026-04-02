@@ -120,6 +120,12 @@ class NotificationService {
     if (FirebaseAuth.instance.currentUser == null) return;
     try {
       await _waitForIosApnsToken();
+      if (Platform.isIOS && await _messaging.getAPNSToken() == null) {
+        if (kDebugMode) {
+          debugPrint('FCM: skip getToken — APNs token not available yet');
+        }
+        return;
+      }
       final token = await _messaging.getToken();
       if (token != null) await FcmTokenManager.saveToken(token);
     } catch (e) {

@@ -1,3 +1,4 @@
+import FirebaseMessaging
 import Flutter
 import UIKit
 
@@ -78,6 +79,16 @@ private enum InstagramStoriesChannel {
     // Needed so APNs delivers a device token before Dart calls FCM getToken().
     application.registerForRemoteNotifications()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  /// Required so Firebase Messaging accepts `getToken()`; otherwise logs
+  /// `I-FCM002022` and native code may assert on some iOS/SDK combinations.
+  override func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    Messaging.messaging().apnsToken = deviceToken
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
