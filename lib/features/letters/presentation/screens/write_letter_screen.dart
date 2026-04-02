@@ -90,6 +90,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   // Mensagem digitada: recolhida por padrão
   bool _messageExpanded = false;
+  bool _allowPublish = false;
   final FocusNode _messageFocusNode = FocusNode();
 
   // Voz (mobile/desktop com IO; web usa stub de upload)
@@ -481,6 +482,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'openDate': Timestamp.fromDate(_openDate),
         'status': 'locked',
         'isPublic': false,
+        'publishAfterReview': _allowPublish,
         'canBeShared': false,
         'emotionalState': _selectedEmotion!.key,
         'requestStatus': areFriends ? 'accepted' : 'pending',
@@ -1073,6 +1075,46 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: _allowPublish ? context.pal.accent.withOpacity(0.4) : context.pal.border),
+                    ),
+                    child: Row(children: [
+                      Icon(
+                        _allowPublish ? Icons.public_rounded : Icons.lock_outline_rounded,
+                        color: _allowPublish ? context.pal.accent : context.pal.inkSoft,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                          _allowPublish ? 'Permitir publicação no feed' : 'Carta privada',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: _allowPublish ? context.pal.accent : context.pal.ink,
+                          ),
+                        ),
+                        Text(
+                          _allowPublish
+                              ? 'O destinatário poderá compartilhar no feed após abrir'
+                              : 'Só você e o destinatário terão acesso',
+                          style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
+                        ),
+                      ])),
+                      Switch(
+                        value: _allowPublish,
+                        onChanged: (v) => setState(() => _allowPublish = v),
+                        activeColor: context.pal.accent,
+                      ),
+                    ]),
                   ),
                   const SizedBox(height: 24),
 
