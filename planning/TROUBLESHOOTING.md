@@ -59,7 +59,46 @@ A **native crash** in a Dart isolate worker (not a normal Dart `Exception`). Oft
 
 ---
 
-## 4. Quick reference — deploy rules
+## 4. iOS — `SIGABRT` ao enviar comentário (profile / debug no dispositivo)
+
+### O que é
+
+`SIGABRT` em thread nativa (`Task`, `com.apple.root.user-initiated-qos`) — **abort** em código nativo (Firebase SDK, gRPC, etc.), não uma exceção Dart no `catch`. O terminal só mostra `__pthread_kill`; falta o **módulo** que falhou.
+
+### 1) Capturar causa no Xcode (obrigatório para cravar)
+
+1. Abrir [`ios/Runner.xcworkspace`](../ios/Runner.xcworkspace) no Xcode.
+2. **Product → Scheme → Edit Scheme → Run**: se precisar reproduzir em Profile, duplicar o scheme ou usar **Profile** como build configuration.
+3. Correr no iPhone; ao crashar, no painel de debug **ler linhas acima** do abort (ex.: `FirebaseMessaging`, `Firestore`, `FIRAssert`, `NSException`).
+4. No debugger **(lldb)**: `bt all` ou abrir o **backtrace** de outras threads além da frame zero — ver frames com nome de biblioteca (ex.: `FirebaseFirestore`, `grpc`).
+
+### 2) Firebase Cloud Messaging — APNs em Development
+
+No Firebase Console → **Project settings → Cloud Messaging** → app `com.openwhen.app`:
+
+- Carregar a **mesma chave APNs `.p8`** em **Development APNs auth key** (não só em Production). Builds de desenvolvimento/profile usam sandbox; sem isso aparece `I-FCM002022` e o SDK pode falhar em threads em background.
+
+### 3) Isolar moderação (`moderateContent`) vs Firestore
+
+Sem alterar a documentação Firestore, podes forçar o cliente a **ignorar** a moderação por IA:
+
+```bash
+flutter run --profile -d <device_id> --dart-define=SKIP_AI_MODERATION=true
+```
+
+Implementado em [`lib/features/feed/presentation/screens/comments_screen.dart`](../lib/features/feed/presentation/screens/comments_screen.dart): com `SKIP_AI_MODERATION=true`, o fluxo deixa de chamar `moderateContent` e vai direto ao Firestore.
+
+- Se o crash **parar**, investigar **Cloud Functions** / callable / região.
+- Se **continuar**, foco em **Firestore** ou **FCM** (threads paralelas).
+
+### 4) Bundle ID e Apple Team
+
+- O **Runner** deve usar **`com.openwhen.app`**, alinhado com [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) (`BUNDLE_ID`) e com a app registada no Firebase.
+- `DEVELOPMENT_TEAM` no Xcode (`project.pbxproj`) é o **Team** que assina a app. A **APNs Authentication Key** no Firebase deve pertencer ao **mesmo** Apple Developer Program que possui o App ID `com.openwhen.app`, caso contrário push/APNs ficam inconsistentes. Se o Team ID no Firebase (chave APNs) for diferente do Team do Xcode, alinha assinatura ou chave no projeto Firebase certo.
+
+---
+
+## 5. Quick reference — deploy rules
 
 ```bash
 firebase deploy --only firestore:rules,storage
@@ -69,4 +108,4 @@ Validate main flows after deploy ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar a app → correcção: carregar dados **após** o primeiro frame (ficheiro `admin_moderation_screen.dart` acima).
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar a app → correcção: carregar dados **após** o primeiro frame (ficheiro `admin_moderation_screen.dart` acima). **`SIGABRT` ao comentar** → secção 4 acima (Xcode backtrace, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle `com.openwhen.app`).

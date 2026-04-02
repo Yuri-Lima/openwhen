@@ -12,6 +12,11 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/utils/date_formatter.dart';
 
+/// When `true` (via `--dart-define=SKIP_AI_MODERATION=true`), skips the Cloud Function
+/// `moderateContent` call to isolate Firestore vs callable when debugging native crashes.
+const bool _kSkipAiModeration =
+    bool.fromEnvironment('SKIP_AI_MODERATION', defaultValue: false);
+
 const Map<String, List<String>> _bannedWordsByLocale = {
   'pt': [
     'idiota', 'imbecil', 'burro', 'estupido', 'estúpido',
@@ -92,7 +97,8 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     }
 
     final cfg = ref.read(systemConfigProvider).value;
-    final aiOn = cfg?.aiModerationEnabled == true;
+    final aiOn =
+        !_kSkipAiModeration && cfg?.aiModerationEnabled == true;
     final failClosed = cfg?.aiModerationFailClosed != false;
 
     if (aiOn) {
