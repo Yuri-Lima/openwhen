@@ -11,19 +11,20 @@ service cloud.firestore {
     }
 
     // Billing fields are written only by backend (Stripe webhooks). Client may set subscriptionTier to free once if missing.
+    // Use .get(..., null) so missing keys compare equal to explicit nulls after merges/updates.
     function userBillingFieldsUnchanged() {
-      return request.resource.data.subscriptionTier == resource.data.subscriptionTier
-        && request.resource.data.stripeCustomerId == resource.data.stripeCustomerId
-        && request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId
-        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus;
+      return request.resource.data.get('subscriptionTier', null) == resource.data.get('subscriptionTier', null)
+        && request.resource.data.get('stripeCustomerId', null) == resource.data.get('stripeCustomerId', null)
+        && request.resource.data.get('stripeSubscriptionId', null) == resource.data.get('stripeSubscriptionId', null)
+        && request.resource.data.get('subscriptionStatus', null) == resource.data.get('subscriptionStatus', null);
     }
 
     function userBillingOnlyFreeTierMigration() {
-      return resource.data.subscriptionTier == null
+      return resource.data.get('subscriptionTier', null) == null
         && request.resource.data.subscriptionTier == 'free'
-        && request.resource.data.stripeCustomerId == resource.data.stripeCustomerId
-        && request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId
-        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus;
+        && request.resource.data.get('stripeCustomerId', null) == resource.data.get('stripeCustomerId', null)
+        && request.resource.data.get('stripeSubscriptionId', null) == resource.data.get('stripeSubscriptionId', null)
+        && request.resource.data.get('subscriptionStatus', null) == resource.data.get('subscriptionStatus', null);
     }
 
     function userCreateHasNoServerBillingFields() {
@@ -54,7 +55,10 @@ service cloud.firestore {
             'voice_letter'
           ]
           && request.resource.data.keys().hasOnly(['unlockedAt'])
-          && request.resource.data.unlockedAt is timestamp;
+          && (
+            request.resource.data.unlockedAt == request.time
+            || request.resource.data.unlockedAt is timestamp
+          );
         allow update, delete: if false;
       }
 

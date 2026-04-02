@@ -834,6 +834,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo subir el audio. Inténtalo de nuevo.';
 
   @override
+  String get writeLetterSendErrorLoadProfile =>
+      'No se pudo cargar tu perfil. Inténtalo de nuevo.';
+
+  @override
+  String get writeLetterSendErrorFriendshipCheck =>
+      'No se pudo verificar la amistad. Inténtalo de nuevo.';
+
+  @override
+  String get writeLetterSendErrorSave =>
+      'No se pudo guardar la carta. Inténtalo de nuevo.';
+
+  @override
   String get voiceLetterTitle => 'Mensaje de voz';
 
   @override

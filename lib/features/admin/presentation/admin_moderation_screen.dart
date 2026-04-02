@@ -37,11 +37,16 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    _loadModerationInfo();
-    _loadReports();
-    _loadFeedback();
-    _loadReviews();
-    _loadIncidents();
+    // Do not call setState from async loaders synchronously during initState — their first
+    // lines run before initState returns and will crash / assert. Defer after frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _loadModerationInfo();
+      _loadReports();
+      _loadFeedback();
+      _loadReviews();
+      _loadIncidents();
+    });
   }
 
   Future<void> _loadModerationInfo() async {

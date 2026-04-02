@@ -1619,6 +1619,24 @@ abstract class AppLocalizations {
   /// **'Não foi possível enviar o áudio. Tente de novo.'**
   String get writeLetterVoiceUploadError;
 
+  /// No description provided for @writeLetterSendErrorLoadProfile.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível carregar o seu perfil. Tente novamente.'**
+  String get writeLetterSendErrorLoadProfile;
+
+  /// No description provided for @writeLetterSendErrorFriendshipCheck.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível verificar amizade. Tente novamente.'**
+  String get writeLetterSendErrorFriendshipCheck;
+
+  /// No description provided for @writeLetterSendErrorSave.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível salvar a carta. Tente novamente.'**
+  String get writeLetterSendErrorSave;
+
   /// No description provided for @voiceLetterTitle.
   ///
   /// In pt_BR, this message translates to:

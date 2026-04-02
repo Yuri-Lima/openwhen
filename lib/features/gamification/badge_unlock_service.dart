@@ -19,28 +19,6 @@ Future<void> unlockBadgeIfMissing(String uid, String badgeId) async {
 class BadgeUnlockHooks {
   BadgeUnlockHooks._();
 
-  static Future<void> afterLetterSent({
-    required String senderUid,
-    required bool hasVoice,
-  }) async {
-    final userRef = FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(senderUid);
-    await userRef.update({'lettersSentCount': FieldValue.increment(1)});
-    final snap = await userRef.get();
-    final cnt = (snap.data()?['lettersSentCount'] as num?)?.toInt() ?? 0;
-    if (cnt == 1) {
-      await unlockBadgeIfMissing(senderUid, BadgeId.firstLetterSent);
-    }
-    if (cnt >= 5) {
-      await unlockBadgeIfMissing(senderUid, BadgeId.lettersSentFive);
-    }
-    if (cnt >= 10) {
-      await unlockBadgeIfMissing(senderUid, BadgeId.lettersSentTen);
-    }
-    if (hasVoice) {
-      await unlockBadgeIfMissing(senderUid, BadgeId.voiceLetter);
-    }
-  }
-
   static Future<void> afterLetterOpenedByReceiver(String receiverUid) async {
     final userRef = FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(receiverUid);
     await userRef.update({'openedLettersCount': FieldValue.increment(1)});

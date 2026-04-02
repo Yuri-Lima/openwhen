@@ -268,6 +268,9 @@
   "writeLetterVoiceOpenSettings": "Open settings",
   "writeLetterVoiceWillSend": "Will be sent with the letter",
   "writeLetterVoiceUploadError": "Could not upload audio. Please try again.",
+  "writeLetterSendErrorLoadProfile": "Could not load your profile. Please try again.",
+  "writeLetterSendErrorFriendshipCheck": "Could not verify friend status. Please try again.",
+  "writeLetterSendErrorSave": "Could not save your letter. Please try again.",
 
   "voiceLetterTitle": "Voice message",
   "voiceLetterSubtitle": "Recorded by the sender",

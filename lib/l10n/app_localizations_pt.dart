@@ -836,6 +836,18 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível enviar o áudio. Tente de novo.';
 
   @override
+  String get writeLetterSendErrorLoadProfile =>
+      'Não foi possível carregar o seu perfil. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorFriendshipCheck =>
+      'Não foi possível verificar amizade. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorSave =>
+      'Não foi possível salvar a carta. Tente novamente.';
+
+  @override
   String get voiceLetterTitle => 'Mensagem de voz';
 
   @override
@@ -3085,6 +3097,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get writeLetterVoiceUploadError =>
       'Não foi possível enviar o áudio. Tente de novo.';
+
+  @override
+  String get writeLetterSendErrorLoadProfile =>
+      'Não foi possível carregar o seu perfil. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorFriendshipCheck =>
+      'Não foi possível verificar amizade. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorSave =>
+      'Não foi possível salvar a carta. Tente novamente.';
 
   @override
   String get voiceLetterTitle => 'Mensagem de voz';

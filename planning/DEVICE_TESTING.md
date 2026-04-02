@@ -38,6 +38,8 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 **Documentação completa:** identificadores do projeto, instalação da Firebase CLI, JDK 21 para Emulator Suite, portas e deploy — ver **[README.md](../README.md#firebase-configuration)** (English) ou **[README.pt-BR.md](../README.pt-BR.md)** (seções *Configuração Firebase* e *Firebase CLI e emuladores*).
 
+**Problemas com envio de carta ou ecrã admin moderação:** [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
 ## Regressão web (opcional)
 
 - `flutter run -d chrome` — avatar (galeria), abertura de cápsula e feed continuam funcionando; FCM no web exige configuração extra (VAPID / service worker) e pode estar limitado.

@@ -203,7 +203,7 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 
 ## Roadmap & progress
 
-**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). For **production** builds (`dart-define`, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). Regression QA on devices: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
+**MVP core (🔴 critical) is complete** — see [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). For **production** builds (`dart-define`, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). Regression QA on devices: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md). **Operational issues** (Firestore permission errors on send, admin screen): [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md).
 
 | Document | Purpose |
 |----------|---------|
@@ -211,6 +211,7 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Day-to-day checklist |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Release history |
 | [planning/PRODUCTION.md](planning/PRODUCTION.md) | Production checklist: `dart-define`, Firebase files, Meta/Instagram, stores |
+| [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Send letter / rules / admin moderation / iOS crash notes |
 
 ---
 
@@ -255,3 +256,4 @@ Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Strategy for investors |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Keep a Changelog style |
 | [planning/PRODUCTION.md](planning/PRODUCTION.md) | Build/release checklist (`FB_APP_ID`, Firebase, billing flags) |
+| [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Operational fixes: letter send, Firestore rules, admin screen |

@@ -203,13 +203,14 @@ openwhen/
 
 ## Roadmap e progresso
 
-**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md).
+**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md). **Problemas operacionais** (erro ao enviar carta, ecrã admin): [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md).
 
 | Documento | Função |
 |-----------|--------|
 | [planning/ROADMAP.md](planning/ROADMAP.md) | Roadmap por fases |
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Checklist diário |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Histórico de releases |
+| [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Envio de carta / regras Firestore / moderação admin / iOS |
 
 ---
 
@@ -254,3 +255,4 @@ Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/BUSINESS.md](planning/BUSINESS.md) | Estratégia para investidores |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Estilo Keep a Changelog |
 | [planning/PRODUCTION.md](planning/PRODUCTION.md) | Checklist de produção (`dart-define`, Firebase, Meta/Instagram, lojas) |
+| [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Diagnóstico: carta, regras, ecrã admin |

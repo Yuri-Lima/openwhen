@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +24,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
-import '../../../gamification/badge_unlock_service.dart';
+import '../../data/letter_send_service.dart';
+import '../../data/letter_send_step.dart';
 import '../voice_letter.dart';
 
 class EmotionalState {
@@ -392,6 +393,23 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     if (picked != null) setState(() => _openDate = picked);
   }
 
+  String _letterSendErrorMessage(AppLocalizations l10n, LetterSendStep step, Object e) {
+    final base = switch (step) {
+      LetterSendStep.voiceUpload => l10n.writeLetterVoiceUploadError,
+      LetterSendStep.loadSenderProfile => l10n.writeLetterSendErrorLoadProfile,
+      LetterSendStep.checkFriendship => l10n.writeLetterSendErrorFriendshipCheck,
+      LetterSendStep.commitFirestore => l10n.writeLetterSendErrorSave,
+    };
+    // Always append Firebase error code so release builds show e.g. permission-denied vs unavailable.
+    if (e is FirebaseException) {
+      return '$base (${e.code})';
+    }
+    if (kDebugMode) {
+      return '$base ($e)';
+    }
+    return base;
+  }
+
   Future<void> _saveLetter() async {
     final l10n = AppLocalizations.of(context)!;
     if (_titleController.text.trim().isEmpty) {
@@ -424,12 +442,23 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     if (!mounted) return;
 
     setState(() => _isLoading = true);
+    LetterSendStep step = LetterSendStep.voiceUpload;
     try {
-      final currentUser = FirebaseAuth.instance.currentUser!;
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        if (mounted) {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.writeLetterSendErrorLoadProfile)),
+          );
+        }
+        return;
+      }
       final firestore = FirebaseFirestore.instance;
 
       String? voiceUrlToSave;
       if (!kIsWeb && _voiceLocalPath != null) {
+        step = LetterSendStep.voiceUpload;
         voiceUrlToSave = await uploadVoiceLetterFile(_voiceLocalPath!, currentUser.uid);
         if (voiceUrlToSave == null) {
           if (mounted) {
@@ -443,9 +472,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         if (mounted) setState(() => _voiceLocalPath = null);
       }
 
+      step = LetterSendStep.loadSenderProfile;
       final senderDoc = await firestore.collection(FirestoreCollections.users).doc(currentUser.uid).get();
       final senderName = senderDoc.data()?['displayName'] ?? senderDoc.data()?['name'] ?? currentUser.email ?? '';
 
+      step = LetterSendStep.checkFriendship;
       bool areFriends = false;
       if (_receiverUid != null) {
         final followCheck = await firestore
@@ -456,7 +487,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         areFriends = followCheck.docs.isNotEmpty || _receiverUid == currentUser.uid;
       }
 
-      await firestore.collection(FirestoreCollections.letters).add({
+      step = LetterSendStep.commitFirestore;
+      final letterData = <String, dynamic>{
         'senderUid': currentUser.uid,
         'senderName': senderName,
         'receiverUid': _receiverUid ?? '',
@@ -486,10 +518,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             'senderLocation': locOpts.senderLocation!,
             'openRequiresProximity': locOpts.openRequiresProximity,
           },
-      });
+      };
 
-      await BadgeUnlockHooks.afterLetterSent(
+      await LetterSendService.commitLetterSend(
+        firestore: firestore,
         senderUid: currentUser.uid,
+        letterData: letterData,
         hasVoice: voiceUrlToSave != null,
       );
 
@@ -501,7 +535,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           backgroundColor: context.pal.accent,
         ));
         AnalyticsService.logLetterCreated(_selectedEmotion?.key ?? 'unknown');
-        // Agenda lembrete 1 dia antes de abrir
         await NotificationService.scheduleLetterReminder(
           id: _openDate.millisecondsSinceEpoch ~/ 1000,
           title: _titleController.text.trim(),
@@ -509,8 +542,15 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         );
         Navigator.pop(context);
       }
-    } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.errorGeneric(e.toString()))));
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('[LetterSend] failed step=${step.name} $e\n$st');
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_letterSendErrorMessage(l10n, step, e))),
+        );
+      }
     }
     if (mounted) setState(() => _isLoading = false);
   }

@@ -280,6 +280,9 @@
   "writeLetterVoiceOpenSettings": "Abrir configurações",
   "writeLetterVoiceWillSend": "Será enviada com a carta",
   "writeLetterVoiceUploadError": "Não foi possível enviar o áudio. Tente de novo.",
+  "writeLetterSendErrorLoadProfile": "Não foi possível carregar o seu perfil. Tente novamente.",
+  "writeLetterSendErrorFriendshipCheck": "Não foi possível verificar amizade. Tente novamente.",
+  "writeLetterSendErrorSave": "Não foi possível salvar a carta. Tente novamente.",
 
   "voiceLetterTitle": "Mensagem de voz",
   "voiceLetterSubtitle": "Gravada pelo remetente",

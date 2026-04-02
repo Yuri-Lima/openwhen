@@ -184,9 +184,11 @@ Lido por [`lib/core/config/system_config_provider.dart`](../lib/core/config/syst
 
 - **Cliente:** lista lexical em [`comments_screen.dart`](../lib/features/feed/presentation/screens/comments_screen.dart); denúncias em [`shared/moderation/report_flow.dart`](../lib/shared/moderation/report_flow.dart); opcionalmente IA quando `aiModerationEnabled` via [`ModerationFunctionsService`](../lib/core/moderation/moderation_functions_service.dart).
 - **Servidor:** Firebase Cloud Functions em [`functions/src/moderation/`](../functions/src/moderation/) — adapter **OpenAI** (Moderation API) por defeito; `MODERATION_PROVIDER` reservado para mais provedores; fallback + coleção `moderationIncidents` em falhas. Ver [`functions/README.md`](../functions/README.md).
-- **Superadmin:** [`AdminModerationScreen`](../lib/features/admin/presentation/admin_moderation_screen.dart) — quatro abas (denúncias, feedback, revisão humana, alertas IA); `TabBar` **rolável** (`isScrollable: true`) para rótulos completos em ecrãs estreitos; texto longo nos cartões com `SelectionArea` + scroll horizontal quando necessário; banner com `adminGetModerationInfo` (provedor efectivo e se a chave está configurada no runtime, sem expor segredos).
+- **Superadmin:** [`AdminModerationScreen`](../lib/features/admin/presentation/admin_moderation_screen.dart) — quatro abas (denúncias, feedback, revisão humana, alertas IA); `TabBar` **rolável** (`isScrollable: true`) para rótulos completos em ecrãs estreitos; texto longo nos cartões com `SelectionArea` + scroll horizontal quando necessário; banner com `adminGetModerationInfo` (provedor efectivo e se a chave está configurada no runtime, sem expor segredos). Os dados são carregados **após** o primeiro frame (`addPostFrameCallback`) para não chamar `setState` durante `initState` (ver [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md)).
 
 ### Carta (`letters`) — campos relevantes (subset)
+
+**Envio (Firestore):** o cliente confirma o envio numa **transação** — cria o documento em `letters`, incrementa `lettersSentCount` no remetente e cria documentos em `users/{uid}/badgeUnlocks/{badgeId}` quando aplicável ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)). Falhas de regras em qualquer passo revertem a transação. Diagnóstico: [`planning/TROUBLESHOOTING.md`](TROUBLESHOOTING.md) — secção “Send letter”.
 
 Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o documento pode incluir:
 

@@ -835,6 +835,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not upload audio. Please try again.';
 
   @override
+  String get writeLetterSendErrorLoadProfile =>
+      'Could not load your profile. Please try again.';
+
+  @override
+  String get writeLetterSendErrorFriendshipCheck =>
+      'Could not verify friend status. Please try again.';
+
+  @override
+  String get writeLetterSendErrorSave =>
+      'Could not save your letter. Please try again.';
+
+  @override
   String get voiceLetterTitle => 'Voice message';
 
   @override
