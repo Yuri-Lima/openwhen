@@ -39,14 +39,25 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     _tabController = TabController(length: 4, vsync: this);
     // Do not call setState from async loaders synchronously during initState — their first
     // lines run before initState returns and will crash / assert. Defer after frame.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Sequential loads avoid concurrent native Firebase HTTPS callable calls on iOS (SIGABRT mitigation).
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      _loadModerationInfo();
-      _loadReports();
-      _loadFeedback();
-      _loadReviews();
-      _loadIncidents();
+      await _loadAllAdminData();
     });
+  }
+
+  /// Runs each admin queue loader one after another (not in parallel).
+  Future<void> _loadAllAdminData() async {
+    if (!mounted) return;
+    await _loadModerationInfo();
+    if (!mounted) return;
+    await _loadReports();
+    if (!mounted) return;
+    await _loadFeedback();
+    if (!mounted) return;
+    await _loadReviews();
+    if (!mounted) return;
+    await _loadIncidents();
   }
 
   Future<void> _loadModerationInfo() async {

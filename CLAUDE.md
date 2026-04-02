@@ -11,7 +11,7 @@ Até ~abril/2026 o app carregava **todos** os documentos de `users` em várias t
 
 ## Envio de carta / regras Firestore / moderação admin
 
-Erros `permission-denied` ao enviar, deploy de `firestore.rules`, ecrã **Moderação (admin)** a fechar a app: ver [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md).
+Erros `permission-denied` ao enviar, deploy de `firestore.rules`, ecrã **Moderação (admin)** a fechar / `SIGABRT` (não voltar a callables admin em paralelo; `SKIP_AI_MODERATION` só comentários): ver [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md) §2 e §4.
 
 ## Branches Git
 | Branch | Papel |

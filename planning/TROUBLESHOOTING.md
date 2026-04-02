@@ -34,15 +34,24 @@ Deleting collections (letters, follows, etc.) does **not** by itself block new w
 
 ---
 
-## 2. Admin moderation screen — app closes when opening “Moderation (admin)”
+## 2. Admin moderation screen — app closes or `SIGABRT` when opening “Moderation (admin)”
 
-### Cause (fixed in app)
+### Causes (fixed / avoid regressions)
 
-Loads were started from `initState` and the **first line** of each async loader called **`setState` synchronously** — still during `initState`, which Flutter disallows. That can assert in debug or **terminate** the app on device.
+1. **Flutter lifecycle:** Loads were started from `initState` and the **first line** of each async loader called **`setState` synchronously** — still during `initState`, which Flutter disallows. That can assert in debug or **terminate** the app on device.
 
-### Fix
+2. **Parallel Firebase HTTPS callables on iOS:** After fixing (1), starting **all** admin callables **at once** (`getModerationInfo`, list reports, feedback, reviews, incidents) still stressed the **native** Firebase iOS stack and correlated with **`SIGABRT`** on device (terminal often only shows `__pthread_kill`; use Xcode **`bt all`** to see the real module).
 
-Loaders are scheduled with **`WidgetsBinding.instance.addPostFrameCallback`** so `setState` runs after the first frame. See [`lib/features/admin/presentation/admin_moderation_screen.dart`](../lib/features/admin/presentation/admin_moderation_screen.dart).
+### Fixes (do not undo)
+
+- Schedule work with **`WidgetsBinding.instance.addPostFrameCallback`** so the first `setState` from loaders runs **after** the first frame.
+- Run the five admin loaders **sequentially** (`_loadAllAdminData()` with `await` between each), **not** five parallel futures from the same callback.
+
+See [`lib/features/admin/presentation/admin_moderation_screen.dart`](../lib/features/admin/presentation/admin_moderation_screen.dart).
+
+### Common mistake when debugging `SIGABRT`
+
+**`--dart-define=SKIP_AI_MODERATION=true`** only skips the **`moderateContent`** callable in [`comments_screen.dart`](../lib/features/feed/presentation/screens/comments_screen.dart). It does **not** affect the admin screen, which uses different **`admin*`** callables. Use the sequential-load pattern above for admin; use Xcode backtraces if the crash persists (see §4).
 
 ### Still required for the feature
 
@@ -74,7 +83,7 @@ A **native crash** in a Dart isolate worker (not a normal Dart `Exception`). Oft
 
 ### 2) Firebase Cloud Messaging — APNs em Development
 
-No Firebase Console → **Project settings → Cloud Messaging** → app `com.openwhen.app`:
+No Firebase Console → **Project settings → Cloud Messaging** → app iOS cujo `BUNDLE_ID` em [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) corresponde ao **Runner**:
 
 - Carregar a **mesma chave APNs `.p8`** em **Development APNs auth key** (não só em Production). Builds de desenvolvimento/profile usam sandbox; sem isso aparece `I-FCM002022` e o SDK pode falhar em threads em background.
 
@@ -91,16 +100,18 @@ Implementado em [`lib/features/feed/presentation/screens/comments_screen.dart`](
 - Se o crash **parar**, investigar **Cloud Functions** / callable / região.
 - Se **continuar**, foco em **Firestore** ou **FCM** (threads paralelas).
 
+**Nota:** isto **não** isola o ecrã **Moderação (admin)** (callables `admin*`). Para esse ecrã, ver **§2** (cargas sequenciais, não paralelas).
+
 ### 4) Entitlement `aps-environment` (Push)
 
 Se o Xcode mostrar **`no valid "aps-environment" entitlement string found`**, o alvo iOS **não tinha** a capability de push no ficheiro de entitlements. O projeto usa [`ios/Runner/Runner.entitlements`](../ios/Runner/Runner.entitlements) com `aps-environment` = **`development`** (Debug/Profile) e [`ios/Runner/RunnerRelease.entitlements`](../ios/Runner/RunnerRelease.entitlements) com **`production`** (Release / App Store).
 
-No [Apple Developer](https://developer.apple.com/account/resources/identifiers/list), o App ID `com.openwhen.app` deve ter **Push Notifications** ativado; no Xcode, **Signing & Capabilities** pode incluir **Push Notifications** (o perfil de provisioning tem de corresponder).
+No [Apple Developer](https://developer.apple.com/account/resources/identifiers/list), o **App ID** do Runner (mesmo string que `PRODUCT_BUNDLE_IDENTIFIER` no Xcode) deve ter **Push Notifications** ativado; no Xcode, **Signing & Capabilities** pode incluir **Push Notifications** (o perfil de provisioning tem de corresponder).
 
 ### 5) Bundle ID e Apple Team
 
-- O **Runner** deve usar **`com.openwhen.app`**, alinhado com [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) (`BUNDLE_ID`) e com a app registada no Firebase.
-- `DEVELOPMENT_TEAM` no Xcode (`project.pbxproj`) é o **Team** que assina a app. A **APNs Authentication Key** no Firebase deve pertencer ao **mesmo** Apple Developer Program que possui o App ID `com.openwhen.app`, caso contrário push/APNs ficam inconsistentes. Se o Team ID no Firebase (chave APNs) for diferente do Team do Xcode, alinha assinatura ou chave no projeto Firebase certo.
+- O **Runner** `PRODUCT_BUNDLE_IDENTIFIER` deve coincidir com `BUNDLE_ID` em [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) e com a app iOS registada no Firebase (mesmo projeto).
+- `DEVELOPMENT_TEAM` no Xcode (`project.pbxproj`) é o **Team** que assina a app. A **APNs Authentication Key** no Firebase deve pertencer ao **mesmo** Apple Developer Program que possui esse App ID, caso contrário push/APNs ficam inconsistentes. Se o Team ID no Firebase (chave APNs) for diferente do Team do Xcode, alinha assinatura ou chave no projeto Firebase certo.
 
 ---
 
@@ -114,4 +125,4 @@ Validate main flows after deploy ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar a app → correcção: carregar dados **após** o primeiro frame (ficheiro `admin_moderation_screen.dart` acima). **`SIGABRT` ao comentar** → secção 4 acima (Xcode backtrace, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle `com.openwhen.app`, entitlement `aps-environment` em `Runner.entitlements`).
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`).
