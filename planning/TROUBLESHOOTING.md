@@ -91,14 +91,20 @@ Implementado em [`lib/features/feed/presentation/screens/comments_screen.dart`](
 - Se o crash **parar**, investigar **Cloud Functions** / callable / região.
 - Se **continuar**, foco em **Firestore** ou **FCM** (threads paralelas).
 
-### 4) Bundle ID e Apple Team
+### 4) Entitlement `aps-environment` (Push)
+
+Se o Xcode mostrar **`no valid "aps-environment" entitlement string found`**, o alvo iOS **não tinha** a capability de push no ficheiro de entitlements. O projeto usa [`ios/Runner/Runner.entitlements`](../ios/Runner/Runner.entitlements) com `aps-environment` = **`development`** (Debug/Profile) e [`ios/Runner/RunnerRelease.entitlements`](../ios/Runner/RunnerRelease.entitlements) com **`production`** (Release / App Store).
+
+No [Apple Developer](https://developer.apple.com/account/resources/identifiers/list), o App ID `com.openwhen.app` deve ter **Push Notifications** ativado; no Xcode, **Signing & Capabilities** pode incluir **Push Notifications** (o perfil de provisioning tem de corresponder).
+
+### 5) Bundle ID e Apple Team
 
 - O **Runner** deve usar **`com.openwhen.app`**, alinhado com [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) (`BUNDLE_ID`) e com a app registada no Firebase.
 - `DEVELOPMENT_TEAM` no Xcode (`project.pbxproj`) é o **Team** que assina a app. A **APNs Authentication Key** no Firebase deve pertencer ao **mesmo** Apple Developer Program que possui o App ID `com.openwhen.app`, caso contrário push/APNs ficam inconsistentes. Se o Team ID no Firebase (chave APNs) for diferente do Team do Xcode, alinha assinatura ou chave no projeto Firebase certo.
 
 ---
 
-## 5. Quick reference — deploy rules
+## 6. Quick reference — deploy rules
 
 ```bash
 firebase deploy --only firestore:rules,storage
@@ -108,4 +114,4 @@ Validate main flows after deploy ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar a app → correcção: carregar dados **após** o primeiro frame (ficheiro `admin_moderation_screen.dart` acima). **`SIGABRT` ao comentar** → secção 4 acima (Xcode backtrace, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle `com.openwhen.app`).
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar a app → correcção: carregar dados **após** o primeiro frame (ficheiro `admin_moderation_screen.dart` acima). **`SIGABRT` ao comentar** → secção 4 acima (Xcode backtrace, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle `com.openwhen.app`, entitlement `aps-environment` em `Runner.entitlements`).
