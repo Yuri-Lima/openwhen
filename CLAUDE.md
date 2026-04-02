@@ -5,6 +5,10 @@
 - **Backend:** Firebase (Firestore, Storage, Auth)
 - **Remote Git:** origin
 
+## Busca de utilizadores (escala)
+
+Até ~abril/2026 o app carregava **todos** os documentos de `users` em várias telas; a correção está em `lib/core/user_search/` e está documentada em [`planning/CHANGELOG.md`](planning/CHANGELOG.md), [`planning/ARCHITECTURE.md`](planning/ARCHITECTURE.md) e [`planning/PRODUCTION.md`](planning/PRODUCTION.md).
+
 ## Branches Git
 | Branch | Papel |
 |--------|-------|

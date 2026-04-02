@@ -27,7 +27,7 @@ Uma migração futura para `go_router` pode declarar rotas com `pageBuilder` e r
 ```
 lib/
 ├── main.dart
-├── firebase_options.dart          # Não versionado no remoto — obter com o time
+├── firebase_options.dart          # FlutterFire — versionado para openwhen-923f5; regenerar com FlutterFire CLI se mudar de projeto
 ├── core/
 │   ├── navigation/
 │   │   ├── deferred_screens.dart  # Shells FutureBuilder + import deferred (WriteLetter, CreateCapsule, Search)
@@ -162,6 +162,13 @@ Coleções também usadas no código (strings / queries):
 | `reports` | Denúncias de utilizadores (UGC) — schema fixo em `firestore.rules` |
 | `moderationIncidents` | Alertas operacionais da moderação por IA (agregados por tipo + hora UTC); escrita só Admin SDK / Cloud Functions; leitura no app via `adminListModerationIncidents` |
 | `systemConfig` | Documento `app`: feature flags remotas (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, …); leitura autenticada, escrita só admin/backend |
+
+### Busca de utilizadores
+
+- **Implementação:** [`lib/core/user_search/user_search_service.dart`](../lib/core/user_search/user_search_service.dart) — não usa `collection('users').get()` para pesquisa; combina query por **prefixo de `username`** (range indexado) e **`searchTokens` com `array-contains`** (tokens derivados do nome público e do handle em [`user_search_tokens.dart`](../lib/core/user_search/user_search_tokens.dart)), com teto de **30** resultados por pedido; mínimo **2** caracteres na tela Buscar; API só expõe `uid`, `@username`, nome público e `photoUrl` (sem email na busca).
+- **Persistência:** `searchTokens` escrito em [`auth_repository.dart`](../lib/features/auth/domain/auth_repository.dart) (registo) e ao guardar perfil ([`edit_profile_screen.dart`](../lib/features/profile/presentation/screens/edit_profile_screen.dart)). Utilizadores antigos sem `searchTokens` podem ser encontrados por prefixo de `@username` até atualizarem o perfil.
+- **Seguir na Buscar:** estado obtido com leituras em batch ([`user_search_follows.dart`](../lib/core/user_search/user_search_follows.dart)), não um listener Firestore por linha.
+- **Histórico:** até ~abril/2026 o cliente carregava **todos** os documentos de `users` para filtrar em memória (Buscar, convite em cápsula coletiva, destinatário na carta) — problema de escala documentado em [`CHANGELOG.md`](CHANGELOG.md) e [`PRODUCTION.md`](PRODUCTION.md).
 
 ### Config remota (`systemConfig` / doc `app`)
 

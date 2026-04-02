@@ -2693,6 +2693,12 @@ abstract class AppLocalizations {
   /// **'Nenhum resultado'**
   String get searchEmpty;
 
+  /// No description provided for @searchMinCharsHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Digite pelo menos 2 caracteres para buscar'**
+  String get searchMinCharsHint;
+
   /// No description provided for @settingsTitle.
   ///
   /// In pt_BR, this message translates to:

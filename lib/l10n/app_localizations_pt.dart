@@ -1423,6 +1423,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get searchEmpty => 'Nenhum resultado';
 
   @override
+  String get searchMinCharsHint => 'Digite pelo menos 2 caracteres para buscar';
+
+  @override
   String get settingsTitle => 'Configurações';
 
   @override
@@ -3669,6 +3672,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get searchEmpty => 'Nenhum resultado';
+
+  @override
+  String get searchMinCharsHint => 'Digite pelo menos 2 caracteres para buscar';
 
   @override
   String get settingsTitle => 'Configurações';

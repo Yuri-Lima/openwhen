@@ -6,8 +6,8 @@
 
 **Write today. Feel tomorrow.** · *Escreva hoje. Sinta amanhã.*
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.41.4-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.11.1-0175C2?logo=dart)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.11.3-0175C2?logo=dart)](https://dart.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-openwhen--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
 [![MVP](https://img.shields.io/badge/MVP-~100%25-success)](planning/MVP_CHECKLIST.md)
 
@@ -52,7 +52,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** for Stripe billing and content moderation (see [`functions/README.md`](functions/README.md)) |
 | **Location** | `geolocator` (+ platform location permissions) for optional share-at-send and proximity-to-open |
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
-| **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
+| **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab; **user search** uses indexed Firestore queries with a result cap (not a full `users` collection scan) — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) and [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
 | **Icons (UI)** | `flutter_svg` + SVG kit under `assets/icons/` — see **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
 | **App launcher** | `flutter_launcher_icons` (dev) — source `assets/branding/app_icon.png`; regenerate with `dart run flutter_launcher_icons` |
@@ -65,7 +65,7 @@ Architecture is **feature-first** under `lib/features/`, with auth split into `d
 
 ### Prerequisites
 
-- Flutter **3.41.4** (or compatible channel) and Dart **3.11.1+**
+- Flutter **3.41.5** (or compatible channel) and Dart **3.11.1+** (Dart **3.11.3** with current stable Flutter)
 - Firebase CLI (optional; see [Firebase CLI and emulators](#firebase-cli-and-emulators))
 - **JDK 21+** (only if you use the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite); see below)
 - Access to Firebase config for this project
@@ -92,7 +92,7 @@ For day-to-day development, **`flutter run -d chrome`** is the default target.
 | **Default Storage bucket** | `openwhen-923f5.firebasestorage.app` (must match `storageBucket` in `firebase_options.dart`) |
 | **Auth domain (web)** | `openwhen-923f5.firebaseapp.com` |
 
-The file **`lib/firebase_options.dart`** is required to run the app and is **not** published in the public repository. Request it from the team and place it under `lib/` before building. Regenerate with [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) if platform config changes.
+This repository includes **`lib/firebase_options.dart`**, **`android/app/google-services.json`**, and **`ios/Runner/GoogleService-Info.plist`** for the Firebase project **`openwhen-923f5`**. If you point the app at a different Firebase project, regenerate these files with [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) and keep `storageBucket` / bundle IDs aligned with the Console.
 
 #### Backend config files (this repo)
 
@@ -177,7 +177,7 @@ openwhen/
 │   └── icons/                     # SVG icon kit (currentColor)
 ├── lib/
 │   ├── main.dart
-│   ├── firebase_options.dart      # local, not in repo
+│   ├── firebase_options.dart      # FlutterFire (tracked; regenerate if changing Firebase project)
 │   ├── core/
 │   │   ├── admin/                 # AdminFunctionsService (moderation queues, AI ops info)
 │   │   ├── billing/

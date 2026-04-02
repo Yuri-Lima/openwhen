@@ -6,6 +6,7 @@ import '../models/app_user.dart';
 import '../../../core/constants/firestore_collections.dart';
 import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
+import '../../../core/user_search/user_search_tokens.dart';
 
 class AuthRepository {
   final AuthService _authService = AuthService();
@@ -27,12 +28,18 @@ class AuthRepository {
 
     final user = credential.user!;
     final username = email.split('@')[0].toLowerCase();
+    final searchTokens = buildUserSearchTokens(
+      username: username,
+      displayName: name,
+      name: name,
+    );
 
     await _firestore.collection(FirestoreCollections.users).doc(user.uid).set({
       'uid': user.uid,
       'name': name,
       'displayName': name,
       'username': username,
+      'searchTokens': searchTokens,
       'email': email,
       'photoUrl': null,
       'bio': null,

@@ -1,12 +1,12 @@
 # OpenWhen — Checklist e configuração para produção
 
-Este documento reúne **tudo o que precisa de estar definido** para compilar, publicar e operar o app em **modo produção**: ficheiros locais, variáveis de build (`dart-define`), Firebase, Meta/Instagram, billing opcional, assinaturas móveis e referências ao resto da documentação.
+Este documento reúne **tudo o que precisa de estar definido** para compilar, publicar e operar o app em **modo produção**: ficheiros locais, variáveis de build (`dart-define`), Firebase, Meta/Instagram, billing opcional, assinaturas móveis e referências ao resto da documentação. A **checklist acionável** (por fases A–G) está na [secção 8](#8-checklist-de-produção-completa).
 
 **Relacionado:** [README.md](../README.md) (Firebase, CLI), [DEVICE_TESTING.md](DEVICE_TESTING.md) (QA em dispositivo), [ARCHITECTURE.md](ARCHITECTURE.md) (stack, moderação, Instagram Stories), [functions/README.md](../functions/README.md) (Stripe, moderação por IA e Cloud Functions).
 
 ---
 
-## 1. Ficheiros obrigatórios (não versionados no remoto)
+## 1. Ficheiros obrigatórios no cliente (Firebase)
 
 | Ficheiro | Função |
 |----------|--------|
@@ -14,7 +14,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 | `android/app/google-services.json` | Projeto Firebase Android. |
 | `ios/Runner/GoogleService-Info.plist` | Projeto Firebase iOS. |
 
-Sem estes ficheiros, o build ou o runtime Firebase falham. Obter com a equipa ou regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto Firebase de produção.
+Neste repositório, os três ficheiros estão **versionados** para o projeto **`openwhen-923f5`**. Sem eles (ou sem versões coerentes entre si), o build ou o runtime Firebase falham. Para **outro** projeto Firebase (ou após mudar bundle IDs / package name), regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção.
 
 Identificadores do projeto atual estão descritos em [README.md](../README.md#firebase-configuration) (tabela Project identifiers).
 
@@ -88,7 +88,7 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 | Área | Nota |
 |------|------|
 | **Feed público** | Query com `limit` + janela em `openedAt` ([`feed_config.dart`](../lib/core/constants/feed_config.dart)); evita leituras globais ilimitadas. **Explorar:** primeira página em stream + mais páginas com `get()` + `startAfter` ao fazer scroll (custo por página extra). **Destaques:** mesma query limitada; ordenação por engajamento só no cliente, com teto de documentos. **Seguindo:** até **ceil(n/10)** queries/listeners por atualização (n = contas seguidas), por limite `whereIn` do Firestore — monitorizar em contas com muitos follows. |
-| **Busca (lista de utilizadores)** | Cada linha pode subscrever `follows` para o estado Seguir/Seguindo — até **N** listeners por ecrã; o pull-to-refresh tem **throttle** (~3 s). |
+| **Busca (lista de utilizadores)** | [`UserSearchService`](../lib/core/user_search/user_search_service.dart) — **não** há `get()` na coleção `users` para pesquisa; usa queries com `limit` (prefixo em `username` + `searchTokens` com `array-contains`). **Até ~abril/2026** o cliente carregava todos os documentos de `users` — ver [`CHANGELOG.md`](CHANGELOG.md). Seguir/Seguindo na tela Buscar: leituras em **batch** (`whereIn` em chunks), não um listener por linha. Pull-to-refresh com throttle (~3 s). Utilizadores sem `searchTokens` (dados antigos) continuam encontráveis por prefixo de `@username` até guardarem o perfil. |
 | **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
 
 ---
@@ -124,20 +124,68 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 ---
 
-## 8. Checklist rápido antes de “ir a produção”
+## 8. Checklist de produção (completa)
 
-- [ ] `firebase_options.dart`, `google-services.json`, `GoogleService-Info.plist` presentes e alinhados ao projeto Firebase de produção.
-- [ ] `firebase deploy` das regras (e índices) validado.
-- [ ] `FB_APP_ID` definido nos builds que devem abrir Instagram nativamente (ou aceite explícito de só fallback).
-- [ ] Se billing ativo: `BILLING_ENABLED=true`, `FUNCTIONS_REGION` correto, variáveis em Cloud Functions (Stripe) configuradas.
-- [ ] Se moderação por IA ativa: `OPENAI_API_KEY` (e `MODERATION_PROVIDER` se não for o default) nas Cloud Functions; `systemConfig/app` com `aiModerationEnabled` / `aiModerationFailClosed` conforme política; `firebase deploy --only functions` após alterar envs.
-- [ ] Push: APNs (iOS) e testes em dispositivo real ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
-- [ ] Assinatura release Android/iOS e metadados de loja preparados.
+Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: [DEVICE_TESTING.md](DEVICE_TESTING.md); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
+
+**Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
+
+```mermaid
+flowchart LR
+  A[IdentidadeBuild] --> B[SegredosFicheiros]
+  B --> C[FirebaseBackend]
+  C --> D[FlagsProduto]
+  D --> E[PushPermissoes]
+  E --> F[LojasConformidade]
+  F --> G[QARelease]
+```
+
+### A. Identidade e build
+
+- [ ] **Bundle ID** (iOS) e **`applicationId`** / `namespace` (Android) finais; registados no Firebase, App Store Connect e Google Play Console.
+- [ ] Após alterar identificadores: regenerar **`firebase_options.dart`** e ficheiros nativos (`google-services.json`, `GoogleService-Info.plist`) com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção (ver secção [1](#1-ficheiros-obrigatórios-no-cliente-firebase)).
+- [ ] **Keystore** de release Android configurado e `signingConfigs` de **release** a apontar para esse keystore (não usar apenas a assinatura debug em builds de loja; ver secção [7](#7-assinatura-e-publicação-nas-lojas-resumo)).
+- [ ] **`pubspec.yaml`:** `version` (`nome+build`) atualizado para a submissão (version code Android / build number iOS).
+- [ ] Comandos **`flutter build … --release`** incluem todos os `--dart-define` necessários (secção [2](#2-variáveis-de-build-flutter---dart-define)); CI/CD com as mesmas variáveis.
+
+### B. Segredos e ficheiros locais
+
+- [ ] `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist` presentes e alinhados ao **projeto Firebase de produção** (secção [1](#1-ficheiros-obrigatórios-no-cliente-firebase)).
+- [ ] Nenhum **segredo** de servidor (Stripe secret, OpenAI, etc.) no código cliente ou no repositório público — apenas em Cloud Functions / ambiente seguro ([`functions/README.md`](../functions/README.md)).
+
+### C. Firebase e backend
+
+- [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
+- [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
+- [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+
+### D. Funcionalidades e flags de build
+
+- [ ] **`FB_APP_ID`** definido nos builds que devem usar Instagram Stories **nativo**, ou decisão explícita de aceitar só o **fallback** (folha de partilha; secções [2](#2-variáveis-de-build-flutter---dart-define) e [3](#3-instagram--meta-facebook-app-id)).
+- [ ] Se **billing** ativo: `BILLING_ENABLED=true`, `FUNCTIONS_REGION` igual à região deployada, envs Stripe nas Functions (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+- [ ] Se **moderação por IA** ativa: `OPENAI_API_KEY` (e `MODERATION_PROVIDER` se não for o default) nas Functions; flags em `systemConfig/app` coerentes; deploy de functions após mudanças (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+
+### E. Push e permissões
+
+- [ ] **iOS:** capability **Push Notifications**, APNs ligado ao Firebase Console (secção [6](#6-notificações-push-fcm)).
+- [ ] **Android 13+:** fluxo de permissão de notificações testado em dispositivo real (secção [6](#6-notificações-push-fcm)).
+
+### F. Lojas e conformidade
+
+- [ ] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [BUSINESS.md](BUSINESS.md) se aplicável.
+- [ ] **Google Play:** formulário Data safety, classificação de conteúdo, ícones e screenshots conforme políticas atuais.
+- [ ] **App Store:** questionário de privacidade da app; rever **`Info.plist`**: textos de uso (câmera, localização, microfone, etc.) coerentes com o comportamento real; **`UIBackgroundModes`** apenas com modos efetivamente necessários (evita perguntas extra na revisão).
+
+### G. QA antes do release
+
+- [ ] Regressão em **dispositivos reais** iOS e Android conforme [DEVICE_TESTING.md](DEVICE_TESTING.md) (login, feed, cofre, cartas/cápsulas, localização, push, Instagram conforme build).
+- [ ] Se aplicável ao release, critérios [MVP_CHECKLIST.md](MVP_CHECKLIST.md) verificados.
 
 ---
 
 ## 9. Histórico de alterações deste guia
 
+- **2026-03:** secção [8](#8-checklist-de-produção-completa) expandida em checklist A–G (identidade/keystore, segredos, Firebase, flags, push, lojas, QA); diagrama de ordem sugerida; referências cruzadas a DEVICE_TESTING e MVP_CHECKLIST.
 - **2026-03:** nota futura “filas e workers” (Pub/Sub, Cloud Tasks, RabbitMQ) na secção 5.
 - **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).
 - **2026-03:** documento criado para consolidar `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION` e requisitos Firebase/lojas.

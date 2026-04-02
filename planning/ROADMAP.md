@@ -42,7 +42,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 
 **Exportar cartas (PDF / ZIP)** está concluído no checklist 🟡 (export no cliente: Configurações). A linha na Fase 3 abaixo referencia **evoluções** opcionais (ex.: processamento server-side, batch grande); a entrega MVP segue o checklist.
 
-**Performance (cliente):** carregamento diferido de código (`deferred` para escrever carta / cápsula / busca e para export PDF-ZIP), cofre com subscrições Firestore só na aba visível — ver [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md).
+**Performance (cliente):** carregamento diferido de código (`deferred` para escrever carta / cápsula / busca e para export PDF-ZIP), cofre com subscrições Firestore só na aba visível; **busca de utilizadores** com queries Firestore indexadas e limite de resultados (`lib/core/user_search/`, substituição do antigo `collection(users).get()` — ver [`CHANGELOG.md`](CHANGELOG.md)) — ver [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md).
 
 ---
 

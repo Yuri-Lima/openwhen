@@ -461,6 +461,7 @@
   "searchTitle": "Buscar personas",
   "searchHint": "Buscar por nombre o @username...",
   "searchEmpty": "Sin resultados",
+  "searchMinCharsHint": "Escribe al menos 2 caracteres para buscar",
 
   "settingsTitle": "Configuración",
   "themeSection": "TEMA DE LA APP",

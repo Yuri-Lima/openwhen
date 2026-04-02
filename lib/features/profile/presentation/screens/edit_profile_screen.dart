@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/user_search/user_search_tokens.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -87,6 +88,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    final searchTokens = buildUserSearchTokens(
+      username: username,
+      displayName: name,
+      name: name,
+    );
+
     await FirebaseFirestore.instance
         .collection(FirestoreCollections.users)
         .doc(uid)
@@ -94,6 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       'displayName': name,
       'name': name,
       'username': username,
+      'searchTokens': searchTokens,
       'bio': bio,
     });
 

@@ -18,6 +18,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 Importante (logo após o núcleo do MVP)
 
+- [ ] **Sign in with Apple** — Firebase Auth (`OAuthProvider` + nonce), pacote `sign_in_with_apple`, capability no App ID, provedor Apple no Firebase Console, ligar o botão em `login_screen.dart` (hoje só UI)
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
 - [x] Compartilhamento Stories/Reels
 - [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
@@ -113,8 +114,13 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Configurações
 - [x] Termos, Privacidade, Sobre, Ajuda
 
+### Escala (Firestore)
+
+- [x] **Busca de utilizadores** — *Problema até ~abril/2026:* `collection(users).get()` na Buscar, convites de cápsula coletiva e destinatário da carta. *Correção:* `lib/core/user_search/` (`UserSearchService`, `searchTokens`, queries limitadas). Ver [`CHANGELOG.md`](CHANGELOG.md) e [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
 ### Bugfixes recentes
 
+- [x] **Analytics (login)** — `logLogin()` só depois de `login()` bem-sucedido (`AsyncValue` sem erro); falha de credenciais mostra `SnackBar` (o notifier usa `guard` e não relança exceção)
 - [x] **Onboarding** — `Column` overflow em ecrãs baixos: `PageView` com `Positioned.fill`, conteúdo com `SingleChildScrollView` + `ConstrainedBox(minHeight:)` (`onboarding_screen.dart`)
 - [x] **Sair da conta** não redirecionava (popUntil até raiz após signOut em `settings_screen.dart`)
 - [x] **Contraste em temas escuros** — splash, onboarding e hero do login usavam `context.pal.ink` (cor de texto) como fundo, ficando claro em midnight/dark; corrigido para `context.pal.headerGradient.first`
@@ -128,4 +134,4 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — todos os itens marcados como concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.

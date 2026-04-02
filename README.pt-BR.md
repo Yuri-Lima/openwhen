@@ -6,8 +6,8 @@
 
 **Escreva hoje. Sinta amanhã.** · *Write today. Feel tomorrow.*
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.41.4-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.11.1-0175C2?logo=dart)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.11.3-0175C2?logo=dart)](https://dart.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-openwhen--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
 [![MVP](https://img.shields.io/badge/MVP-~100%25-success)](planning/MVP_CHECKLIST.md)
 
@@ -52,7 +52,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** para Stripe e moderação de conteúdo (ver [`functions/README.md`](functions/README.md)) |
 | **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
-| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
+| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível; **busca de utilizadores** usa queries Firestore indexadas com limite de resultados (não leitura completa da coleção `users`) — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
 | **Ícones (UI)** | `flutter_svg` + kit SVG em `assets/icons/` — ver **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
 | **Ícone do app (launcher)** | `flutter_launcher_icons` (dev) — fonte `assets/branding/app_icon.png`; regenere com `dart run flutter_launcher_icons` |
@@ -65,7 +65,7 @@ A arquitetura é **por features** em `lib/features/`, com auth em camadas `data`
 
 ### Pré-requisitos
 
-- Flutter **3.41.4** (ou canal compatível) e Dart **3.11.1+**
+- Flutter **3.41.5** (ou canal compatível) e Dart **3.11.1+** (Dart **3.11.3** com o Flutter stable atual)
 - Firebase CLI (opcional; veja [Firebase CLI e emuladores](#firebase-cli-e-emuladores))
 - **JDK 21+** (só se você usar o [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite); detalhes abaixo)
 - Acesso à configuração Firebase do projeto
@@ -92,7 +92,7 @@ No dia a dia, o alvo padrão de desenvolvimento é **`flutter run -d chrome`**.
 | **Bucket padrão do Storage** | `openwhen-923f5.firebasestorage.app` (deve bater com `storageBucket` em `firebase_options.dart`) |
 | **Domínio de auth (web)** | `openwhen-923f5.firebaseapp.com` |
 
-O arquivo **`lib/firebase_options.dart`** é obrigatório para rodar o app e **não** está no repositório público. Solicite ao time e coloque em `lib/` antes do build. Para mudanças de plataforma, regenere com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/).
+Este repositório inclui **`lib/firebase_options.dart`**, **`android/app/google-services.json`** e **`ios/Runner/GoogleService-Info.plist`** para o projeto Firebase **`openwhen-923f5`**. Se você apontar o app para outro projeto Firebase, regenere esses arquivos com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) e mantenha `storageBucket` / IDs alinhados ao Console.
 
 #### Arquivos de backend (neste repositório)
 
@@ -177,7 +177,7 @@ openwhen/
 │   └── icons/                     # kit SVG (currentColor)
 ├── lib/
 │   ├── main.dart
-│   ├── firebase_options.dart      # local, fora do repo
+│   ├── firebase_options.dart      # FlutterFire (versionado; regenere se mudar de projeto Firebase)
 │   ├── core/
 │   │   ├── admin/                 # AdminFunctionsService (filas de moderação, info de IA)
 │   │   ├── billing/

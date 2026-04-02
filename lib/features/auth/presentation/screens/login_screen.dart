@@ -54,11 +54,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     }
     setState(() => _isLoading = true);
     try {
-      await AnalyticsService.logLogin();
       await ref.read(authNotifierProvider.notifier).login(
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
           );
+      if (!mounted) return;
+      final authAsync = ref.read(authNotifierProvider);
+      if (authAsync.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
+        );
+      } else {
+        await AnalyticsService.logLogin();
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

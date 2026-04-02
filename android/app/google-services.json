@@ -23,6 +23,44 @@
           "other_platform_oauth_client": []
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393943450881:android:6214bc3f37c32a58f78700",
+        "android_client_info": {
+          "package_name": "com.openwhen.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHKuny9dRSaNUs2Yr30PWAZfMRP9jGyxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393943450881:android:aea64a5d15ffffbef78700",
+        "android_client_info": {
+          "package_name": "com.openwhen.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHKuny9dRSaNUs2Yr30PWAZfMRP9jGyxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
   "configuration_version": "1"
