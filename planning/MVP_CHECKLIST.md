@@ -135,3 +135,28 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ---
 
 **Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
+
+---
+
+## 🔴 Email — problemas críticos (falta implementar)
+
+**1. Email de recuperação de senha não chega**
+- O código dispara `sendPasswordResetEmail` mas o email não chega ao usuário
+- Provável causa: domínio padrão do Firebase bloqueado como spam
+- Solução Yuri: configurar domínio personalizado no Firebase Console → Authentication → Templates → configurar SMTP customizado ou verificar authorized domains
+
+**2. Verificação de email no cadastro — não existe**
+- Usuário cria conta com qualquer email sem confirmar que é dono
+- Obrigatório para App Store e Google Play
+- Solução Yuri: após `createUserWithEmailAndPassword` adicionar:
+```dart
+  await user.sendEmailVerification();
+```
+- Bloquear login até email verificado com `user.emailVerified`
+- Mostrar tela intermediária pedindo para verificar email
+
+**3. Notificações de engajamento — não existem**
+- Curtida: autor não recebe notificação quando alguém curte
+- Comentário: autor não recebe notificação de novo comentário  
+- Seguidor: usuário não recebe notificação de novo seguidor
+- Solução Yuri: Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` → buscar FCM token do autor → disparar push via Firebase Admin SDK
