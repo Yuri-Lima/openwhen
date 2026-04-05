@@ -37,6 +37,15 @@
       "collectionGroup": "letters",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "receiverHasAccount", "order": "ASCENDING" },
+        { "fieldPath": "receiverEmailNormalized", "order": "ASCENDING" },
+        { "fieldPath": "receiverUid", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "letters",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "isPublic", "order": "ASCENDING" },
         { "fieldPath": "status", "order": "ASCENDING" },
         { "fieldPath": "senderUid", "order": "ASCENDING" }

@@ -24,6 +24,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
+import '../../../../core/utils/email_normalization.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
 import '../voice_letter.dart';
@@ -488,12 +489,24 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       }
 
       step = LetterSendStep.commitFirestore;
+      final externalEmailRaw = !_receiverHasAccount && _receiverName != null
+          ? _receiverName!.trim()
+          : null;
+      final externalNormalized = externalEmailRaw != null
+          ? normalizeReceiverEmailForMatching(externalEmailRaw)
+          : null;
+      final requestStatus = _receiverHasAccount
+          ? (areFriends ? 'accepted' : 'pending')
+          : 'accepted';
+
       final letterData = <String, dynamic>{
         'senderUid': currentUser.uid,
         'senderName': senderName,
         'receiverUid': _receiverUid ?? '',
         'receiverName': _receiverName ?? '',
-        'receiverEmail': _receiverHasAccount ? null : _receiverName,
+        'receiverEmail': _receiverHasAccount ? null : externalEmailRaw,
+        if (externalNormalized != null) 'receiverEmailNormalized': externalNormalized,
+        if (!_receiverHasAccount) 'deliveryMode': 'external',
         'receiverHasAccount': _receiverHasAccount,
         'title': _titleController.text.trim(),
         'message': _isHandwritten ? '' : _messageController.text.trim(),
@@ -505,7 +518,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'publishAfterReview': _allowPublish,
         'canBeShared': false,
         'emotionalState': _selectedEmotion!.key,
-        'requestStatus': areFriends ? 'accepted' : 'pending',
+        'requestStatus': requestStatus,
         'createdAt': Timestamp.now(),
         'openedAt': null,
         'publishedAt': null,

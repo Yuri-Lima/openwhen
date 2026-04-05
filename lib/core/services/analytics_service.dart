@@ -17,6 +17,9 @@ class AnalyticsService {
   static Future<void> logLetterCreated(String emotionalState) =>
       _analytics.logEvent(name: 'letter_created', parameters: {'emotional_state': emotionalState});
 
+  static Future<void> logExternalLettersClaimed(int count) =>
+      _analytics.logEvent(name: 'external_letters_claimed', parameters: {'count': count});
+
   static Future<void> logLetterOpened(String emotionalState) =>
       _analytics.logEvent(name: 'letter_opened', parameters: {'emotional_state': emotionalState});
 

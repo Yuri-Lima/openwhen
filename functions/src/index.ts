@@ -21,6 +21,11 @@ export {
 
 export {moderateContent} from "./moderation/moderate_content";
 
+export {
+  claimExternalLetters,
+  onLetterCreatedSendExternalInviteEmail,
+} from "./external_letters";
+
 setGlobalOptions({region: "us-central1"});
 
 initializeApp();

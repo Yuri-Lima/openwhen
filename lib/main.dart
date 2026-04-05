@@ -1,6 +1,7 @@
 import 'package:audio_session/audio_session.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
 import 'package:flutter/services.dart' show MissingPluginException;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,9 @@ import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
 import 'features/capsules/data/capsule_vault_streams.dart';
+import 'core/linking/deep_link_bootstrap.dart';
+import 'core/linking/deep_link_coordinator.dart';
+import 'core/navigation/app_navigator_key.dart';
 import 'core/navigation/deferred_screens.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
@@ -45,12 +49,28 @@ Future<void> _configureAudioSession() async {
   }
 }
 
+Future<void> _activateAppCheckIfNeeded() async {
+  if (kIsWeb) return;
+  try {
+    await FirebaseAppCheck.instance.activate(
+      androidProvider:
+          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      appleProvider:
+          kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+    );
+  } catch (e, st) {
+    debugPrint('Firebase App Check activate failed (non-fatal): $e\n$st');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _configureAudioSession();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await _activateAppCheckIfNeeded();
+  await initDeepLinks();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await NotificationService.init();
   runApp(const ProviderScope(child: MyApp()));
@@ -64,7 +84,6 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
-  final GlobalKey<NavigatorState> _appNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -102,7 +121,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp(
       navigatorObservers: [AnalyticsService.observer],
-      navigatorKey: _appNavigatorKey,
+      navigatorKey: rootNavigatorKey,
       title: 'OpenWhen',
       debugShowCheckedModeBanner: false,
       locale: appLocale,
@@ -120,7 +139,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                 right: 0,
                 child: SafeArea(
                   minimum: const EdgeInsets.only(top: 8, right: 8),
-                  child: FeedbackEntryButton(navigatorKey: _appNavigatorKey),
+                  child: FeedbackEntryButton(navigatorKey: rootNavigatorKey),
                 ),
               ),
             const KeyboardDismissOverlayButton(),
@@ -193,6 +212,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     const VaultScreen(),
     const ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      await DeepLinkCoordinator.handlePendingAfterSignIn(context);
+    });
+  }
 
   void _showCreateOptions(BuildContext context) {
     final p = context.pal;
