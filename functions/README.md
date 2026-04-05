@@ -2,7 +2,17 @@
 
 Callable and HTTP endpoints for **Stripe** subscriptions and **AI content moderation** (OpenAI Moderation API by default, adapter-ready for other providers). **No Google Secret Manager is required** — keys are read from **runtime environment variables** (set in Google Cloud Console for each function, or `.env` for the emulator).
 
-**Source layout:** `src/index.ts` (Stripe webhooks + billing callables), `src/admin.ts` (admin + moderation ops callables), `src/moderation/` (types, OpenAI adapter, incidents, human review queue, `moderateContent`, `admin_review`).
+**Source layout:** `src/index.ts` (Stripe webhooks + billing callables), `src/admin.ts` (admin + moderation ops callables), `src/moderation/` (types, OpenAI adapter, incidents, human review queue, `moderateContent`, `admin_review`), `src/external_letters.ts` (`claimExternalLetters`, `onLetterCreatedSendExternalInviteEmail`).
+
+### External letters (no-account recipient)
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `SENDGRID_API_KEY` | For invite email | [Twilio SendGrid](https://www.twilio.com/en-us/products/email-api/pricing) API key; if unset, the Firestore trigger logs a warning and skips send (claim still works). |
+| `SENDGRID_FROM_EMAIL` | No | Verified sender address (default `noreply@openwhen.app`). |
+| `SENDGRID_FROM_NAME` | No | Display name (default `OpenWhen`). |
+
+Set the same variables on **`claimExternalLetters`** and **`onLetterCreatedSendExternalInviteEmail`** (or use project-wide env in Cloud Functions). Domain authentication (SPF/DKIM) should be configured in SendGrid for your from-domain.
 
 ```bash
 cd functions
@@ -86,6 +96,6 @@ That message is **not** normal for a successful deploy — the Cloud Build step 
 
 | Message | Meaning |
 |--------|---------|
-| Node.js 20 deprecated | Plan an upgrade to Node 22 before the decommission date (see Cloud Functions runtime support). |
+| Node.js 20 deprecated | This repo uses **`engines.node`: 22** in [`package.json`](package.json). Redeploy functions; confirm runtime in Cloud Console (see [Node.js runtime support](https://cloud.google.com/functions/docs/concepts/nodejs-runtime)). |
 | `firebase-functions` outdated | Optional: `cd functions && npm install firebase-functions@latest` (test locally after). |
 | APIs enabled automatically | Normal on first deploy (`run.googleapis.com`, `eventarc.googleapis.com`, etc.). |
