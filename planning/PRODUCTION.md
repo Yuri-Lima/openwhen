@@ -75,6 +75,8 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 ## 4. Firebase (produção)
 
+**Checklist rápido — `firebase deploy` vs lojas:** `npx -y firebase-tools@latest deploy` na raiz (ver [`firebase.json`](../firebase.json)) publica **Hosting** (estáticos em `hosting/public`), **Cloud Functions**, **regras e índices Firestore** e **regras Storage** — não envia binários iOS/Android. Para TestFlight, App Store e Google Play, ver [secção 7](#7-assinatura-e-publicação-nas-lojas-resumo).
+
 | Ação | Comando / nota |
 |------|----------------|
 | Deploy de regras Firestore e Storage | `firebase deploy --only firestore:rules,storage` (e índices se necessário: `firestore:indexes`) |
