@@ -1,7 +1,7 @@
 import 'package:audio_session/audio_session.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb, kReleaseMode;
 import 'package:flutter/services.dart' show MissingPluginException;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,9 +54,9 @@ Future<void> _activateAppCheckIfNeeded() async {
   try {
     await FirebaseAppCheck.instance.activate(
       androidProvider:
-          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+          kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,
       appleProvider:
-          kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+          kReleaseMode ? AppleProvider.appAttest : AppleProvider.debug,
     );
   } catch (e, st) {
     debugPrint('Firebase App Check activate failed (non-fatal): $e\n$st');
@@ -218,7 +218,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      await DeepLinkCoordinator.handlePendingAfterSignIn(context);
+      try {
+        await DeepLinkCoordinator.handlePendingAfterSignIn(context);
+      } catch (e, st) {
+        debugPrint('DeepLinkCoordinator error (non-fatal): $e\n$st');
+      }
     });
   }
 
@@ -307,12 +311,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           .where('status', isEqualTo: 'locked')
           .snapshots(),
       builder: (context, lettersSnap) {
+        if (lettersSnap.hasError) {
+          debugPrint('Letters stream error: ${lettersSnap.error}');
+        }
         return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: lockedCapsulesSenderStream(uid),
           builder: (context, capSenderSnap) {
+            if (capSenderSnap.hasError) {
+              debugPrint('Capsules sender stream error: ${capSenderSnap.error}');
+            }
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: lockedCapsulesCollectiveParticipantStream(uid),
               builder: (context, capParticipantSnap) {
+                if (capParticipantSnap.hasError) {
+                  debugPrint('Capsules collective stream error: ${capParticipantSnap.error}');
+                }
                 final lettersCount = lettersSnap.data?.docs.length ?? 0;
                 final mergedCaps = mergeLockedCapsuleVaultDocs(
                   capSenderSnap.data,
