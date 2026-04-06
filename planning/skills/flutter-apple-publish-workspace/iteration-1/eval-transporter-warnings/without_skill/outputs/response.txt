@@ -1,0 +1,134 @@
+FLUTTER APP STORE CONNECT TRANSPORTER WARNINGS - RESOLUTION GUIDE
+==================================================================
+
+ANALYSIS OF YOUR WARNINGS
+-------------------------
+
+You are seeing two warnings from Transporter:
+
+1. "Missing entitlement: push-to-talk"
+   - Your app declares background modes for push notifications (remote-notification)
+     but does not include the push-to-talk capability entitlement.
+
+2. "Missing purpose string: NSLocationAlwaysAndWhenInUseUsageDescription"
+   - This key is declared but Apple now expects the more specific
+     NSLocationAlwaysUsageDescription when always-in-use location is needed.
+
+CURRENT INFO.PLIST STATUS
+-------------------------
+
+File: ios/Runner/Info.plist
+
+Current problematic entries:
+- Line 75-86: UIBackgroundModes array includes "remote-notification" which signals
+  push notification support, but no push-to-talk entitlement is present.
+- Line 42-43: NSLocationAlwaysAndWhenInUseUsageDescription is declared but should be
+  replaced/supplemented with NSLocationAlwaysUsageDescription for iOS 11+.
+
+REQUIRED CHANGES
+----------------
+
+CHANGE 1: Remove the remote-notification Background Mode
+---
+Since your app does NOT have push-to-talk or remote push notification features,
+you should remove "remote-notification" from the UIBackgroundModes array.
+
+Current (lines 75-86):
+<UIBackgroundModes>
+  <array>
+    <string>remote-notification</string>     <-- DELETE THIS
+    <string>bluetooth-peripheral</string>
+    <string>audio</string>
+    <string>fetch</string>
+    <string>external-accessory</string>
+    <string>location</string>
+    <string>bluetooth-central</string>
+    <string>nearby-interaction</string>
+    <string>voip</string>
+  </array>
+</UIBackgroundModes>
+
+Updated (remove the remote-notification string):
+<UIBackgroundModes>
+  <array>
+    <string>bluetooth-peripheral</string>
+    <string>audio</string>
+    <string>fetch</string>
+    <string>external-accessory</string>
+    <string>location</string>
+    <string>bluetooth-central</string>
+    <string>nearby-interaction</string>
+    <string>voip</string>
+  </array>
+</UIBackgroundModes>
+
+CHANGE 2: Update Location Usage Description Keys
+---
+Replace NSLocationAlwaysAndWhenInUseUsageDescription with
+NSLocationAlwaysUsageDescription for modern iOS support.
+
+Current (lines 42-45):
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+
+Replace with:
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+
+Note: Keep all three keys for maximum compatibility across iOS versions:
+- NSLocationAlwaysAndWhenInUseUsageDescription (required for iOS 11+)
+- NSLocationAlwaysUsageDescription (required for iOS 10 and earlier)
+- NSLocationWhenInUseUsageDescription (your when-in-use permission)
+
+OPTIONAL: Check Entitlements File
+----------------------------------
+If you have an ios/Runner/Runner.entitlements file or entitlements in your
+Xcode project settings, verify it does NOT contain:
+- com.apple.developer.push-to-talk (delete if present)
+- Any push notification capabilities not being used
+
+VERIFICATION STEPS
+------------------
+1. Open ios/Runner/Info.plist in your editor
+2. Remove <string>remote-notification</string> from UIBackgroundModes
+3. Keep or add NSLocationAlwaysUsageDescription key
+4. Save the file
+5. Run: flutter clean && flutter pub get
+6. Re-build for iOS and re-upload to App Store Connect via Transporter
+7. Verify both yellow warnings are resolved
+
+WHY THESE CHANGES WORK
+----------------------
+- Removing "remote-notification" tells Apple your app doesn't use remote push,
+  so it won't require push-to-talk entitlements.
+
+- Adding NSLocationAlwaysUsageDescription ensures compliance with Apple's
+  privacy policy requirements for location access across all iOS versions.
+
+- The combination of NSLocationWhenInUseUsageDescription +
+  NSLocationAlwaysUsageDescription covers all supported iOS versions and
+  user permission scenarios.
+
+REBUILDING & RESUBMITTING
+--------------------------
+After making the changes:
+
+flutter clean
+flutter pub get
+flutter build ios --release
+# Then use Transporter to reupload
+
+The warnings should no longer appear because:
+1. You've removed the capability declaration that triggered the push-to-talk requirement
+2. You've added the proper location permission string for all iOS versions
+
+TIMELINE
+--------
+- Estimated fix time: 5-10 minutes
+- Resubmission: Same day (no queue wait for metadata-only changes)

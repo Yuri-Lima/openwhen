@@ -1,0 +1,25 @@
+{
+  "expectations": [
+    {
+      "text": "Identifies removing 'processing' from UIBackgroundModes as the fix",
+      "passed": false,
+      "evidence": "Response recommends ADDING BGTaskSchedulerPermittedIdentifiers as an empty array. It says 'Add BGTaskSchedulerPermittedIdentifiers to ios/Runner/Info.plist' and 'Do NOT remove UIBackgroundModes'. This is the opposite of the correct fix."
+    },
+    {
+      "text": "Explains WHY removing it is correct (app doesn't use BGTaskScheduler)",
+      "passed": false,
+      "evidence": "Response gives incorrect reasoning: 'Apple enforces a strict requirement: any app declaring background modes via UIBackgroundModes must explicitly list which Background Task Scheduler identifiers it uses.' This is wrong — the correct approach when not using BGTaskScheduler is to remove the 'processing' mode."
+    },
+    {
+      "text": "Shows the exact XML line to remove or edit in Info.plist",
+      "passed": false,
+      "evidence": "Response shows XML for adding BGTaskSchedulerPermittedIdentifiers (wrong fix), not for removing 'processing' from UIBackgroundModes"
+    },
+    {
+      "text": "Does NOT suggest adding BGTaskSchedulerPermittedIdentifiers as the fix (that would be wrong for an app that doesn't use it)",
+      "passed": false,
+      "evidence": "Response explicitly recommends: 'Add BGTaskSchedulerPermittedIdentifiers to ios/Runner/Info.plist. This can be: 1. Empty array (if you don't actually use BGTaskScheduler)'. This is the wrong approach."
+    }
+  ],
+  "summary": {"passed": 0, "failed": 4, "total": 4, "pass_rate": 0.0}
+}

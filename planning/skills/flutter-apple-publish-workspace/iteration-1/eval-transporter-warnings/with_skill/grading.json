@@ -1,0 +1,25 @@
+{
+  "expectations": [
+    {
+      "text": "Fix 1: instructs removing push-to-talk from UIBackgroundModes",
+      "passed": true,
+      "evidence": "Response says 'DELETE the entire line: <string>push-to-talk</string>' and explains 'Since your app does not implement push-to-talk functionality, this background mode should not be declared.'"
+    },
+    {
+      "text": "Fix 2: instructs adding NSLocationAlwaysAndWhenInUseUsageDescription with a non-empty string",
+      "passed": true,
+      "evidence": "Response says 'Add this key to ios/Runner/Info.plist: <key>NSLocationAlwaysAndWhenInUseUsageDescription</key><string>...[description]...</string>' with example values and notes the string must be non-empty"
+    },
+    {
+      "text": "Explains that 'location' in UIBackgroundModes requires BOTH location description keys",
+      "passed": true,
+      "evidence": "Response explicitly states 'When location is declared as a background mode, iOS requires BOTH of these keys: NSLocationWhenInUseUsageDescription (you already have this) and NSLocationAlwaysAndWhenInUseUsageDescription (MISSING)'"
+    },
+    {
+      "text": "Mentions that warnings (yellow) still allow delivery but cause App Review rejection",
+      "passed": true,
+      "evidence": "Response states 'These are WARNINGS (yellow), not errors (red), but App Review will reject the build if they exist.' at the beginning of KEY POINTS"
+    }
+  ],
+  "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.0}
+}

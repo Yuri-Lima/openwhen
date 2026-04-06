@@ -1,0 +1,166 @@
+Firebase Settings Update Guide: iOS App Listing Alignment
+============================================================
+
+CONTEXT
+-------
+Your Flutter app currently has the old bundle ID "OPENWHEN-APP-2026" registered in Firebase
+with a Firebase project "openwhen-923f5". You've created a new app listing in App Store Connect
+under team ID WGN6W58YD3, which likely uses a different bundle ID and App Store ID.
+
+FIREBASE SETTINGS THAT NEED UPDATING
+=====================================
+
+1. BUNDLE ID (CRITICAL)
+   ----------------------
+   Location: Firebase Console > Project Settings > iOS Apps
+   Current Value: OPENWHEN-APP-2026
+   Action Required: UPDATE TO MATCH NEW APPLE BUNDLE ID
+
+   Your new App Store Connect listing should use a reverse-domain bundle ID format,
+   likely something like: com.yourcompany.appname
+
+   Step-by-step:
+   a) Note your new bundle ID from App Store Connect
+   b) Go to Firebase Console > openwhen-923f5 project > Project Settings
+   c) Click on the iOS app entry (with the old bundle ID)
+   d) Edit the iOS app and update the Bundle ID field
+   e) Download the updated GoogleService-Info.plist
+
+2. APP STORE ID (IMPORTANT)
+   -------------------------
+   Location: Firebase Console > Project Settings > iOS Apps > App Store ID
+   Current Value: Likely missing or incorrect
+   Action Required: ADD YOUR NEW APP STORE ID
+
+   Step-by-step:
+   a) From App Store Connect, copy your new App Store ID (numeric)
+   b) In Firebase Console, go to Project Settings > iOS Apps
+   c) Find the "App Store ID" field and enter the correct ID
+   d) This enables proper analytics linking and crash reporting
+
+3. GOOGLE_APP_ID (CRITICAL)
+   -------------------------
+   Location: GoogleService-Info.plist (auto-generated, do not manually edit)
+   Current Value: 1:393943450881:ios:977521ca30587c3bf78700
+   Action Required: REGENERATE via Firebase Console
+
+   This ID is auto-generated based on the bundle ID. Once you update the bundle ID
+   in Firebase Console and download the new plist, this will be recalculated.
+
+4. TEAM ID LINK (IMPORTANT FOR ENTITLEMENTS)
+   -------------------------------------------
+   Location: Xcode Project Settings > Signing & Capabilities
+   Current Value: Needs verification
+   Action Required: VERIFY TEAM ID MATCHES
+
+   Your new app listing uses team ID WGN6W58YD3. Ensure:
+   a) iOS Runner.pbxproj has DEVELOPMENT_TEAM = WGN6W58YD3
+   b) Provisioning profiles are associated with the correct team
+   c) App Identifier in Apple Developer matches the new bundle ID
+
+FILE UPDATES REQUIRED IN YOUR PROJECT
+======================================
+
+File 1: ios/Runner/GoogleService-Info.plist
+   Actions:
+   - Delete the current file
+   - Download fresh from Firebase Console after updating bundle ID
+   - Replace with the downloaded version
+
+   Key fields that will change:
+   - BUNDLE_ID: "OPENWHEN-APP-2026" → "your.new.bundle.id"
+   - GOOGLE_APP_ID: Will be regenerated
+   - API_KEY: May change based on Firebase configuration
+
+File 2: ios/Runner.xcodeproj/project.pbxproj
+   Actions:
+   - Update PRODUCT_BUNDLE_IDENTIFIER to match new bundle ID
+   - Update DEVELOPMENT_TEAM if different from WGN6W58YD3
+
+   Current line in pbxproj:
+   PRODUCT_BUNDLE_IDENTIFIER = "OPENWHEN-APP-2026";
+
+   Change to:
+   PRODUCT_BUNDLE_IDENTIFIER = "your.new.bundle.id";
+
+File 3: pubspec.yaml (if iOS name defined)
+   Actions:
+   - Verify iOS app name/bundle configuration if any exists
+
+VALIDATION CHECKLIST
+====================
+
+After updating Firebase settings:
+
+☐ 1. Bundle ID Alignment
+     - New bundle ID in Firebase Console matches App Store Connect
+     - GoogleService-Info.plist updated with correct BUNDLE_ID value
+     - Xcode project.pbxproj PRODUCT_BUNDLE_IDENTIFIER updated
+
+☐ 2. App Store ID Registration
+     - App Store ID field populated in Firebase Console > Project Settings
+     - ID matches the numeric ID from App Store Connect
+
+☐ 3. Team ID Verification
+     - DEVELOPMENT_TEAM in Xcode = WGN6W58YD3
+     - Provisioning profiles use correct team
+     - App Identifier registered under WGN6W58YD3 in Apple Developer
+
+☐ 4. Firebase Download
+     - Fresh GoogleService-Info.plist downloaded from Firebase Console
+     - File contains updated BUNDLE_ID and GOOGLE_APP_ID
+     - No manual edits made to plist keys
+
+☐ 5. Build Testing
+     - Run `flutter clean` after updating bundle ID
+     - Run `flutter pub get`
+     - Build for iOS to verify no bundle ID conflicts: `flutter build ios`
+     - Check Xcode build logs for any bundle ID validation errors
+
+POTENTIAL ISSUES & RESOLUTIONS
+===============================
+
+Issue 1: "Bundle ID mismatch" errors during build
+   Cause: Xcode project.pbxproj and GoogleService-Info.plist have different bundle IDs
+   Fix: Update both to match the new App Store Connect bundle ID
+
+Issue 2: Analytics not linking to App Store Connect
+   Cause: App Store ID not set in Firebase Console
+   Fix: Add the numeric App Store ID to Firebase Console > Project Settings > iOS Apps
+
+Issue 3: Crashes or crashes not appearing in Firebase
+   Cause: Old GOOGLE_APP_ID still referenced in code
+   Fix: Ensure GoogleService-Info.plist is regenerated from Firebase Console
+        (not manually edited)
+
+Issue 4: Provisioning profile errors
+   Cause: Team ID mismatch between Xcode, Firebase, and Apple Developer
+   Fix: Ensure all three systems use WGN6W58YD3 consistently
+
+FIREBASE CONSOLE WORKFLOW
+=========================
+
+1. Open Firebase Console (console.firebase.google.com)
+2. Select openwhen-923f5 project
+3. Go to Project Settings (gear icon, top left)
+4. Find "Your apps" section
+5. Locate iOS app with old bundle ID "OPENWHEN-APP-2026"
+6. Click on the app to edit:
+   - Update "Bundle ID" field to your new bundle ID
+   - Set "App Store ID" to your numeric App Store ID from App Store Connect
+7. Save changes
+8. Download GoogleService-Info.plist
+9. Replace ios/Runner/GoogleService-Info.plist in your project
+10. Update ios/Runner.xcodeproj/project.pbxproj with new bundle ID
+
+SUMMARY
+=======
+
+The three critical Firebase updates are:
+1. Bundle ID in Firebase Console (must match App Store Connect)
+2. App Store ID in Firebase Console (numeric ID from App Store Connect)
+3. GoogleService-Info.plist regenerated and placed in ios/Runner/
+
+After these updates, your Flutter app will be properly linked to the new App Store
+Connect listing under your personal team (WGN6W58YD3), and Firebase will correctly
+track analytics, crashes, and other telemetry for the new app listing.

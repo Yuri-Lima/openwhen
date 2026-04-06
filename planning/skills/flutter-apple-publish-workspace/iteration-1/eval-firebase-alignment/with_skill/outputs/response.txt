@@ -1,0 +1,103 @@
+Firebase Settings Alignment for New Apple App Listing
+=======================================================
+
+SITUATION SUMMARY
+You have created a new app listing in App Store Connect under your personal Apple account (Team ID: WGN6W58YD3). Your Firebase project currently has an iOS app registered with outdated Apple credentials (old bundle ID and wrong App Store ID). This misalignment must be corrected before building and deploying to production.
+
+FIREBASE SETTINGS TO UPDATE
+===========================
+
+According to Phase 4 of the Flutter → Apple App Store / TestFlight Publishing Skill, the following Firebase settings MUST be updated:
+
+1. GOOGLESERVICE-INFO.PLIST (Local File Update)
+   Location: ios/Runner/GoogleService-Info.plist
+
+   Key to update: BUNDLE_ID
+   - Current state: Points to old bundle ID from previous team
+   - Action: Must match the EXACT Bundle ID registered in Apple Developer portal for your new app
+   - How to find correct value:
+     a) Log into developer.apple.com
+     b) Navigate to Certificates, IDs & Profiles → Identifiers
+     c) Find your newly registered Bundle ID (e.g., com.yourcompany.appname)
+
+   Steps to update:
+   a) Go to Firebase Console → Project Settings → Your Apps → Select iOS app
+   b) Click "Download GoogleService-Info.plist"
+   c) Replace ios/Runner/GoogleService-Info.plist with the downloaded file
+   d) Verify the new BUNDLE_ID key in the plist matches your new Apple Bundle ID
+
+2. FIREBASE CONSOLE - IOS APP METADATA
+   Location: Firebase Console → Project Settings → Your Apps → [Your iOS app]
+
+   CRITICAL SETTING A: App Store ID
+   - Current state: Wrong/outdated App Store ID from previous team
+   - Action: Update to match your NEW app listing
+   - How to find correct value:
+     a) Log into appstoreconnect.apple.com
+     b) Select your app
+     c) Click "App Information" in the left sidebar
+     d) Find "App ID" (numeric ID, not bundle ID)
+     e) Copy this exact number
+   - Firebase field: "App Store ID"
+   - Set it to the numeric App Store ID from your new listing
+
+   CRITICAL SETTING B: Team ID
+   - Current state: Team ID from old/previous team
+   - Action: Update to your NEW Apple Developer Team ID
+   - Correct value: WGN6W58YD3 (as you specified)
+   - How to verify:
+     a) Log into developer.apple.com
+     b) Click your account name (top right) → Membership
+     c) Find "Team ID" field
+     d) Confirm it matches WGN6W58YD3
+   - Firebase field: "Team ID"
+   - Set it to: WGN6W58YD3
+
+3. OPTIONAL BUT RECOMMENDED SETTINGS (Phase 4c & 4d)
+
+   Firebase App Check (Phase 4c):
+   - If your app uses Firestore or other Firebase services, enable App Check for iOS production
+   - Provider: App Attest (recommended for iOS 14+)
+   - Location: Firebase Console → App Check → [Your iOS app] → Register
+   - This protects your Firebase backend from unauthorized access
+
+   APNs Key (Phase 4d):
+   - If using Firebase Cloud Messaging (push notifications):
+   a) Go to developer.apple.com → Certificates, IDs & Profiles → Keys
+   b) Create an APNs Authentication Key
+   c) Note the 10-character Key ID
+   d) Upload to Firebase Console → Project Settings → Cloud Messaging → iOS app
+
+VERIFICATION CHECKLIST
+======================
+
+After updating Firebase settings, verify alignment:
+
+☐ BUNDLE_ID in GoogleService-Info.plist matches Apple Developer Bundle ID
+☐ App Store ID in Firebase Console matches App Store Connect App ID (numeric)
+☐ Team ID in Firebase Console is set to WGN6W58YD3
+☐ GOOGLE_APP_ID in GoogleService-Info.plist is correct (Firebase generates this)
+☐ IS_ANALYTICS_ENABLED = <true/> if you want Firebase Analytics
+☐ IS_GCM_ENABLED = <true/> if using push notifications
+
+NEXT STEPS AFTER UPDATE
+=======================
+
+1. Commit the updated GoogleService-Info.plist to version control
+2. Run: flutter clean && flutter build ipa --release
+3. Test the build in Xcode to confirm Firebase initialization succeeds
+4. Upload to TestFlight via Transporter
+5. Verify Firebase analytics and other services work in TestFlight builds
+
+KEY INSIGHT FROM SKILL
+======================
+
+The Flutter → Apple App Store / TestFlight Publishing Skill explicitly notes in Phase 4:
+"When changing Apple accounts or creating a new app listing, Firebase settings must stay in sync."
+
+This directly applies to your situation. The three critical fields are:
+- BUNDLE_ID (in GoogleService-Info.plist)
+- App Store ID (in Firebase Console)
+- Team ID (in Firebase Console)
+
+These must match your NEW Apple account and app listing, not the old team's credentials.

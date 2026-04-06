@@ -1,0 +1,25 @@
+{
+  "expectations": [
+    {
+      "text": "Mentions updating the App Store ID in Firebase Project Settings",
+      "passed": true,
+      "evidence": "Response has a dedicated 'CRITICAL SETTING A: App Store ID' section with step-by-step instructions to find and update it in Firebase Console"
+    },
+    {
+      "text": "Mentions verifying or updating the Team ID in Firebase",
+      "passed": true,
+      "evidence": "Response has 'CRITICAL SETTING B: Team ID' section with the correct value WGN6W58YD3 and instructions to update it in Firebase Console"
+    },
+    {
+      "text": "Mentions checking BUNDLE_ID in GoogleService-Info.plist matches the new bundle ID",
+      "passed": true,
+      "evidence": "Response has 'GOOGLESERVICE-INFO.PLIST (Local File Update)' section describing how to verify and update BUNDLE_ID key"
+    },
+    {
+      "text": "Suggests re-downloading or updating GoogleService-Info.plist",
+      "passed": true,
+      "evidence": "Response says 'Go to Firebase Console → Project Settings → Your Apps → Select iOS app → Click Download GoogleService-Info.plist → Replace ios/Runner/GoogleService-Info.plist with the downloaded file'"
+    }
+  ],
+  "summary": {"passed": 4, "failed": 0, "total": 4, "pass_rate": 1.0}
+}

@@ -1,0 +1,70 @@
+SOLUTION TO ITMS-90396: Missing BGTaskSchedulerPermittedIdentifiers
+
+ERROR SUMMARY:
+Your app declares the "processing" value in UIBackgroundModes (in Info.plist) but does
+not have a matching BGTaskSchedulerPermittedIdentifiers key. Apple requires both to
+coexist when processing background mode is declared.
+
+ROOT CAUSE:
+Flutter's default Info.plist often includes broad background mode declarations even when
+your app doesn't use them. You confirmed your app never calls BGTaskScheduler, so the
+fix is straightforward: remove the unused background mode entry.
+
+STEP-BY-STEP FIX:
+
+1. VERIFY BGTaskScheduler is NOT used in your code
+   Run this command to be absolutely certain:
+
+   grep -r "BGTaskScheduler" lib/ ios/
+
+   If this returns nothing, you're safe to proceed.
+
+2. EDIT ios/Runner/Info.plist
+   Open the file in your text editor or Xcode.
+
+   Look for the UIBackgroundModes key. It may look like:
+
+   <key>UIBackgroundModes</key>
+   <array>
+     <string>processing</string>
+     ...other modes...
+   </array>
+
+   Remove the <string>processing</string> line entirely. If "processing" is the only
+   entry, remove the entire UIBackgroundModes key and its surrounding array.
+
+3. VERIFY the plist is valid XML
+   Run this command to check for syntax errors:
+
+   plutil -lint ios/Runner/Info.plist
+
+   You should see: "ios/Runner/Info.plist: OK"
+
+4. REBUILD the IPA
+   Run:
+
+   flutter clean && flutter build ipa --release
+
+   This ensures the updated Info.plist is included in the new build.
+
+5. RE-UPLOAD via Transporter
+   Drag the new .ipa into Transporter and click Deliver.
+   The error should be gone.
+
+WHY THIS HAPPENS:
+Flutter includes a broad set of default background mode capabilities in the generated
+Info.plist to accommodate common use cases. The "processing" mode is one of these.
+However, Apple enforces strict validation: if you declare a background mode, you must
+declare all required supporting keys for that mode. Since you're not using BGTaskScheduler,
+simply removing the unused declaration satisfies Apple's validation.
+
+IF YOU NEED PROCESSING LATER:
+If in the future you do implement background processing with BGTaskScheduler, you will
+need to add both:
+- The "processing" entry in UIBackgroundModes
+- A BGTaskSchedulerPermittedIdentifiers array in Info.plist listing the task identifiers
+  your app registers with BGTaskScheduler.init().registerForTaskWithIdentifier(...)
+
+NEXT STEPS:
+After the fix and successful Transporter upload, your build will move to App Review.
+You can then proceed with TestFlight distribution (Phase 8 of the skill).
