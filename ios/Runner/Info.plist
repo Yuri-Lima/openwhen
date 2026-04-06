@@ -35,12 +35,12 @@
 	<true/>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array/>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
 	<key>NSMicrophoneUsageDescription</key>
@@ -78,10 +78,8 @@
 		<string>bluetooth-peripheral</string>
 		<string>audio</string>
 		<string>fetch</string>
-		<string>processing</string>
 		<string>external-accessory</string>
 		<string>location</string>
-		<string>push-to-talk</string>
 		<string>bluetooth-central</string>
 		<string>nearby-interaction</string>
 		<string>voip</string>

@@ -47,3 +47,8 @@ app.*.map.json
 
 # Scripts locais com API keys / passwords (copiar de .example)
 scripts/bootstrap-token.local.sh
+
+# iOS signing / distribution (certificados, CSR, perfis — não versionar)
+*.mobileprovision
+*.certSigningRequest
+*.cer
