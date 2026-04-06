@@ -73,5 +73,18 @@ flutter_launcher_icons:
   ios: true
   image_path: assets/branding/app_icon.png
   adaptive_icon_background: "#EDE5D8"
-  adaptive_icon_foreground: assets/branding/app_icon.png
+  adaptive_icon_foreground: assets/branding/app_icon_foreground.png
+  adaptive_icon_foreground_inset: 16
   remove_alpha_ios: true
+  background_color_ios: "#EDE5D8"
+  web:
+    generate: true
+    image_path: assets/branding/app_icon.png
+    background_color: "#EDE5D8"
+    theme_color: "#C0392B"
+  windows:
+    generate: true
+    image_path: assets/branding/app_icon.png
+  macos:
+    generate: true
+    image_path: assets/branding/app_icon.png
