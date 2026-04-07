@@ -182,3 +182,24 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 **Arquivos a editar:**
 - `lib/features/feed/presentation/screens/feed_screen.dart` — método `_iconBtn`
 - `lib/features/profile/presentation/screens/search_screen.dart` — lógica de busca
+
+---
+
+## 🔴 Moderação de conteúdo nas cartas (falta implementar — ANTES DO LANÇAMENTO)
+
+**Filosofia:** O OpenWhen só permite amor, superação e conexão genuína.
+Cartas que machucam não têm lugar aqui.
+
+**Camada 1 — Visual em tempo real (Diego)**
+- [ ] Aviso suave enquanto pessoa escreve se detectar conteúdo ofensivo
+- [ ] Botão enviar bloqueado até corrigir
+- [ ] Mensagem: "O OpenWhen existe para conectar com amor 🦉"
+- [ ] Arquivo: `lib/features/letters/presentation/screens/write_letter_screen.dart`
+
+**Camada 2 — IA no momento do envio (Yuri)**
+- [ ] Antes de salvar no Firestore, analisar score de risco via OpenAI
+- [ ] Score 1-4 → envia normalmente
+- [ ] Score 5-7 → aviso gentil, pessoa decide
+- [ ] Score 8-10 → bloqueado, carta não é salva
+- [ ] Arquivo: `functions/src/moderation/moderate_content.ts`
+- [ ] Detalhes completos: `planning/CONTENT_MODERATION.md`
