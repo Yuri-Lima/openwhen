@@ -1,6 +1,9 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:audio_session/audio_session.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb, kReleaseMode;
 import 'package:flutter/services.dart' show MissingPluginException;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -55,8 +58,11 @@ Future<void> _activateAppCheckIfNeeded() async {
     await FirebaseAppCheck.instance.activate(
       androidProvider:
           kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,
+      // DeviceCheck is more reliable than AppAttest for TestFlight/early
+      // production builds. AppAttest requires full attestation setup and can
+      // silently fail, blocking all subsequent Firebase calls.
       appleProvider:
-          kReleaseMode ? AppleProvider.appAttest : AppleProvider.debug,
+          kReleaseMode ? AppleProvider.deviceCheck : AppleProvider.debug,
     );
   } catch (e, st) {
     debugPrint('Firebase App Check activate failed (non-fatal): $e\n$st');
@@ -69,10 +75,32 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // --- Crashlytics: capture all Flutter & Dart errors ---
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   await _activateAppCheckIfNeeded();
-  await initDeepLinks();
+
+  try {
+    await initDeepLinks();
+  } catch (e, st) {
+    debugPrint('[DeepLink] init failed (non-fatal): $e\n$st');
+    FirebaseCrashlytics.instance.recordError(e, st);
+  }
+
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  await NotificationService.init();
+
+  try {
+    await NotificationService.init();
+  } catch (e, st) {
+    debugPrint('[Notifications] init failed (non-fatal): $e\n$st');
+    FirebaseCrashlytics.instance.recordError(e, st);
+  }
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
