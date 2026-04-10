@@ -9,6 +9,15 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ## [Unreleased]
 
+### Added
+
+- **Deleção de conta completa (GDPR/LGPD):** Cloud Function `deleteUserAccount` com 15 etapas atômicas — cancela Stripe, processa cartas/cápsulas (delete ou anonimize), remove comments/likes/follows/blocks/reports/feedback, limpa subcoleções (badges, notificações), apaga Storage (avatar, voz, handwritten, fotos de cápsulas), deleta Auth, grava audit log sem PII. Dois modos: "Apagar tudo" e "Anonimizar cartas" — escolha do usuário no modal. Ver `planning/DATA_RETENTION_POLICY.md`.
+- **Re-autenticação antes de deletar conta:** `AccountDeletionService` com `reauthenticateWithPassword()` + chamada à Cloud Function via `CallableQueue`. UI com loading overlay e tratamento de erros (senha errada, timeout, etc.).
+- **Checkbox idade 13+ (COPPA):** tela de registro exige confirmação "Tenho 13 anos ou mais" e aceite de Termos de Uso + Política de Privacidade via checkboxes explícitos. Botão de registro desabilitado até ambos marcados.
+- **Política de retenção de dados:** documento `planning/DATA_RETENTION_POLICY.md` com mapeamento completo de dados (15 coleções Firestore + 4 paths Storage), requisitos GDPR/LGPD/COPPA, fluxo de deleção, checkboxes necessários, política de retenção por categoria, e plano de implementação priorizado.
+- **Coleções `follows`, `blocks`, `deletionAuditLogs`:** adicionadas a `FirestoreCollections` constants.
+- **16 novas strings l10n** (en/pt/es): modal de deleção (escolha, senha, confirmação, loading, erros) e checkboxes de registro.
+
 ### Fixed
 
 - **Enviar carta — Firestore `permission-denied`:** regras `badgeUnlocks` exigiam `unlockedAt is timestamp` enquanto o cliente usa `FieldValue.serverTimestamp()` (sentinela); alinhado a `unlockedAt == request.time` **ou** `is timestamp`, e comparações de billing em `userBillingFieldsUnchanged` / `userBillingOnlyFreeTierMigration` com `.get('campo', null)` para documentos sem `subscriptionTier`/Stripe. **Cliente:** envio numa única **`runTransaction`** ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)) — carta + contador + badges tudo-ou-nada; mensagens de erro por fase (`LetterSendStep`) e código Firebase visível no SnackBar. Ver [`planning/TROUBLESHOOTING.md`](TROUBLESHOOTING.md).

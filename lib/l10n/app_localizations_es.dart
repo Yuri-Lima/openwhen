@@ -2275,4 +2275,52 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feedSenderAnonymous => 'Alguien especial';
+
+  @override
+  String get registerAcceptTermsPrefix => 'He leído y acepto los ';
+
+  @override
+  String get registerAcceptTermsAnd => ' y la ';
+
+  @override
+  String get registerConfirmAge => 'Confirmo que tengo 13 años o más';
+
+  @override
+  String get registerMustAcceptTerms => 'Debes aceptar los términos y confirmar tu edad para continuar';
+
+  @override
+  String get settingsDeleteChoiceTitle => '¿Qué debe pasar con tus cartas?';
+
+  @override
+  String get settingsDeleteOptionDeleteAll => 'Eliminar todo';
+
+  @override
+  String get settingsDeleteOptionDeleteAllDesc => 'Todas las cartas, cápsulas y datos serán eliminados permanentemente.';
+
+  @override
+  String get settingsDeleteOptionAnonymize => 'Anonimizar mis cartas';
+
+  @override
+  String get settingsDeleteOptionAnonymizeDesc => 'Tus cartas permanecen para los destinatarios, pero tu nombre e información son eliminados.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'CONFIRMA TU CONTRASEÑA';
+
+  @override
+  String get settingsDeletePasswordHint => 'Ingresa tu contraseña actual';
+
+  @override
+  String get settingsDeleteIrreversibleConfirm => 'Entiendo que esta acción es irreversible y todos mis datos serán procesados según mi elección anterior.';
+
+  @override
+  String get settingsDeleteProcessing => 'Eliminando tu cuenta...';
+
+  @override
+  String get settingsDeleteWrongPassword => 'Contraseña incorrecta. Inténtalo de nuevo.';
+
+  @override
+  String get settingsDeleteReauthFailed => 'Error de autenticación. Inténtalo de nuevo.';
+
+  @override
+  String get settingsDeleteError => 'Error al eliminar la cuenta. Inténtalo más tarde.';
 }
