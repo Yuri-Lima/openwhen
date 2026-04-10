@@ -251,6 +251,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       } catch (e, st) {
         debugPrint('DeepLinkCoordinator error (non-fatal): $e\n$st');
       }
+      // NOTE: billing migration (migrateUserBillingDefaults) must NOT run at
+      // startup — the HTTPSCallable crashes the native iOS SDK even through
+      // CallableQueue. Runs lazily in SubscriptionPlansScreen instead.
     });
   }
 

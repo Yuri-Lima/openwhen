@@ -48,27 +48,19 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   }
 
   /// Runs each admin queue loader one after another (not in parallel).
-  /// Extra delays between each callable let the native iOS Firebase SDK
-  /// finish Swift async task deallocation before the next call starts —
-  /// without these, iOS 26.4+ (23E246) can SIGABRT on the Swift concurrency
-  /// runtime when deallocating HTTPSCallable async tasks in sequence
+  /// Cooldown between callables is handled by [CallableQueue] globally —
+  /// avoids iOS 26.4+ (23E246) SIGABRT on Swift async task dealloc
   /// (see TROUBLESHOOTING.md §2).
-  static const _callableCooldown = Duration(milliseconds: 400);
-
   Future<void> _loadAllAdminData() async {
     if (!mounted) return;
     await _loadModerationInfo();
     if (!mounted) return;
-    await Future<void>.delayed(_callableCooldown);
     await _loadReports();
     if (!mounted) return;
-    await Future<void>.delayed(_callableCooldown);
     await _loadFeedback();
     if (!mounted) return;
-    await Future<void>.delayed(_callableCooldown);
     await _loadReviews();
     if (!mounted) return;
-    await Future<void>.delayed(_callableCooldown);
     await _loadIncidents();
   }
 
