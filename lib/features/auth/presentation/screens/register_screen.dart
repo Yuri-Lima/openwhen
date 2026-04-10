@@ -188,7 +188,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           // Hero escuro
           Container(
             height: 310,
-            color: context.pal.ink,
+            color: context.pal.headerGradient.first,
             child: Stack(
               children: [
                 Center(

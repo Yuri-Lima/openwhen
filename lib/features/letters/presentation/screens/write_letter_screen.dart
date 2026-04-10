@@ -95,6 +95,28 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   // Mensagem digitada: recolhida por padrão
   bool _messageExpanded = false;
   bool _allowPublish = false;
+  bool _hasOffensiveContent = false;
+
+  static const _offensiveWords = [
+    // Português
+    'idiota', 'imbecil', 'burro', 'inútil', 'fracasso', 'lixo',
+    'odeio você', 'odeio voce', 'desapareça', 'desapareca',
+    'ninguém te ama', 'ninguem te ama', 'você não presta',
+    'voce nao presta', 'sua vida não vale', 'sua vida nao vale',
+    'se mata', 'se machuque', 'você merece sofrer', 'voce merece sofrer',
+    // English
+    'i hate you', 'you are worthless', 'nobody loves you',
+    'you should disappear', 'kill yourself', 'you deserve to suffer',
+    'you are a failure', 'loser', 'worthless',
+    // Español
+    'te odio', 'inútil', 'eres un fracaso', 'nadie te quiere',
+    'desaparece', 'mereces sufrir',
+  ];
+
+  bool _checkOffensiveContent(String text) {
+    final lower = text.toLowerCase();
+    return _offensiveWords.any((word) => lower.contains(word));
+  }
   final FocusNode _messageFocusNode = FocusNode();
 
   // Voz (mobile/desktop com IO; web usa stub de upload)
@@ -107,7 +129,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   Timer? _recordingTimer;
   Timer? _userSearchDebounce;
 
-  void _onMessageChanged() => setState(() {});
+  void _onMessageChanged() {
+    setState(() {
+      _hasOffensiveContent = _checkOffensiveContent(_messageController.text);
+    });
+  }
 
   @override
   void initState() {
@@ -796,6 +822,32 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               ),
                             ),
                     ),
+                    // Aviso de conteúdo ofensivo
+                    if (_hasOffensiveContent) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF3F3),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFC0392B).withOpacity(0.3)),
+                        ),
+                        child: Row(children: [
+                          const Icon(Icons.favorite_border_rounded, color: Color(0xFFC0392B), size: 18),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'O OpenWhen existe para conectar com amor e superação. Revise sua mensagem. 🦉',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: const Color(0xFFC0392B),
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ],
                     if (!kIsWeb) ...[
                       const SizedBox(height: 16),
                       Text(

@@ -214,7 +214,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registerSuccess =>
-      'Account created successfully! Sign in to continue.';
+      'Account created! Check your email and sign in to continue.';
 
   @override
   String get hintName => 'your name';

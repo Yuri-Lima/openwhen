@@ -215,7 +215,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get registerSuccess =>
-      'Conta criada com sucesso! Faça login para continuar.';
+      'Conta criada! Verifique seu email e faça login para continuar.';
 
   @override
   String get hintName => 'seu nome';
@@ -2608,7 +2608,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get registerSuccess =>
-      'Conta criada com sucesso! Faça login para continuar.';
+      'Conta criada! Verifique seu email e faça login para continuar.';
 
   @override
   String get hintName => 'seu nome';

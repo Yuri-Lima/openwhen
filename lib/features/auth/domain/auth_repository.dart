@@ -56,6 +56,9 @@ class AuthRepository {
       'country': null,
       'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
     });
+
+    // Send email verification — required before first login.
+    await user.sendEmailVerification();
   }
 
   Future<void> login({

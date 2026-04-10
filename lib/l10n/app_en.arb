@@ -71,7 +71,7 @@
   "loginOrContinueWith": "or continue with",
   "loginLegalFooter": "By signing in you agree to the Terms of Use and Privacy Policy.",
 
-  "registerSuccess": "Account created successfully! Sign in to continue.",
+  "registerSuccess": "Account created! Check your email and sign in to continue.",
   "hintName": "your name",
   "labelName": "Name",
   "hintCreatePassword": "create a password",

@@ -71,7 +71,7 @@
   "loginOrContinueWith": "o continúa con",
   "loginLegalFooter": "Al iniciar sesión aceptas los Términos de Uso y la Política de Privacidad.",
 
-  "registerSuccess": "¡Cuenta creada con éxito! Inicia sesión para continuar.",
+  "registerSuccess": "¡Cuenta creada! Revisa tu correo y luego inicia sesión para continuar.",
   "hintName": "tu nombre",
   "labelName": "Nombre",
   "hintCreatePassword": "crea una contraseña",
