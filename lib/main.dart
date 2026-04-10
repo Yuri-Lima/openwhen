@@ -94,14 +94,43 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  try {
-    await NotificationService.init();
-  } catch (e, st) {
-    debugPrint('[Notifications] init failed (non-fatal): $e\n$st');
-    FirebaseCrashlytics.instance.recordError(e, st);
+  // FCM + listeners nativos no iOS: inicializar após o primeiro frame evita
+  // EXC_BAD_ACCESS / corrida entre JIT (debug em device) e o bridge nativo.
+  runApp(
+    ProviderScope(
+      child: _PostFrameNotificationInit(child: const MyApp()),
+    ),
+  );
+}
+
+/// Agenda [NotificationService.init] após o primeiro frame (ver doc em [main]).
+class _PostFrameNotificationInit extends StatefulWidget {
+  const _PostFrameNotificationInit({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_PostFrameNotificationInit> createState() =>
+      _PostFrameNotificationInitState();
+}
+
+class _PostFrameNotificationInitState extends State<_PostFrameNotificationInit> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      try {
+        await NotificationService.init();
+      } catch (e, st) {
+        debugPrint('[Notifications] init failed (non-fatal): $e\n$st');
+        FirebaseCrashlytics.instance.recordError(e, st);
+      }
+    });
   }
 
-  runApp(const ProviderScope(child: MyApp()));
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class MyApp extends ConsumerStatefulWidget {

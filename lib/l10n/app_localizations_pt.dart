@@ -2276,22 +2276,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
 
   @override
-  String get registerMustAcceptTerms => 'Você precisa aceitar os termos e confirmar sua idade para continuar';
+  String get registerMustAcceptTerms =>
+      'Você precisa aceitar os termos e confirmar sua idade para continuar';
 
   @override
-  String get settingsDeleteChoiceTitle => 'O que deve acontecer com suas cartas?';
+  String get settingsDeleteChoiceTitle =>
+      'O que deve acontecer com suas cartas?';
 
   @override
   String get settingsDeleteOptionDeleteAll => 'Apagar tudo';
 
   @override
-  String get settingsDeleteOptionDeleteAllDesc => 'Todas as cartas, cápsulas e dados serão removidos permanentemente.';
+  String get settingsDeleteOptionDeleteAllDesc =>
+      'Todas as cartas, cápsulas e dados serão removidos permanentemente.';
 
   @override
   String get settingsDeleteOptionAnonymize => 'Anonimizar minhas cartas';
 
   @override
-  String get settingsDeleteOptionAnonymizeDesc => 'Suas cartas permanecem para os destinatários, mas seu nome e dados são removidos.';
+  String get settingsDeleteOptionAnonymizeDesc =>
+      'Suas cartas permanecem para os destinatários, mas seu nome e dados são removidos.';
 
   @override
   String get settingsDeletePasswordLabel => 'CONFIRME SUA SENHA';
@@ -2300,7 +2304,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDeletePasswordHint => 'Digite sua senha atual';
 
   @override
-  String get settingsDeleteIrreversibleConfirm => 'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
+  String get settingsDeleteIrreversibleConfirm =>
+      'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
 
   @override
   String get settingsDeleteProcessing => 'Deletando sua conta...';
@@ -2309,10 +2314,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDeleteWrongPassword => 'Senha incorreta. Tente novamente.';
 
   @override
-  String get settingsDeleteReauthFailed => 'Falha na autenticação. Tente novamente.';
+  String get settingsDeleteReauthFailed =>
+      'Falha na autenticação. Tente novamente.';
 
   @override
-  String get settingsDeleteError => 'Falha ao deletar conta. Tente novamente mais tarde.';
+  String get settingsDeleteError =>
+      'Falha ao deletar conta. Tente novamente mais tarde.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -4576,4 +4583,59 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get feedSenderAnonymous => 'Alguém especial';
+
+  @override
+  String get registerAcceptTermsPrefix => 'Li e aceito os ';
+
+  @override
+  String get registerAcceptTermsAnd => ' e a ';
+
+  @override
+  String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
+
+  @override
+  String get registerMustAcceptTerms =>
+      'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get settingsDeleteChoiceTitle =>
+      'O que deve acontecer com suas cartas?';
+
+  @override
+  String get settingsDeleteOptionDeleteAll => 'Apagar tudo';
+
+  @override
+  String get settingsDeleteOptionDeleteAllDesc =>
+      'Todas as cartas, cápsulas e dados serão removidos permanentemente.';
+
+  @override
+  String get settingsDeleteOptionAnonymize => 'Anonimizar minhas cartas';
+
+  @override
+  String get settingsDeleteOptionAnonymizeDesc =>
+      'Suas cartas permanecem para os destinatários, mas seu nome e dados são removidos.';
+
+  @override
+  String get settingsDeletePasswordLabel => 'CONFIRME SUA SENHA';
+
+  @override
+  String get settingsDeletePasswordHint => 'Digite sua senha atual';
+
+  @override
+  String get settingsDeleteIrreversibleConfirm =>
+      'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
+
+  @override
+  String get settingsDeleteProcessing => 'Deletando sua conta...';
+
+  @override
+  String get settingsDeleteWrongPassword => 'Senha incorreta. Tente novamente.';
+
+  @override
+  String get settingsDeleteReauthFailed =>
+      'Falha na autenticação. Tente novamente.';
+
+  @override
+  String get settingsDeleteError =>
+      'Falha ao deletar conta. Tente novamente mais tarde.';
 }

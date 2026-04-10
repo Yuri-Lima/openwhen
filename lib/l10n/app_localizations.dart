@@ -4224,51 +4224,99 @@ abstract class AppLocalizations {
   String get feedSenderAnonymous;
 
   /// No description provided for @registerAcceptTermsPrefix.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Li e aceito os '**
   String get registerAcceptTermsPrefix;
 
   /// No description provided for @registerAcceptTermsAnd.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **' e a '**
   String get registerAcceptTermsAnd;
 
   /// No description provided for @registerConfirmAge.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Confirmo que tenho 13 anos ou mais'**
   String get registerConfirmAge;
 
   /// No description provided for @registerMustAcceptTerms.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você precisa aceitar os termos e confirmar sua idade para continuar'**
   String get registerMustAcceptTerms;
 
   /// No description provided for @settingsDeleteChoiceTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O que deve acontecer com suas cartas?'**
   String get settingsDeleteChoiceTitle;
 
   /// No description provided for @settingsDeleteOptionDeleteAll.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apagar tudo'**
   String get settingsDeleteOptionDeleteAll;
 
   /// No description provided for @settingsDeleteOptionDeleteAllDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Todas as cartas, cápsulas e dados serão removidos permanentemente.'**
   String get settingsDeleteOptionDeleteAllDesc;
 
   /// No description provided for @settingsDeleteOptionAnonymize.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Anonimizar minhas cartas'**
   String get settingsDeleteOptionAnonymize;
 
   /// No description provided for @settingsDeleteOptionAnonymizeDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Suas cartas permanecem para os destinatários, mas seu nome e dados são removidos.'**
   String get settingsDeleteOptionAnonymizeDesc;
 
   /// No description provided for @settingsDeletePasswordLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'CONFIRME SUA SENHA'**
   String get settingsDeletePasswordLabel;
 
   /// No description provided for @settingsDeletePasswordHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Digite sua senha atual'**
   String get settingsDeletePasswordHint;
 
   /// No description provided for @settingsDeleteIrreversibleConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.'**
   String get settingsDeleteIrreversibleConfirm;
 
   /// No description provided for @settingsDeleteProcessing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Deletando sua conta...'**
   String get settingsDeleteProcessing;
 
   /// No description provided for @settingsDeleteWrongPassword.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Senha incorreta. Tente novamente.'**
   String get settingsDeleteWrongPassword;
 
   /// No description provided for @settingsDeleteReauthFailed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Falha na autenticação. Tente novamente.'**
   String get settingsDeleteReauthFailed;
 
   /// No description provided for @settingsDeleteError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Falha ao deletar conta. Tente novamente mais tarde.'**
   String get settingsDeleteError;
 }
 

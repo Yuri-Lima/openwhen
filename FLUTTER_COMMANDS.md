@@ -16,6 +16,13 @@ Projeto Flutter padrão; rode os comandos na raiz do repositório (onde está o 
 | `flutter build ipa` | Gera um **.ipa** pronto para **TestFlight** / **App Store Connect** (só macOS + Xcode). Ver secção abaixo. |
 | `flutter clean` | Limpa artefatos de build; útil se algo parecer “preso” no cache. |
 | `flutter gen-l10n` | Regenera `lib/l10n/app_localizations*.dart` após editar ficheiros `.arb` (ver `l10n.yaml`). |
+
+### Localização (`gen-l10n`)
+
+- **Fonte de verdade:** edita apenas os `.arb` em `lib/l10n/`. O template principal é `app_pt_BR.arb` ([`l10n.yaml`](l10n.yaml)); **todas** as chaves novas devem existir nesse ficheiro e nos outros locales (`app_en.arb`, `app_es.arb`, `app_pt.arb`), senão o gerador omite getters ou ficas com desvios.
+- **Não edites à mão** `app_localizations*.dart` — o próximo `flutter gen-l10n` ou `flutter pub get` (com `generate: true`) sobrescreve esses ficheiros.
+- **Fluxo:** alterar `.arb` → `flutter gen-l10n` → commit em conjunto dos `.arb` e dos `.dart` gerados.
+- **Verificar sincronização (opcional, CI ou local):** após `flutter pub get` e `flutter gen-l10n`, o working tree não deve ter diferenças em `lib/l10n/`; podes usar `git diff --exit-code -- lib/l10n/` para falhar o build se alguém tiver commitado `.dart` dessincronizados dos `.arb`.
 | `dart run flutter_launcher_icons` | Regenera ícones do launcher Android (`mipmap-*`) e iOS (`AppIcon.appiconset`) a partir de `assets/branding/app_icon.png` (config em `pubspec.yaml`). Rode na raiz após alterar a arte-mestre. |
 
 ### `flutter build ipa` (iOS — pacote para a Apple)

@@ -2271,22 +2271,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerConfirmAge => 'I confirm that I am 13 years old or older';
 
   @override
-  String get registerMustAcceptTerms => 'You must accept the terms and confirm your age to continue';
+  String get registerMustAcceptTerms =>
+      'You must accept the terms and confirm your age to continue';
 
   @override
-  String get settingsDeleteChoiceTitle => 'What should happen with your letters?';
+  String get settingsDeleteChoiceTitle =>
+      'What should happen with your letters?';
 
   @override
   String get settingsDeleteOptionDeleteAll => 'Delete everything';
 
   @override
-  String get settingsDeleteOptionDeleteAllDesc => 'All letters, capsules, and data will be permanently removed.';
+  String get settingsDeleteOptionDeleteAllDesc =>
+      'All letters, capsules, and data will be permanently removed.';
 
   @override
   String get settingsDeleteOptionAnonymize => 'Anonymize my letters';
 
   @override
-  String get settingsDeleteOptionAnonymizeDesc => 'Your letters remain for recipients, but your name and info are removed.';
+  String get settingsDeleteOptionAnonymizeDesc =>
+      'Your letters remain for recipients, but your name and info are removed.';
 
   @override
   String get settingsDeletePasswordLabel => 'CONFIRM YOUR PASSWORD';
@@ -2295,17 +2299,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeletePasswordHint => 'Enter your current password';
 
   @override
-  String get settingsDeleteIrreversibleConfirm => 'I understand this action is irreversible and all my data will be processed according to my choice above.';
+  String get settingsDeleteIrreversibleConfirm =>
+      'I understand this action is irreversible and all my data will be processed according to my choice above.';
 
   @override
   String get settingsDeleteProcessing => 'Deleting your account...';
 
   @override
-  String get settingsDeleteWrongPassword => 'Incorrect password. Please try again.';
+  String get settingsDeleteWrongPassword =>
+      'Incorrect password. Please try again.';
 
   @override
-  String get settingsDeleteReauthFailed => 'Authentication failed. Please try again.';
+  String get settingsDeleteReauthFailed =>
+      'Authentication failed. Please try again.';
 
   @override
-  String get settingsDeleteError => 'Account deletion failed. Please try again later.';
+  String get settingsDeleteError =>
+      'Account deletion failed. Please try again later.';
 }
