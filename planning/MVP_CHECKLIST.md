@@ -203,3 +203,27 @@ Cartas que machucam não têm lugar aqui.
 - [ ] Score 8-10 → bloqueado, carta não é salva
 - [ ] Arquivo: `functions/src/moderation/moderate_content.ts`
 - [ ] Detalhes completos: `planning/CONTENT_MODERATION.md`
+
+---
+
+## 🔴 Legal e Privacidade — ANTES DO LANÇAMENTO
+
+### Diego faz:
+- [ ] Escrever Política de Privacidade completa (LGPD + GDPR + CCPA)
+- [ ] Escrever Termos de Uso com cláusula de encerramento de serviço
+- [ ] Adicionar aviso na tela de deletar conta sobre cartas pendentes
+- [ ] Documentar plano de contingência de 90 dias
+
+### Yuri faz:
+- [ ] Export automático de todos os dados ao deletar conta
+- [ ] Central de privacidade no app — usuário vê todos os dados armazenados
+- [ ] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function)
+- [ ] Manter entrega de cartas locked mesmo após conta deletada
+- [ ] Backup redundante das cartas fora do Firebase
+- [ ] Log de todas as solicitações de privacidade
+
+### Diego + Yuri:
+- [ ] Revisar Termos de Uso com advogado antes de lançar
+- [ ] Criar página web de privacidade acessível sem login
+- [ ] Criar email de contato para solicitações de privacidade (ex: privacy@openwhen.app)
+- [ ] Documentar Fundo de Continuidade nos Termos de Uso quando tiver receita
