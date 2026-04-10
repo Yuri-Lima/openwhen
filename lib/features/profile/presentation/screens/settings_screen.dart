@@ -1098,6 +1098,35 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                 height: 1.5,
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Pending letters warning
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF7ED),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFDBA74)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      size: 20, color: Color(0xFFF59E0B)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l10n.settingsDeletePendingLettersWarning,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        color: const Color(0xFF92400E),
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
 
             // Deletion mode choice

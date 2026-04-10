@@ -6,7 +6,7 @@
 	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:openwhen.app</string>
+		<string>applinks:openwhen.life</string>
 	</array>
 </dict>
 </plist>

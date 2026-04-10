@@ -113,6 +113,13 @@ No terminal onde o app está em execução:
 
 Deploy de regras/hosting usa a [Firebase CLI](https://firebase.google.com/docs/cli) (`firebase deploy`), não o Flutter.
 
+| Comando | Uso |
+|--------|-----|
+| `firebase deploy --only hosting` | Publica as páginas web estáticas (`hosting/public/`) — inclui `privacy.html`, `terms.html` e `.well-known/`. |
+| `firebase deploy --only firestore:rules,storage` | Deploy das regras Firestore + Storage. |
+| `firebase deploy --only functions` | Deploy das Cloud Functions (`functions/`). |
+| `firebase deploy` | Deploy de tudo (hosting + rules + functions). |
+
 ## Ajuda integrada
 
 ```bash

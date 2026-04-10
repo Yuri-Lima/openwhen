@@ -84,7 +84,7 @@ class LegalScreen extends StatelessWidget {
 
   Widget _buildTerms(BuildContext context, AppLocalizations l10n) {
     return _buildLegalContent(context,
-      lastUpdate: l10n.legalLastUpdate('22/03/2026'),
+      lastUpdate: l10n.legalLastUpdate('10/04/2026'),
       intro: l10n.termsIntro,
       sections: [
         _Section(l10n.termsSection1Title, l10n.termsSection1Body),
@@ -94,13 +94,14 @@ class LegalScreen extends StatelessWidget {
         _Section(l10n.termsSection5Title, l10n.termsSection5Body),
         _Section(l10n.termsSection6Title, l10n.termsSection6Body),
         _Section(l10n.termsSection7Title, l10n.termsSection7Body),
+        _Section(l10n.termsSection8Title, l10n.termsSection8Body),
       ],
     );
   }
 
   Widget _buildPrivacy(BuildContext context, AppLocalizations l10n) {
     return _buildLegalContent(context,
-      lastUpdate: l10n.legalLastUpdate('22/03/2026'),
+      lastUpdate: l10n.legalLastUpdate('10/04/2026'),
       intro: l10n.privacyIntro,
       sections: [
         _Section(l10n.privacySection1Title, l10n.privacySection1Body),
@@ -111,6 +112,15 @@ class LegalScreen extends StatelessWidget {
         _Section(l10n.privacySection6Title, l10n.privacySection6Body),
         _Section(l10n.privacySection7Title, l10n.privacySection7Body),
         _Section(l10n.privacySection8Title, l10n.privacySection8Body),
+        _Section(l10n.privacySection9Title, l10n.privacySection9Body),
+        _Section(l10n.privacySection10Title, l10n.privacySection10Body),
+        _Section(l10n.privacySection11Title, l10n.privacySection11Body),
+        _Section(l10n.privacySection12Title, l10n.privacySection12Body),
+        _Section(l10n.privacySection13Title, l10n.privacySection13Body),
+        _Section(l10n.privacySection14Title, l10n.privacySection14Body),
+        _Section(l10n.privacySection15Title, l10n.privacySection15Body),
+        _Section(l10n.privacySection16Title, l10n.privacySection16Body),
+        _Section(l10n.privacySection17Title, l10n.privacySection17Body),
       ],
     );
   }
@@ -174,10 +184,10 @@ class LegalScreen extends StatelessWidget {
             children: [
               Text(l10n.aboutContacts, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _buildContact(context, l10n.aboutContactSupport, 'suporte@openwhen.app'),
-              _buildContact(context, l10n.aboutContactPrivacy, 'privacidade@openwhen.app'),
-              _buildContact(context, l10n.aboutContactLegal, 'juridico@openwhen.app'),
-              _buildContact(context, l10n.aboutContactDpo, 'dpo@openwhen.app'),
+              _buildContact(context, l10n.aboutContactSupport, 'suporte@openwhen.life'),
+              _buildContact(context, l10n.aboutContactPrivacy, 'privacidade@openwhen.life'),
+              _buildContact(context, l10n.aboutContactLegal, 'juridico@openwhen.life'),
+              _buildContact(context, l10n.aboutContactDpo, 'dpo@openwhen.life'),
             ],
           ),
         ),
@@ -248,7 +258,7 @@ class LegalScreen extends StatelessWidget {
               Text(l10n.helpNotFoundBody,
                 style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
               const SizedBox(height: 12),
-              _buildContact(context, l10n.aboutContactSupport, 'suporte@openwhen.app'),
+              _buildContact(context, l10n.aboutContactSupport, 'suporte@openwhen.life'),
               _buildContact(context, l10n.helpResponseTime, l10n.helpResponseTimeValue),
             ],
           ),

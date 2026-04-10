@@ -27,7 +27,7 @@ async function sendSendgridInvite(params: {
     return;
   }
   const fromEmail =
-    process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.app";
+    process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.life";
   const fromName = process.env.SENDGRID_FROM_NAME || "OpenWhen";
   const body = {
     personalizations: [{to: [{email: params.to}]}],
@@ -126,7 +126,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
     const letterId = event.params.letterId as string;
     const title = (data.title as string) || "OpenWhen";
     const senderName = (data.senderName as string) || "Someone";
-    const link = `https://openwhen.app/letter/${letterId}`;
+    const link = `https://openwhen.life/letter/${letterId}`;
     const subject = `${senderName} sent you a letter on OpenWhen`;
     const html = `
 <p>Hi,</p>

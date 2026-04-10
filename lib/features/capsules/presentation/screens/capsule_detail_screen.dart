@@ -620,7 +620,7 @@ Future<void> _shareCapsuleInstagram(
   required String locale,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final deepLink = 'https://openwhen.app/capsule/$docId';
+  final deepLink = 'https://openwhen.life/capsule/$docId';
 
   if (kIsWeb) {
     await Share.share(

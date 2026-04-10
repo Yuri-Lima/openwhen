@@ -1524,7 +1524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get qrFooterBrand => 'openwhen.app';
+  String get qrFooterBrand => 'openwhen.life';
 
   @override
   String get qrShareWhatsAppLabel => 'WhatsApp';
@@ -1695,6 +1695,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsDeleteBody =>
       'This action is irreversible. All your letters, followers, and data will be permanently deleted.';
+
+  @override
+  String get settingsDeletePendingLettersWarning =>
+      'Important: You may have locked letters waiting to be delivered to recipients or letters waiting to be received. If you choose \"Delete All\", pending letters you sent will not be delivered and letters you haven\'t opened yet will be lost. If you choose \"Anonymize\", your sent letters will still be delivered but your name will be replaced with \"Deleted user\".';
 
   @override
   String get settingsDeleteConfirm => 'Confirm deletion';
@@ -2021,7 +2025,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedbackCouldNotOpenEmail =>
-      'Could not open email. Please contact suporte@openwhen.app.';
+      'Could not open email. Please contact suporte@openwhen.life.';
 
   @override
   String feedbackEmailBodyPrefix(String category) {
@@ -2146,72 +2150,144 @@ class AppLocalizationsEn extends AppLocalizations {
       'This agreement shall remain in effect for an indefinite period from the user\'s registration. The user may terminate the agreement at any time by deleting their account in the Platform settings, pursuant to Article 7, Clause IX, of the Internet Civil Framework. The Company reserves the right to suspend or terminate accounts that violate these Terms, without prejudice to other applicable legal measures.';
 
   @override
-  String get termsSection7Title => '7. GENERAL PROVISIONS';
+  String get termsSection7Title =>
+      '7. SERVICE DISCONTINUATION AND LETTER DELIVERY GUARANTEE';
 
   @override
   String get termsSection7Body =>
-      'These Terms are governed by the laws of the Federative Republic of Brazil. The courts of São Paulo/SP are hereby elected to resolve any disputes arising from this instrument, with express waiver of any other jurisdiction, however privileged. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@openwhen.app. Last updated: March 22, 2026.';
+      'OpenWhen makes every effort to ensure the delivery of all letters and capsules on the dates chosen by the sender. In the event of a planned discontinuation of services, the Company commits to: (i) notify all registered users by email and in-app notification at least 90 (ninety) days before the definitive shutdown; (ii) during the notice period, make available the export of all user data (letters, capsules, profile, media) via the app or email; (iii) deliver all locked letters whose opening date falls within the notice period; (iv) after the 90-day period, permanently and irreversibly delete all user data from its servers. The Company may establish a Continuity Fund — a financial reserve sufficient to maintain essential infrastructure (Firebase, storage, delivery functions) for at least 2 (two) years even if the app ceases to generate revenue. When established, the existence and status of this fund will be documented in these Terms. This commitment serves as a product guarantee, not a legal obligation, and may be adjusted as the Company\'s financial capacity evolves.';
+
+  @override
+  String get termsSection8Title => '8. GENERAL PROVISIONS';
+
+  @override
+  String get termsSection8Body =>
+      'These Terms are governed by the laws of the Federative Republic of Brazil. The courts of São Paulo/SP are hereby elected to resolve any disputes arising from this instrument, with express waiver of any other jurisdiction, however privileged. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@openwhen.life. Last updated: April 10, 2026.';
 
   @override
   String get privacyIntro =>
-      'This Privacy Policy (\"Policy\") describes how OpenWhen Tecnologia Ltda. (\"Company\", \"we\") collects, processes, stores, and shares the personal data of Platform users, in compliance with Law No. 13,709/2018 (General Data Protection Law — LGPD), the General Data Protection Regulation of the European Union (GDPR — Regulation EU 2016/679), Law No. 12,965/2014 (Internet Civil Framework), and other applicable regulations. The Company acts as a Data Controller, pursuant to Article 5, Clause VI, of the LGPD.';
+      'This Privacy Policy (\"Policy\") describes how OpenWhen Tecnologia Ltda. (\"Company\", \"we\", \"us\", \"our\") collects, processes, stores, and shares the personal data of users of the OpenWhen platform and mobile application (\"Platform\"). This Policy applies globally and complies with: (a) the Brazilian General Data Protection Law — LGPD (Law No. 13,709/2018); (b) the General Data Protection Regulation of the European Union — GDPR (Regulation EU 2016/679); (c) the California Consumer Privacy Act and California Privacy Rights Act — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) the Brazilian Internet Civil Framework (Law No. 12,965/2014); and (e) the U.S. Children\'s Online Privacy Protection Act — COPPA (16 CFR Part 312). The Company acts as Data Controller (LGPD Art. 5 VI / GDPR Art. 4(7)) and as a \"Business\" under CCPA. Effective date: April 10, 2026.';
 
   @override
-  String get privacySection1Title => '1. PERSONAL DATA COLLECTED';
+  String get privacySection1Title => '1. DEFINITIONS';
 
   @override
   String get privacySection1Body =>
-      'The Company collects the following categories of personal data: (i) Registration data: full name, email address, username, and profile photo; (ii) Usage data: interactions on the Platform, letters created, sent and received, likes and comments; (iii) Technical data: IP address, device identifier, operating system and access logs, pursuant to Article 15 of the Internet Civil Framework; (iv) Location data: country of origin, collected in a non-precise manner solely for service personalization. We do not collect sensitive personal data, as defined in Article 5, Clause II, of the LGPD, except with express consent.';
+      'For the purposes of this Policy: \"Personal Data\" means any information relating to an identified or identifiable natural person (LGPD Art. 5 I / GDPR Art. 4(1)); \"Personal Information\" (PI) has the meaning defined in CCPA § 1798.140(v); \"Processing\" means any operation performed on personal data (LGPD Art. 5 X / GDPR Art. 4(2)); \"Data Subject\" or \"Consumer\" means any natural person whose personal data is processed; \"Controller\" means the entity that determines the purposes and means of processing; \"Processor\" or \"Operator\" means the entity that processes data on behalf of the Controller; \"Sensitive Personal Data\" means data concerning racial or ethnic origin, religious belief, political opinion, health, sexual life, or biometric/genetic data (LGPD Art. 5 II / GDPR Art. 9).';
 
   @override
-  String get privacySection2Title => '2. LEGAL BASES FOR PROCESSING';
+  String get privacySection2Title => '2. DATA WE COLLECT';
 
   @override
   String get privacySection2Body =>
-      'The processing of users\' personal data is based on the following legal grounds provided in Article 7 of the LGPD: (i) Consent of the data subject, pursuant to Article 7, Clause I, expressed at the time of registration; (ii) Contract performance, pursuant to Article 7, Clause V, for the provision of contracted services; (iii) Legitimate interest of the Company, pursuant to Article 7, Clause IX, for Platform improvement, fraud prevention, and service security; (iv) Compliance with legal or regulatory obligations, pursuant to Article 7, Clause II.';
+      'We collect the following categories of personal data:\n\n(a) Registration Data: full name, display name, email address, username, profile photo (optional), and biographical text (optional).\n\n(b) User-Generated Content: letters (text, title, emotional state), handwritten letter images (captured via camera), voice messages (up to 1 minute, captured via microphone), time capsules (text, theme, photos), comments on public letters, and optional music links.\n\n(c) Precise Location Data (opt-in): when you choose to attach a location to a letter or capsule, we collect your precise GPS coordinates (latitude and longitude) and the timestamp of capture. You may also enable a proximity requirement (approximately 10 meters) for the recipient to open the letter. Location collection is always optional and requested per letter or capsule — we never collect location data in the background.\n\n(d) Technical and Device Data: IP address, device identifier, operating system, app version, push notification token (Firebase Cloud Messaging), device platform (Android/iOS/web), preferred locale, and access logs pursuant to Article 15 of the Internet Civil Framework.\n\n(e) Analytics Data: usage events (letters created, opened, shared; capsules created, opened; feed views; likes, comments, follows; profile views; theme and language changes), screen views, and crash/error reports, collected via Firebase Analytics and Firebase Crashlytics.\n\n(f) Social Data: follower/following relationships, user blocks, likes on public letters, and comments.\n\n(g) Billing Data: when subscription features are enabled, we store your Stripe customer identifier, subscription identifier, subscription tier (free/plus/pro), and subscription status. Payment card details are processed and stored exclusively by Stripe and never touch our servers.\n\n(h) Moderation Data: content reports submitted by users (reason, detail, target content), AI moderation analysis results (flagged categories and scores), human moderation review records, and moderation incident logs.\n\n(i) Communication Data: product feedback messages (including platform and app locale metadata) and support requests.\n\n(j) Gamification Data: badge unlock records and in-app notification history.\n\nFor purposes of CCPA, the categories of PI collected in the preceding 12 months include: identifiers (name, email, username, device ID); internet/electronic network activity (usage events, access logs); geolocation data (precise GPS when opted in); audio/visual information (voice messages, photos); and professional or personal information inferred from content you create.';
 
   @override
-  String get privacySection3Title => '3. PURPOSE OF PROCESSING';
+  String get privacySection3Title => '3. HOW WE COLLECT DATA';
 
   @override
   String get privacySection3Body =>
-      'The personal data collected is processed for the following purposes: (i) Provision of Platform services; (ii) Personalization of user experience; (iii) Sending service-related notifications; (iv) Continuous improvement of the Platform; (v) Fraud prevention and security assurance; (vi) Compliance with legal and regulatory obligations; (vii) Regular exercise of rights in judicial, administrative, or arbitration proceedings. Data is not used for third-party advertising.';
+      '(a) Directly from you: when you create an account, write letters or capsules, upload photos or voice messages, grant location permission, submit feedback, post comments, or interact with other users.\n\n(b) Automatically: device and technical data, analytics events, crash reports, and push notification tokens are collected automatically when you use the Platform, through Firebase SDKs integrated into the app.\n\n(c) From third parties: payment status updates from Stripe (via webhooks) when subscription features are active; device attestation from Firebase App Check (Google Play Integrity on Android, DeviceCheck on iOS) to protect against abuse.';
 
   @override
-  String get privacySection4Title => '4. DATA SHARING';
+  String get privacySection4Title => '4. LEGAL BASES FOR PROCESSING';
 
   @override
   String get privacySection4Body =>
-      'The Company does not sell, rent, or transfer personal data to third parties for commercial purposes. Data sharing occurs exclusively in the following cases: (i) With essential service providers for the Platform\'s operation (Firebase/Google Cloud), acting as Data Processors, under contracts that ensure an adequate level of protection; (ii) With public authorities, by court order or substantiated legal request; (iii) With an acquirer in the event of a merger, acquisition, or corporate restructuring, ensuring continuity of this Policy.';
+      'Under the LGPD (Art. 7) and GDPR (Art. 6), we process your data based on:\n\n(a) Consent (LGPD Art. 7 I / GDPR Art. 6(1)(a)): expressed at registration when you accept this Policy; for optional features such as location data and voice messages, consent is obtained at the moment of use.\n\n(b) Contract Performance (LGPD Art. 7 V / GDPR Art. 6(1)(b)): processing necessary to provide the Platform\'s services — delivering letters, managing capsules, enabling social features, and maintaining your account.\n\n(c) Legitimate Interest (LGPD Art. 7 IX / GDPR Art. 6(1)(f)): Platform improvement, fraud prevention, content moderation, service security, and analytics. We conduct a balancing test to ensure our interests do not override your fundamental rights.\n\n(d) Legal Obligation (LGPD Art. 7 II / GDPR Art. 6(1)(c)): retention of access logs for 6 months (Internet Civil Framework Art. 15), compliance with court orders, and regulatory requirements.\n\nUnder CCPA, the collection and use of PI is disclosed in Sections 2, 6, and 8 of this Policy. We do not use or disclose sensitive personal information for purposes beyond those permitted by CCPA § 1798.121.';
 
   @override
-  String get privacySection5Title =>
-      '5. DATA SUBJECT RIGHTS (LGPD — Article 18)';
+  String get privacySection5Title => '5. PURPOSES OF PROCESSING';
 
   @override
   String get privacySection5Body =>
-      'Pursuant to Article 18 of the LGPD, the data subject has the right to: (i) Confirmation of the existence of processing; (ii) Access to data; (iii) Correction of incomplete, inaccurate, or outdated data; (iv) Anonymization, blocking, or deletion of unnecessary data; (v) Data portability to another provider, upon express request; (vi) Deletion of data processed based on consent; (vii) Information about sharing with third parties; (viii) Revocation of consent. To exercise your rights, go to Settings > Data and Privacy or contact: privacidade@openwhen.app. The response deadline is up to 15 business days.';
+      'We process your personal data for the following purposes: (i) providing and operating Platform services (letter delivery, capsule management, social feed); (ii) personalizing your experience (themes, language, emotional states); (iii) sending service-related notifications (letter delivery alerts, capsule opening reminders) via push notifications and, when applicable, email; (iv) content moderation to ensure a safe and respectful environment; (v) analytics and continuous improvement of the Platform; (vi) fraud prevention and security assurance; (vii) processing payments and managing subscriptions (when enabled); (viii) compliance with legal and regulatory obligations; (ix) exercise of rights in judicial, administrative, or arbitration proceedings. We do not use your data for third-party advertising, behavioral profiling for ad targeting, or sale to data brokers.';
 
   @override
-  String get privacySection6Title => '6. DATA SECURITY AND RETENTION';
+  String get privacySection6Title =>
+      '6. AUTOMATED DECISION-MAKING AND PROFILING';
 
   @override
   String get privacySection6Body =>
-      'The Company adopts appropriate technical and organizational measures to protect personal data against unauthorized access, destruction, loss, or alteration, including: encryption in transit (TLS 1.3) and at rest, role-based access control, and continuous security monitoring. Data is retained for the period necessary for the purposes of processing and deleted upon termination of the contractual relationship, except for legal retention obligations. In the event of a security incident, the data subject will be notified pursuant to Article 48 of the LGPD.';
+      'The Platform uses automated content moderation powered by artificial intelligence (OpenAI Moderations API) to analyze text content (such as comments) for potentially harmful material. This system may: (a) allow content to be published without intervention (low risk score); (b) present a gentle warning to the author while allowing publication (medium risk score); or (c) block content from being published (high risk score). When human moderation is enabled, flagged content is queued for manual review by our moderation team before a final decision is made. No automated decision is based on sensitive personal data categories. Pursuant to GDPR Article 22, you have the right not to be subject to decisions based solely on automated processing that produce legal or similarly significant effects. You may contest any automated moderation decision by contacting us at privacidade@openwhen.life or through the in-app report/feedback feature. Under LGPD Article 20, you may request a review of automated decisions that affect your interests.';
 
   @override
-  String get privacySection7Title => '7. INTERNATIONAL TRANSFERS';
+  String get privacySection7Title =>
+      '7. DATA SHARING AND THIRD-PARTY PROCESSORS';
 
   @override
   String get privacySection7Body =>
-      'Users\' personal data may be transferred to servers located outside Brazil (Google Cloud Platform), in compliance with Article 33 of the LGPD, ensuring an adequate level of protection through standard contractual clauses approved by the National Data Protection Authority (ANPD).';
+      'We do not sell, rent, or trade your personal data. For CCPA purposes: we have not sold or shared (as defined in CCPA § 1798.140(ad) and (ah)) consumers\' personal information in the preceding 12 months, and we do not have actual knowledge of selling or sharing PI of consumers under 16 years of age. Data is shared with the following categories of service providers/processors, each bound by data processing agreements:\n\n(a) Google LLC / Firebase: cloud infrastructure (Firestore database, Cloud Storage for files, Cloud Functions for server logic), authentication services, push notifications (FCM), analytics (Firebase Analytics), crash reporting (Crashlytics), and device attestation (App Check). Google processes data as a Processor under our instructions. Google\'s privacy commitments: https://firebase.google.com/support/privacy.\n\n(b) OpenAI, Inc.: text content is sent to OpenAI\'s Moderations API exclusively for content safety analysis. Only the text of the content being moderated is transmitted — no user identifiers, images, or voice data are sent. OpenAI\'s data usage policy for API customers states that API inputs are not used to train models.\n\n(c) Twilio Inc. (SendGrid): email addresses of external letter recipients are processed to send invitation emails when a letter is addressed to someone who does not yet have an account. Only the recipient email, a sender display name, and a letter title are included.\n\n(d) Stripe, Inc.: when subscription/payment features are active, Stripe processes payment card data, customer identifiers, and subscription status. Card details are collected directly by Stripe and never pass through our servers.\n\n(e) Google Fonts: the app may load typefaces from Google\'s servers, which involves sending your IP address to Google.\n\n(f) Public authorities: we may share data with government authorities when required by court order or substantiated legal request.\n\n(g) Corporate transactions: in the event of a merger, acquisition, or restructuring, your data may be transferred to the successor entity, which will be bound by this Policy.';
 
   @override
-  String get privacySection8Title => '8. DATA PROTECTION OFFICER (DPO)';
+  String get privacySection8Title => '8. INTERNATIONAL DATA TRANSFERS';
 
   @override
   String get privacySection8Body =>
-      'Pursuant to Article 41 of the LGPD, the Company\'s Data Protection Officer (DPO) can be contacted at: dpo@openwhen.app. Last updated: March 22, 2026.';
+      'Your personal data is stored on servers operated by Google Cloud Platform, which may be located in the United States or other countries outside your country of residence. These transfers are carried out in compliance with: (a) LGPD Article 33, using standard contractual clauses approved by the Brazilian National Data Protection Authority (ANPD); (b) GDPR Chapter V, relying on Standard Contractual Clauses (SCCs) adopted by the European Commission (Decision 2021/914) and, where applicable, supplementary measures per the Schrems II ruling; (c) for U.S.-based processors, contractual commitments ensuring data protection equivalent to that provided under applicable law. For OpenAI and Stripe, data processed in the United States is subject to their respective data processing agreements incorporating SCCs.';
+
+  @override
+  String get privacySection9Title => '9. DATA RETENTION';
+
+  @override
+  String get privacySection9Body =>
+      'We retain your data for the minimum period necessary for the purposes described in this Policy. Specific retention periods:\n\n• Account/profile data: retained until you delete your account.\n• Letters and capsules: retained until you delete them or delete/anonymize your account.\n• Comments, likes, follows: retained until you or we delete them, or until account deletion.\n• Push notification tokens (FCM): overwritten on each login; deleted upon account deletion.\n• Precise location data: stored only when you opt in; deleted or anonymized upon account deletion.\n• Billing data (Stripe IDs): subscription cancelled and IDs deleted upon account deletion. Stripe may retain data per its own retention policy.\n• Content reports: anonymized 90 days after resolution.\n• Product feedback: anonymized after 1 year.\n• Moderation logs: retained for 2 years (without direct PII).\n• Analytics data (Firebase): retained per Firebase\'s default policy (14 months for user-level data).\n• Deletion audit logs: retained for 3 years with hashed (non-reversible) identifiers only — no PII.\n• Access logs: retained for 6 months pursuant to Internet Civil Framework Article 15.\n\nUpon expiration of these periods, data is permanently deleted or irreversibly anonymized.';
+
+  @override
+  String get privacySection10Title => '10. YOUR RIGHTS';
+
+  @override
+  String get privacySection10Body =>
+      'Your rights vary depending on your jurisdiction. You can exercise any of the rights below via the app (Settings > Data and Privacy), by emailing privacidade@openwhen.life (or privacy@openwhen.life for English), or by contacting our DPO.\n\n— LGPD (Brazil — Art. 18): You have the right to: (i) confirmation of processing; (ii) access to your data; (iii) correction of incomplete or inaccurate data; (iv) anonymization, blocking, or deletion of unnecessary or excessive data; (v) portability to another service provider; (vi) deletion of data processed based on consent; (vii) information about third parties with whom data has been shared; (viii) information about the possibility of denying consent and its consequences; (ix) revocation of consent. Response deadline: 15 business days. You may file a complaint with the ANPD (Autoridade Nacional de Proteção de Dados): https://www.gov.br/anpd.\n\n— GDPR (EU/EEA — Arts. 15–22): You have the right to: (i) access (Art. 15); (ii) rectification (Art. 16); (iii) erasure / right to be forgotten (Art. 17); (iv) restriction of processing (Art. 18); (v) data portability (Art. 20); (vi) object to processing based on legitimate interest (Art. 21); (vii) not be subject to solely automated decisions, including profiling (Art. 22) — see Section 6 above; (viii) withdraw consent at any time (Art. 7(3)). Response deadline: 30 days. You may lodge a complaint with your local supervisory authority.\n\n— CCPA/CPRA (California): As a California consumer, you have the right to: (i) know what PI we collect, use, disclose, and sell (Right to Know); (ii) request deletion of your PI (Right to Delete) — response deadline: 45 days; (iii) correct inaccurate PI (Right to Correct); (iv) opt out of the sale or sharing of PI — we do not sell or share your PI, but you may submit a request at any time; (v) limit the use of sensitive PI — we do not use sensitive PI beyond what is necessary to provide our services; (vi) non-discrimination for exercising your rights. You may designate an authorized agent to submit requests on your behalf. We verify requests using your account email. Categories of PI collected, purposes, and third-party disclosures are detailed in Sections 2, 5, and 7.';
+
+  @override
+  String get privacySection11Title => '11. ACCOUNT DELETION';
+
+  @override
+  String get privacySection11Body =>
+      'You may delete your account at any time via Settings > Data and Privacy > Delete Account. Before deletion, you must re-authenticate for security. You will be offered two modes:\n\n(a) Delete All: permanently removes your profile, all letters (sent and received), capsules, comments, likes, follows, blocks, reports, feedback, badges, notifications, and all uploaded files (photos, voice messages, handwritten images). Your Firebase authentication record is also deleted.\n\n(b) Anonymize: preserves letters and capsules for their recipients, but replaces your name with \"Deleted user\" and removes your identifying information (user ID, location data, personal media). Your profile, social connections, comments, and likes are deleted.\n\nIn both modes: (i) active Stripe subscriptions are cancelled; (ii) a non-reversible audit log is recorded (hashed identifier + timestamp, no PII) for compliance purposes; (iii) the deletion is irreversible. Locked letters you have already sent may continue to be delivered to their recipients per our Terms of Use — a letter sent is a gift entrusted to the recipient.';
+
+  @override
+  String get privacySection12Title => '12. DATA PORTABILITY AND EXPORT';
+
+  @override
+  String get privacySection12Body =>
+      'Pursuant to LGPD Article 18 V and GDPR Article 20, you have the right to receive your personal data in a structured, commonly used, and machine-readable format. You can export your data via Settings > Data and Privacy > Export My Data. The export includes: your profile information (JSON), all letters you sent (JSON + attached media files), capsules you created (JSON + photos), your comments (JSON), likes (JSON), follower/following lists (JSON), and badges (JSON). The export is generated as a ZIP archive. You may also request a manual export by contacting privacidade@openwhen.life.';
+
+  @override
+  String get privacySection13Title => '13. CHILDREN\'S PRIVACY';
+
+  @override
+  String get privacySection13Body =>
+      'OpenWhen is not directed at children under 13 years of age. In compliance with COPPA (16 CFR Part 312), we do not knowingly collect personal information from children under 13. During registration, users must confirm that they are 13 years of age or older. If we become aware that we have collected data from a child under 13 without verifiable parental consent, we will promptly delete such data. Parents or guardians who believe their child has provided personal data to us may contact us at privacidade@openwhen.life to request deletion. For users aged 13 to 17, we recommend parental guidance when using the Platform.';
+
+  @override
+  String get privacySection14Title => '14. SECURITY MEASURES';
+
+  @override
+  String get privacySection14Body =>
+      'We implement appropriate technical and organizational measures to protect your personal data, including: (a) encryption in transit using TLS 1.3 for all communications between the app and our servers; (b) encryption at rest for data stored in Google Cloud/Firebase; (c) Firebase App Check (Play Integrity on Android, DeviceCheck on iOS) to protect backend services from abuse; (d) role-based access control limiting employee access to personal data; (e) Firestore Security Rules enforcing data access restrictions at the database level; (f) continuous security monitoring and logging. In the event of a personal data breach: under GDPR, we will notify the competent supervisory authority within 72 hours of becoming aware of the breach (Art. 33) and affected data subjects without undue delay when the breach poses a high risk (Art. 34); under LGPD, we will notify the ANPD and affected data subjects within a reasonable time (Art. 48); under CCPA, we will notify affected California consumers as required by California Civil Code § 1798.82.';
+
+  @override
+  String get privacySection15Title => '15. TRACKING TECHNOLOGIES';
+
+  @override
+  String get privacySection15Body =>
+      'The Platform does not use traditional browser cookies. However, the following technologies collect data automatically: (a) Firebase Analytics: collects anonymous usage events, screen views, and device properties using mobile identifiers. You can reset your advertising identifier in your device settings. Firebase Analytics data retention is set to 14 months. (b) Firebase Crashlytics: collects crash reports including device state, app version, and stack traces to help us fix bugs. (c) Firebase App Check: verifies device integrity to protect against automated abuse. These technologies are essential for the operation, security, and improvement of the Platform. We do not use any tracking technologies for advertising or cross-site/cross-app behavioral tracking. We honor the Global Privacy Control (GPC) signal as a valid opt-out request under CCPA.';
+
+  @override
+  String get privacySection16Title => '16. CHANGES TO THIS POLICY';
+
+  @override
+  String get privacySection16Body =>
+      'We may update this Policy from time to time to reflect changes in our practices, legal requirements, or Platform features. When we make material changes, we will: (a) update the \"Effective date\" at the top of this Policy; (b) notify you via in-app notification and/or email at least 15 days before the changes take effect; (c) for changes requiring renewed consent under GDPR or LGPD, request your explicit consent before the changes take effect. Continued use of the Platform after the effective date of a non-consent-requiring update constitutes acceptance of the revised Policy. Previous versions of this Policy are available upon request.';
+
+  @override
+  String get privacySection17Title => '17. CONTACT US';
+
+  @override
+  String get privacySection17Body =>
+      'If you have questions about this Policy, wish to exercise your rights, or need to report a privacy concern, please contact us:\n\n• Data Protection Officer (DPO): dpo@openwhen.life\n• Privacy requests (Portuguese): privacidade@openwhen.life\n• Privacy requests (English): privacy@openwhen.life\n• Legal department: juridico@openwhen.life\n• General support: suporte@openwhen.life\n\nBrazil — You may file a complaint with the ANPD: https://www.gov.br/anpd\nEU/EEA — You may lodge a complaint with your local data protection supervisory authority.\nCalifornia — You may contact the California Attorney General: https://oag.ca.gov/privacy\n\nOpenWhen Tecnologia Ltda.\nLast updated: April 10, 2026.';
 
   @override
   String get letterPrivacyPublicLabel => 'Public';

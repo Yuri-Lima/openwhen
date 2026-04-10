@@ -38,18 +38,18 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- App Links: https://openwhen.app/letter/... and /capsule/... -->
+            <!-- App Links: https://openwhen.life/letter/... and /capsule/... -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="openwhen.app" android:pathPrefix="/letter" />
+                <data android:scheme="https" android:host="openwhen.life" android:pathPrefix="/letter" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="openwhen.app" android:pathPrefix="/capsule" />
+                <data android:scheme="https" android:host="openwhen.life" android:pathPrefix="/capsule" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

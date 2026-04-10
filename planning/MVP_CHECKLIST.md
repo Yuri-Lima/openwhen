@@ -208,22 +208,20 @@ Cartas que machucam não têm lugar aqui.
 
 ## 🔴 Legal e Privacidade — ANTES DO LANÇAMENTO
 
-### Diego faz:
-- [ ] Escrever Política de Privacidade completa (LGPD + GDPR + CCPA)
-- [ ] Escrever Termos de Uso com cláusula de encerramento de serviço
-- [ ] Adicionar aviso na tela de deletar conta sobre cartas pendentes
-- [ ] Documentar plano de contingência de 90 dias
+### Concluído
+- [x] Escrever Política de Privacidade completa (LGPD + GDPR + CCPA) — **17 seções** em 3 idiomas (EN, PT-BR, ES) nos ARBs + `legal_screen.dart`
+- [x] Escrever Termos de Uso com cláusula de encerramento de serviço — nova Seção 7 (aviso 90 dias, exportação, Fundo de Continuidade). Em 3 idiomas.
+- [x] Adicionar aviso na tela de deletar conta sobre cartas pendentes — banner warning no bottom sheet de exclusão. Em 3 idiomas.
+- [x] Documentar plano de contingência de 90 dias — [`planning/CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md)
+- [x] Criar página web de privacidade acessível sem login — `hosting/public/privacy.html` + `terms.html` (EN/PT/ES, dark mode)
+- [x] Documentar Fundo de Continuidade nos Termos de Uso — Seção 7 + [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) §5
 
-### Yuri faz:
+### Pendente
 - [ ] Export automático de todos os dados ao deletar conta
 - [ ] Central de privacidade no app — usuário vê todos os dados armazenados
 - [ ] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function)
 - [ ] Manter entrega de cartas locked mesmo após conta deletada
 - [ ] Backup redundante das cartas fora do Firebase
 - [ ] Log de todas as solicitações de privacidade
-
-### Diego + Yuri:
 - [ ] Revisar Termos de Uso com advogado antes de lançar
-- [ ] Criar página web de privacidade acessível sem login
-- [ ] Criar email de contato para solicitações de privacidade (ex: privacy@openwhen.app)
-- [ ] Documentar Fundo de Continuidade nos Termos de Uso quando tiver receita
+- [ ] Criar email de contato para solicitações de privacidade (ex: privacy@openwhen.life) — emails já referenciados nos docs; falta configurar as caixas de entrada reais

@@ -36,7 +36,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   bool _sharing = false;
   bool _sharingInstagram = false;
 
-  String get _deepLink => 'https://openwhen.app/letter/${widget.docId}';
+  String get _deepLink => 'https://openwhen.life/letter/${widget.docId}';
 
   Future<void> _shareQrCode() async {
     setState(() => _sharing = true);
