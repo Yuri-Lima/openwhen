@@ -121,6 +121,7 @@ Reserva financeira mantida pela Empresa para garantir a infraestrutura mínima n
 - **Mínimo:** cobrir custos de Firebase/GCP + domínio por 2 anos
 - **Custos fixos conhecidos:**
   - Domínio `openwhen.life` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
+  - Cloudflare Email Routing (7 endereços → Gmail): **gratuito** (incluído no plano Free)
 - **Estimativa de custo mensal** (a ser atualizada conforme escala):
   - Firestore reads/writes: ~$X/mês
   - Cloud Storage: ~$X/mês

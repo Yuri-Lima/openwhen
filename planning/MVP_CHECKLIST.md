@@ -130,6 +130,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [x] Firebase (Auth, Firestore, Storage, FCM dependência no projeto)
 - [x] Índices Firestore deployados (incl. cápsulas)
+- [x] **Domínio `openwhen.life`** — registado na Cloudflare (DNS gerido lá); conectado ao Firebase Hosting (páginas públicas, `assetlinks.json`, deep links)
 - [x] **Subscrição (scaffold)** — Cloud Functions Stripe (`functions/`), camada `lib/core/billing/`, ecrã de planos; **desactivado por defeito** (`BILLING_ENABLED=false`) até Stripe e deploy — ver `functions/README.md` e `ARCHITECTURE.md`
 
 ---
@@ -224,4 +225,4 @@ Cartas que machucam não têm lugar aqui.
 - [ ] Backup redundante das cartas fora do Firebase
 - [ ] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
-- [ ] Criar email de contato para solicitações de privacidade (ex: privacy@openwhen.life) — emails já referenciados nos docs; falta configurar as caixas de entrada reais
+- [x] Criar email de contato para solicitações de privacidade — **7 endereços** configurados via Cloudflare Email Routing (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) → redirecionamento para Gmail; migrar para caixas dedicadas quando o volume justificar
