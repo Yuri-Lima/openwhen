@@ -17,6 +17,9 @@ class FirestoreCollections {
   static const String systemConfig = 'systemConfig';
   /// Logs de auditoria de deleção de conta (sem PII) — escrita só Cloud Function.
   static const String deletionAuditLogs = 'deletionAuditLogs';
+  /// Log unificado de todas as ações de privacidade (export, deleção, anonimização).
+  /// Escrita: cliente (export) + Cloud Function (deleção/anonimização).
+  static const String privacyRequestLogs = 'privacyRequestLogs';
 
   /// Remote feature flags (`reportsEnabled`, etc.); read-only for clients.
   static const String systemConfigAppDocId = 'app';

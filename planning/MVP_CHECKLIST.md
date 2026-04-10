@@ -223,6 +223,6 @@ Cartas que machucam não têm lugar aqui.
 - [ ] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function)
 - [ ] Manter entrega de cartas locked mesmo após conta deletada
 - [ ] Backup redundante das cartas fora do Firebase
-- [ ] Log de todas as solicitações de privacidade
+- [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
 - [x] Criar email de contato para solicitações de privacidade — **7 endereços** configurados via Cloudflare Email Routing (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) → redirecionamento para Gmail; migrar para caixas dedicadas quando o volume justificar

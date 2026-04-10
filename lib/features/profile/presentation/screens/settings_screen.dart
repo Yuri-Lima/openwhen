@@ -26,6 +26,7 @@ import '../../../admin/presentation/admin_moderation_screen.dart';
 import 'moderation_notifications_screen.dart';
 import 'subscription_plans_screen.dart';
 import '../../../../core/services/account_deletion_service.dart';
+import '../../../../core/services/privacy_log_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -835,6 +836,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     localeName: locale,
                     subject: l10n.settingsExportTitle,
                   );
+                  PrivacyLogService.logExport(uid: uid, letterCount: docs.length, success: true);
                   if (context.mounted) {
                     messenger.showSnackBar(
                       SnackBar(
@@ -846,6 +848,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     );
                   }
                 } catch (e) {
+                  PrivacyLogService.logExport(uid: uid, letterCount: 0, success: false);
                   if (context.mounted) {
                     messenger.showSnackBar(
                       SnackBar(

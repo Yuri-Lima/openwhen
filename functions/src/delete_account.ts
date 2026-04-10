@@ -279,6 +279,20 @@ export const deleteUserAccount = onCall(
       capsulesProcessed: capsulesBySender.size,
     });
 
+    /* ── 16. Privacy request log (unified) ───────────────── */
+    await firestore.collection("privacyRequestLogs").add({
+      uid: simpleHash(uid),
+      type: mode === "delete_all" ? "account_deletion" : "account_anonymization",
+      status: "completed",
+      metadata: {
+        mode,
+        lettersProcessed: sentLetters.size + receivedLetters.size,
+        capsulesProcessed: capsulesBySender.size,
+      },
+      createdAt: FieldValue.serverTimestamp(),
+      source: "server",
+    });
+
     return {success: true};
   }
 );

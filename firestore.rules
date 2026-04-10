@@ -215,6 +215,20 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Log de ações de privacidade (export, deleção, anonimização) — create-only, schema fixo
+    match /privacyRequestLogs/{logId} {
+      allow read: if false;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'type', 'status', 'metadata', 'createdAt', 'source'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type in ['export']
+        && request.resource.data.status in ['completed', 'failed']
+        && request.resource.data.metadata is map
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.source == 'client';
+      allow update, delete: if false;
+    }
+
     // Feedback / solicitações de produto (somente criação; schema fixo)
     match /feedback/{feedbackId} {
       allow read: if false;
