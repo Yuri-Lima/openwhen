@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -47,16 +48,27 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   }
 
   /// Runs each admin queue loader one after another (not in parallel).
+  /// Extra delays between each callable let the native iOS Firebase SDK
+  /// finish Swift async task deallocation before the next call starts —
+  /// without these, iOS 26.4+ (23E246) can SIGABRT on the Swift concurrency
+  /// runtime when deallocating HTTPSCallable async tasks in sequence
+  /// (see TROUBLESHOOTING.md §2).
+  static const _callableCooldown = Duration(milliseconds: 400);
+
   Future<void> _loadAllAdminData() async {
     if (!mounted) return;
     await _loadModerationInfo();
     if (!mounted) return;
+    await Future<void>.delayed(_callableCooldown);
     await _loadReports();
     if (!mounted) return;
+    await Future<void>.delayed(_callableCooldown);
     await _loadFeedback();
     if (!mounted) return;
+    await Future<void>.delayed(_callableCooldown);
     await _loadReviews();
     if (!mounted) return;
+    await Future<void>.delayed(_callableCooldown);
     await _loadIncidents();
   }
 
@@ -65,7 +77,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     try {
       final info = await _admin.getModerationInfo();
       if (mounted) setState(() => _moderationInfo = info);
-    } catch (_) {
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[AdminModeration] getModerationInfo: $e\n$st');
       if (mounted) setState(() => _moderationInfo = null);
     }
     if (mounted) setState(() => _loadingModerationInfo = false);
@@ -101,7 +114,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     try {
       final list = await _admin.listRecentFeedback();
       if (mounted) setState(() => _feedback = list);
-    } catch (e) {
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[AdminModeration] listRecentFeedback: $e\n$st');
       if (mounted) setState(() => _feedback = []);
     }
     if (mounted) setState(() => _loadingFeedback = false);
@@ -112,7 +126,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     try {
       final (list, _) = await _admin.listPendingModerationReviews();
       if (mounted) setState(() => _reviews = list);
-    } catch (e) {
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[AdminModeration] listPendingReviews: $e\n$st');
       if (mounted) setState(() => _reviews = []);
     }
     if (mounted) setState(() => _loadingReviews = false);
@@ -123,7 +138,8 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     try {
       final list = await _admin.listModerationIncidents();
       if (mounted) setState(() => _incidents = list);
-    } catch (e) {
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[AdminModeration] listModerationIncidents: $e\n$st');
       if (mounted) setState(() => _incidents = []);
     }
     if (mounted) setState(() => _loadingIncidents = false);
