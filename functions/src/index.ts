@@ -21,6 +21,8 @@ export {
 
 export {moderateContent} from "./moderation/moderate_content";
 
+export {deleteUserAccount} from "./delete_account";
+
 export {
   claimExternalLetters,
   onLetterCreatedSendExternalInviteEmail,

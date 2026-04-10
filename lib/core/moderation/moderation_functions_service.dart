@@ -1,6 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 
 import '../billing/firebase_functions_region.dart';
+import '../services/callable_queue.dart';
 
 /// Result of callable `moderateContent` (aligned with Cloud Functions JSON).
 class ModerationCallResult {
@@ -37,7 +38,10 @@ class ModerationFunctionsService {
     if (contentType != null) payload['contentType'] = contentType;
     if (locale != null) payload['locale'] = locale;
     if (letterId != null) payload['letterId'] = letterId;
-    final result = await _functions.httpsCallable('moderateContent').call(payload);
+    final result = await CallableQueue.enqueue(
+      () => _functions.httpsCallable('moderateContent').call(payload),
+      label: 'moderateContent',
+    );
     final data = _asMap(result.data);
     return ModerationCallResult(
       allowed: data['allowed'] == true,

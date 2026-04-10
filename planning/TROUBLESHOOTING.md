@@ -115,7 +115,69 @@ No [Apple Developer](https://developer.apple.com/account/resources/identifiers/l
 
 ---
 
-## 6. Quick reference — deploy rules
+## 5. iOS 26.4 — `SIGABRT` na startup / `HTTPSCallable.call()` crash nativo
+
+### Causa raiz
+
+`cloud_functions: 6.1.0` + iOS 26.4 (build 23E246): a chamada `HTTPSCallable.call()` causa `SIGABRT` em `swift_task_dealloc_specific` / `asyncLet_finish_after_task_completion` no gRPC/Swift concurrency. É um crash **nativo**, não capturável por Dart `try-catch`.
+
+### Regra de ouro
+
+**NUNCA** chamar uma callable Firebase na startup do app (initState do HomeScreen, AuthWrapper, etc.). Callables só devem ser chamadas por ação do usuário (tap) ou em telas lazy (Plans, Admin, etc.) com `addPostFrameCallback`.
+
+### Padrão obrigatório: `CallableQueue`
+
+Todas as callables HTTPS usam [`CallableQueue.enqueue()`](../lib/core/services/callable_queue.dart) — mutex FIFO global com cooldown de 400ms. Impede sobreposição de callables nativas.
+
+### Arquivos afetados
+
+- `lib/core/services/callable_queue.dart` — serviço global
+- `lib/main.dart` — HomeScreen NÃO chama callables no initState
+- `lib/features/profile/presentation/screens/subscription_plans_screen.dart` — billing migration lazy
+- `lib/core/billing/stripe_billing_provider.dart` — todas callables via CallableQueue
+- `lib/core/admin/admin_functions_service.dart` — todas callables via CallableQueue
+- `lib/core/moderation/moderation_functions_service.dart` — moderateContent via CallableQueue
+- `lib/core/letters/external_letters_service.dart` — claimExternalLetters via CallableQueue
+
+---
+
+## 6. Delete account — fluxo e compliance
+
+### Problema original (até abril/2026)
+
+O botão "Deletar conta" em Settings executava:
+1. `FirebaseFirestore.instance.collection('users').doc(uid).delete()` — sem try-catch
+2. `_user?.delete()` — falhava silenciosamente com `requires-recent-login`
+3. Dados órfãos: cartas, cápsulas, follows, likes, comments, storage, Stripe ficavam no sistema
+
+### Correção implementada
+
+1. **Re-autenticação:** `AccountDeletionService.reauthenticateWithPassword()` pede senha antes
+2. **Escolha do usuário:** modal com opção "Apagar tudo" vs "Anonimizar cartas"
+3. **Cloud Function `deleteUserAccount`:** limpeza completa server-side (15 etapas, inclui Stripe, Storage, Auth)
+4. **Loading overlay:** feedback visual durante processamento
+5. **Tratamento de erros:** wrong-password, timeout, etc. com mensagens l10n
+
+### Arquivos
+
+- Cloud Function: `functions/src/delete_account.ts`
+- Serviço client: `lib/core/services/account_deletion_service.dart`
+- UI: `lib/features/profile/presentation/screens/settings_screen.dart` (`_DeleteAccountSheet`)
+- Política: `planning/DATA_RETENTION_POLICY.md`
+
+### Deploy necessário
+
+```bash
+firebase deploy --only functions:deleteUserAccount
+```
+
+### COPPA — checkbox idade 13+
+
+Adicionado em `register_screen.dart`: checkbox obrigatório "Confirmo que tenho 13 anos ou mais" + aceite de Termos de Uso e Política de Privacidade. Registro bloqueado se desmarcados.
+
+---
+
+## 7. Quick reference — deploy rules
 
 ```bash
 firebase deploy --only firestore:rules,storage

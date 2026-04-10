@@ -787,5 +787,23 @@
   "feedRemoveFromFeed": "Remover do feed",
   "feedHideSenderName": "Ocultar quem me enviou",
   "feedShowSenderName": "Mostrar quem me enviou",
-  "feedSenderAnonymous": "Alguém especial"
+  "feedSenderAnonymous": "Alguém especial",
+
+  "registerAcceptTermsPrefix": "Li e aceito os ",
+  "registerAcceptTermsAnd": " e a ",
+  "registerConfirmAge": "Confirmo que tenho 13 anos ou mais",
+  "registerMustAcceptTerms": "Você precisa aceitar os termos e confirmar sua idade para continuar",
+
+  "settingsDeleteChoiceTitle": "O que deve acontecer com suas cartas?",
+  "settingsDeleteOptionDeleteAll": "Apagar tudo",
+  "settingsDeleteOptionDeleteAllDesc": "Todas as cartas, cápsulas e dados serão removidos permanentemente.",
+  "settingsDeleteOptionAnonymize": "Anonimizar minhas cartas",
+  "settingsDeleteOptionAnonymizeDesc": "Suas cartas permanecem para os destinatários, mas seu nome e dados são removidos.",
+  "settingsDeletePasswordLabel": "CONFIRME SUA SENHA",
+  "settingsDeletePasswordHint": "Digite sua senha atual",
+  "settingsDeleteIrreversibleConfirm": "Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.",
+  "settingsDeleteProcessing": "Deletando sua conta...",
+  "settingsDeleteWrongPassword": "Senha incorreta. Tente novamente.",
+  "settingsDeleteReauthFailed": "Falha na autenticação. Tente novamente.",
+  "settingsDeleteError": "Falha ao deletar conta. Tente novamente mais tarde."
 }

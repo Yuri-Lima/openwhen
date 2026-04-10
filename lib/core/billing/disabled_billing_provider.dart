@@ -1,5 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
+import '../services/callable_queue.dart';
 import 'billing_provider.dart';
 import 'firebase_functions_region.dart';
 import 'subscription_tier.dart';
@@ -23,9 +25,14 @@ class DisabledBillingProvider implements BillingProvider {
   @override
   Future<void> migrateBillingDefaultsIfNeeded() async {
     try {
-      await FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion)
-          .httpsCallable('migrateUserBillingDefaults')
-          .call();
-    } catch (_) {}
+      await CallableQueue.enqueue(
+        () => FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion)
+            .httpsCallable('migrateUserBillingDefaults')
+            .call(),
+        label: 'migrateUserBillingDefaults',
+      );
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[Billing] migrateDefaults: $e\n$st');
+    }
   }
 }

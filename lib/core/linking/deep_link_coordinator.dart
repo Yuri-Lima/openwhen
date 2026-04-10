@@ -15,11 +15,19 @@ class DeepLinkCoordinator {
 
   /// Call when the home shell is ready and user is signed in.
   static Future<void> handlePendingAfterSignIn(BuildContext context) async {
-    await ExternalLettersService.claimExternalLetters();
-    if (!context.mounted) return;
-
     final letterId = PendingDeepLink.pendingLetterId;
     final capsuleId = PendingDeepLink.pendingCapsuleId;
+
+    // Only call the callable when there is actually a pending deep link.
+    // Calling HTTPSCallable immediately at startup can crash the native
+    // Firebase iOS SDK (SIGABRT in Swift async task dealloc — see
+    // TROUBLESHOOTING.md §2). When needed, delay briefly so the Flutter
+    // engine / native SDK is fully settled before the network call.
+    if (letterId != null || capsuleId != null) {
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+      await ExternalLettersService.claimExternalLetters();
+      if (!context.mounted) return;
+    }
     if (letterId != null) {
       if (await _openLetter(letterId)) {
         PendingDeepLink.pendingLetterId = null;

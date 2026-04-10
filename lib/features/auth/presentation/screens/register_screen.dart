@@ -19,6 +19,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _showPassword = false;
+  bool _acceptedTerms = false;
+  bool _confirmedAge = false;
 
   @override
   void dispose() {
@@ -35,6 +37,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _passwordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.snackFillAllFields)),
+      );
+      return;
+    }
+    if (!_acceptedTerms || !_confirmedAge) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.registerMustAcceptTerms)),
       );
       return;
     }
@@ -70,6 +78,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  Widget _buildCheckRow({
+    required bool value,
+    required ValueChanged<bool?> onChanged,
+    required Widget child,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 24,
+          height: 24,
+          child: Checkbox(
+            value: value,
+            onChanged: onChanged,
+            activeColor: context.pal.accent,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => onChanged(!value),
+            child: child,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildField({
@@ -305,9 +342,44 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     obscure: true,
                     hasToggle: true,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+
+                  // Terms of Use + Privacy Policy checkbox
+                  _buildCheckRow(
+                    value: _acceptedTerms,
+                    onChanged: (v) => setState(() => _acceptedTerms = v ?? false),
+                    child: Text.rich(
+                      TextSpan(
+                        text: l10n.registerAcceptTermsPrefix,
+                        style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
+                        children: [
+                          TextSpan(
+                            text: l10n.settingsTerms,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.accent, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                          ),
+                          TextSpan(text: l10n.registerAcceptTermsAnd),
+                          TextSpan(
+                            text: l10n.settingsPrivacy,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.accent, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Age 13+ checkbox (COPPA compliance)
+                  _buildCheckRow(
+                    value: _confirmedAge,
+                    onChanged: (v) => setState(() => _confirmedAge = v ?? false),
+                    child: Text(
+                      l10n.registerConfirmAge,
+                      style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _register,
+                    onPressed: (_isLoading || !_acceptedTerms || !_confirmedAge) ? null : _register,
                     child: _isLoading
                         ? CircularProgressIndicator(color: context.pal.white)
                         : Text(
@@ -326,16 +398,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       style: GoogleFonts.dmSans(fontSize: 15),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    l10n.registerLegalFooter,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      color: context.pal.inkFaint,
-                      height: 1.5,
-                    ),
-                  ),
+                  // Legal footer removed — replaced by explicit checkboxes above
                 ],
               ),
             ),

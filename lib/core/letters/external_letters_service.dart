@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../billing/firebase_functions_region.dart';
 import '../services/analytics_service.dart';
+import '../services/callable_queue.dart';
 
 /// Calls [claimExternalLetters] to attach no-account letters to the signed-in user.
 class ExternalLettersService {
@@ -20,7 +21,10 @@ class ExternalLettersService {
     if (!user.emailVerified) return 0;
 
     try {
-      final result = await _functions.httpsCallable('claimExternalLetters').call();
+      final result = await CallableQueue.enqueue(
+        () => _functions.httpsCallable('claimExternalLetters').call(),
+        label: 'claimExternalLetters',
+      );
       final map = result.data;
       if (map is! Map) return 0;
       final claimed = (map['claimed'] as num?)?.toInt() ?? 0;

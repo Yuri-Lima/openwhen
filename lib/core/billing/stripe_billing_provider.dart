@@ -1,5 +1,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../services/callable_queue.dart';
 
 import 'billing_feature_flags.dart';
 import 'billing_provider.dart';
@@ -22,12 +25,14 @@ class StripeBillingProvider implements BillingProvider {
     required Uri cancelUrl,
   }) async {
     final planId = plan == SubscriptionTier.plus ? 'plus' : 'pro';
-    final callable = _functions.httpsCallable('createCheckoutSession');
-    final result = await callable.call(<String, dynamic>{
-      'planId': planId,
-      'successUrl': successUrl.toString(),
-      'cancelUrl': cancelUrl.toString(),
-    });
+    final result = await CallableQueue.enqueue(
+      () => _functions.httpsCallable('createCheckoutSession').call(<String, dynamic>{
+        'planId': planId,
+        'successUrl': successUrl.toString(),
+        'cancelUrl': cancelUrl.toString(),
+      }),
+      label: 'createCheckoutSession',
+    );
     final data = Map<String, dynamic>.from(result.data as Map);
     final url = data['url'] as String?;
     if (url == null || url.isEmpty) {
@@ -38,10 +43,12 @@ class StripeBillingProvider implements BillingProvider {
 
   @override
   Future<Uri> createPortalSession({required Uri returnUrl}) async {
-    final callable = _functions.httpsCallable('createPortalSession');
-    final result = await callable.call(<String, dynamic>{
-      'returnUrl': returnUrl.toString(),
-    });
+    final result = await CallableQueue.enqueue(
+      () => _functions.httpsCallable('createPortalSession').call(<String, dynamic>{
+        'returnUrl': returnUrl.toString(),
+      }),
+      label: 'createPortalSession',
+    );
     final data = Map<String, dynamic>.from(result.data as Map);
     final url = data['url'] as String?;
     if (url == null || url.isEmpty) {
@@ -53,9 +60,13 @@ class StripeBillingProvider implements BillingProvider {
   @override
   Future<void> migrateBillingDefaultsIfNeeded() async {
     try {
-      await _functions.httpsCallable('migrateUserBillingDefaults').call();
-    } catch (_) {
+      await CallableQueue.enqueue(
+        () => _functions.httpsCallable('migrateUserBillingDefaults').call(),
+        label: 'migrateUserBillingDefaults',
+      );
+    } catch (e, st) {
       // Best-effort; client still treats missing tier as free.
+      if (kDebugMode) debugPrint('[Billing] migrateDefaults: $e\n$st');
     }
   }
 }

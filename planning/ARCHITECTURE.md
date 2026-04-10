@@ -146,7 +146,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 
 ## Coleções Firestore
 
-Constantes centralizadas em [`lib/core/constants/firestore_collections.dart`](../lib/core/constants/firestore_collections.dart): `users`, `letters`, `comments`, `likes`, `reports`, `capsules`, `moderationIncidents` (referência; leitura admin via callable).
+Constantes centralizadas em [`lib/core/constants/firestore_collections.dart`](../lib/core/constants/firestore_collections.dart): `users`, `letters`, `comments`, `likes`, `reports`, `capsules`, `follows`, `blocks`, `feedback`, `moderationIncidents`, `moderationReviews`, `deletionAuditLogs`, `systemConfig`.
 
 Coleções também usadas no código (strings / queries):
 
@@ -262,6 +262,27 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
 - Validar também builds móveis antes de releases (`flutter run` em dispositivo/emulador).
 
 Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
+
+---
+
+## Deleção de conta e compliance
+
+### Fluxo
+1. Usuário toca "Deletar conta" → modal `_DeleteAccountSheet` com escolha (apagar tudo / anonimizar) + re-autenticação por senha
+2. Client chama `AccountDeletionService.requestDeletion()` via `CallableQueue`
+3. Cloud Function `deleteUserAccount(uid, mode)` executa 15 etapas server-side (Stripe, Firestore, Storage, Auth)
+4. Client faz sign-out local
+
+### Arquivos
+- `functions/src/delete_account.ts` — Cloud Function
+- `lib/core/services/account_deletion_service.dart` — serviço client
+- `lib/features/profile/presentation/screens/settings_screen.dart` — UI (`_DeleteAccountSheet`)
+- `planning/DATA_RETENTION_POLICY.md` — política completa
+
+### COPPA / GDPR / LGPD
+- Registro: checkboxes obrigatórios para idade 13+ e aceite de Termos/Privacidade
+- Deleção: escolha do usuário entre remover tudo ou anonimizar cartas
+- Audit log: `deletionAuditLogs` com hash do UID (sem PII)
 
 ---
 

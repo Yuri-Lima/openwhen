@@ -759,5 +759,23 @@
   "feedRemoveFromFeed": "Remove from feed",
   "feedHideSenderName": "Hide who sent this",
   "feedShowSenderName": "Show who sent this",
-  "feedSenderAnonymous": "Someone special"
+  "feedSenderAnonymous": "Someone special",
+
+  "registerAcceptTermsPrefix": "I have read and accept the ",
+  "registerAcceptTermsAnd": " and the ",
+  "registerConfirmAge": "I confirm that I am 13 years old or older",
+  "registerMustAcceptTerms": "You must accept the terms and confirm your age to continue",
+
+  "settingsDeleteChoiceTitle": "What should happen with your letters?",
+  "settingsDeleteOptionDeleteAll": "Delete everything",
+  "settingsDeleteOptionDeleteAllDesc": "All letters, capsules, and data will be permanently removed.",
+  "settingsDeleteOptionAnonymize": "Anonymize my letters",
+  "settingsDeleteOptionAnonymizeDesc": "Your letters remain for recipients, but your name and info are removed.",
+  "settingsDeletePasswordLabel": "CONFIRM YOUR PASSWORD",
+  "settingsDeletePasswordHint": "Enter your current password",
+  "settingsDeleteIrreversibleConfirm": "I understand this action is irreversible and all my data will be processed according to my choice above.",
+  "settingsDeleteProcessing": "Deleting your account...",
+  "settingsDeleteWrongPassword": "Incorrect password. Please try again.",
+  "settingsDeleteReauthFailed": "Authentication failed. Please try again.",
+  "settingsDeleteError": "Account deletion failed. Please try again later."
 }

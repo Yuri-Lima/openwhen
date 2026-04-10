@@ -64,7 +64,22 @@ class SubscriptionPlansScreen extends ConsumerStatefulWidget {
 class _SubscriptionPlansScreenState extends ConsumerState<SubscriptionPlansScreen> {
   bool _loadingCheckout = false;
   bool _loadingPortal = false;
-  bool _requestedMigrate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Lazy billing migration — only when the user actually opens Plans,
+    // NOT at app startup (HTTPSCallable crashes the native iOS SDK at
+    // startup; see TROUBLESHOOTING.md §2). Runs via CallableQueue.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      try {
+        await ref.read(billingProvider).migrateBillingDefaultsIfNeeded();
+      } catch (e, st) {
+        debugPrint('Billing migrate error (non-fatal): $e\n$st');
+      }
+    });
+  }
 
   Future<void> _checkout(SubscriptionTier plan) async {
     final l10n = AppLocalizations.of(context)!;
@@ -138,12 +153,6 @@ class _SubscriptionPlansScreenState extends ConsumerState<SubscriptionPlansScree
 
   @override
   Widget build(BuildContext context) {
-    if (!_requestedMigrate) {
-      _requestedMigrate = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(billingProvider).migrateBillingDefaultsIfNeeded();
-      });
-    }
     final l10n = AppLocalizations.of(context)!;
     final tierAsync = ref.watch(subscriptionTierProvider);
     final current = tierAsync.asData?.value ?? SubscriptionTier.free;

@@ -4222,6 +4222,54 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Alguém especial'**
   String get feedSenderAnonymous;
+
+  /// No description provided for @registerAcceptTermsPrefix.
+  String get registerAcceptTermsPrefix;
+
+  /// No description provided for @registerAcceptTermsAnd.
+  String get registerAcceptTermsAnd;
+
+  /// No description provided for @registerConfirmAge.
+  String get registerConfirmAge;
+
+  /// No description provided for @registerMustAcceptTerms.
+  String get registerMustAcceptTerms;
+
+  /// No description provided for @settingsDeleteChoiceTitle.
+  String get settingsDeleteChoiceTitle;
+
+  /// No description provided for @settingsDeleteOptionDeleteAll.
+  String get settingsDeleteOptionDeleteAll;
+
+  /// No description provided for @settingsDeleteOptionDeleteAllDesc.
+  String get settingsDeleteOptionDeleteAllDesc;
+
+  /// No description provided for @settingsDeleteOptionAnonymize.
+  String get settingsDeleteOptionAnonymize;
+
+  /// No description provided for @settingsDeleteOptionAnonymizeDesc.
+  String get settingsDeleteOptionAnonymizeDesc;
+
+  /// No description provided for @settingsDeletePasswordLabel.
+  String get settingsDeletePasswordLabel;
+
+  /// No description provided for @settingsDeletePasswordHint.
+  String get settingsDeletePasswordHint;
+
+  /// No description provided for @settingsDeleteIrreversibleConfirm.
+  String get settingsDeleteIrreversibleConfirm;
+
+  /// No description provided for @settingsDeleteProcessing.
+  String get settingsDeleteProcessing;
+
+  /// No description provided for @settingsDeleteWrongPassword.
+  String get settingsDeleteWrongPassword;
+
+  /// No description provided for @settingsDeleteReauthFailed.
+  String get settingsDeleteReauthFailed;
+
+  /// No description provided for @settingsDeleteError.
+  String get settingsDeleteError;
 }
 
 class _AppLocalizationsDelegate

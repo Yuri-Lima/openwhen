@@ -25,6 +25,7 @@ import '../../../../core/admin/admin_claims.dart';
 import '../../../admin/presentation/admin_moderation_screen.dart';
 import 'moderation_notifications_screen.dart';
 import 'subscription_plans_screen.dart';
+import '../../../../core/services/account_deletion_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -870,44 +871,84 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: context.pal.card,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
-            const SizedBox(height: 20),
-            Text(l10n.settingsDeleteTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFFEF4444), fontStyle: FontStyle.italic)),
-            const SizedBox(height: 8),
-            Text(l10n.settingsDeleteBody,
-              style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                await FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(_user?.uid).delete();
-                await _user?.delete();
-                if (context.mounted) {
-                  await ref.read(authNotifierProvider.notifier).signOut();
-                  if (context.mounted) {
-                    await _handleSignOutResult(context);
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444)),
-              child: Text(l10n.settingsDeleteConfirm, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white)),
+      builder: (_) => _DeleteAccountSheet(
+        l10n: l10n,
+        onConfirm: (DeletionMode mode, String password) async {
+          Navigator.pop(context);
+          await _executeAccountDeletion(context, mode, password);
+        },
+      ),
+    );
+  }
+
+  Future<void> _executeAccountDeletion(
+    BuildContext context,
+    DeletionMode mode,
+    String password,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    // Show loading overlay
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: context.pal.card,
+              borderRadius: BorderRadius.circular(16),
             ),
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.actionCancel, style: GoogleFonts.dmSans(fontSize: 15, color: context.pal.inkSoft)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: context.pal.accent),
+                const SizedBox(height: 16),
+                Text(l10n.settingsDeleteProcessing,
+                    style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
+
+    try {
+      // Step 1: Re-authenticate
+      final reauthError =
+          await AccountDeletionService.reauthenticateWithPassword(password);
+      if (reauthError != null) {
+        if (!context.mounted) return;
+        Navigator.pop(context); // dismiss loading
+        final msg = reauthError == 'wrong-password' || reauthError == 'invalid-credential'
+            ? l10n.settingsDeleteWrongPassword
+            : l10n.settingsDeleteReauthFailed;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+        return;
+      }
+
+      // Step 2: Call Cloud Function (handles everything server-side)
+      await AccountDeletionService.requestDeletion(mode);
+
+      // Step 3: Sign out locally
+      if (!context.mounted) return;
+      Navigator.pop(context); // dismiss loading
+      await ref.read(authNotifierProvider.notifier).signOut();
+      if (context.mounted) {
+        await _handleSignOutResult(context);
+      }
+    } catch (e, st) {
+      debugPrint('Account deletion failed: $e\n$st');
+      if (!context.mounted) return;
+      Navigator.pop(context); // dismiss loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.settingsDeleteError)),
+      );
+    }
   }
 
   void _showBlockedUsers(BuildContext context) {
@@ -974,6 +1015,299 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           labelStyle: GoogleFonts.dmSans(color: context.pal.inkSoft),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Delete Account Bottom Sheet — re-auth + deletion mode choice
+// ---------------------------------------------------------------------------
+class _DeleteAccountSheet extends StatefulWidget {
+  const _DeleteAccountSheet({
+    required this.l10n,
+    required this.onConfirm,
+  });
+
+  final AppLocalizations l10n;
+  final Future<void> Function(DeletionMode mode, String password) onConfirm;
+
+  @override
+  State<_DeleteAccountSheet> createState() => _DeleteAccountSheetState();
+}
+
+class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
+  final _passwordCtrl = TextEditingController();
+  DeletionMode _mode = DeletionMode.deleteAll;
+  bool _confirmed = false;
+  bool _showPassword = false;
+
+  @override
+  void dispose() {
+    _passwordCtrl.dispose();
+    super.dispose();
+  }
+
+  bool get _canProceed =>
+      _confirmed && _passwordCtrl.text.isNotEmpty;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        24, 20, 24,
+        MediaQuery.of(context).viewInsets.bottom + 40,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Handle
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.pal.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Title
+            Text(
+              l10n.settingsDeleteTitle,
+              style: GoogleFonts.dmSerifDisplay(
+                fontSize: 20,
+                color: const Color(0xFFEF4444),
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Explanation
+            Text(
+              l10n.settingsDeleteBody,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                color: context.pal.inkSoft,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Deletion mode choice
+            Text(
+              l10n.settingsDeleteChoiceTitle,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: context.pal.ink,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Option A: Delete all
+            _buildModeOption(
+              value: DeletionMode.deleteAll,
+              title: l10n.settingsDeleteOptionDeleteAll,
+              subtitle: l10n.settingsDeleteOptionDeleteAllDesc,
+            ),
+            const SizedBox(height: 8),
+
+            // Option B: Anonymize
+            _buildModeOption(
+              value: DeletionMode.anonymize,
+              title: l10n.settingsDeleteOptionAnonymize,
+              subtitle: l10n.settingsDeleteOptionAnonymizeDesc,
+            ),
+            const SizedBox(height: 20),
+
+            // Password field for re-authentication
+            Text(
+              l10n.settingsDeletePasswordLabel,
+              style: GoogleFonts.dmSans(
+                fontSize: 10,
+                color: context.pal.inkFaint,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              decoration: BoxDecoration(
+                color: context.pal.bg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: context.pal.border, width: 1.5),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+              child: Row(
+                children: [
+                  Icon(Icons.lock_outline, size: 18,
+                      color: context.pal.inkFaint.withOpacity(0.6)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: _passwordCtrl,
+                      obscureText: !_showPassword,
+                      onChanged: (_) => setState(() {}),
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        color: context.pal.ink,
+                      ),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: l10n.settingsDeletePasswordHint,
+                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => setState(() => _showPassword = !_showPassword),
+                    child: Icon(
+                      _showPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 18,
+                      color: context.pal.inkFaint.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Confirmation checkbox
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Checkbox(
+                    value: _confirmed,
+                    onChanged: (v) => setState(() => _confirmed = v ?? false),
+                    activeColor: const Color(0xFFEF4444),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _confirmed = !_confirmed),
+                    child: Text(
+                      l10n.settingsDeleteIrreversibleConfirm,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        color: context.pal.inkSoft,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Confirm button
+            ElevatedButton(
+              onPressed: _canProceed
+                  ? () => widget.onConfirm(_mode, _passwordCtrl.text)
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFEF4444),
+                disabledBackgroundColor:
+                    const Color(0xFFEF4444).withOpacity(0.3),
+              ),
+              child: Text(
+                l10n.settingsDeleteConfirm,
+                style: GoogleFonts.dmSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Cancel button
+            OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                l10n.actionCancel,
+                style: GoogleFonts.dmSans(
+                  fontSize: 15,
+                  color: context.pal.inkSoft,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModeOption({
+    required DeletionMode value,
+    required String title,
+    required String subtitle,
+  }) {
+    final selected = _mode == value;
+    return GestureDetector(
+      onTap: () => setState(() => _mode = value),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: selected
+              ? const Color(0xFFEF4444).withOpacity(0.08)
+              : context.pal.bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected
+                ? const Color(0xFFEF4444).withOpacity(0.4)
+                : context.pal.border,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Radio<DeletionMode>(
+              value: value,
+              groupValue: _mode,
+              onChanged: (v) => setState(() => _mode = v!),
+              activeColor: const Color(0xFFEF4444),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: context.pal.ink,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      color: context.pal.inkSoft,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
