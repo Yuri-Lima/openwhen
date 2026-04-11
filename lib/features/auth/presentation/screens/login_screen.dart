@@ -7,6 +7,9 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
+/// Quando `true`, mostra Apple/Google no login. Desligado até OAuth estar configurado.
+const bool kSocialSignInEnabled = false;
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -366,10 +369,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   ),
                 ),
         ),
-        const SizedBox(height: 24),
-        _buildDivider(),
-        const SizedBox(height: 24),
-        _buildSocialButtons(),
+        if (kSocialSignInEnabled) ...[
+          const SizedBox(height: 24),
+          _buildDivider(),
+          const SizedBox(height: 24),
+          _buildSocialButtons(),
+        ],
         const SizedBox(height: 24),
         _buildFooter(),
       ],
@@ -435,10 +440,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        _buildDivider(),
-        const SizedBox(height: 24),
-        _buildSocialButtons(),
+        if (kSocialSignInEnabled) ...[
+          const SizedBox(height: 16),
+          _buildDivider(),
+          const SizedBox(height: 24),
+          _buildSocialButtons(),
+        ],
         const SizedBox(height: 24),
         _buildFooter(),
       ],
