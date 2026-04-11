@@ -146,6 +146,79 @@
       box-shadow: 0 8px 32px var(--shadow);
       margin-bottom: 32px;
     }
+
+    /* --- Animated Logo --- */
+    .ow-logo-wrap {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    .ow-logo-wrap.hero-icon { /* herda .hero-icon acima */ }
+    .ow-logo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.45) 48%, rgba(255,255,255,0.55) 52%, transparent 70%);
+      transform: translateX(-120%);
+      animation: owSheen 0.6s 0.65s ease-out forwards;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .ow-logo { width: 100%; height: 100%; display: block; }
+    .ow-envelope { opacity: 0; animation: owEnvIn 0.5s 0s ease forwards; }
+    @keyframes owEnvIn { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+    .ow-bg { opacity: 0; animation: owBgFade 0.3s 0s ease forwards; }
+    @keyframes owBgFade { to { opacity: 1; } }
+    .ow-seal-outer, .ow-seal-inner-shadow {
+      transform-origin: 100px 104px;
+      opacity: 0;
+      animation: owStamp 0.6s 0.1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .ow-seal-inner {
+      transform-origin: 100px 104px;
+      opacity: 0;
+      animation: owStamp 0.6s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes owStamp {
+      0%   { opacity: 0; transform: scale(1.35); }
+      55%  { opacity: 1; transform: scale(0.96); }
+      75%  { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes owSheen { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+    .ow-brows { opacity: 0; animation: owFadeIn 0.35s 1.25s ease forwards; }
+    .ow-nose  { opacity: 0; animation: owFadeIn 0.25s 1.45s ease forwards; }
+    .ow-eye-group {
+      opacity: 0;
+      transform-origin: 100px 108px;
+      animation: owFadeIn 0.35s 1.55s ease forwards, owBlink 0.28s 2.2s ease-in-out;
+    }
+    @keyframes owFadeIn { to { opacity: 1; } }
+    @keyframes owBlink { 0%, 100% { transform: scaleY(1); } 45% { transform: scaleY(0.08); } }
+    .ow-eye-group.idle {
+      animation: owIdleBlink 6s 4s ease-in-out infinite;
+      opacity: 1;
+    }
+    @keyframes owIdleBlink { 0%, 4%, 100% { transform: scaleY(1); } 2% { transform: scaleY(0.08); } }
+    .ow-logo-wrap:hover .ow-logo {
+      transform: perspective(400px) rotateY(6deg) rotateX(-3deg);
+      transition: transform 0.3s ease;
+    }
+    .ow-logo { transition: transform 0.3s ease; }
+    @media (prefers-reduced-motion: reduce) {
+      .ow-bg, .ow-seal-outer, .ow-seal-inner-shadow,
+      .ow-seal-inner, .ow-brows, .ow-nose, .ow-eye-group, .ow-envelope {
+        animation: none !important; opacity: 1 !important; transform: none !important;
+      }
+      .ow-logo-wrap::after { animation: none !important; opacity: 0 !important; }
+      .ow-logo-wrap:hover .ow-logo { transform: none; }
+    }
+
+    /* Nav SVG logo (static, no animation) */
+    .nav-brand .ow-nav-logo {
+      width: 36px; height: 36px; border-radius: 8px; display: block;
+    }
     .hero h1 {
       font-size: clamp(32px, 5vw, 52px);
       font-weight: 800;
@@ -400,11 +473,65 @@
 </head>
 <body>
 
+  <!-- Shared SVG defs for logo gradients/filters -->
+  <svg style="position:absolute;width:0;height:0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="owEnvGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#F5EDD6"/><stop offset="100%" stop-color="#E8DFC8"/>
+      </linearGradient>
+      <linearGradient id="owFlapGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E0D5BC"/><stop offset="100%" stop-color="#D4C8AE"/>
+      </linearGradient>
+      <radialGradient id="owSealOuterGrad" cx="0.42" cy="0.36" r="0.58">
+        <stop offset="0%" stop-color="#B03530"/><stop offset="35%" stop-color="#8B2420"/>
+        <stop offset="70%" stop-color="#6B1C18"/><stop offset="100%" stop-color="#4A1210"/>
+      </radialGradient>
+      <radialGradient id="owSealOuterHL" cx="0.35" cy="0.30" r="0.5">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+      <radialGradient id="owSealInnerGrad" cx="0.42" cy="0.32" r="0.65">
+        <stop offset="0%" stop-color="#E85550"/><stop offset="25%" stop-color="#D44038"/>
+        <stop offset="55%" stop-color="#C0392B"/><stop offset="100%" stop-color="#882520"/>
+      </radialGradient>
+      <radialGradient id="owSealHighlight" cx="0.38" cy="0.28" r="0.32">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.50)"/><stop offset="40%" stop-color="rgba(255,255,255,0.20)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+      <radialGradient id="owSealHL2" cx="0.55" cy="0.75" r="0.3">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+      <filter id="owSealShadow" x="-15%" y="-10%" width="130%" height="135%">
+        <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#1A1714" flood-opacity="0.35"/>
+      </filter>
+      <filter id="owGrooveShadow" x="-5%" y="-5%" width="110%" height="110%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#2A0E0C" flood-opacity="0.5"/>
+      </filter>
+      <filter id="owFlapShadow" x="-5%" y="-5%" width="110%" height="120%">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#8B7D6B" flood-opacity="0.3"/>
+      </filter>
+    </defs>
+  </svg>
+
   <!-- ============ NAV ============ -->
   <nav class="nav" role="navigation">
     <div class="container">
       <a href="/" class="nav-brand" aria-label="OpenWhen home">
-        <img src="/images/icon-192.png" alt="OpenWhen" width="36" height="36">
+        <svg class="ow-nav-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="4" width="192" height="192" rx="42" fill="url(#owEnvGrad)"/>
+          <circle cx="100" cy="104" r="57" fill="url(#owSealOuterGrad)"/>
+          <circle cx="100" cy="104" r="57" fill="url(#owSealOuterHL)"/>
+          <circle cx="100" cy="104" r="42" fill="#5A1815" opacity="0.7"/>
+          <circle cx="100" cy="104" r="40" fill="url(#owSealInnerGrad)"/>
+          <circle cx="100" cy="104" r="40" fill="url(#owSealHighlight)"/>
+          <path d="M93 98 C91 95,88 88,86 83 C85 82,84 81,84 82 C82 85,79 90,81 93 C83 95,87 98,93 98 Z" fill="white" opacity="0.95"/>
+          <path d="M107 98 C109 95,112 88,114 83 C115 82,116 81,116 82 C118 85,121 90,119 93 C117 95,113 98,107 98 Z" fill="white" opacity="0.95"/>
+          <ellipse cx="87" cy="108" rx="13" ry="11" fill="white"/>
+          <circle cx="87" cy="109" r="7" fill="#3D1A14"/>
+          <circle cx="85" cy="106" r="3" fill="white" opacity="0.95"/>
+          <ellipse cx="113" cy="108" rx="13" ry="11" fill="white"/>
+          <circle cx="113" cy="109" r="7" fill="#3D1A14"/>
+          <circle cx="110" cy="106" r="3" fill="white" opacity="0.95"/>
+        </svg>
         <span>OpenWhen</span>
       </a>
       <div class="nav-actions">
@@ -424,7 +551,56 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero">
-    <img src="/images/icon-192.png" alt="OpenWhen app icon" width="120" height="120" class="hero-icon">
+    <div class="ow-logo-wrap hero-icon" id="ow-hero-logo">
+      <svg class="ow-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OpenWhen — Owl wax seal on envelope">
+        <!-- Envelope -->
+        <g class="ow-envelope">
+          <rect class="ow-bg" x="4" y="4" width="192" height="192" rx="42" fill="url(#owEnvGrad)" stroke="#D5CBB5" stroke-width="0.8"/>
+          <line x1="6" y1="192" x2="100" y2="108" stroke="#C8BDA5" stroke-width="1" opacity="0.4"/>
+          <line x1="194" y1="192" x2="100" y2="108" stroke="#C8BDA5" stroke-width="1" opacity="0.4"/>
+          <path d="M20 46 L100 6 L180 46 Z" fill="url(#owFlapGrad)" filter="url(#owFlapShadow)"/>
+          <path d="M20 46 L100 6 L180 46" fill="none" stroke="#BAB097" stroke-width="0.8"/>
+          <line x1="20" y1="46" x2="180" y2="46" stroke="#C2B8A0" stroke-width="0.8" opacity="0.6"/>
+          <line x1="20" y1="46" x2="6" y2="60" stroke="#C8BDA5" stroke-width="0.5" opacity="0.3"/>
+          <line x1="180" y1="46" x2="194" y2="60" stroke="#C8BDA5" stroke-width="0.5" opacity="0.3"/>
+        </g>
+        <!-- Wax Seal -->
+        <circle class="ow-seal-outer" cx="100" cy="104" r="57" fill="url(#owSealOuterGrad)" filter="url(#owSealShadow)"/>
+        <circle class="ow-seal-outer" cx="100" cy="104" r="57" fill="url(#owSealOuterHL)"/>
+        <circle class="ow-seal-outer" cx="100" cy="104" r="57" fill="none" stroke="#3A0F0D" stroke-width="1.2" opacity="0.3"/>
+        <circle class="ow-seal-outer" cx="100" cy="104" r="49" fill="none" stroke="#3A0F0D" stroke-width="1" opacity="0.25"/>
+        <path class="ow-seal-outer" d="M51 85 A57 57 0 0 1 132 65" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3" stroke-linecap="round"/>
+        <circle class="ow-seal-inner-shadow" cx="100" cy="104" r="42" fill="#5A1815" opacity="0.7" filter="url(#owGrooveShadow)"/>
+        <circle class="ow-seal-inner" cx="100" cy="104" r="40" fill="url(#owSealInnerGrad)"/>
+        <circle class="ow-seal-inner" cx="100" cy="104" r="40" fill="url(#owSealHighlight)"/>
+        <circle class="ow-seal-inner" cx="100" cy="104" r="40" fill="url(#owSealHL2)"/>
+        <circle class="ow-seal-inner" cx="100" cy="104" r="40" fill="none" stroke="#6B1E1A" stroke-width="0.6" opacity="0.3"/>
+        <!-- Owl -->
+        <g class="ow-brows">
+          <path d="M93 98 C91 95,88 88,86 83 C85 82,84 81,84 82 C82 85,79 90,81 93 C83 95,87 98,93 98 Z" fill="white" opacity="0.95"/>
+          <path d="M107 98 C109 95,112 88,114 83 C115 82,116 81,116 82 C118 85,121 90,119 93 C117 95,113 98,107 98 Z" fill="white" opacity="0.95"/>
+        </g>
+        <g class="ow-nose">
+          <path d="M97 115 L100 120 L103 115 Q100 116,97 115 Z" fill="#E8D8D0" opacity="0.7"/>
+        </g>
+        <g class="ow-eye-group">
+          <g class="ow-eye ow-eye-l">
+            <ellipse cx="87" cy="108" rx="13" ry="11" fill="white"/>
+            <circle cx="87" cy="109" r="7" fill="#3D1A14"/>
+            <circle cx="87" cy="109" r="7" fill="#5C2E1A" opacity="0.5"/>
+            <circle cx="85" cy="106" r="3" fill="white" opacity="0.95"/>
+            <circle cx="91" cy="111" r="1.3" fill="white" opacity="0.5"/>
+          </g>
+          <g class="ow-eye ow-eye-r">
+            <ellipse cx="113" cy="108" rx="13" ry="11" fill="white"/>
+            <circle cx="113" cy="109" r="7" fill="#3D1A14"/>
+            <circle cx="113" cy="109" r="7" fill="#5C2E1A" opacity="0.5"/>
+            <circle cx="110" cy="106" r="3" fill="white" opacity="0.95"/>
+            <circle cx="116" cy="111" r="1.3" fill="white" opacity="0.5"/>
+          </g>
+        </g>
+      </svg>
+    </div>
 
     <div data-lang="en" class="active">
       <h1>Write today. <em>Feel tomorrow.</em></h1>
@@ -853,6 +1029,15 @@
         if (nav.indexOf('pt') === 0) switchLang('pt');
         else if (nav.indexOf('es') === 0) switchLang('es');
       }
+    })();
+
+    /* ── Hero logo idle blink ── */
+    (function() {
+      var logo = document.getElementById('ow-hero-logo');
+      if (!logo) return;
+      setTimeout(function() {
+        logo.querySelectorAll('.ow-eye-group').forEach(function(g) { g.classList.add('idle'); });
+      }, 3000);
     })();
 
     /* ── IntersectionObserver for step animations ── */
