@@ -292,7 +292,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         'OpenWhen',
                         style: GoogleFonts.dmSerifDisplay(
                           fontSize: 26,
-                          color: context.pal.white,
+                          color: context.pal.ink,
                           letterSpacing: -0.3,
                         ),
                       ),
@@ -301,7 +301,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         l10n.loginHeroCreateAccount,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: Colors.white.withOpacity(0.2),
+                          color: context.pal.ink.withOpacity(0.4),
                           fontWeight: FontWeight.w300,
                           letterSpacing: 3,
                         ),
