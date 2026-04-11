@@ -47,6 +47,7 @@ Future<void> ensureUserFirestoreProfileExists(firebase_auth.User user) async {
     'followingCount': 0,
     'lettersCount': 0,
     'language': 'pt-BR',
+    'preferredLanguage': 'pt',
     'country': null,
     'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
   });

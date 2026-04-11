@@ -128,7 +128,9 @@ export const onSendGridWebhook = onRequest(
 
         if (NOTIFY_EVENTS.has(evt.event) && evt.senderUid) {
           const userDoc = await db.doc(`users/${evt.senderUid}`).get();
-          const lang = (userDoc.data()?.preferredLanguage as string) || "en";
+          const data = userDoc.data() ?? {};
+          const lang = (data.preferredLanguage as string) ||
+            (data.language as string)?.substring(0, 2) || "en";
           const msgs = bounceMessages[lang] || bounceMessages.en;
 
           const notifRef = db
