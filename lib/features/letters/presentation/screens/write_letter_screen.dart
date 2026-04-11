@@ -94,29 +94,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   // Mensagem digitada: recolhida por padrão
   bool _messageExpanded = false;
-  bool _allowPublish = false;
-  bool _hasOffensiveContent = false;
-
-  static const _offensiveWords = [
-    // Português
-    'idiota', 'imbecil', 'burro', 'inútil', 'fracasso', 'lixo',
-    'odeio você', 'odeio voce', 'desapareça', 'desapareca',
-    'ninguém te ama', 'ninguem te ama', 'você não presta',
-    'voce nao presta', 'sua vida não vale', 'sua vida nao vale',
-    'se mata', 'se machuque', 'você merece sofrer', 'voce merece sofrer',
-    // English
-    'i hate you', 'you are worthless', 'nobody loves you',
-    'you should disappear', 'kill yourself', 'you deserve to suffer',
-    'you are a failure', 'loser', 'worthless',
-    // Español
-    'te odio', 'inútil', 'eres un fracaso', 'nadie te quiere',
-    'desaparece', 'mereces sufrir',
-  ];
-
-  bool _checkOffensiveContent(String text) {
-    final lower = text.toLowerCase();
-    return _offensiveWords.any((word) => lower.contains(word));
-  }
+  bool _isPrivate = true;
   final FocusNode _messageFocusNode = FocusNode();
 
   // Voz (mobile/desktop com IO; web usa stub de upload)
@@ -129,11 +107,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   Timer? _recordingTimer;
   Timer? _userSearchDebounce;
 
-  void _onMessageChanged() {
-    setState(() {
-      _hasOffensiveContent = _checkOffensiveContent(_messageController.text);
-    });
-  }
+  void _onMessageChanged() => setState(() {});
 
   @override
   void initState() {
@@ -351,23 +325,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     });
   }
 
-  void _selectByEmail() {
-    final l10n = AppLocalizations.of(context)!;
-    final email = _emailController.text.trim();
-    if (email.isEmpty || !email.contains('@')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
-      );
-      return;
-    }
-    setState(() {
-      _receiverUid = null;
-      _receiverName = email;
-      _receiverUsername = '';
-      _receiverHasAccount = false;
-    });
-  }
-
   void _clearReceiver() {
     setState(() {
       _receiverUid = null;
@@ -452,8 +409,22 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       return;
     }
     if (_receiverName == null || _receiverName!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
-      return;
+      final emailTrim = _emailController.text.trim();
+      if (emailTrim.isNotEmpty) {
+        if (!emailTrim.contains('@')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
+          );
+          return;
+        }
+        _receiverUid = null;
+        _receiverName = emailTrim;
+        _receiverUsername = '';
+        _receiverHasAccount = false;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
+        return;
+      }
     }
     if (_selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
@@ -541,7 +512,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'openDate': Timestamp.fromDate(_openDate),
         'status': 'locked',
         'isPublic': false,
-        'publishAfterReview': _allowPublish,
+        'publishAfterReview': !_isPrivate,
         'canBeShared': false,
         'emotionalState': _selectedEmotion!.key,
         'requestStatus': requestStatus,
@@ -654,10 +625,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   }).toList()),
                   const SizedBox(height: 20),
 
-                  // Titulo
-                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
-                  const SizedBox(height: 20),
-
                   // TIPO DE CARTA
                   Text(l10n.writeLetterTypeSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 10),
@@ -702,6 +669,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ),
                     ),
                   ]),
+                  const SizedBox(height: 14),
+
+                  // Titulo
+                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
                   const SizedBox(height: 14),
 
                   // CONTEUDO DA CARTA
@@ -822,32 +793,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               ),
                             ),
                     ),
-                    // Aviso de conteúdo ofensivo
-                    if (_hasOffensiveContent) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF3F3),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFC0392B).withOpacity(0.3)),
-                        ),
-                        child: Row(children: [
-                          const Icon(Icons.favorite_border_rounded, color: Color(0xFFC0392B), size: 18),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'O OpenWhen existe para conectar com amor e superação. Revise sua mensagem. 🦉',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 12,
-                                color: const Color(0xFFC0392B),
-                                height: 1.4,
-                              ),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ],
                     if (!kIsWeb) ...[
                       const SizedBox(height: 16),
                       Text(
@@ -1099,34 +1044,21 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ),
 
                       // Email para quem nao tem conta
-                      Row(children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            child: TextField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              style: GoogleFonts.dmSans(color: context.pal.ink),
-                              decoration: InputDecoration(
-                                hintText: l10n.writeLetterEmailHint,
-                                hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                              ),
-                            ),
+                      Container(
+                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: GoogleFonts.dmSans(color: context.pal.ink),
+                          decoration: InputDecoration(
+                            hintText: l10n.writeLetterEmailHint,
+                            hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: _selectByEmail,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(14)),
-                            child: Text(l10n.actionOk, style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
-                          ),
-                        ),
-                      ]),
+                      ),
                     ]),
                   const SizedBox(height: 20),
 
@@ -1177,34 +1109,34 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     decoration: BoxDecoration(
                       color: context.pal.card,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: _allowPublish ? context.pal.accent.withOpacity(0.4) : context.pal.border),
+                      border: Border.all(color: _isPrivate ? context.pal.accent.withOpacity(0.4) : context.pal.border),
                     ),
                     child: Row(children: [
                       Icon(
-                        _allowPublish ? Icons.public_rounded : Icons.lock_outline_rounded,
-                        color: _allowPublish ? context.pal.accent : context.pal.inkSoft,
+                        _isPrivate ? Icons.lock_outline_rounded : Icons.public_rounded,
+                        color: _isPrivate ? context.pal.accent : context.pal.inkSoft,
                         size: 22,
                       ),
                       const SizedBox(width: 12),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
-                          _allowPublish ? 'Permitir publicação no feed' : 'Carta privada',
+                          _isPrivate ? 'Carta privada' : 'Permitir publicação no feed',
                           style: GoogleFonts.dmSans(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: _allowPublish ? context.pal.accent : context.pal.ink,
+                            color: _isPrivate ? context.pal.accent : context.pal.ink,
                           ),
                         ),
                         Text(
-                          _allowPublish
-                              ? 'O destinatário poderá compartilhar no feed após abrir'
-                              : 'Só você e o destinatário terão acesso',
+                          _isPrivate
+                              ? 'Só você e o destinatário terão acesso'
+                              : 'O destinatário poderá compartilhar no feed após abrir',
                           style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
                         ),
                       ])),
                       Switch(
-                        value: _allowPublish,
-                        onChanged: (v) => setState(() => _allowPublish = v),
+                        value: _isPrivate,
+                        onChanged: (v) => setState(() => _isPrivate = v),
                         activeColor: context.pal.accent,
                       ),
                     ]),

@@ -164,25 +164,11 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-## 🟡 Bugs de navegação — feed (falta implementar)
+## ~~🟡 Bugs de navegação — feed~~ (concluído)
 
-**1. Lupa do feed não funciona**
-- O botão de busca no header do feed (`_iconBtn(Icons.search)`) é apenas visual
-- Não tem `onTap` nem `GestureDetector` — não faz nada ao clicar
-- Solução: adicionar `GestureDetector` com navegação para `SearchScreen`
-
-**2. Botão de notificações do feed não funciona**
-- O botão de sino (`_iconBtn(Icons.notifications_outlined)`) também é apenas visual
-- Solução: navegar para tela de notificações ou implementar dropdown
-
-**3. Busca de usuários na tela de busca não está retornando resultados**
-- A busca foi migrada para `searchTokens` mas pode não estar indexando corretamente
-- Verificar se os tokens estão sendo gerados no cadastro e na edição de perfil
-- Verificar se o índice do Firestore para `searchTokens` está deployado
-
-**Arquivos a editar:**
-- `lib/features/feed/presentation/screens/feed_screen.dart` — método `_iconBtn`
-- `lib/features/profile/presentation/screens/search_screen.dart` — lógica de busca
+- [x] **Lupa do feed** — `_iconBtn` refactorado com `onTap`, `Semantics`, `Tooltip`, `Material` + `InkWell`, alvo 48×48 dp; navega via `pushNamed('/search')` (preserva `DeferredSearchPage`)
+- [x] **Botão de notificações do feed** — navega para `ModerationNotificationsScreen` (mesmo padrão de Settings); quando existir inbox genérico, bastará trocar o destino
+- [x] **Busca de utilizadores — diagnóstico:** `catch (_)` silenciosos em `UserSearchService` substituídos por `catch (e)` com `debugPrint` protegido por `kDebugMode`; tokens `searchTokens` confirmados nos 3 caminhos de escrita (registo, lazy profile, edição de perfil). **Nota:** pesquisas com múltiplas palavras (nome completo) podem não devolver resultados porque `array-contains` usa a query inteira e os tokens são por palavra — limitação documentada, não um bug de indexação
 
 ---
 

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
 import '../constants/firestore_collections.dart';
 import 'user_search_result.dart';
@@ -67,8 +68,8 @@ class UserSearchService {
         if (exclude.contains(doc.id)) continue;
         byUid[doc.id] = _ScoredDoc(doc, 0);
       }
-    } catch (_) {
-      // Missing index or empty username on docs — continue with token leg.
+    } catch (e) {
+      if (kDebugMode) debugPrint('[UserSearch] username prefix query error: $e');
     }
 
     // 2) Public name tokens (array-contains on full query string as token).
@@ -82,8 +83,8 @@ class UserSearchService {
           if (exclude.contains(doc.id)) continue;
           byUid.putIfAbsent(doc.id, () => _ScoredDoc(doc, 1));
         }
-      } catch (_) {
-        // Field may be missing on old documents.
+      } catch (e) {
+        if (kDebugMode) debugPrint('[UserSearch] searchTokens query error: $e');
       }
     }
 
