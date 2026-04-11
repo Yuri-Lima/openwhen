@@ -11,6 +11,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
+- **Envio de carta — botão OK do email removido (UX simplificado):** o campo de email para destinatários sem conta tinha um botão "OK" ao lado que o utilizador precisava clicar antes de enviar a carta. Removido o botão; agora o email é validado e resolvido automaticamente ao clicar "Enviar carta" — se `_receiverName` está vazio e o campo de email tem texto, `_saveLetter()` valida o formato e define o destinatário inline, eliminando um passo de interação desnecessário. Método `_selectByEmail()` removido. Ver [`write_letter_screen.dart`](../lib/features/letters/presentation/screens/write_letter_screen.dart).
 - **Toggle de privacidade na escrita de carta — UX invertido:** o switch de privacidade em `WriteLetterScreen` usava `_allowPublish = false` (switch visualmente **desligado** por padrão), o que passava a falsa impressão de que a carta não estava protegida. Invertido para `_isPrivate = true` (switch **ligado/ativo** por padrão com ícone de cadeado e cor accent), deixando claro que a carta é privada. Comportamento no Firestore inalterado (`publishAfterReview: !_isPrivate`). Ver [`write_letter_screen.dart`](../lib/features/letters/presentation/screens/write_letter_screen.dart).
 
 ### Added
