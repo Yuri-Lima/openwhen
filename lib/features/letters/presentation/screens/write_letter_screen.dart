@@ -628,10 +628,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   }).toList()),
                   const SizedBox(height: 20),
 
-                  // Titulo
-                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
-                  const SizedBox(height: 20),
-
                   // TIPO DE CARTA
                   Text(l10n.writeLetterTypeSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 10),
@@ -676,6 +672,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ),
                     ),
                   ]),
+                  const SizedBox(height: 14),
+
+                  // Titulo
+                  _buildField(controller: _titleController, label: l10n.writeLetterFieldTitle, hint: l10n.writeLetterFieldTitleHint),
                   const SizedBox(height: 14),
 
                   // CONTEUDO DA CARTA
