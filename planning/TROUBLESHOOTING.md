@@ -225,4 +225,44 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL no painel SendGrid e logs das Cloud Functions.
+## 9. Emails de auth vão para spam ou confirmação sem branding
+
+### Causa raiz (corrigido 2026-04-12)
+
+1. **Remetente genérico:** `noreply@openwhen-923f5.firebaseapp.com` não tem reputação nem SPF/DKIM
+2. **Página de confirmação:** default do Firebase — texto plano sem branding
+3. **Redirect pós-registro:** `RegisterScreen` ficava empilhada sobre `AuthWrapper`, utilizador não via o app após criar conta
+
+### Correções aplicadas
+
+- **SMTP SendGrid:** Firebase Auth envia emails via `smtp.sendgrid.net:587` (STARTTLS). Domínio `openwhen.live` autenticado no SendGrid (`em2352.openwhen.live`) com SPF/DKIM ativos.
+- **Action URL customizada:** `https://openwhen.live/auth/action.html` — página dark theme com branding OpenWhen. Aplica-se globalmente (todos os templates).
+- **Sender name:** "OpenWhen" nos 3 templates (verification, password reset, email change).
+- **Redirect:** `Navigator.popUntil((route) => route.isFirst)` em `register_screen.dart` — volta ao `AuthWrapper` que redireciona à `HomeScreen`.
+
+### Pendências
+
+| Item | Estado |
+|------|--------|
+| `firebase deploy --only hosting` | ⏳ Necessário para publicar `auth/action.html` |
+| Domínio remetente `noreply@openwhen.live` | ⏳ 4 registros DNS no Cloudflare (2 TXT + 2 CNAME DKIM). Ver [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação"). |
+
+### Se emails ainda forem para spam após a configuração
+
+1. Verificar se o deploy do Hosting foi feito (`firebase deploy --only hosting`)
+2. Verificar se os CNAMEs do SendGrid (`em2352.openwhen.live`) estão propagados: `dig CNAME em2352.openwhen.live`
+3. Verificar no Firebase Console → Authentication → Templates → SMTP Settings que a password (API key SendGrid) está correta
+4. Enviar email de teste criando uma conta nova; verificar headers SPF/DKIM no Gmail (⋮ → Show original)
+5. Se o domínio customizado do remetente (`noreply@openwhen.live`) estiver configurado, verificar que os 4 registros DNS Firebase foram adicionados e verificados
+
+### Ficheiros
+
+- Página de ação: [`hosting/public/auth/action.html`](../hosting/public/auth/action.html)
+- Templates HTML: `hosting/email-templates/verify-email.html`, `reset-password.html`
+- Fix redirect: [`register_screen.dart`](../lib/features/auth/presentation/screens/register_screen.dart)
+- Guia completo: [`EMAIL_SETUP.md`](EMAIL_SETUP.md)
+- Config produção: [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação")
+
+---
+
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL no painel SendGrid e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP SendGrid + Action URL customizada + deploy Hosting + DNS pendente para domínio remetente.

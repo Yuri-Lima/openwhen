@@ -129,6 +129,45 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
 
 Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
 
+### Email de autenticação (SMTP + templates + página de ação)
+
+Configuração feita em 2026-04-12 para resolver emails de verificação/reset a irem para spam e com aparência genérica. Guia completo: [`EMAIL_SETUP.md`](EMAIL_SETUP.md).
+
+**Estado atual:**
+
+| Componente | Estado | Detalhe |
+|------------|--------|---------|
+| **SendGrid SMTP** | ✅ Configurado | `smtp.sendgrid.net:587` STARTTLS, username `apikey` |
+| **Domínio SendGrid** | ✅ Verificado | `em2352.openwhen.live` — SPF/DKIM ativos |
+| **Action URL (global)** | ✅ Configurada | `https://openwhen.live/auth/action.html` (aplica-se a todos os templates) |
+| **Sender name** | ✅ "OpenWhen" | Nos 3 templates: verification, password reset, email change |
+| **Página de ação** | ⏳ Deploy pendente | `hosting/public/auth/action.html` — dark theme com branding. Requer `firebase deploy --only hosting` |
+| **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@openwhen-923f5.firebaseapp.com` → `noreply@openwhen.live`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
+
+**DNS pendente para domínio customizado do remetente (Firebase Auth):**
+
+| Domain name | Type | Value |
+|---|---|---|
+| `openwhen.live` | TXT | `v=spf1 include:_spf.firebaseemail.com ~all` |
+| `openwhen.live` | TXT | `firebase=openwhen-923f5` |
+| `firebase1._domainkey.openwhen.live` | CNAME | `mail-openwhen-live.dkim1._domainkey.firebaseemail.com.` |
+| `firebase2._domainkey.openwhen.live` | CNAME | `mail-openwhen-live.dkim2._domainkey.firebaseemail.com.` |
+
+Após adicionar os 4 registros no Cloudflare, verificar no Firebase Console: Authentication → Templates → Customise domain → Verify.
+
+**Redirect pós-registro:** corrigido em [`register_screen.dart`](../lib/features/auth/presentation/screens/register_screen.dart) — `Navigator.popUntil` após criação da conta para que o `AuthWrapper` redirecione à `HomeScreen`.
+
+**Ficheiros criados/modificados:**
+
+| Ficheiro | Descrição |
+|----------|-----------|
+| `hosting/public/auth/action.html` | Página de ação customizada (verifica email, reset password) — dark theme |
+| `hosting/email-templates/verify-email.html` | Template SendGrid — verificação de email |
+| `hosting/email-templates/reset-password.html` | Template SendGrid — reset de senha |
+| `firebase.json` | Headers `no-cache` / `nosniff` / `DENY` para `auth/**` |
+| `lib/features/auth/presentation/screens/register_screen.dart` | Fix: `popUntil` pós-registro |
+| `planning/EMAIL_SETUP.md` | Guia completo de configuração |
+
 ### Nota (futuro): filas e workers
 
 Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, **filas com requisitos fortes** (ordem, retries elaborados, throughput alto) ou **integração fora do ecossistema Firebase/GCP**, vale relembrar: no Google Cloud o caminho habitual é **Pub/Sub** + subscribers (Cloud Functions ou Cloud Run), **Cloud Tasks** para tarefas adiadas com retries, e **Cloud Scheduler** para cron. **RabbitMQ** (ou outra fila AMQP) e **workers** dedicados só fazem sentido quando houver necessidade explícita ou equipa/infra já orientada a isso — acrescentam operação e integração extra face ao stack atual.
