@@ -4,12 +4,20 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import 'location_capture.dart';
 
+/// When `false`, sending a letter or capsule skips the dialogs that ask to share
+/// location and restrict opening to ~10 m (no GPS prompt on send).
+const bool kEnableSenderLocationPromptOnSend = false;
+
 /// Shown when saving a letter or capsule: optional share + optional 10 m open restriction.
 Future<({Map<String, dynamic>? senderLocation, bool openRequiresProximity})>
     promptSenderLocationAndProximity(
   BuildContext context,
   AppLocalizations l10n,
 ) async {
+  if (!kEnableSenderLocationPromptOnSend) {
+    return (senderLocation: null, openRequiresProximity: false);
+  }
+
   final share = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
