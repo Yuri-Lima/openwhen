@@ -161,11 +161,25 @@ OpenWhen Tecnologia Ltda.</p></div>
 
   <script>
     function switchLang(lang) {
-      document.querySelectorAll('.content-block').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.lang-switcher a').forEach(el => el.classList.remove('active'));
-      document.getElementById('content-' + lang).classList.add('active');
-      document.getElementById('lang-' + lang).classList.add('active');
+      document.querySelectorAll('.content-block').forEach(function(el) { el.classList.remove('active'); });
+      document.querySelectorAll('.lang-switcher a').forEach(function(el) { el.classList.remove('active'); });
+      var block = document.getElementById('content-' + lang);
+      var btn = document.getElementById('lang-' + lang);
+      if (block) block.classList.add('active');
+      if (btn) btn.classList.add('active');
+      try { localStorage.setItem('ow-lang', lang); } catch(e) {}
     }
+    (function() {
+      var saved = null;
+      try { saved = localStorage.getItem('ow-lang'); } catch(e) {}
+      if (saved && ['en','pt','es'].indexOf(saved) !== -1) {
+        switchLang(saved);
+      } else {
+        var nav = (navigator.language || '').toLowerCase();
+        if (nav.indexOf('pt') === 0) switchLang('pt');
+        else if (nav.indexOf('es') === 0) switchLang('es');
+      }
+    })();
   </script>
 </body>
 </html>
