@@ -4,14 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Use — OpenWhen</title>
+  <meta name="theme-color" content="#C0392B">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <style>
-    :root { --bg: #FDFAF6; --card: #FFFFFF; --ink: #1A1A2E; --ink-soft: #4A4A6A; --accent: #6C5CE7; --border: #E8E4DF; --warm: #FFF8F0; }
+    :root { --bg: #F7F4F0; --card: #FFFFFF; --ink: #1A1714; --ink-soft: #6B6560; --ink-faint: #C4BFB9; --accent: #C0392B; --accent-dark: #A93226; --border: #EDE8E3; --warm: #F0EAE4; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
     .container { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+    .back-home { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); text-decoration: none; font-size: 14px; margin-bottom: 24px; }
+    .back-home:hover { text-decoration: underline; }
     .header { text-align: center; margin-bottom: 40px; }
     .header h1 { font-size: 28px; font-style: italic; color: var(--accent); margin-bottom: 8px; }
-    .header .date { display: inline-block; background: var(--warm); color: var(--accent); padding: 4px 14px; border-radius: 20px; font-size: 13px; }
+    .header .date { display: inline-block; background: var(--warm); color: var(--accent-dark); padding: 4px 14px; border-radius: 20px; font-size: 13px; }
     .lang-switcher { text-align: center; margin-bottom: 32px; }
     .lang-switcher a { display: inline-block; padding: 6px 16px; margin: 0 4px; border-radius: 20px; font-size: 13px; text-decoration: none; color: var(--ink-soft); border: 1px solid var(--border); transition: all 0.2s; }
     .lang-switcher a.active, .lang-switcher a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -19,17 +24,18 @@
     .section { margin-bottom: 28px; }
     .section h2 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
     .section p { font-size: 14px; color: var(--ink-soft); white-space: pre-line; }
-    .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-soft); }
+    .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-faint); }
     .footer a { color: var(--accent); text-decoration: none; }
     .content-block { display: none; }
     .content-block.active { display: block; }
     @media (prefers-color-scheme: dark) {
-      :root { --bg: #0F0F1A; --card: #1A1A2E; --ink: #E8E4DF; --ink-soft: #A0A0B8; --border: #2A2A3E; --warm: #1E1A2E; }
+      :root { --bg: #1A1714; --card: #252018; --ink: #F5F0EB; --ink-soft: #B8B0A8; --ink-faint: #7A726A; --accent: #E74C3C; --accent-dark: #C0392B; --border: #2C2620; --warm: #2C2420; }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <a href="/" class="back-home">&larr; OpenWhen</a>
     <div class="header">
       <h1>OpenWhen</h1>
       <p style="font-size: 15px; color: var(--ink-soft); margin-bottom: 12px;">Terms of Use</p>
