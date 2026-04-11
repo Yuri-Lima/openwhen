@@ -798,5 +798,16 @@
   "settingsDeleteProcessing": "Eliminando tu cuenta...",
   "settingsDeleteWrongPassword": "Contraseña incorrecta. Inténtalo de nuevo.",
   "settingsDeleteReauthFailed": "Error de autenticación. Inténtalo de nuevo.",
-  "settingsDeleteError": "Error al eliminar la cuenta. Inténtalo más tarde."
+  "settingsDeleteError": "Error al eliminar la cuenta. Inténtalo más tarde.",
+
+  "emailVerificationTitle": "Verifica tu email",
+  "emailVerificationSubtitle": "Enviamos un enlace de verificación a {email}. Confírmalo para desbloquear el envío de cartas, cápsulas y comentarios.",
+  "@emailVerificationSubtitle": { "placeholders": { "email": { "type": "String" } } },
+  "emailVerificationResend": "Reenviar email",
+  "emailVerificationResendCooldown": "Reenviar en {seconds}s",
+  "@emailVerificationResendCooldown": { "placeholders": { "seconds": { "type": "String" } } },
+  "emailVerificationAlreadyDone": "Ya verifiqué",
+  "emailVerificationNotYet": "Email aún no verificado. Revisa tu bandeja de entrada y carpeta de spam.",
+  "emailVerificationLater": "Más tarde",
+  "registerSuccessVerify": "¡Cuenta creada! Revisa tu email para verificar."
 }

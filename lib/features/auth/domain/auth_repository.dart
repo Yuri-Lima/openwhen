@@ -77,6 +77,10 @@ class AuthRepository {
     await _authService.signOut();
   }
 
+  Future<void> sendVerificationEmail() async {
+    await _authService.currentUser?.sendEmailVerification();
+  }
+
   Future<AppUser?> getUser(String uid) async {
     final doc = await _firestore.collection(FirestoreCollections.users).doc(uid).get();
     if (!doc.exists) return null;

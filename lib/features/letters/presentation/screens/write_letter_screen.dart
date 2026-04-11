@@ -25,6 +25,7 @@ import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
 import '../../../../core/utils/email_normalization.dart';
+import '../../../../core/auth/email_verification_guard.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
 import '../voice_letter.dart';
@@ -395,6 +396,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _saveLetter() async {
+    if (!await requireVerifiedEmail(context)) return;
     final l10n = AppLocalizations.of(context)!;
     if (_titleController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackTitle)));

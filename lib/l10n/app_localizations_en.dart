@@ -2392,4 +2392,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsDeleteError =>
       'Account deletion failed. Please try again later.';
+
+  @override
+  String get emailVerificationTitle => 'Verify your email';
+
+  @override
+  String emailVerificationSubtitle(String email) {
+    return 'We sent a verification link to $email. Confirm it to unlock sending letters, capsules and comments.';
+  }
+
+  @override
+  String get emailVerificationResend => 'Resend email';
+
+  @override
+  String emailVerificationResendCooldown(String seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String get emailVerificationAlreadyDone => 'I already verified';
+
+  @override
+  String get emailVerificationNotYet =>
+      'Email not verified yet. Check your inbox and spam folder.';
+
+  @override
+  String get emailVerificationLater => 'Later';
+
+  @override
+  String get registerSuccessVerify =>
+      'Account created! Check your email to verify.';
 }

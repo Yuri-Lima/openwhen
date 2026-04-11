@@ -18,6 +18,7 @@ import '../../../../core/services/analytics_service.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/auth/email_verification_guard.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
@@ -241,6 +242,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
   }
 
   Future<void> _saveCapsule() async {
+    if (!await requireVerifiedEmail(context)) return;
     if (!_canAdvance) return;
     final l10n = AppLocalizations.of(context)!;
     final musicTrim = _musicUrlCtrl.text.trim();

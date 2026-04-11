@@ -4444,6 +4444,54 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Falha ao deletar conta. Tente novamente mais tarde.'**
   String get settingsDeleteError;
+
+  /// No description provided for @emailVerificationTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Verifique seu email'**
+  String get emailVerificationTitle;
+
+  /// No description provided for @emailVerificationSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviamos um link de verificação para {email}. Confirme para desbloquear o envio de cartas, cápsulas e comentários.'**
+  String emailVerificationSubtitle(String email);
+
+  /// No description provided for @emailVerificationResend.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Reenviar email'**
+  String get emailVerificationResend;
+
+  /// No description provided for @emailVerificationResendCooldown.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Reenviar em {seconds}s'**
+  String emailVerificationResendCooldown(String seconds);
+
+  /// No description provided for @emailVerificationAlreadyDone.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Já verifiquei'**
+  String get emailVerificationAlreadyDone;
+
+  /// No description provided for @emailVerificationNotYet.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Email ainda não verificado. Verifique sua caixa de entrada e pasta de spam.'**
+  String get emailVerificationNotYet;
+
+  /// No description provided for @emailVerificationLater.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mais tarde'**
+  String get emailVerificationLater;
+
+  /// No description provided for @registerSuccessVerify.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Conta criada! Verifique seu email para confirmar.'**
+  String get registerSuccessVerify;
 }
 
 class _AppLocalizationsDelegate

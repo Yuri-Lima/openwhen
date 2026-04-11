@@ -263,7 +263,8 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
   final List<Widget> _screens = [
     const FeedScreen(),
     const VaultScreen(),
@@ -273,6 +274,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       try {
@@ -284,6 +286,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       // startup — the HTTPSCallable crashes the native iOS SDK even through
       // CallableQueue. Runs lazily in SubscriptionPlansScreen instead.
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshEmailVerifiedStatus();
+    }
+  }
+
+  Future<void> _refreshEmailVerifiedStatus() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.emailVerified) return;
+    try {
+      await user.reload();
+    } catch (_) {}
+    ref.invalidate(authStateProvider);
   }
 
   void _showCreateOptions(BuildContext context) {

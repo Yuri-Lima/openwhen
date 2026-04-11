@@ -2403,4 +2403,34 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsDeleteError =>
       'Error al eliminar la cuenta. Inténtalo más tarde.';
+
+  @override
+  String get emailVerificationTitle => 'Verifica tu email';
+
+  @override
+  String emailVerificationSubtitle(String email) {
+    return 'Enviamos un enlace de verificación a $email. Confírmalo para desbloquear el envío de cartas, cápsulas y comentarios.';
+  }
+
+  @override
+  String get emailVerificationResend => 'Reenviar email';
+
+  @override
+  String emailVerificationResendCooldown(String seconds) {
+    return 'Reenviar en ${seconds}s';
+  }
+
+  @override
+  String get emailVerificationAlreadyDone => 'Ya verifiqué';
+
+  @override
+  String get emailVerificationNotYet =>
+      'Email aún no verificado. Revisa tu bandeja de entrada y carpeta de spam.';
+
+  @override
+  String get emailVerificationLater => 'Más tarde';
+
+  @override
+  String get registerSuccessVerify =>
+      '¡Cuenta creada! Revisa tu email para verificar.';
 }

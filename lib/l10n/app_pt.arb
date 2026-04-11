@@ -826,5 +826,16 @@
   "settingsDeleteProcessing": "Deletando sua conta...",
   "settingsDeleteWrongPassword": "Senha incorreta. Tente novamente.",
   "settingsDeleteReauthFailed": "Falha na autenticação. Tente novamente.",
-  "settingsDeleteError": "Falha ao deletar conta. Tente novamente mais tarde."
+  "settingsDeleteError": "Falha ao deletar conta. Tente novamente mais tarde.",
+
+  "emailVerificationTitle": "Verifique seu email",
+  "emailVerificationSubtitle": "Enviámos um link de verificação para {email}. Confirme para desbloquear o envio de cartas, cápsulas e comentários.",
+  "@emailVerificationSubtitle": { "placeholders": { "email": { "type": "String" } } },
+  "emailVerificationResend": "Reenviar email",
+  "emailVerificationResendCooldown": "Reenviar em {seconds}s",
+  "@emailVerificationResendCooldown": { "placeholders": { "seconds": { "type": "String" } } },
+  "emailVerificationAlreadyDone": "Já verifiquei",
+  "emailVerificationNotYet": "Email ainda não verificado. Verifique a sua caixa de entrada e pasta de spam.",
+  "emailVerificationLater": "Mais tarde",
+  "registerSuccessVerify": "Conta criada! Verifique o seu email para confirmar."
 }

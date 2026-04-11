@@ -7,6 +7,7 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
 import '../../../../core/moderation/moderation_functions_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/auth/email_verification_guard.dart';
 import '../../../../shared/moderation/report_flow.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
@@ -77,6 +78,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   }
 
   Future<void> _sendComment() async {
+    if (!await requireVerifiedEmail(context)) return;
     final text = _commentController.text.trim();
     if (text.isEmpty) return;
 

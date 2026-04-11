@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -62,12 +63,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           SnackBar(content: Text(l10n.errorGeneric(registerState.error.toString()))),
         );
       } else {
-        await ref.read(authRepositoryProvider).signOut();
+        try {
+          await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+        } catch (_) {}
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.registerSuccess)),
+          SnackBar(content: Text(l10n.registerSuccessVerify)),
         );
-        Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {

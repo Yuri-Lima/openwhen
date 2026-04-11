@@ -2395,6 +2395,36 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get settingsDeleteError =>
       'Falha ao deletar conta. Tente novamente mais tarde.';
+
+  @override
+  String get emailVerificationTitle => 'Verifique seu email';
+
+  @override
+  String emailVerificationSubtitle(String email) {
+    return 'Enviámos um link de verificação para $email. Confirme para desbloquear o envio de cartas, cápsulas e comentários.';
+  }
+
+  @override
+  String get emailVerificationResend => 'Reenviar email';
+
+  @override
+  String emailVerificationResendCooldown(String seconds) {
+    return 'Reenviar em ${seconds}s';
+  }
+
+  @override
+  String get emailVerificationAlreadyDone => 'Já verifiquei';
+
+  @override
+  String get emailVerificationNotYet =>
+      'Email ainda não verificado. Verifique a sua caixa de entrada e pasta de spam.';
+
+  @override
+  String get emailVerificationLater => 'Mais tarde';
+
+  @override
+  String get registerSuccessVerify =>
+      'Conta criada! Verifique o seu email para confirmar.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -4788,4 +4818,34 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get settingsDeleteError =>
       'Falha ao deletar conta. Tente novamente mais tarde.';
+
+  @override
+  String get emailVerificationTitle => 'Verifique seu email';
+
+  @override
+  String emailVerificationSubtitle(String email) {
+    return 'Enviamos um link de verificação para $email. Confirme para desbloquear o envio de cartas, cápsulas e comentários.';
+  }
+
+  @override
+  String get emailVerificationResend => 'Reenviar email';
+
+  @override
+  String emailVerificationResendCooldown(String seconds) {
+    return 'Reenviar em ${seconds}s';
+  }
+
+  @override
+  String get emailVerificationAlreadyDone => 'Já verifiquei';
+
+  @override
+  String get emailVerificationNotYet =>
+      'Email ainda não verificado. Verifique sua caixa de entrada e pasta de spam.';
+
+  @override
+  String get emailVerificationLater => 'Mais tarde';
+
+  @override
+  String get registerSuccessVerify =>
+      'Conta criada! Verifique seu email para confirmar.';
 }
