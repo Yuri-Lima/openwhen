@@ -70,6 +70,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.registerSuccessVerify)),
         );
+        // Pop back so AuthWrapper detects the now-logged-in user
+        // and redirects to HomeScreen.
+        if (mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
       }
     } catch (e) {
       if (mounted) {
