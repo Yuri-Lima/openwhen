@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/utils/username_generator.dart';
 import '../providers/auth_provider.dart';
 
@@ -126,11 +125,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<bool> _isUsernameAvailable(String username) async {
-    final snap = await FirebaseFirestore.instance
-        .collection(FirestoreCollections.users)
-        .where('username', isEqualTo: username.toLowerCase())
-        .get();
-    return snap.docs.isEmpty;
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable('checkUsernameAvailable');
+      final result = await callable.call<Map<String, dynamic>>({'username': username});
+      return result.data['available'] == true;
+    } catch (_) {
+      // On error (network, function not deployed yet, etc.) assume unavailable
+      // to avoid registering a duplicate username.
+      return false;
+    }
   }
 
   // ── Register ─────────────────────────────────────────────────────────

@@ -31,6 +31,8 @@ export {
 
 export {onSendGridWebhook} from "./sendgrid_webhook";
 
+export {checkUsernameAvailable} from "./check_username";
+
 setGlobalOptions({region: "us-central1"});
 
 initializeApp();
