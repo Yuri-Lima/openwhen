@@ -23,6 +23,7 @@ import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
 import '../../../letters/presentation/screens/letter_detail_screen.dart';
 import '../../../letters/data/letter_repository_actions.dart';
+import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -264,10 +265,20 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         ),
                         Row(
                           children: [
-                            
-                            _iconBtn(Icons.search),
-                            const SizedBox(width: 8),
-                            _iconBtn(Icons.notifications_outlined),
+                            _iconBtn(
+                              Icons.search,
+                              onTap: () => Navigator.pushNamed(context, '/search'),
+                              tooltip: l10n.searchTitle,
+                            ),
+                            const SizedBox(width: 4),
+                            _iconBtn(
+                              Icons.notifications_outlined,
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const ModerationNotificationsScreen()),
+                              ),
+                              tooltip: l10n.moderationNotificationsTitle,
+                            ),
                           ],
                         ),
                       ],
@@ -465,15 +476,38 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  Widget _iconBtn(IconData icon) => Container(
-    width: 36, height: 36,
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.08),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.white.withOpacity(0.08)),
-    ),
-    child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
-  );
+  Widget _iconBtn(IconData icon, {VoidCallback? onTap, String? tooltip}) {
+    Widget btn = Container(
+      width: 36, height: 36,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
+    );
+    if (onTap != null) {
+      btn = Semantics(
+        button: true,
+        label: tooltip,
+        child: Tooltip(
+          message: tooltip ?? '',
+          child: SizedBox(
+            width: 48, height: 48,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: onTap,
+                child: Center(child: btn),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return btn;
+  }
 
   Widget _buildLetterListFromDocs(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs, {
