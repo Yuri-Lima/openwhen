@@ -45,6 +45,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Build-time dart defines (copiar de config/dart_defines.example.json)
+config/dart_defines.json
+config/dart_defines_dev.json
+
 # Scripts locais com API keys / passwords (copiar de .example)
 scripts/bootstrap-token.local.sh
 

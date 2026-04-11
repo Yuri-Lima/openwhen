@@ -1,8 +1,5 @@
 /// Facebook / Meta App ID for Instagram Sharing to Stories (client-side; not a secret).
-/// Pass at build time: `--dart-define=FB_APP_ID=your_app_id`
-const String kFacebookAppId = String.fromEnvironment(
-  'FB_APP_ID',
-  defaultValue: '',
-);
+/// Supplied via `--dart-define-from-file=config/dart_defines.json`
+const String kFacebookAppId = String.fromEnvironment('FB_APP_ID');
 
 bool get kFacebookAppIdConfigured => kFacebookAppId.isNotEmpty;

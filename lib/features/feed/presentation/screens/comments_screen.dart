@@ -13,10 +13,11 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/utils/date_formatter.dart';
 
-/// When `true` (via `--dart-define=SKIP_AI_MODERATION=true`), skips the Cloud Function
-/// `moderateContent` call to isolate Firestore vs callable when debugging native crashes.
+/// When `true`, skips the Cloud Function `moderateContent` call to isolate
+/// Firestore vs callable when debugging native crashes.
+/// Supplied via `--dart-define-from-file=config/dart_defines_dev.json`
 const bool _kSkipAiModeration =
-    bool.fromEnvironment('SKIP_AI_MODERATION', defaultValue: false);
+    bool.fromEnvironment('SKIP_AI_MODERATION');
 
 const Map<String, List<String>> _bannedWordsByLocale = {
   'pt': [

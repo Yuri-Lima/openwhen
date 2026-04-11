@@ -41,12 +41,7 @@ Comandos úteis:
 
 ```bash
 # Release padrão (adequado para TestFlight / submissão)
-flutter build ipa --release
-
-# Com as mesmas dart-defines que no APK (ex.: Instagram Stories, região Functions)
-flutter build ipa --release \
-  --dart-define=FB_APP_ID=1234567890123456 \
-  --dart-define=FUNCTIONS_REGION=us-central1
+flutter build ipa --release --dart-define-from-file=config/dart_defines.json
 ```
 
 Opções frequentes (ver `flutter build ipa -h`):
@@ -56,30 +51,44 @@ Opções frequentes (ver `flutter build ipa -h`):
 
 Depois do build: envia o **.ipa** para o App Store Connect (Xcode **Window → Organizer**, app **Transporter**, ou `xcrun altool` / API). Documentação Apple: [Upload builds](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/).
 
-## Build / run com variáveis (`--dart-define`)
+## Build / run com variáveis (`--dart-define-from-file`)
 
-O projeto lê flags em **tempo de compilação** (não são comandos novos do Flutter — são argumentos ao `run` / `build`). Lista completa e notas de produção: [`planning/PRODUCTION.md`](planning/PRODUCTION.md).
+O projeto centraliza todas as flags de compilação em ficheiros JSON dentro de `config/`. Lista completa e notas de produção: [`planning/PRODUCTION.md`](planning/PRODUCTION.md).
 
-| Variável | Obrigatória? | Uso típico neste projeto |
-|----------|----------------|---------------------------|
-| `FB_APP_ID` | Não | Instagram Stories nativo (Meta App ID). |
-| `BILLING_ENABLED` | Não (default `false`) | Ativar checkout Stripe no cliente. |
-| `FUNCTIONS_REGION` | Não (default `us-central1`) | Região das Cloud Functions: **billing**, **moderação** (`moderateContent`), **admin** — mesmo valor em [`lib/core/billing/firebase_functions_region.dart`](lib/core/billing/firebase_functions_region.dart). |
+### Ficheiros de configuração
 
-Exemplos:
+| Ficheiro | Ambiente | Versionado? |
+|----------|----------|-------------|
+| `config/dart_defines.json` | **Produção** | Não (`.gitignore`) |
+| `config/dart_defines_dev.json` | **Desenvolvimento** | Não (`.gitignore`) |
+| `config/dart_defines.example.json` | Template para novos devs | **Sim** |
 
+Para começar, copia o template e preenche os valores:
 ```bash
-# Desenvolvimento com Instagram + billing + região explícita
-flutter run -d chrome \
-  --dart-define=FB_APP_ID=1234567890123456 \
-  --dart-define=BILLING_ENABLED=true \
-  --dart-define=FUNCTIONS_REGION=us-central1
+cp config/dart_defines.example.json config/dart_defines.json
+cp config/dart_defines.example.json config/dart_defines_dev.json
 ```
 
+### Variáveis disponíveis
+
+| Variável | Tipo | Uso neste projeto |
+|----------|------|-------------------|
+| `FB_APP_ID` | `String` | Instagram Stories nativo (Meta App ID). |
+| `BILLING_ENABLED` | `bool` | Ativar checkout Stripe no cliente. |
+| `FUNCTIONS_REGION` | `String` | Região das Cloud Functions: **billing**, **moderação** (`moderateContent`), **admin**. |
+| `SKIP_AI_MODERATION` | `bool` | Debug: pula a Cloud Function `moderateContent` nos comentários. |
+
+### Exemplos
+
 ```bash
-flutter build apk --release \
-  --dart-define=FB_APP_ID=1234567890123456 \
-  --dart-define=FUNCTIONS_REGION=us-central1
+# Desenvolvimento (com SKIP_AI_MODERATION=true)
+flutter run --dart-define-from-file=config/dart_defines_dev.json
+
+# Release iOS (produção)
+flutter build ios --release --dart-define-from-file=config/dart_defines.json
+
+# Release Android (produção)
+flutter build apk --release --dart-define-from-file=config/dart_defines.json
 ```
 
 **Nota:** chaves de API (OpenAI, Stripe secret, etc.) não vão no `dart-define` — ficam nas **Cloud Functions** (runtime). O cliente só precisa de `FUNCTIONS_REGION` alinhado ao deploy.
