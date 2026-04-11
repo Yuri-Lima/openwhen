@@ -113,16 +113,19 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 Para que o app receba notificações de bounce/dropped dos emails de convite para destinatários externos:
 
-1. **Instalar dependência:** `cd functions && npm install @sendgrid/eventwebhook`
-2. **Secrets Firebase (Functions v2):**
-   - `firebase functions:secrets:set SENDGRID_API_KEY` — se ainda não migrado de `.env`
+1. ✅ **Instalar dependência:** `cd functions && npm install @sendgrid/eventwebhook`
+2. ✅ **Secrets Firebase (Functions v2):**
+   - `firebase functions:secrets:set SENDGRID_API_KEY` — migrado de `.env` para Secret Manager (2026-04-11). **Atenção:** `SENDGRID_API_KEY` **não pode** estar em `functions/.env` e no Secret Manager ao mesmo tempo — Cloud Run rejeita com "Secret environment variable overlaps non secret environment variable".
    - `firebase functions:secrets:set SENDGRID_WEBHOOK_VERIFICATION_KEY` — copiar do painel SendGrid (passo 4)
-3. **Deploy:** `firebase deploy --only functions`
-4. **Painel SendGrid** → Settings → Mail Settings → Event Webhook:
+3. ✅ **Deploy:** `firebase deploy --only functions`
+4. ✅ **Painel SendGrid** → Settings → Mail Settings → Event Webhook:
+   - Nome: "OpenWhen Email Events"
    - URL: `https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook`
    - Eventos: Bounced, Dropped, Deferred, Delivered
-   - Ativar **Signed Event Webhook** e copiar a verification key para o passo 2
-5. **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
+   - **Signed Event Webhook** habilitado (verification key copiada para o passo 2)
+   - Webhook ID: `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
+5. ✅ **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
+6. ✅ **`preferredLanguage`:** campo sincronizado com Firestore via `locale_provider.dart` quando o utilizador muda o idioma; incluído na criação de conta. Webhook faz fallback: `preferredLanguage` → `language` (2 chars) → `"en"`.
 
 Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
 

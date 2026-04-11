@@ -210,6 +210,8 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 | Webhook não actualiza status | Event Webhook não configurado no painel SendGrid, ou URL incorrecta, ou `SENDGRID_WEBHOOK_VERIFICATION_KEY` não bate |
 | Webhook retorna 403 | Assinatura inválida — verificar que a verification key no secret Firebase corresponde à do painel SendGrid |
 | Reenvio falha com "resource-exhausted" | Rate limiting — cooldown de 5 min entre reenvios (campo `lastResendAt` no documento) |
+| Deploy falha com "Secret environment variable overlaps non secret environment variable" | `SENDGRID_API_KEY` existe simultaneamente em `functions/.env` e no Secret Manager. Remover a linha do `.env` — o `defineSecret()` usa apenas o Secret Manager. (Corrigido em 2026-04-11) |
+| Notificações de bounce sempre em inglês | Campo `preferredLanguage` ausente no doc do utilizador. O webhook faz fallback: `preferredLanguage` → `language` (2 primeiros chars) → `"en"`. Utilizadores antigos sem o campo receberão a língua do campo `language` (`pt-BR` → `pt`). |
 
 ### Ficheiros relevantes
 

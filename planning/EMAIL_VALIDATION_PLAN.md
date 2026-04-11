@@ -1,7 +1,7 @@
 # Plano de Execução — Validação de Email + Notificação ao Remetente
 
 > **Data:** 2026-04-11
-> **Status:** ✅ Implementado (código pronto — pendente deploy)
+> **Status:** ✅ Concluído (deployed + preferredLanguage implementado) — pendente apenas teste E2E
 > **Prioridade:** Alta (impacta UX de cartas externas)
 > **Review:** 3 correcções críticas (C1-C3), 5 melhorias arquitecturais (A1-A5), 7 boas práticas (B1-B7)
 > **Implementado em:** 2026-04-11
@@ -673,17 +673,17 @@ cd functions && npm install --save-dev @firebase/rules-unit-testing
 ```
 FASE 1 (validators + cliente)  ──────►  ✅ Implementado
      │
-FASE 2 (webhook + defineSecret)──────►  ✅ Código pronto — ⚠️ pendente npm install + config + deploy
+FASE 2 (webhook + defineSecret)──────►  ✅ Deployed (secrets + SendGrid webhook configurados)
      │                                        │
 FASE 3 (modelo + enum)         ◄──────────────┘  ✅ Implementado
      │
-FASE 4 (notificação + i18n)    ──────►  ✅ Implementado
+FASE 4 (notificação + i18n)    ──────►  ✅ Implementado + preferredLanguage sincronizado
      │
 FASE 5 (UI + resend)           ──────►  ✅ Implementado
      │
-FASE 6 (rules — imutáveis)     ──────►  ✅ Código pronto — ⚠️ pendente deploy
+FASE 6 (rules — imutáveis)     ──────►  ✅ Deployed
      │
-FASE 7 (testes + rules tests)  ──────►  ✅ Unit tests passando — ⚠️ rules tests e E2E pendentes deploy
+FASE 7 (testes + rules tests)  ──────►  ✅ Unit tests passando — ⚠️ E2E pendente teste no dispositivo
 ```
 
 ## Progresso
@@ -691,12 +691,12 @@ FASE 7 (testes + rules tests)  ──────►  ✅ Unit tests passando �
 | Fase | Status | Ficheiros alterados |
 |------|--------|---------------------|
 | Fase 1 — Validators + cliente | ✅ Feito | `validators.dart` (novo), `write_letter_screen.dart`, 4x ARBs |
-| Fase 2 — Webhook + defineSecret | ✅ Feito + deployed | `sendgrid_webhook.ts` (novo), `external_letters.ts`, `index.ts` |
+| Fase 2 — Webhook + defineSecret | ✅ Deployed | `sendgrid_webhook.ts` (novo), `external_letters.ts`, `index.ts`, `.env` (removido SENDGRID_API_KEY — agora em Secret Manager) |
 | Fase 3 — Modelo + enum + send_failed | ✅ Feito | `letter.dart` |
-| Fase 4 — Notificações + i18n | ✅ Feito | 4x ARBs (novas keys), l10n gerado |
+| Fase 4 — Notificações + i18n | ✅ Feito + preferredLanguage | 4x ARBs (novas keys), l10n gerado, `locale_provider.dart` (sync Firestore), `ensure_user_firestore_profile.dart`, `auth_repository.dart` |
 | Fase 5 — UI + resend | ✅ Feito | `letter_detail_screen.dart`, `moderation_notifications_screen.dart` |
-| Fase 6 — Firestore Rules | ✅ Feito + deployed | `firestore.rules` |
-| Fase 7 — Testes | ✅ Parcial | `validators_test.dart` (novo, 7/7 passando) |
+| Fase 6 — Firestore Rules | ✅ Deployed | `firestore.rules` |
+| Fase 7 — Testes | ✅ Parcial | `validators_test.dart` (novo, 7/7 passando) — E2E pendente |
 
 ## Ações do utilizador (deploy)
 
@@ -704,9 +704,9 @@ FASE 7 (testes + rules tests)  ──────►  ✅ Unit tests passando �
 - [x] Verificar se `SENDGRID_API_KEY` já está como secret. Se não, migrar de `.env`: `firebase functions:secrets:set SENDGRID_API_KEY`
 - [x] `firebase functions:secrets:set SENDGRID_WEBHOOK_VERIFICATION_KEY`
 - [x] Configurar Event Webhook no painel SendGrid (Fase 2.6)
-- [x] `firebase deploy --only functions`
+- [x] `firebase deploy --only functions` (corrigido conflito `.env` vs Secret Manager)
 - [x] `firebase deploy --only firestore:rules`
-- [ ] Garantir campo `preferredLanguage` no documento de utilizador (se ainda não existir)
+- [x] Garantir campo `preferredLanguage` no documento de utilizador (implementado: sync em `locale_provider.dart`, default em criação de perfil, fallback no webhook para campo `language`)
 - [ ] Teste E2E no dispositivo real (Fase 7.4)
 
 ---
