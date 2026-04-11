@@ -325,23 +325,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     });
   }
 
-  void _selectByEmail() {
-    final l10n = AppLocalizations.of(context)!;
-    final email = _emailController.text.trim();
-    if (email.isEmpty || !email.contains('@')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
-      );
-      return;
-    }
-    setState(() {
-      _receiverUid = null;
-      _receiverName = email;
-      _receiverUsername = '';
-      _receiverHasAccount = false;
-    });
-  }
-
   void _clearReceiver() {
     setState(() {
       _receiverUid = null;
@@ -426,8 +409,22 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       return;
     }
     if (_receiverName == null || _receiverName!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
-      return;
+      final emailTrim = _emailController.text.trim();
+      if (emailTrim.isNotEmpty) {
+        if (!emailTrim.contains('@')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
+          );
+          return;
+        }
+        _receiverUid = null;
+        _receiverName = emailTrim;
+        _receiverUsername = '';
+        _receiverHasAccount = false;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
+        return;
+      }
     }
     if (_selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
@@ -1047,34 +1044,21 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ),
 
                       // Email para quem nao tem conta
-                      Row(children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            child: TextField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              style: GoogleFonts.dmSans(color: context.pal.ink),
-                              decoration: InputDecoration(
-                                hintText: l10n.writeLetterEmailHint,
-                                hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                              ),
-                            ),
+                      Container(
+                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        child: TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: GoogleFonts.dmSans(color: context.pal.ink),
+                          decoration: InputDecoration(
+                            hintText: l10n.writeLetterEmailHint,
+                            hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: _selectByEmail,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(color: context.pal.accent, borderRadius: BorderRadius.circular(14)),
-                            child: Text(l10n.actionOk, style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.w600)),
-                          ),
-                        ),
-                      ]),
+                      ),
                     ]),
                   const SizedBox(height: 20),
 

@@ -9,6 +9,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ## [Unreleased]
 
+### Changed
+
+- **Toggle de privacidade na escrita de carta — UX invertido:** o switch de privacidade em `WriteLetterScreen` usava `_allowPublish = false` (switch visualmente **desligado** por padrão), o que passava a falsa impressão de que a carta não estava protegida. Invertido para `_isPrivate = true` (switch **ligado/ativo** por padrão com ícone de cadeado e cor accent), deixando claro que a carta é privada. Comportamento no Firestore inalterado (`publishAfterReview: !_isPrivate`). Ver [`write_letter_screen.dart`](../lib/features/letters/presentation/screens/write_letter_screen.dart).
+
 ### Added
 
 - **Política de Privacidade completa (LGPD + GDPR + CCPA/CPRA + COPPA):** reescrita total com 17 seções (anteriormente 8). Cobre: definições legais, inventário real de todos os dados coletados (incl. GPS preciso, voz, câmera, moderação IA, analytics, billing), bases legais mapeadas por framework (LGPD Art. 7 + GDPR Art. 6), decisões automatizadas (OpenAI/Art. 22 GDPR/Art. 20 LGPD), compartilhamento detalhado por terceiro (Firebase, OpenAI, SendGrid, Stripe, Google Fonts), transferências internacionais (SCCs/Schrems II/LGPD Art. 33), retenção com períodos específicos por categoria, direitos separados por jurisdição (LGPD/GDPR/CCPA-CPRA com prazos e autoridades), exclusão de conta (dois modos), portabilidade (ZIP/JSON), privacidade infantil (COPPA 13+), segurança (TLS 1.3, App Check, breach 72h GDPR), tracking (Firebase Analytics/Crashlytics, GPC signal), alterações (aviso 15 dias), contatos (DPO, ANPD, supervisory authority, CA AG). Implementada em 3 idiomas (EN, PT-BR, ES) nos ARBs + `legal_screen.dart`.
