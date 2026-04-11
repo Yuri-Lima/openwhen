@@ -488,7 +488,7 @@ abstract class AppLocalizations {
   /// No description provided for @registerSuccess.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Conta criada com sucesso! Faça login para continuar.'**
+  /// **'Conta criada! Verifique seu email e faça login para continuar.'**
   String get registerSuccess;
 
   /// No description provided for @hintName.
