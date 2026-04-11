@@ -502,7 +502,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               ),
                             ),
                             Positioned(
-                              bottom: 18,
+                              top: 0,
+                              bottom: 0,
                               left: 0,
                               right: 0,
                               child: Center(
