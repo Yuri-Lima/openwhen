@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -224,11 +224,12 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       final bytes = await picked.readAsBytes();
       final uid = FirebaseAuth.instance.currentUser!.uid;
       final ref = FirebaseStorage.instance
-          .ref('capsulePhotos/${uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+          .ref('capsules/photos/${uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
       await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
       final url = await ref.getDownloadURL();
       setState(() => _capsulePhotos.add(url));
-    } catch (_) {
+    } catch (e) {
+      if (kDebugMode) debugPrint('[CapsulePhoto] upload failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
