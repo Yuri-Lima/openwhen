@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/utils/username_generator.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -18,21 +23,121 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
   bool _isLoading = false;
   bool _showPassword = false;
   bool _acceptedTerms = false;
   bool _confirmedAge = false;
 
+  // ── Username state ───────────────────────────────────────────────────
+  List<String> _suggestions = [];
+  String? _usernameError;
+  bool _usernameAvailable = false;
+  bool _checkingUsername = false;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_onNameChanged);
+    _usernameController.addListener(_onUsernameChanged);
+  }
+
   @override
   void dispose() {
+    _debounce?.cancel();
+    _nameController.removeListener(_onNameChanged);
+    _usernameController.removeListener(_onUsernameChanged);
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
+  // ── Suggestions from name ────────────────────────────────────────────
+  void _onNameChanged() {
+    final name = _nameController.text.trim();
+    if (name.length >= 2) {
+      setState(() => _suggestions = generateUsernameSuggestions(name));
+    } else {
+      setState(() => _suggestions = []);
+    }
+  }
+
+  void _pickSuggestion(String suggestion) {
+    _usernameController.text = suggestion;
+    // _onUsernameChanged will fire automatically via listener
+  }
+
+  // ── Availability check with debounce ─────────────────────────────────
+  void _onUsernameChanged() {
+    final raw = sanitizeUsername(_usernameController.text);
+    final error = validateUsername(raw);
+
+    _debounce?.cancel();
+
+    if (error != null) {
+      setState(() {
+        _usernameError = _localizedError(error);
+        _usernameAvailable = false;
+        _checkingUsername = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _usernameError = null;
+      _checkingUsername = true;
+      _usernameAvailable = false;
+    });
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      final available = await _isUsernameAvailable(raw);
+      if (!mounted) return;
+      setState(() {
+        _checkingUsername = false;
+        if (available) {
+          _usernameAvailable = true;
+          _usernameError = null;
+        } else {
+          _usernameAvailable = false;
+          _usernameError =
+              AppLocalizations.of(context)!.registerErrorUsernameTaken;
+        }
+      });
+    });
+  }
+
+  String? _localizedError(String key) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'empty':
+        return l10n.registerErrorUsernameEmpty;
+      case 'short':
+        return l10n.registerErrorUsernameShort;
+      case 'long':
+        return l10n.registerErrorUsernameLong;
+      case 'invalid':
+        return l10n.registerErrorUsernameInvalid;
+      default:
+        return null;
+    }
+  }
+
+  Future<bool> _isUsernameAvailable(String username) async {
+    final snap = await FirebaseFirestore.instance
+        .collection(FirestoreCollections.users)
+        .where('username', isEqualTo: username.toLowerCase())
+        .get();
+    return snap.docs.isEmpty;
+  }
+
+  // ── Register ─────────────────────────────────────────────────────────
   Future<void> _register() async {
     final l10n = AppLocalizations.of(context)!;
+    final username = sanitizeUsername(_usernameController.text);
+
     if (_nameController.text.trim().isEmpty ||
         _emailController.text.trim().isEmpty ||
         _passwordController.text.trim().isEmpty) {
@@ -41,6 +146,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
       return;
     }
+
+    // Username validation
+    final usernameError = validateUsername(username);
+    if (usernameError != null) {
+      setState(
+          () => _usernameError = _localizedError(usernameError));
+      return;
+    }
+    if (!_usernameAvailable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.registerErrorUsernameTaken)),
+      );
+      return;
+    }
+
     if (!_acceptedTerms || !_confirmedAge) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.registerMustAcceptTerms)),
@@ -55,12 +175,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             name: _nameController.text.trim(),
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
+            username: username,
           );
       if (!mounted) return;
       final registerState = ref.read(authNotifierProvider);
       if (registerState.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorGeneric(registerState.error.toString()))),
+          SnackBar(
+              content:
+                  Text(l10n.errorGeneric(registerState.error.toString()))),
         );
       } else {
         try {
@@ -70,8 +193,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.registerSuccessVerify)),
         );
-        // Pop back so AuthWrapper detects the now-logged-in user
-        // and redirects to HomeScreen.
         if (mounted) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
@@ -87,6 +208,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
+  // ── UI helpers ───────────────────────────────────────────────────────
   Widget _buildCheckRow({
     required bool value,
     required ValueChanged<bool?> onChanged,
@@ -124,6 +246,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     bool obscure = false,
     bool hasToggle = false,
     TextInputType keyboard = TextInputType.text,
+    String? prefixText,
+    Widget? suffix,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,8 +271,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: context.pal.inkFaint.withOpacity(0.6)),
+              Icon(icon, size: 18,
+                  color: context.pal.inkFaint.withOpacity(0.6)),
               const SizedBox(width: 10),
+              if (prefixText != null)
+                Text(
+                  prefixText,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: context.pal.inkFaint,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               Expanded(
                 child: TextField(
                   controller: controller,
@@ -162,14 +296,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: hint,
-                    hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                    hintStyle:
+                        GoogleFonts.dmSans(color: context.pal.inkFaint),
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
               if (hasToggle)
                 GestureDetector(
-                  onTap: () => setState(() => _showPassword = !_showPassword),
+                  onTap: () =>
+                      setState(() => _showPassword = !_showPassword),
                   child: Icon(
                     _showPassword
                         ? Icons.visibility_off_outlined
@@ -178,6 +315,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     color: context.pal.inkFaint.withOpacity(0.6),
                   ),
                 ),
+              if (suffix != null) suffix,
             ],
           ),
         ),
@@ -185,6 +323,117 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
+  /// Builds the username field block (field + status + suggestions).
+  Widget _buildUsernameSection(AppLocalizations l10n) {
+    // Status indicator (right side of field)
+    Widget? statusIcon;
+    if (_checkingUsername) {
+      statusIcon = SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: context.pal.inkFaint,
+        ),
+      );
+    } else if (_usernameAvailable &&
+        _usernameController.text.trim().isNotEmpty) {
+      statusIcon = Icon(Icons.check_circle, size: 18, color: Colors.green);
+    } else if (_usernameError != null) {
+      statusIcon = Icon(Icons.cancel, size: 18, color: Colors.red.shade400);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildField(
+          controller: _usernameController,
+          icon: Icons.alternate_email,
+          hint: l10n.registerHintUsername,
+          label: l10n.registerSectionUsername,
+          prefixText: '@',
+          suffix: statusIcon,
+        ),
+        const SizedBox(height: 6),
+
+        // Status text
+        if (_checkingUsername)
+          _statusText(l10n.registerUsernameChecking, context.pal.inkFaint)
+        else if (_usernameAvailable &&
+            _usernameController.text.trim().isNotEmpty)
+          _statusText(l10n.registerUsernameAvailable, Colors.green)
+        else if (_usernameError != null)
+          _statusText(_usernameError!, Colors.red.shade400)
+        else
+          _statusText(l10n.registerUsernameRules, context.pal.inkFaint),
+
+        // Suggestion chips
+        if (_suggestions.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            l10n.registerUsernameSuggestions,
+            style: GoogleFonts.dmSans(
+              fontSize: 10,
+              color: context.pal.inkFaint,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: _suggestions.map((s) {
+              final selected =
+                  sanitizeUsername(_usernameController.text) == s;
+              return GestureDetector(
+                onTap: () => _pickSuggestion(s),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? context.pal.accent.withOpacity(0.15)
+                        : context.pal.bg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: selected
+                          ? context.pal.accent
+                          : context.pal.border,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Text(
+                    '@$s',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: selected
+                          ? context.pal.accent
+                          : context.pal.inkSoft,
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _statusText(String text, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        text,
+        style: GoogleFonts.dmSans(fontSize: 11, color: color),
+      ),
+    );
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -240,7 +489,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     offset: const Offset(0, 16),
                                   ),
                                   BoxShadow(
-                                    color: context.pal.accent.withOpacity(0.2),
+                                    color:
+                                        context.pal.accent.withOpacity(0.2),
                                     blurRadius: 30,
                                   ),
                                 ],
@@ -265,7 +515,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: context.pal.accent.withOpacity(0.4),
+                                        color: context.pal.accent
+                                            .withOpacity(0.4),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
@@ -333,6 +584,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     label: l10n.labelName,
                   ),
                   const SizedBox(height: 16),
+
+                  // ── Username field with @ prefix + suggestions ──
+                  _buildUsernameSection(l10n),
+                  const SizedBox(height: 16),
+
                   _buildField(
                     controller: _emailController,
                     icon: Icons.mail_outline,
@@ -354,20 +610,32 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   // Terms of Use + Privacy Policy checkbox
                   _buildCheckRow(
                     value: _acceptedTerms,
-                    onChanged: (v) => setState(() => _acceptedTerms = v ?? false),
+                    onChanged: (v) =>
+                        setState(() => _acceptedTerms = v ?? false),
                     child: Text.rich(
                       TextSpan(
                         text: l10n.registerAcceptTermsPrefix,
-                        style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
+                        style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            color: context.pal.inkSoft,
+                            height: 1.4),
                         children: [
                           TextSpan(
                             text: l10n.settingsTerms,
-                            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.accent, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                            style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: context.pal.accent,
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline),
                           ),
                           TextSpan(text: l10n.registerAcceptTermsAnd),
                           TextSpan(
                             text: l10n.settingsPrivacy,
-                            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.accent, fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                            style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: context.pal.accent,
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline),
                           ),
                         ],
                       ),
@@ -378,17 +646,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   // Age 13+ checkbox (COPPA compliance)
                   _buildCheckRow(
                     value: _confirmedAge,
-                    onChanged: (v) => setState(() => _confirmedAge = v ?? false),
+                    onChanged: (v) =>
+                        setState(() => _confirmedAge = v ?? false),
                     child: Text(
                       l10n.registerConfirmAge,
-                      style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
+                      style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          color: context.pal.inkSoft,
+                          height: 1.4),
                     ),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: (_isLoading || !_acceptedTerms || !_confirmedAge) ? null : _register,
+                    onPressed:
+                        (_isLoading || !_acceptedTerms || !_confirmedAge)
+                            ? null
+                            : _register,
                     child: _isLoading
-                        ? CircularProgressIndicator(color: context.pal.white)
+                        ? CircularProgressIndicator(
+                            color: context.pal.white)
                         : Text(
                             l10n.registerCreateAccount,
                             style: GoogleFonts.dmSans(
@@ -435,13 +711,17 @@ class _EnvelopePainter extends CustomPainter {
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(const Offset(0, 0),
+    canvas.drawLine(
+        const Offset(0, 0),
         Offset(size.width / 2, size.height * 0.48), linePaint);
-    canvas.drawLine(Offset(size.width, 0),
+    canvas.drawLine(
+        Offset(size.width, 0),
         Offset(size.width / 2, size.height * 0.48), linePaint);
-    canvas.drawLine(Offset(0, size.height),
+    canvas.drawLine(
+        Offset(0, size.height),
         Offset(size.width / 2, size.height * 0.55), linePaint);
-    canvas.drawLine(Offset(size.width, size.height),
+    canvas.drawLine(
+        Offset(size.width, size.height),
         Offset(size.width / 2, size.height * 0.55), linePaint);
   }
 

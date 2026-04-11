@@ -790,6 +790,18 @@
   "registerConfirmAge": "Confirmo que tengo 13 años o más",
   "registerMustAcceptTerms": "Debes aceptar los términos y confirmar tu edad para continuar",
 
+  "registerSectionUsername": "USERNAME",
+  "registerHintUsername": "tu_username",
+  "registerUsernameSuggestions": "Sugerencias:",
+  "registerUsernameAvailable": "Disponible",
+  "registerUsernameChecking": "Verificando...",
+  "registerUsernameRules": "Solo letras, números, . y _",
+  "registerErrorUsernameEmpty": "Elige un username",
+  "registerErrorUsernameShort": "El username debe tener al menos 3 caracteres",
+  "registerErrorUsernameLong": "El username debe tener máximo 20 caracteres",
+  "registerErrorUsernameInvalid": "Solo letras, números, . y _ (no puede empezar/terminar con . o _)",
+  "registerErrorUsernameTaken": "Este username ya está en uso",
+
   "settingsDeleteChoiceTitle": "¿Qué debe pasar con tus cartas?",
   "settingsDeleteOptionDeleteAll": "Eliminar todo",
   "settingsDeleteOptionDeleteAllDesc": "Todas las cartas, cápsulas y datos serán eliminados permanentemente.",

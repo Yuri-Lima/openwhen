@@ -2362,6 +2362,42 @@ class AppLocalizationsEn extends AppLocalizations {
       'You must accept the terms and confirm your age to continue';
 
   @override
+  String get registerSectionUsername => 'USERNAME';
+
+  @override
+  String get registerHintUsername => 'your_username';
+
+  @override
+  String get registerUsernameSuggestions => 'Suggestions:';
+
+  @override
+  String get registerUsernameAvailable => 'Available';
+
+  @override
+  String get registerUsernameChecking => 'Checking...';
+
+  @override
+  String get registerUsernameRules => 'Letters, numbers, . and _ only';
+
+  @override
+  String get registerErrorUsernameEmpty => 'Choose a username';
+
+  @override
+  String get registerErrorUsernameShort =>
+      'Username must be at least 3 characters';
+
+  @override
+  String get registerErrorUsernameLong =>
+      'Username must be at most 20 characters';
+
+  @override
+  String get registerErrorUsernameInvalid =>
+      'Only letters, numbers, . and _ (cannot start/end with . or _)';
+
+  @override
+  String get registerErrorUsernameTaken => 'This username is already taken';
+
+  @override
   String get settingsDeleteChoiceTitle =>
       'What should happen with your letters?';
 

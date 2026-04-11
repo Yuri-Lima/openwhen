@@ -20,12 +20,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
     required String name,
     required String email,
     required String password,
+    required String username,
   }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _repository.register(
           name: name,
           email: email,
           password: password,
+          username: username,
         ));
   }
 

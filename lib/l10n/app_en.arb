@@ -790,6 +790,18 @@
   "registerConfirmAge": "I confirm that I am 13 years old or older",
   "registerMustAcceptTerms": "You must accept the terms and confirm your age to continue",
 
+  "registerSectionUsername": "USERNAME",
+  "registerHintUsername": "your_username",
+  "registerUsernameSuggestions": "Suggestions:",
+  "registerUsernameAvailable": "Available",
+  "registerUsernameChecking": "Checking...",
+  "registerUsernameRules": "Letters, numbers, . and _ only",
+  "registerErrorUsernameEmpty": "Choose a username",
+  "registerErrorUsernameShort": "Username must be at least 3 characters",
+  "registerErrorUsernameLong": "Username must be at most 20 characters",
+  "registerErrorUsernameInvalid": "Only letters, numbers, . and _ (cannot start/end with . or _)",
+  "registerErrorUsernameTaken": "This username is already taken",
+
   "settingsDeleteChoiceTitle": "What should happen with your letters?",
   "settingsDeleteOptionDeleteAll": "Delete everything",
   "settingsDeleteOptionDeleteAllDesc": "All letters, capsules, and data will be permanently removed.",

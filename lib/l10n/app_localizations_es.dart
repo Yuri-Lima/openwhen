@@ -2374,6 +2374,42 @@ class AppLocalizationsEs extends AppLocalizations {
       'Debes aceptar los términos y confirmar tu edad para continuar';
 
   @override
+  String get registerSectionUsername => 'USERNAME';
+
+  @override
+  String get registerHintUsername => 'tu_username';
+
+  @override
+  String get registerUsernameSuggestions => 'Sugerencias:';
+
+  @override
+  String get registerUsernameAvailable => 'Disponible';
+
+  @override
+  String get registerUsernameChecking => 'Verificando...';
+
+  @override
+  String get registerUsernameRules => 'Solo letras, números, . y _';
+
+  @override
+  String get registerErrorUsernameEmpty => 'Elige un username';
+
+  @override
+  String get registerErrorUsernameShort =>
+      'El username debe tener al menos 3 caracteres';
+
+  @override
+  String get registerErrorUsernameLong =>
+      'El username debe tener máximo 20 caracteres';
+
+  @override
+  String get registerErrorUsernameInvalid =>
+      'Solo letras, números, . y _ (no puede empezar/terminar con . o _)';
+
+  @override
+  String get registerErrorUsernameTaken => 'Este username ya está en uso';
+
+  @override
   String get settingsDeleteChoiceTitle => '¿Qué debe pasar con tus cartas?';
 
   @override

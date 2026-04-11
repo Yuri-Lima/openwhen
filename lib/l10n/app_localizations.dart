@@ -4391,6 +4391,72 @@ abstract class AppLocalizations {
   /// **'Você precisa aceitar os termos e confirmar sua idade para continuar'**
   String get registerMustAcceptTerms;
 
+  /// No description provided for @registerSectionUsername.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'USERNAME'**
+  String get registerSectionUsername;
+
+  /// No description provided for @registerHintUsername.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'seu_username'**
+  String get registerHintUsername;
+
+  /// No description provided for @registerUsernameSuggestions.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sugestoes:'**
+  String get registerUsernameSuggestions;
+
+  /// No description provided for @registerUsernameAvailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Disponivel'**
+  String get registerUsernameAvailable;
+
+  /// No description provided for @registerUsernameChecking.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Verificando...'**
+  String get registerUsernameChecking;
+
+  /// No description provided for @registerUsernameRules.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Letras, numeros, . e _ apenas'**
+  String get registerUsernameRules;
+
+  /// No description provided for @registerErrorUsernameEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolha um username'**
+  String get registerErrorUsernameEmpty;
+
+  /// No description provided for @registerErrorUsernameShort.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Username deve ter pelo menos 3 caracteres'**
+  String get registerErrorUsernameShort;
+
+  /// No description provided for @registerErrorUsernameLong.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Username deve ter no maximo 20 caracteres'**
+  String get registerErrorUsernameLong;
+
+  /// No description provided for @registerErrorUsernameInvalid.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apenas letras, numeros, . e _ (sem iniciar/terminar com . ou _)'**
+  String get registerErrorUsernameInvalid;
+
+  /// No description provided for @registerErrorUsernameTaken.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este username ja esta em uso'**
+  String get registerErrorUsernameTaken;
+
   /// No description provided for @settingsDeleteChoiceTitle.
   ///
   /// In pt_BR, this message translates to:

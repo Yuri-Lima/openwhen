@@ -2365,6 +2365,42 @@ class AppLocalizationsPt extends AppLocalizations {
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
 
   @override
+  String get registerSectionUsername => 'USERNAME';
+
+  @override
+  String get registerHintUsername => 'seu_username';
+
+  @override
+  String get registerUsernameSuggestions => 'Sugestoes:';
+
+  @override
+  String get registerUsernameAvailable => 'Disponivel';
+
+  @override
+  String get registerUsernameChecking => 'Verificando...';
+
+  @override
+  String get registerUsernameRules => 'Letras, numeros, . e _ apenas';
+
+  @override
+  String get registerErrorUsernameEmpty => 'Escolha um username';
+
+  @override
+  String get registerErrorUsernameShort =>
+      'Username deve ter pelo menos 3 caracteres';
+
+  @override
+  String get registerErrorUsernameLong =>
+      'Username deve ter no maximo 20 caracteres';
+
+  @override
+  String get registerErrorUsernameInvalid =>
+      'Apenas letras, numeros, . e _ (sem iniciar/terminar com . ou _)';
+
+  @override
+  String get registerErrorUsernameTaken => 'Este username ja esta em uso';
+
+  @override
   String get settingsDeleteChoiceTitle =>
       'O que deve acontecer com suas cartas?';
 
@@ -4829,6 +4865,42 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get registerMustAcceptTerms =>
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get registerSectionUsername => 'USERNAME';
+
+  @override
+  String get registerHintUsername => 'seu_username';
+
+  @override
+  String get registerUsernameSuggestions => 'Sugestoes:';
+
+  @override
+  String get registerUsernameAvailable => 'Disponivel';
+
+  @override
+  String get registerUsernameChecking => 'Verificando...';
+
+  @override
+  String get registerUsernameRules => 'Letras, numeros, . e _ apenas';
+
+  @override
+  String get registerErrorUsernameEmpty => 'Escolha um username';
+
+  @override
+  String get registerErrorUsernameShort =>
+      'Username deve ter pelo menos 3 caracteres';
+
+  @override
+  String get registerErrorUsernameLong =>
+      'Username deve ter no maximo 20 caracteres';
+
+  @override
+  String get registerErrorUsernameInvalid =>
+      'Apenas letras, numeros, . e _ (sem iniciar/terminar com . ou _)';
+
+  @override
+  String get registerErrorUsernameTaken => 'Este username ja esta em uso';
 
   @override
   String get settingsDeleteChoiceTitle =>

@@ -20,6 +20,7 @@ class AuthRepository {
     required String name,
     required String email,
     required String password,
+    required String username,
   }) async {
     final credential = await _authService.registerWithEmail(
       email: email,
@@ -27,7 +28,6 @@ class AuthRepository {
     );
 
     final user = credential.user!;
-    final username = email.split('@')[0].toLowerCase();
     final searchTokens = buildUserSearchTokens(
       username: username,
       displayName: name,
