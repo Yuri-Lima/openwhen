@@ -115,11 +115,13 @@ No [Apple Developer](https://developer.apple.com/account/resources/identifiers/l
 
 ---
 
-## 5. iOS 26.4 — `SIGABRT` na startup / `HTTPSCallable.call()` crash nativo
+## 5. iOS 26.x — `SIGABRT` na startup / `HTTPSCallable.call()` crash nativo
 
 ### Causa raiz
 
-`cloud_functions: 6.1.0` + iOS 26.4 (build 23E246): a chamada `HTTPSCallable.call()` causa `SIGABRT` em `swift_task_dealloc_specific` / `asyncLet_finish_after_task_completion` no gRPC/Swift concurrency. É um crash **nativo**, não capturável por Dart `try-catch`.
+`cloud_functions: 6.1.0` + iOS 26.x (confirmado em 23E246, 23F5043k): a chamada `HTTPSCallable.call()` causa `SIGABRT` em `libswift_Concurrency.dylib` / `swift_task_dealloc_specific` / `asyncLet_finish_after_task_completion` no gRPC/Swift concurrency. É um crash **nativo**, não capturável por Dart `try-catch`.
+
+**Crash confirmado em 2026-04-11** (iOS 26.5, 23F5043k, iPhone 14, TestFlight): Thread 25 — `libswift_Concurrency.dylib` frames 4-8, `FirebaseFunctions` frames 9-14 (`HTTPSCallable.call`, closures async, specialized thunks). Crash ocorre ao abrir **Moderação (admin)** em Settings (primeira callable `adminGetModerationInfo`).
 
 ### Regra de ouro
 
@@ -127,7 +129,42 @@ No [Apple Developer](https://developer.apple.com/account/resources/identifiers/l
 
 ### Padrão obrigatório: `CallableQueue`
 
-Todas as callables HTTPS usam [`CallableQueue.enqueue()`](../lib/core/services/callable_queue.dart) — mutex FIFO global com cooldown de 400ms. Impede sobreposição de callables nativas.
+Todas as callables HTTPS usam [`CallableQueue.enqueue()`](../lib/core/services/callable_queue.dart) — mutex FIFO global com cooldown de 600ms. Impede sobreposição de callables nativas.
+
+### Checklist de diagnóstico (Xcode)
+
+Ao investigar um crash nativo de callable:
+
+1. Abrir o `.ips` / crash log completo no Xcode Organizer
+2. Procurar frames com: `swift_task_dealloc`, `swift_task_cancel`, `asyncLet_finish_after_task_completion`, gRPC channel teardown
+3. Identificar em qual Thread o abort ocorre (normalmente thread auxiliar, não main)
+4. Comparar: reproduzir o mesmo build em **iOS estável** (18.x) vs **26 beta** — se só crasha em 26.x, é regressão do SO/SDK
+5. Verificar `CallableQueue` logs em debug: `[CallableQueue] start:` / `[CallableQueue] done:` — confirmar que não há sobreposição
+
+### Critérios de sucesso após mitigação
+
+- Monitorar crash reports no Xcode Organizer / TestFlight por **48–72 h** após cada build
+- Sucesso: zero crashes `libswift_Concurrency.dylib` na mesma versão iOS
+- Se crash persistir: aumentar `_cooldown` em `callable_queue.dart` (ver baseline atual) e repetir ciclo
+
+### Upstream tracking
+
+**Causa raiz upstream:** Swift 6.3 compiler regression (Xcode 26.4) — `async let` teardown gera código incorreto em builds otimizados. Firebase iOS SDK usa `async let` em `FunctionsContextProvider.context()`, causando crash em release/profile. Não afeta debug builds (`-Onone`).
+
+| Issue | Estado |
+|-------|--------|
+| [`firebase/firebase-ios-sdk#15974`](https://github.com/firebase/firebase-ios-sdk/issues/15974) | Fix merged |
+| [`firebase/firebase-ios-sdk#16013`](https://github.com/firebase/firebase-ios-sdk/issues/16013) | Duplicado |
+| [`firebase/flutterfire#18153`](https://github.com/firebase/flutterfire/issues/18153) | Aguarda BoM com iOS SDK 12.12.0 |
+| [PR #15991](https://github.com/firebase/firebase-ios-sdk/pull/15991) | Merged — substitui `async let` por `Task` |
+
+**Fix:** Firebase iOS SDK **12.12.0** (lançado 2026-04-06). FlutterFire `cloud_functions: 6.1.0` depende de `~> 12.9.0` (Podfile.lock), que **não** inclui 12.12.0 automaticamente.
+
+**Override individual de pod NÃO funciona:** o plugin `firebase_core` do FlutterFire fixa **todos** os pods Firebase na mesma versão (`12.9.0`). Adicionar `pod 'FirebaseFunctions', '~> 12.12.0'` ao Podfile causa conflito em `pod install`. A solução definitiva requer um novo FlutterFire BoM (>= 4.12.0) que inclua iOS SDK 12.12.0+.
+
+**Mitigação atual (client-side):** `CallableQueue` com cooldown de 600ms + delay iOS de 300ms antes da primeira callable no admin screen + Crashlytics custom keys para correlação de crashes.
+
+**Quando BoM atualizar:** executar `flutter pub upgrade`, depois `cd ios && pod install --repo-update` e testar no dispositivo físico em profile/release.
 
 ### Arquivos afetados
 
@@ -138,6 +175,7 @@ Todas as callables HTTPS usam [`CallableQueue.enqueue()`](../lib/core/services/c
 - `lib/core/admin/admin_functions_service.dart` — todas callables via CallableQueue
 - `lib/core/moderation/moderation_functions_service.dart` — moderateContent via CallableQueue
 - `lib/core/letters/external_letters_service.dart` — claimExternalLetters via CallableQueue
+- `lib/features/letters/presentation/screens/letter_detail_screen.dart` — resendExternalInviteEmail via CallableQueue
 
 ---
 

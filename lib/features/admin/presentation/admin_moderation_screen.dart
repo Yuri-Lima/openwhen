@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
+import 'package:flutter/foundation.dart' show debugPrint, defaultTargetPlatform, kDebugMode, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,10 +49,16 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
 
   /// Runs each admin queue loader one after another (not in parallel).
   /// Cooldown between callables is handled by [CallableQueue] globally —
-  /// avoids iOS 26.4+ (23E246) SIGABRT on Swift async task dealloc
-  /// (see TROUBLESHOOTING.md §2).
+  /// avoids iOS 26.x SIGABRT on Swift async task dealloc
+  /// (see TROUBLESHOOTING.md §2 and §5).
   Future<void> _loadAllAdminData() async {
     if (!mounted) return;
+    // On iOS, let the navigation transition and native runtime settle
+    // before firing the first callable (mitigates swift_task_dealloc crash).
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+      if (!mounted) return;
+    }
     await _loadModerationInfo();
     if (!mounted) return;
     await _loadReports();
