@@ -39,6 +39,9 @@ lib/
 │   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
 │   ├── constants/
 │   │   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
+│   ├── utils/
+│   │   ├── email_normalization.dart   # normalizeReceiverEmailForMatching (must match server)
+│   │   └── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
 │   └── moderation/
 │       └── moderation_functions_service.dart  # Callable `moderateContent` (região igual a billing)
 ├── features/
@@ -198,6 +201,24 @@ Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o docu
 | `voiceUrl` | String opcional — URL de download do **Firebase Storage** (objeto em `voiceLetters/`), gravado no envio da carta. Reprodução **dentro da app** com `just_audio` em detalhe e fluxo de abertura. Validado com `lib/shared/utils/voice_url.dart`. Limite de gravação no cliente: **1 minuto** (política do produto). |
 | `senderLocation` | Map opcional — `{ lat: double, lng: double, capturedAt: Timestamp }`. Preenchido se o remetente aceitar partilhar localização ao enviar (`geolocator`). O destinatário vê um tile no detalhe que copia uma URL de pesquisa no Google Maps. |
 | `openRequiresProximity` | Boolean opcional (default implícito `false`). Se `true` **e** existir `senderLocation`, o destinatário só entra no ecrã de abertura a partir do Cofre se a posição atual estiver a **≤ 10 m** do ponto (verificação **no cliente** em `open_with_proximity.dart` / `proximity_gate.dart`; não substitui validação server-side). |
+| `receiverEmail` | String opcional — email do destinatário externo (sem conta). Preenchido no envio quando `receiverHasAccount: false`. |
+| `inviteEmailStatus` | String opcional — estado da entrega do email de convite: `sent`, `delivered`, `bounced`, `dropped`, `deferred`, `send_failed`. Escrito por Cloud Functions (Admin SDK), protegido nas Firestore rules contra escrita do cliente. Enum `InviteEmailStatus` em Dart. |
+| `inviteEmailStatusUpdatedAt` | Timestamp opcional — última atualização do estado pelo webhook SendGrid. |
+| `lastResendAt` | Timestamp opcional — timestamp do último reenvio via `resendExternalInviteEmail`; usado para rate limiting (cooldown 5 min). |
+
+### Entrega de email externo (SendGrid webhook)
+
+Quando um utilizador envia uma carta a um email sem conta, a Cloud Function `onLetterCreatedSendExternalInviteEmail` envia um convite via SendGrid com `custom_args` (letterId + senderUid). O SendGrid envia eventos de entrega de volta via webhook HTTP (`onSendGridWebhook` em `functions/src/sendgrid_webhook.ts`):
+
+- **Verificação:** assinatura ECDSA com `rawBody` e `defineSecret("SENDGRID_WEBHOOK_VERIFICATION_KEY")`.
+- **Idempotência:** skip se estado actual == evento ou se estado final (bounced/dropped) ao receber `delivered`.
+- **Batch chunking:** lotes de 250 eventos (limite Firestore 500 operações por batch).
+- **Notificação:** em bounce/dropped, cria documento em `users/{senderUid}/notifications` + push FCM localizado (`preferredLanguage`). FCM enviado **após** `batch.commit()`.
+- **Reenvio:** callable `resendExternalInviteEmail` com rate limiting (5 min cooldown via `lastResendAt`).
+- **Validação no cliente:** `lib/core/utils/validators.dart` (regex reutilizável); mensagens ARB com exemplo de formato.
+- **Firestore rules:** campos de email delivery (`inviteEmailStatus*`, `inviteEmailSentAt`, `receiverEmailNormalized`, `deliveryMode`, `lastResendAt`) protegidos contra escrita do cliente; `delete` restrito ao sender.
+
+Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed Webhook) + secrets Firebase. Ver [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
 
 ### Cápsula (`capsules`) — campos principais
 

@@ -1526,7 +1526,7 @@ abstract class AppLocalizations {
   /// No description provided for @writeLetterSnackEmailInvalid.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Digite um email válido!'**
+  /// **'Insira um email válido (ex: nome@exemplo.com)'**
   String get writeLetterSnackEmailInvalid;
 
   /// No description provided for @writeLetterSnackStorageError.
@@ -4492,6 +4492,60 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Conta criada! Verifique seu email para confirmar.'**
   String get registerSuccessVerify;
+
+  /// No description provided for @notificationEmailBounceTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Email não entregue'**
+  String get notificationEmailBounceTitle;
+
+  /// No description provided for @notificationEmailBounceBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O email para {email} não pôde ser entregue. Verifique o endereço e tente novamente.'**
+  String notificationEmailBounceBody(String email);
+
+  /// No description provided for @notificationEmailSendFailedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Email não enviado'**
+  String get notificationEmailSendFailedTitle;
+
+  /// No description provided for @notificationEmailSendFailedBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O email para {email} não pôde ser enviado. Tente novamente mais tarde.'**
+  String notificationEmailSendFailedBody(String email);
+
+  /// No description provided for @resendEmail.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Reenviar'**
+  String get resendEmail;
+
+  /// No description provided for @resendEmailDialogTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Reenviar email de convite'**
+  String get resendEmailDialogTitle;
+
+  /// No description provided for @resendEmailDialogBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O email para {email} falhou. Você pode editar o endereço e reenviar.'**
+  String resendEmailDialogBody(String email);
+
+  /// No description provided for @resendEmailSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Email reenviado com sucesso!'**
+  String get resendEmailSuccess;
+
+  /// No description provided for @resendEmailCooldown.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aguarde alguns minutos antes de reenviar.'**
+  String get resendEmailCooldown;
 }
 
 class _AppLocalizationsDelegate

@@ -135,11 +135,11 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos; manter revisão manual (QA em dispositivo físico) antes do lançamento.
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos. **🔴 Email** — item 4 (validação + bounce) implementado no código, pendente deploy; itens 1-3 pendentes. Manter revisão manual (QA em dispositivo físico) antes do lançamento.
 
 ---
 
-## 🔴 Email — problemas críticos (falta implementar)
+## 🔴 Email — problemas críticos
 
 **1. Email de recuperação de senha não chega**
 - O código dispara `sendPasswordResetEmail` mas o email não chega ao usuário
@@ -161,6 +161,23 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - Comentário: autor não recebe notificação de novo comentário  
 - Seguidor: usuário não recebe notificação de novo seguidor
 - Solução Yuri: Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` → buscar FCM token do autor → disparar push via Firebase Admin SDK
+
+**4. Validação de email externo + notificação de bounce — IMPLEMENTADO ✅**
+- [x] Validação de email no cliente melhorada (regex em `lib/core/utils/validators.dart` em vez de `contains('@')`)
+- [x] Mensagens ARB melhoradas com exemplo de formato (4 idiomas)
+- [x] Cloud Function `onSendGridWebhook` — webhook para eventos bounce/dropped/delivered/deferred com idempotência, batch chunking, logging estruturado
+- [x] `defineSecret()` para `SENDGRID_API_KEY` e `SENDGRID_WEBHOOK_VERIFICATION_KEY` (Firebase Functions v2)
+- [x] `custom_args` (letterId + senderUid) no envio SendGrid para mapeamento no webhook
+- [x] Estado `inviteEmailStatus` no Firestore (`sent`, `delivered`, `bounced`, `dropped`, `deferred`, `send_failed`)
+- [x] Notificação in-app + push FCM localizado (preferredLanguage) ao remetente em caso de bounce/dropped
+- [x] Enum `InviteEmailStatus` no modelo Dart `Letter` com `fromString` seguro
+- [x] Banner de bounce no detalhe da carta (sender) com botão de reenvio
+- [x] Dialog de reenvio com edição de email → callable `resendExternalInviteEmail` com rate limiting (5 min)
+- [x] Firestore rules: campos imutáveis protegidos (`senderUid`, `receiverUid`, `createdAt`, `inviteEmailStatus`, etc.); delete restrito ao sender
+- [x] Tela de notificações expandida para tipo `email_bounce` com ícone diferenciado
+- [x] Testes unitários `Validators.isValidEmail` (7/7 passando)
+- [x] **Deploy:** `npm install @sendgrid/eventwebhook` + config SendGrid + `firebase deploy --only functions` + `firebase deploy --only firestore:rules`
+- Plano completo: [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md)
 
 ---
 

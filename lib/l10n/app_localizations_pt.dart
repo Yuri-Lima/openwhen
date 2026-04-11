@@ -783,7 +783,8 @@ class AppLocalizationsPt extends AppLocalizations {
       'Carta criada! Compartilhe o link com o destinatário. 💌';
 
   @override
-  String get writeLetterSnackEmailInvalid => 'Digite um email válido!';
+  String get writeLetterSnackEmailInvalid =>
+      'Insira um email válido (ex: nome@exemplo.com)';
 
   @override
   String get writeLetterSnackStorageError =>
@@ -2425,6 +2426,39 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get registerSuccessVerify =>
       'Conta criada! Verifique o seu email para confirmar.';
+
+  @override
+  String get notificationEmailBounceTitle => 'Email não entregue';
+
+  @override
+  String notificationEmailBounceBody(String email) {
+    return 'O email para $email não pôde ser entregue. Verifique o endereço e tente novamente.';
+  }
+
+  @override
+  String get notificationEmailSendFailedTitle => 'Email não enviado';
+
+  @override
+  String notificationEmailSendFailedBody(String email) {
+    return 'O email para $email não pôde ser enviado. Tente novamente mais tarde.';
+  }
+
+  @override
+  String get resendEmail => 'Reenviar';
+
+  @override
+  String get resendEmailDialogTitle => 'Reenviar email de convite';
+
+  @override
+  String resendEmailDialogBody(String email) {
+    return 'O email para $email falhou. Pode editar o endereço e reenviar.';
+  }
+
+  @override
+  String get resendEmailSuccess => 'Email reenviado com sucesso!';
+
+  @override
+  String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -3206,7 +3240,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Carta criada! Compartilhe o link com o destinatário. 💌';
 
   @override
-  String get writeLetterSnackEmailInvalid => 'Digite um email válido!';
+  String get writeLetterSnackEmailInvalid =>
+      'Insira um email válido (ex: nome@exemplo.com)';
 
   @override
   String get writeLetterSnackStorageError =>
@@ -4848,4 +4883,37 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get registerSuccessVerify =>
       'Conta criada! Verifique seu email para confirmar.';
+
+  @override
+  String get notificationEmailBounceTitle => 'Email não entregue';
+
+  @override
+  String notificationEmailBounceBody(String email) {
+    return 'O email para $email não pôde ser entregue. Verifique o endereço e tente novamente.';
+  }
+
+  @override
+  String get notificationEmailSendFailedTitle => 'Email não enviado';
+
+  @override
+  String notificationEmailSendFailedBody(String email) {
+    return 'O email para $email não pôde ser enviado. Tente novamente mais tarde.';
+  }
+
+  @override
+  String get resendEmail => 'Reenviar';
+
+  @override
+  String get resendEmailDialogTitle => 'Reenviar email de convite';
+
+  @override
+  String resendEmailDialogBody(String email) {
+    return 'O email para $email falhou. Você pode editar o endereço e reenviar.';
+  }
+
+  @override
+  String get resendEmailSuccess => 'Email reenviado com sucesso!';
+
+  @override
+  String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
 }

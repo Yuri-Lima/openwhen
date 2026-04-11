@@ -252,7 +252,7 @@
   "writeLetterSnackSentFriend": "Letter sent! 💌",
   "writeLetterSnackSentPending": "Letter sent! Awaiting approval. 💌",
   "writeLetterSnackSentExternal": "Letter created! Share the link with the recipient. 💌",
-  "writeLetterSnackEmailInvalid": "Enter a valid email!",
+  "writeLetterSnackEmailInvalid": "Please enter a valid email address (e.g. name@example.com)",
   "writeLetterSnackStorageError": "Enable Firebase Storage to use this feature",
   "writeLetterMusicUrlLabel": "Song link (optional)",
   "writeLetterMusicUrlHint": "https://open.spotify.com/...",
@@ -809,5 +809,17 @@
   "emailVerificationAlreadyDone": "I already verified",
   "emailVerificationNotYet": "Email not verified yet. Check your inbox and spam folder.",
   "emailVerificationLater": "Later",
-  "registerSuccessVerify": "Account created! Check your email to verify."
+  "registerSuccessVerify": "Account created! Check your email to verify.",
+  "notificationEmailBounceTitle": "Email not delivered",
+  "notificationEmailBounceBody": "The email to {email} could not be delivered. Check the address and try again.",
+  "@notificationEmailBounceBody": { "placeholders": { "email": { "type": "String" } } },
+  "notificationEmailSendFailedTitle": "Email could not be sent",
+  "notificationEmailSendFailedBody": "The email to {email} could not be sent. Try again later.",
+  "@notificationEmailSendFailedBody": { "placeholders": { "email": { "type": "String" } } },
+  "resendEmail": "Resend",
+  "resendEmailDialogTitle": "Resend invite email",
+  "resendEmailDialogBody": "The email to {email} failed. You can edit the address and resend.",
+  "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
+  "resendEmailSuccess": "Email resent successfully!",
+  "resendEmailCooldown": "Please wait a few minutes before resending."
 }

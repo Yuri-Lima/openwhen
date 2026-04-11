@@ -264,7 +264,7 @@
   "writeLetterSnackSentFriend": "Carta enviada! 💌",
   "writeLetterSnackSentPending": "Carta enviada! Aguardando aprovação. 💌",
   "writeLetterSnackSentExternal": "Carta criada! Compartilhe o link com o destinatário. 💌",
-  "writeLetterSnackEmailInvalid": "Digite um email válido!",
+  "writeLetterSnackEmailInvalid": "Insira um email válido (ex: nome@exemplo.com)",
   "writeLetterSnackStorageError": "Ative o Firebase Storage para usar esta função",
   "writeLetterMusicUrlLabel": "Link da música (opcional)",
   "writeLetterMusicUrlHint": "https://open.spotify.com/...",
@@ -837,5 +837,17 @@
   "emailVerificationAlreadyDone": "Já verifiquei",
   "emailVerificationNotYet": "Email ainda não verificado. Verifique a sua caixa de entrada e pasta de spam.",
   "emailVerificationLater": "Mais tarde",
-  "registerSuccessVerify": "Conta criada! Verifique o seu email para confirmar."
+  "registerSuccessVerify": "Conta criada! Verifique o seu email para confirmar.",
+  "notificationEmailBounceTitle": "Email não entregue",
+  "notificationEmailBounceBody": "O email para {email} não pôde ser entregue. Verifique o endereço e tente novamente.",
+  "@notificationEmailBounceBody": { "placeholders": { "email": { "type": "String" } } },
+  "notificationEmailSendFailedTitle": "Email não enviado",
+  "notificationEmailSendFailedBody": "O email para {email} não pôde ser enviado. Tente novamente mais tarde.",
+  "@notificationEmailSendFailedBody": { "placeholders": { "email": { "type": "String" } } },
+  "resendEmail": "Reenviar",
+  "resendEmailDialogTitle": "Reenviar email de convite",
+  "resendEmailDialogBody": "O email para {email} falhou. Pode editar o endereço e reenviar.",
+  "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
+  "resendEmailSuccess": "Email reenviado com sucesso!",
+  "resendEmailCooldown": "Aguarde alguns minutos antes de reenviar."
 }

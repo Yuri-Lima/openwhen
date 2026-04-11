@@ -25,6 +25,7 @@ import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
 import '../../../../core/utils/email_normalization.dart';
+import '../../../../core/utils/validators.dart';
 import '../../../../core/auth/email_verification_guard.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
@@ -413,7 +414,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     if (_receiverName == null || _receiverName!.isEmpty) {
       final emailTrim = _emailController.text.trim();
       if (emailTrim.isNotEmpty) {
-        if (!emailTrim.contains('@')) {
+        if (!Validators.isValidEmail(emailTrim)) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.writeLetterSnackEmailInvalid)),
           );

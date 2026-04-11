@@ -783,7 +783,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Letter created! Share the link with the recipient. 💌';
 
   @override
-  String get writeLetterSnackEmailInvalid => 'Enter a valid email!';
+  String get writeLetterSnackEmailInvalid =>
+      'Please enter a valid email address (e.g. name@example.com)';
 
   @override
   String get writeLetterSnackStorageError =>
@@ -2422,4 +2423,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get registerSuccessVerify =>
       'Account created! Check your email to verify.';
+
+  @override
+  String get notificationEmailBounceTitle => 'Email not delivered';
+
+  @override
+  String notificationEmailBounceBody(String email) {
+    return 'The email to $email could not be delivered. Check the address and try again.';
+  }
+
+  @override
+  String get notificationEmailSendFailedTitle => 'Email could not be sent';
+
+  @override
+  String notificationEmailSendFailedBody(String email) {
+    return 'The email to $email could not be sent. Try again later.';
+  }
+
+  @override
+  String get resendEmail => 'Resend';
+
+  @override
+  String get resendEmailDialogTitle => 'Resend invite email';
+
+  @override
+  String resendEmailDialogBody(String email) {
+    return 'The email to $email failed. You can edit the address and resend.';
+  }
+
+  @override
+  String get resendEmailSuccess => 'Email resent successfully!';
+
+  @override
+  String get resendEmailCooldown =>
+      'Please wait a few minutes before resending.';
 }

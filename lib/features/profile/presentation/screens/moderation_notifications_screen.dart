@@ -82,16 +82,22 @@ class ModerationNotificationsScreen extends StatelessWidget {
               final read = d['read'] == true;
               final title = d['title'] as String? ?? '';
               final body = d['body'] as String? ?? '';
+              final type = d['type'] as String? ?? '';
+              final isEmailBounce = type == 'email_bounce';
+
               return Card(
                 color: context.pal.card,
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  leading: isEmailBounce
+                      ? const Icon(Icons.email_outlined, color: Colors.red)
+                      : null,
                   title: Text(
                     title,
                     style: TextStyle(
                       fontWeight: read ? FontWeight.w500 : FontWeight.w700,
-                      color: context.pal.ink,
+                      color: isEmailBounce ? Colors.red : context.pal.ink,
                     ),
                   ),
                   subtitle: Padding(

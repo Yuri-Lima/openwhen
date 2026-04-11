@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -40,6 +41,10 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   bool get _isReceiver => widget.data['receiverUid'] == _currentUid;
   bool get _isSender   => widget.data['senderUid'] == _currentUid;
   bool get _isOpened   => (widget.data['status'] ?? 'locked') == 'opened';
+  bool get _hasEmailDeliveryFailure {
+    final status = widget.data['inviteEmailStatus'] as String?;
+    return status == 'bounce' || status == 'bounced' || status == 'dropped' || status == 'send_failed';
+  }
 
   /// Nome do remetente visível na carta.
   /// Receptor e remetente sempre veem o nome real.
@@ -329,6 +334,38 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                     ),
                   ),
 
+                  // ── Banner de email bounce (só sender, carta externa) ────────
+                  if (_isSender && _hasEmailDeliveryFailure) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 22),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                l10n.notificationEmailBounceBody(widget.data['receiverEmail'] ?? ''),
+                                style: TextStyle(fontSize: 13, color: context.pal.ink),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              onPressed: () => _showResendDialog(context, l10n),
+                              child: Text(l10n.resendEmail),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+
                   // ── Tiles de ação ────────────────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -561,6 +598,67 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
             ),
           ),
           trailing ?? Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
+        ],
+      ),
+    );
+  }
+
+  void _showResendDialog(BuildContext context, AppLocalizations l10n) {
+    final emailController = TextEditingController(
+      text: widget.data['receiverEmail'] as String? ?? '',
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.resendEmailDialogTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.resendEmailDialogBody(widget.data['receiverEmail'] ?? '')),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                final functions = FirebaseFunctions.instanceFor(region: 'us-central1');
+                await functions.httpsCallable('resendExternalInviteEmail').call({
+                  'letterId': widget.docId,
+                  'newEmail': emailController.text.trim(),
+                });
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.resendEmailSuccess)),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  final msg = e.toString().contains('resource-exhausted')
+                      ? l10n.resendEmailCooldown
+                      : e.toString();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(msg)),
+                  );
+                }
+              }
+            },
+            child: Text(l10n.resendEmail),
+          ),
         ],
       ),
     );

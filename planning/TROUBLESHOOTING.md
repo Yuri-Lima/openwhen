@@ -187,4 +187,40 @@ Validate main flows after deploy ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`).
+---
+
+## 8. Email de convite externo — bounce / send_failed
+
+### O que acontece
+
+Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Function `onLetterCreatedSendExternalInviteEmail` envia via SendGrid e define `inviteEmailStatus: "sent"`. Se o envio falha (SendGrid rejeita), fica `"send_failed"`. Se o email chega mas o destinatário não existe, o webhook `onSendGridWebhook` recebe um evento `bounce` ou `dropped` e atualiza o documento.
+
+### O utilizador vê
+
+- Banner vermelho no detalhe da carta (sender) com botão "Reenviar"
+- Notificação in-app (tipo `email_bounce`) na tela de notificações
+- Push FCM localizado (se `fcmToken` presente no doc do utilizador)
+
+### Diagnóstico
+
+| Sintoma | O que verificar |
+|---------|-----------------|
+| Email nunca chega e `inviteEmailStatus` fica `null` | Cloud Function `onLetterCreatedSendExternalInviteEmail` não deployed ou `SENDGRID_API_KEY` não definida como secret |
+| `inviteEmailStatus: "send_failed"` | SendGrid rejeitou o envio — verificar logs da Cloud Function (`external_invite_email_failed`) e validade da API key |
+| Webhook não actualiza status | Event Webhook não configurado no painel SendGrid, ou URL incorrecta, ou `SENDGRID_WEBHOOK_VERIFICATION_KEY` não bate |
+| Webhook retorna 403 | Assinatura inválida — verificar que a verification key no secret Firebase corresponde à do painel SendGrid |
+| Reenvio falha com "resource-exhausted" | Rate limiting — cooldown de 5 min entre reenvios (campo `lastResendAt` no documento) |
+
+### Ficheiros relevantes
+
+- Webhook: [`functions/src/sendgrid_webhook.ts`](../functions/src/sendgrid_webhook.ts)
+- Envio + reenvio: [`functions/src/external_letters.ts`](../functions/src/external_letters.ts)
+- Modelo Dart: [`lib/features/letters/models/letter.dart`](../lib/features/letters/models/letter.dart) (`InviteEmailStatus`)
+- Banner UI: [`lib/features/letters/presentation/screens/letter_detail_screen.dart`](../lib/features/letters/presentation/screens/letter_detail_screen.dart)
+- Validação: [`lib/core/utils/validators.dart`](../lib/core/utils/validators.dart)
+- Config produção: [PRODUCTION.md](PRODUCTION.md) (secção "SendGrid — webhook de email bounce")
+- Plano completo: [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md)
+
+---
+
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL no painel SendGrid e logs das Cloud Functions.

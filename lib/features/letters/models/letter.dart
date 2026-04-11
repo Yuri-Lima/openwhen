@@ -2,6 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum LetterStatus { locked, opened }
 
+enum InviteEmailStatus {
+  sent,
+  delivered,
+  bounced,
+  dropped,
+  deferred,
+  sendFailed;
+
+  static InviteEmailStatus? fromString(String? value) {
+    if (value == null) return null;
+    if (value == 'send_failed') return sendFailed;
+    return InviteEmailStatus.values.where((e) => e.name == value).firstOrNull;
+  }
+}
+
 class Letter {
   final String id;
   final String senderUid;
@@ -27,6 +42,11 @@ class Letter {
   final Map<String, dynamic>? senderLocation;
   /// When true, receiver must be within 10 m of [senderLocation] to open.
   final bool openRequiresProximity;
+  /// Email delivery status for external recipients (null for in-app recipients).
+  final InviteEmailStatus? inviteEmailStatus;
+  final DateTime? inviteEmailStatusUpdatedAt;
+  /// Email address of external recipient (null for in-app recipients).
+  final String? receiverEmail;
 
   Letter({
     required this.id,
@@ -49,10 +69,18 @@ class Letter {
     this.voiceUrl,
     this.senderLocation,
     this.openRequiresProximity = false,
+    this.inviteEmailStatus,
+    this.inviteEmailStatusUpdatedAt,
+    this.receiverEmail,
   });
 
   bool get isLocked => status == LetterStatus.locked;
   bool get canOpen => DateTime.now().isAfter(openDate);
+
+  bool get hasEmailDeliveryFailure =>
+      inviteEmailStatus == InviteEmailStatus.bounced ||
+      inviteEmailStatus == InviteEmailStatus.dropped ||
+      inviteEmailStatus == InviteEmailStatus.sendFailed;
 
   factory Letter.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -87,6 +115,12 @@ class Letter {
           ? Map<String, dynamic>.from(data['senderLocation'] as Map)
           : null,
       openRequiresProximity: data['openRequiresProximity'] == true,
+      inviteEmailStatus:
+          InviteEmailStatus.fromString(data['inviteEmailStatus'] as String?),
+      inviteEmailStatusUpdatedAt: data['inviteEmailStatusUpdatedAt'] != null
+          ? (data['inviteEmailStatusUpdatedAt'] as Timestamp).toDate()
+          : null,
+      receiverEmail: data['receiverEmail'] as String?,
     );
   }
 }

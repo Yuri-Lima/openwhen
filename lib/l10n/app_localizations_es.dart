@@ -782,7 +782,8 @@ class AppLocalizationsEs extends AppLocalizations {
       '¡Carta creada! Comparte el enlace con el destinatario. 💌';
 
   @override
-  String get writeLetterSnackEmailInvalid => '¡Ingresa un correo válido!';
+  String get writeLetterSnackEmailInvalid =>
+      'Ingresa un email válido (ej: nombre@ejemplo.com)';
 
   @override
   String get writeLetterSnackStorageError =>
@@ -2433,4 +2434,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get registerSuccessVerify =>
       '¡Cuenta creada! Revisa tu email para verificar.';
+
+  @override
+  String get notificationEmailBounceTitle => 'Email no entregado';
+
+  @override
+  String notificationEmailBounceBody(String email) {
+    return 'El email a $email no pudo ser entregado. Verifica la dirección e inténtalo de nuevo.';
+  }
+
+  @override
+  String get notificationEmailSendFailedTitle => 'Email no enviado';
+
+  @override
+  String notificationEmailSendFailedBody(String email) {
+    return 'El email a $email no pudo ser enviado. Inténtalo más tarde.';
+  }
+
+  @override
+  String get resendEmail => 'Reenviar';
+
+  @override
+  String get resendEmailDialogTitle => 'Reenviar email de invitación';
+
+  @override
+  String resendEmailDialogBody(String email) {
+    return 'El email a $email falló. Puedes editar la dirección y reenviar.';
+  }
+
+  @override
+  String get resendEmailSuccess => '¡Email reenviado con éxito!';
+
+  @override
+  String get resendEmailCooldown => 'Espera unos minutos antes de reenviar.';
 }

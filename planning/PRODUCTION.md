@@ -109,6 +109,23 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 - **Moderação por IA:** `OPENAI_API_KEY` e opcionalmente `MODERATION_PROVIDER` nas mesmas Functions; o cliente chama `moderateContent` quando `aiModerationEnabled` é `true` em **`systemConfig/app`**. Sem chave, o servidor aplica fallback conforme `aiModerationFailClosed` e regista incidentes em `moderationIncidents`. Superadmin vê provedor e estado das credenciais via `adminGetModerationInfo` (app **Configurações → Moderação**). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md), [functions/README.md](../functions/README.md).
 - **Região:** alinhar `FUNCTIONS_REGION` no build Flutter com a região deployada (`us-central1` por defeito).
 
+### SendGrid — webhook de email bounce
+
+Para que o app receba notificações de bounce/dropped dos emails de convite para destinatários externos:
+
+1. **Instalar dependência:** `cd functions && npm install @sendgrid/eventwebhook`
+2. **Secrets Firebase (Functions v2):**
+   - `firebase functions:secrets:set SENDGRID_API_KEY` — se ainda não migrado de `.env`
+   - `firebase functions:secrets:set SENDGRID_WEBHOOK_VERIFICATION_KEY` — copiar do painel SendGrid (passo 4)
+3. **Deploy:** `firebase deploy --only functions`
+4. **Painel SendGrid** → Settings → Mail Settings → Event Webhook:
+   - URL: `https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook`
+   - Eventos: Bounced, Dropped, Deferred, Delivered
+   - Ativar **Signed Event Webhook** e copiar a verification key para o passo 2
+5. **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
+
+Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+
 ### Nota (futuro): filas e workers
 
 Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, **filas com requisitos fortes** (ordem, retries elaborados, throughput alto) ou **integração fora do ecossistema Firebase/GCP**, vale relembrar: no Google Cloud o caminho habitual é **Pub/Sub** + subscribers (Cloud Functions ou Cloud Run), **Cloud Tasks** para tarefas adiadas com retries, e **Cloud Scheduler** para cron. **RabbitMQ** (ou outra fila AMQP) e **workers** dedicados só fazem sentido quando houver necessidade explícita ou equipa/infra já orientada a isso — acrescentam operação e integração extra face ao stack atual.

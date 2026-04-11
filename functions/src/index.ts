@@ -26,7 +26,10 @@ export {deleteUserAccount} from "./delete_account";
 export {
   claimExternalLetters,
   onLetterCreatedSendExternalInviteEmail,
+  resendExternalInviteEmail,
 } from "./external_letters";
+
+export {onSendGridWebhook} from "./sendgrid_webhook";
 
 setGlobalOptions({region: "us-central1"});
 

@@ -1,7 +1,10 @@
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
+import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
+
+const sendgridApiKey = defineSecret("SENDGRID_API_KEY");
 
 /** Must match Dart [normalizeReceiverEmailForMatching]. */
 export function normalizeReceiverEmailForMatching(email: string): string {
@@ -20,8 +23,9 @@ async function sendSendgridInvite(params: {
   to: string;
   subject: string;
   html: string;
+  customArgs?: Record<string, string>;
 }): Promise<void> {
-  const key = process.env.SENDGRID_API_KEY;
+  const key = sendgridApiKey.value();
   if (!key) {
     logger.warn("external_invite_email: SENDGRID_API_KEY missing; skip send");
     return;
@@ -30,7 +34,10 @@ async function sendSendgridInvite(params: {
     process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.life";
   const fromName = process.env.SENDGRID_FROM_NAME || "OpenWhen";
   const body = {
-    personalizations: [{to: [{email: params.to}]}],
+    personalizations: [{
+      to: [{email: params.to}],
+      ...(params.customArgs ? {custom_args: params.customArgs} : {}),
+    }],
     from: {email: fromEmail, name: fromName},
     subject: params.subject,
     content: [{type: "text/html", value: params.html}],
@@ -113,6 +120,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
   {
     document: "letters/{letterId}",
     region: "us-central1",
+    secrets: [sendgridApiKey],
   },
   async (event) => {
     const snap = event.data;
@@ -124,6 +132,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
     if (!to || typeof to !== "string") return;
 
     const letterId = event.params.letterId as string;
+    const senderUid = data.senderUid as string;
     const title = (data.title as string) || "OpenWhen";
     const senderName = (data.senderName as string) || "Someone";
     const link = `https://openwhen.life/letter/${letterId}`;
@@ -137,13 +146,90 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
 `.trim();
 
     try {
-      await sendSendgridInvite({to: to.trim(), subject, html});
+      await sendSendgridInvite({
+        to: to.trim(),
+        subject,
+        html,
+        customArgs: {letterId, senderUid},
+      });
       await snap.ref.update({
         inviteEmailSentAt: FieldValue.serverTimestamp(),
+        inviteEmailStatus: "sent",
       });
       logger.info("external_invite_email_sent", {letterId});
     } catch (e) {
+      await snap.ref.update({
+        inviteEmailStatus: "send_failed",
+      });
       logger.error("external_invite_email_failed", {letterId, err: String(e)});
+    }
+  }
+);
+
+export const resendExternalInviteEmail = onCall(
+  {region: "us-central1", cors: true, secrets: [sendgridApiKey]},
+  async (request) => {
+    if (!request.auth?.uid) {
+      throw new HttpsError("unauthenticated", "Sign in required");
+    }
+    const {letterId, newEmail} = request.data as {letterId: string; newEmail?: string};
+    if (!letterId || typeof letterId !== "string") {
+      throw new HttpsError("invalid-argument", "letterId required");
+    }
+
+    const db = getFirestore();
+    const letterRef = db.doc(`letters/${letterId}`);
+    const letterDoc = await letterRef.get();
+    if (!letterDoc.exists) {
+      throw new HttpsError("not-found", "Letter not found");
+    }
+
+    const data = letterDoc.data()!;
+    if (data.senderUid !== request.auth.uid) {
+      throw new HttpsError("permission-denied", "Not the sender");
+    }
+
+    const lastResend = data.lastResendAt?.toDate() as Date | undefined;
+    if (lastResend && Date.now() - lastResend.getTime() < 5 * 60 * 1000) {
+      throw new HttpsError("resource-exhausted", "Please wait before resending");
+    }
+
+    const email = newEmail?.trim() || data.receiverEmail;
+    if (!email || typeof email !== "string") {
+      throw new HttpsError("invalid-argument", "No email");
+    }
+
+    const senderName = (data.senderName as string) || "Someone";
+    const title = (data.title as string) || "OpenWhen";
+    const link = `https://openwhen.life/letter/${letterId}`;
+    const subject = `${senderName} sent you a letter on OpenWhen`;
+    const html = `
+<p>Hi,</p>
+<p><strong>${escapeHtml(senderName)}</strong> sent you a letter titled
+<strong>${escapeHtml(title)}</strong> on OpenWhen.</p>
+<p><a href="${link}">Open the app</a> — sign in with this email address to view it when it unlocks.</p>
+<p style="color:#666;font-size:12px;">If you did not expect this message, you can ignore it.</p>
+`.trim();
+
+    try {
+      await sendSendgridInvite({
+        to: email,
+        subject,
+        html,
+        customArgs: {letterId, senderUid: request.auth.uid},
+      });
+      await letterRef.update({
+        receiverEmail: email,
+        receiverEmailNormalized: normalizeReceiverEmailForMatching(email),
+        inviteEmailStatus: "sent",
+        inviteEmailSentAt: FieldValue.serverTimestamp(),
+        lastResendAt: FieldValue.serverTimestamp(),
+      });
+      logger.info("resend_external_invite_sent", {letterId});
+      return {success: true};
+    } catch (e) {
+      logger.error("resend_external_invite_failed", {letterId, err: String(e)});
+      throw new HttpsError("internal", "Failed to send email");
     }
   }
 );
