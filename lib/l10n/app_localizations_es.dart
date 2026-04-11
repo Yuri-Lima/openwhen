@@ -1641,6 +1641,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsLogout => 'Cerrar sesión';
 
   @override
+  String get settingsLogoutTitle => 'Cerrar sesión';
+
+  @override
+  String get settingsLogoutConfirmMessage =>
+      '¿Estás seguro de que quieres cerrar sesión?';
+
+  @override
+  String get settingsLogoutConfirmButton => 'Cerrar sesión';
+
+  @override
   String get settingsEditProfileSheetTitle => 'Editar perfil';
 
   @override

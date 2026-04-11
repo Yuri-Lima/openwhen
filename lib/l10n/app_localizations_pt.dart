@@ -1638,6 +1638,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsLogout => 'Sair da conta';
 
   @override
+  String get settingsLogoutTitle => 'Sair da conta';
+
+  @override
+  String get settingsLogoutConfirmMessage => 'Tem certeza que deseja sair?';
+
+  @override
+  String get settingsLogoutConfirmButton => 'Sair';
+
+  @override
   String get settingsEditProfileSheetTitle => 'Editar perfil';
 
   @override
@@ -4093,6 +4102,15 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsLogout => 'Sair da conta';
+
+  @override
+  String get settingsLogoutTitle => 'Sair da conta';
+
+  @override
+  String get settingsLogoutConfirmMessage => 'Tem certeza que deseja sair?';
+
+  @override
+  String get settingsLogoutConfirmButton => 'Sair';
 
   @override
   String get settingsEditProfileSheetTitle => 'Editar perfil';

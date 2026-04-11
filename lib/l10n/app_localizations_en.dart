@@ -1636,6 +1636,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLogout => 'Sign out';
 
   @override
+  String get settingsLogoutTitle => 'Sign out';
+
+  @override
+  String get settingsLogoutConfirmMessage =>
+      'Are you sure you want to sign out?';
+
+  @override
+  String get settingsLogoutConfirmButton => 'Sign out';
+
+  @override
   String get settingsEditProfileSheetTitle => 'Edit profile';
 
   @override

@@ -3095,6 +3095,24 @@ abstract class AppLocalizations {
   /// **'Sair da conta'**
   String get settingsLogout;
 
+  /// No description provided for @settingsLogoutTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sair da conta'**
+  String get settingsLogoutTitle;
+
+  /// No description provided for @settingsLogoutConfirmMessage.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tem certeza que deseja sair?'**
+  String get settingsLogoutConfirmMessage;
+
+  /// No description provided for @settingsLogoutConfirmButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sair'**
+  String get settingsLogoutConfirmButton;
+
   /// No description provided for @settingsEditProfileSheetTitle.
   ///
   /// In pt_BR, this message translates to:

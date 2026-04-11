@@ -558,6 +558,9 @@
   "settingsAbout": "Sobre o OpenWhen",
   "settingsAboutVersion": "Versão 1.0.0",
   "settingsLogout": "Sair da conta",
+  "settingsLogoutTitle": "Sair da conta",
+  "settingsLogoutConfirmMessage": "Tem certeza que deseja sair?",
+  "settingsLogoutConfirmButton": "Sair",
 
   "settingsEditProfileSheetTitle": "Editar perfil",
   "settingsEditProfileFieldName": "Nome",

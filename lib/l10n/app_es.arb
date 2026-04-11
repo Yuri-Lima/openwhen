@@ -532,6 +532,9 @@
   "settingsAbout": "Acerca de OpenWhen",
   "settingsAboutVersion": "Versión 1.0.0",
   "settingsLogout": "Cerrar sesión",
+  "settingsLogoutTitle": "Cerrar sesión",
+  "settingsLogoutConfirmMessage": "¿Estás seguro de que quieres cerrar sesión?",
+  "settingsLogoutConfirmButton": "Cerrar sesión",
 
   "settingsEditProfileSheetTitle": "Editar perfil",
   "settingsEditProfileFieldName": "Nombre",

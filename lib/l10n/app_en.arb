@@ -532,6 +532,9 @@
   "settingsAbout": "About OpenWhen",
   "settingsAboutVersion": "Version 1.0.0",
   "settingsLogout": "Sign out",
+  "settingsLogoutTitle": "Sign out",
+  "settingsLogoutConfirmMessage": "Are you sure you want to sign out?",
+  "settingsLogoutConfirmButton": "Sign out",
 
   "settingsEditProfileSheetTitle": "Edit profile",
   "settingsEditProfileFieldName": "Name",
