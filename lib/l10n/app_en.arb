@@ -459,6 +459,7 @@
 
   "userProfileFollowing": "Following",
   "userProfileFollow": "Follow",
+  "userProfileActionSendLetter": "Letter",
   "userProfileEmptyLetters": "No public letters yet",
 
   "searchTitle": "Search people",

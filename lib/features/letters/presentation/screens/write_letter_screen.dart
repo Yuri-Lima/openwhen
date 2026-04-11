@@ -63,7 +63,19 @@ String emotionalStateLabel(AppLocalizations l10n, String key) {
 const bool kWriteLetterShowMusicUrlField = false;
 
 class WriteLetterScreen extends ConsumerStatefulWidget {
-  const WriteLetterScreen({super.key});
+  /// Dados opcionais para pré-popular o destinatário (ex: ação rápida do perfil).
+  final String? recipientUid;
+  final String? recipientName;
+  final String? recipientUsername;
+  final String? recipientPhotoUrl;
+
+  const WriteLetterScreen({
+    super.key,
+    this.recipientUid,
+    this.recipientName,
+    this.recipientUsername,
+    this.recipientPhotoUrl,
+  });
 
   @override
   ConsumerState<WriteLetterScreen> createState() => _WriteLetterScreenState();
@@ -118,6 +130,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   void initState() {
     super.initState();
     _messageController.addListener(_onMessageChanged);
+
+    // Pré-popular destinatário quando vindo de ação rápida do perfil
+    if (widget.recipientUid != null && widget.recipientName != null) {
+      _receiverUid = widget.recipientUid;
+      _receiverName = widget.recipientName;
+      _receiverUsername = widget.recipientUsername;
+      _receiverHasAccount = true;
+    }
   }
 
   @override

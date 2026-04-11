@@ -351,7 +351,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           icon: Icons.alternate_email,
           hint: l10n.registerHintUsername,
           label: l10n.registerSectionUsername,
-          prefixText: '@',
           suffix: statusIcon,
         ),
         const SizedBox(height: 6),

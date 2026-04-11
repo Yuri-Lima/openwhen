@@ -8,6 +8,7 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/user_avatar.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
+import '../../../../core/navigation/deferred_screens.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -228,6 +229,33 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   ),
                 ),
               ),
+              // ── Ações rápidas ──
+              if (_currentUid != null && _currentUid != widget.userId)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 4),
+                  child: Row(
+                    children: [
+                      _buildQuickAction(
+                        icon: Icons.mail_outline_rounded,
+                        label: l10n.userProfileActionSendLetter,
+                        color: context.pal.accent,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DeferredWriteLetterPage(
+                                recipientUid: widget.userId,
+                                recipientName: data?['name'] ?? widget.userName,
+                                recipientUsername: data?['username'] as String?,
+                                recipientPhotoUrl: data?['photoUrl'] as String?,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
@@ -293,6 +321,40 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildQuickAction({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withOpacity(0.18)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: color),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

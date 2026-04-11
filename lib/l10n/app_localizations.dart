@@ -2687,6 +2687,12 @@ abstract class AppLocalizations {
   /// **'Seguir'**
   String get userProfileFollow;
 
+  /// No description provided for @userProfileActionSendLetter.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carta'**
+  String get userProfileActionSendLetter;
+
   /// No description provided for @userProfileEmptyLetters.
   ///
   /// In pt_BR, this message translates to:

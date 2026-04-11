@@ -1424,6 +1424,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get userProfileFollow => 'Seguir';
 
   @override
+  String get userProfileActionSendLetter => 'Carta';
+
+  @override
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';
 
   @override
@@ -3924,6 +3927,9 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get userProfileFollow => 'Seguir';
+
+  @override
+  String get userProfileActionSendLetter => 'Carta';
 
   @override
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';

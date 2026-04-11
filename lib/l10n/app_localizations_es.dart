@@ -1426,6 +1426,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get userProfileFollow => 'Seguir';
 
   @override
+  String get userProfileActionSendLetter => 'Carta';
+
+  @override
   String get userProfileEmptyLetters => 'Aún no hay cartas públicas';
 
   @override

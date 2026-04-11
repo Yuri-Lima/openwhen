@@ -9,7 +9,19 @@ import '../../features/profile/presentation/screens/search_screen.dart'
 
 /// Shell que carrega o chunk deferido de [write_letter] antes de montar a UI.
 class DeferredWriteLetterPage extends StatelessWidget {
-  const DeferredWriteLetterPage({super.key});
+  /// Dados opcionais para pré-popular o destinatário (ação rápida do perfil).
+  final String? recipientUid;
+  final String? recipientName;
+  final String? recipientUsername;
+  final String? recipientPhotoUrl;
+
+  const DeferredWriteLetterPage({
+    super.key,
+    this.recipientUid,
+    this.recipientName,
+    this.recipientUsername,
+    this.recipientPhotoUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +33,12 @@ class DeferredWriteLetterPage extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        return write_letter.WriteLetterScreen();
+        return write_letter.WriteLetterScreen(
+          recipientUid: recipientUid,
+          recipientName: recipientName,
+          recipientUsername: recipientUsername,
+          recipientPhotoUrl: recipientPhotoUrl,
+        );
       },
     );
   }

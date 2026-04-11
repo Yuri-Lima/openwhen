@@ -459,6 +459,7 @@
 
   "userProfileFollowing": "Siguiendo",
   "userProfileFollow": "Seguir",
+  "userProfileActionSendLetter": "Carta",
   "userProfileEmptyLetters": "Aún no hay cartas públicas",
 
   "searchTitle": "Buscar personas",
