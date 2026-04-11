@@ -59,6 +59,9 @@ String emotionalStateLabel(AppLocalizations l10n, String key) {
   }
 }
 
+/// `false` até definirmos o fluxo ideal para link de música na carta.
+const bool kWriteLetterShowMusicUrlField = false;
+
 class WriteLetterScreen extends ConsumerStatefulWidget {
   const WriteLetterScreen({super.key});
 
@@ -433,7 +436,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackEmotion)));
       return;
     }
-    final musicTrim = _musicUrlController.text.trim();
+    final musicTrim = kWriteLetterShowMusicUrlField ? _musicUrlController.text.trim() : '';
     if (musicTrim.isNotEmpty && !isValidHttpsMusicUrl(musicTrim)) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackMusicUrlInvalid)));
       return;
@@ -929,27 +932,27 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ),
                     ),
                   const SizedBox(height: 20),
-
-                  // Link opcional de música
-                  Text(l10n.writeLetterMusicUrlLabel, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: TextField(
-                      controller: _musicUrlController,
-                      keyboardType: TextInputType.url,
-                      autocorrect: false,
-                      style: GoogleFonts.dmSans(color: context.pal.ink),
-                      decoration: InputDecoration(
-                        hintText: l10n.writeLetterMusicUrlHint,
-                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  if (kWriteLetterShowMusicUrlField) ...[
+                    Text(l10n.writeLetterMusicUrlLabel, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      child: TextField(
+                        controller: _musicUrlController,
+                        keyboardType: TextInputType.url,
+                        autocorrect: false,
+                        style: GoogleFonts.dmSans(color: context.pal.ink),
+                        decoration: InputDecoration(
+                          hintText: l10n.writeLetterMusicUrlHint,
+                          hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
+                  ],
 
                   // DESTINATARIO
                   Text(l10n.writeLetterRecipientSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
