@@ -47,17 +47,23 @@ class SendModerationHelper {
   static const bool _kSkipAiModeration =
       bool.fromEnvironment('SKIP_AI_MODERATION');
 
-  /// Scores at or above this trigger a *warning* dialog (user may override).
-  static const double warningThreshold = double.fromEnvironment(
+  static const String _kWarningRaw = String.fromEnvironment(
     'MODERATION_WARNING_THRESHOLD',
-    defaultValue: 0.40,
+    defaultValue: '0.40',
   );
 
-  /// Scores at or above this (or provider `flagged`) *block* the send.
-  static const double blockThreshold = double.fromEnvironment(
+  static const String _kBlockRaw = String.fromEnvironment(
     'MODERATION_BLOCK_THRESHOLD',
-    defaultValue: 0.70,
+    defaultValue: '0.70',
   );
+
+  /// Scores at or above this trigger a *warning* dialog (user may override).
+  static final double warningThreshold =
+      double.tryParse(_kWarningRaw) ?? 0.40;
+
+  /// Scores at or above this (or provider `flagged`) *block* the send.
+  static final double blockThreshold =
+      double.tryParse(_kBlockRaw) ?? 0.70;
 
   // ── public API ───────────────────────────────────────────────────────
 
