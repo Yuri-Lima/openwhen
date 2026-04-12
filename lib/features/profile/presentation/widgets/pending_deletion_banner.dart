@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../shared/theme/palette_ext.dart';
-
 /// Banner shown when the user's account is in `pending_deletion` state.
 ///
 /// Displays how many days remain and a button to cancel the deletion.
