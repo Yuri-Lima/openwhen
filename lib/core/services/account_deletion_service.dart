@@ -1,7 +1,6 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'callable_queue.dart';
+import 'safe_callable.dart';
 
 /// Deletion mode chosen by the user.
 enum DeletionMode {
@@ -56,10 +55,9 @@ class AccountDeletionService {
   static Future<void> requestDeletion(DeletionMode mode) async {
     final modeStr = mode == DeletionMode.deleteAll ? 'delete_all' : 'anonymize';
 
-    await CallableQueue.enqueue(
-      () => FirebaseFunctions.instance
-          .httpsCallable('deleteUserAccount')
-          .call({'mode': modeStr}),
+    await SafeCallable.call(
+      'deleteUserAccount',
+      data: {'mode': modeStr},
       label: 'deleteUserAccount',
     );
   }

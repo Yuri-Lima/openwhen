@@ -162,20 +162,24 @@ Ao investigar um crash nativo de callable:
 
 **Override individual de pod NÃO funciona:** o plugin `firebase_core` do FlutterFire fixa **todos** os pods Firebase na mesma versão (`12.9.0`). Adicionar `pod 'FirebaseFunctions', '~> 12.12.0'` ao Podfile causa conflito em `pod install`. A solução definitiva requer um novo FlutterFire BoM (>= 4.12.0) que inclua iOS SDK 12.12.0+.
 
-**Mitigação atual (client-side):** `CallableQueue` com cooldown de 600ms + delay iOS de 300ms antes da primeira callable no admin screen + Crashlytics custom keys para correlação de crashes.
+**Mitigação definitiva (client-side, 2026-04-12):** `SafeCallable` — no iOS, todas as callables são invocadas via HTTP direto (`package:http`) em vez do SDK nativo, bypassing completamente o código Swift com `async let`. No Android/web, usa o SDK normalmente. Todas as chamadas continuam serializadas pelo `CallableQueue` com cooldown de 600ms.
 
-**Quando BoM atualizar:** executar `flutter pub upgrade`, depois `cd ios && pod install --repo-update` e testar no dispositivo físico em profile/release.
+**Quando BoM atualizar:** executar `flutter pub upgrade`, depois `cd ios && pod install --repo-update` e testar no dispositivo físico em profile/release. Após confirmar que o SDK 12.12.0+ está no `Podfile.lock`, o fallback HTTP pode ser removido (basta mudar `_useHttpFallback` para `false` em `safe_callable.dart`).
 
 ### Arquivos afetados
 
-- `lib/core/services/callable_queue.dart` — serviço global
+- `lib/core/services/safe_callable.dart` — HTTP fallback iOS + proxy para CallableQueue
+- `lib/core/services/callable_queue.dart` — FIFO mutex global com cooldown
 - `lib/main.dart` — HomeScreen NÃO chama callables no initState
 - `lib/features/profile/presentation/screens/subscription_plans_screen.dart` — billing migration lazy
-- `lib/core/billing/stripe_billing_provider.dart` — todas callables via CallableQueue
-- `lib/core/admin/admin_functions_service.dart` — todas callables via CallableQueue
-- `lib/core/moderation/moderation_functions_service.dart` — moderateContent via CallableQueue
-- `lib/core/letters/external_letters_service.dart` — claimExternalLetters via CallableQueue
-- `lib/features/letters/presentation/screens/letter_detail_screen.dart` — resendExternalInviteEmail via CallableQueue
+- `lib/core/billing/stripe_billing_provider.dart` — todas callables via SafeCallable
+- `lib/core/admin/admin_functions_service.dart` — todas callables via SafeCallable
+- `lib/core/moderation/moderation_functions_service.dart` — moderateContent via SafeCallable
+- `lib/core/letters/external_letters_service.dart` — claimExternalLetters via SafeCallable
+- `lib/features/letters/presentation/screens/letter_detail_screen.dart` — resendExternalInviteEmail via SafeCallable
+- `lib/features/auth/presentation/screens/register_screen.dart` — checkUsernameAvailable via SafeCallable
+- `lib/core/services/account_deletion_service.dart` — deleteUserAccount via SafeCallable
+- `lib/core/billing/disabled_billing_provider.dart` — migrateUserBillingDefaults via SafeCallable
 
 ---
 

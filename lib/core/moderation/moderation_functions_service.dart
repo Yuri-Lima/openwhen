@@ -1,7 +1,4 @@
-import 'package:cloud_functions/cloud_functions.dart';
-
-import '../billing/firebase_functions_region.dart';
-import '../services/callable_queue.dart';
+import '../services/safe_callable.dart';
 
 /// Result of callable `moderateContent` (aligned with Cloud Functions JSON).
 class ModerationCallResult {
@@ -27,12 +24,6 @@ class ModerationCallResult {
 }
 
 class ModerationFunctionsService {
-  ModerationFunctionsService({FirebaseFunctions? functions})
-      : _functions =
-            functions ?? FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion);
-
-  final FirebaseFunctions _functions;
-
   Future<ModerationCallResult> moderateText({
     required String text,
     String? contentType,
@@ -43,8 +34,9 @@ class ModerationFunctionsService {
     if (contentType != null) payload['contentType'] = contentType;
     if (locale != null) payload['locale'] = locale;
     if (letterId != null) payload['letterId'] = letterId;
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('moderateContent').call(payload),
+    final result = await SafeCallable.call(
+      'moderateContent',
+      data: payload,
       label: 'moderateContent',
     );
     final data = _asMap(result.data);

@@ -1,22 +1,12 @@
-import 'package:cloud_functions/cloud_functions.dart';
-
-import '../billing/firebase_functions_region.dart';
-import '../services/callable_queue.dart';
+import '../services/safe_callable.dart';
 import 'admin_moderation_info.dart';
 
 /// Callable wrappers for admin moderation and ops ([functions/src/admin.ts](functions/src/admin.ts)).
 class AdminFunctionsService {
-  AdminFunctionsService({FirebaseFunctions? functions})
-      : _functions =
-            functions ?? FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion);
-
-  final FirebaseFunctions _functions;
-
   Future<List<Map<String, dynamic>>> listPendingReports({int limit = 50}) async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminListPendingReports').call(
-        <String, dynamic>{'limit': limit},
-      ),
+    final result = await SafeCallable.call(
+      'adminListPendingReports',
+      data: <String, dynamic>{'limit': limit},
       label: 'adminListPendingReports',
     );
     final data = _asMap(result.data);
@@ -26,10 +16,9 @@ class AdminFunctionsService {
   }
 
   Future<List<Map<String, dynamic>>> listRecentFeedback({int limit = 50}) async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminListRecentFeedback').call(
-        <String, dynamic>{'limit': limit},
-      ),
+    final result = await SafeCallable.call(
+      'adminListRecentFeedback',
+      data: <String, dynamic>{'limit': limit},
       label: 'adminListRecentFeedback',
     );
     final data = _asMap(result.data);
@@ -42,18 +31,19 @@ class AdminFunctionsService {
     required String reportId,
     required String resolution,
   }) async {
-    await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminResolveReport').call(<String, dynamic>{
+    await SafeCallable.call(
+      'adminResolveReport',
+      data: <String, dynamic>{
         'reportId': reportId,
         'resolution': resolution,
-      }),
+      },
       label: 'adminResolveReport',
     );
   }
 
   Future<AdminModerationInfo> getModerationInfo() async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminGetModerationInfo').call(),
+    final result = await SafeCallable.call(
+      'adminGetModerationInfo',
       label: 'adminGetModerationInfo',
     );
     final data = _asMap(result.data);
@@ -64,10 +54,9 @@ class AdminFunctionsService {
   }
 
   Future<List<Map<String, dynamic>>> listModerationIncidents({int limit = 50}) async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminListModerationIncidents').call(
-        <String, dynamic>{'limit': limit},
-      ),
+    final result = await SafeCallable.call(
+      'adminListModerationIncidents',
+      data: <String, dynamic>{'limit': limit},
       label: 'adminListModerationIncidents',
     );
     final data = _asMap(result.data);
@@ -81,13 +70,12 @@ class AdminFunctionsService {
     int limit = 50,
     String? cursorId,
   }) async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminListPendingModerationReviews').call(
-        <String, dynamic>{
-          'limit': limit,
-          if (cursorId != null) 'cursorId': cursorId,
-        },
-      ),
+    final result = await SafeCallable.call(
+      'adminListPendingModerationReviews',
+      data: <String, dynamic>{
+        'limit': limit,
+        if (cursorId != null) 'cursorId': cursorId,
+      },
       label: 'adminListPendingModerationReviews',
     );
     final data = _asMap(result.data);
@@ -104,14 +92,13 @@ class AdminFunctionsService {
     required String decision,
     String? userFeedback,
   }) async {
-    final result = await CallableQueue.enqueue(
-      () => _functions.httpsCallable('adminResolveModerationReview').call(
-        <String, dynamic>{
-          'reviewId': reviewId,
-          'decision': decision,
-          if (userFeedback != null) 'userFeedback': userFeedback,
-        },
-      ),
+    final result = await SafeCallable.call(
+      'adminResolveModerationReview',
+      data: <String, dynamic>{
+        'reviewId': reviewId,
+        'decision': decision,
+        if (userFeedback != null) 'userFeedback': userFeedback,
+      },
       label: 'adminResolveModerationReview',
     );
     return _asMap(result.data);

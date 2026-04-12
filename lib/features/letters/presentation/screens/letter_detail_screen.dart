@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../../core/billing/firebase_functions_region.dart';
-import '../../../../core/services/callable_queue.dart';
+import '../../../../core/services/safe_callable.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/letter_repository_actions.dart';
@@ -638,12 +636,12 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                final functions = FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion);
-                await CallableQueue.enqueue(
-                  () => functions.httpsCallable('resendExternalInviteEmail').call({
+                await SafeCallable.call(
+                  'resendExternalInviteEmail',
+                  data: {
                     'letterId': widget.docId,
                     'newEmail': emailController.text.trim(),
-                  }),
+                  },
                   label: 'resendExternalInviteEmail',
                 );
                 if (context.mounted) {

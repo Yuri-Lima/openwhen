@@ -1,17 +1,12 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-import '../billing/firebase_functions_region.dart';
 import '../services/analytics_service.dart';
-import '../services/callable_queue.dart';
+import '../services/safe_callable.dart';
 
 /// Calls [claimExternalLetters] to attach no-account letters to the signed-in user.
 class ExternalLettersService {
   ExternalLettersService._();
-
-  static final FirebaseFunctions _functions =
-      FirebaseFunctions.instanceFor(region: kFirebaseFunctionsRegion);
 
   /// Returns number of letters claimed, or 0 if skipped or on error.
   static Future<int> claimExternalLetters() async {
@@ -21,8 +16,8 @@ class ExternalLettersService {
     if (!user.emailVerified) return 0;
 
     try {
-      final result = await CallableQueue.enqueue(
-        () => _functions.httpsCallable('claimExternalLetters').call(),
+      final result = await SafeCallable.call(
+        'claimExternalLetters',
         label: 'claimExternalLetters',
       );
       final map = result.data;

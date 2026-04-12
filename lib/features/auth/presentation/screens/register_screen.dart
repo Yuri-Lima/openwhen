@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+import '../../../../core/services/safe_callable.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -126,12 +126,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Future<bool> _isUsernameAvailable(String username) async {
     try {
-      final callable = FirebaseFunctions.instance.httpsCallable('checkUsernameAvailable');
-      final result = await callable.call<Map<String, dynamic>>({'username': username});
-      return result.data['available'] == true;
+      final result = await SafeCallable.call(
+        'checkUsernameAvailable',
+        data: {'username': username},
+        label: 'checkUsernameAvailable',
+      );
+      final data = result.data;
+      return data is Map && data['available'] == true;
     } catch (_) {
-      // On error (network, function not deployed yet, etc.) assume unavailable
-      // to avoid registering a duplicate username.
       return false;
     }
   }
