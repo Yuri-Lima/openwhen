@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../shared/theme/palette_ext.dart';
+import '../../../../shared/theme/app_theme.dart';
 
 /// Privacy Center — lets the user see all stored data about them.
 ///
