@@ -96,15 +96,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       builder: (sheetCtx) {
         bool isSending = false;
         return StatefulBuilder(
-          builder: (stfCtx, setSheetState) => Padding(
-            padding: EdgeInsets.fromLTRB(
-              24, 20, 24,
-              MediaQuery.of(sheetCtx).viewInsets.bottom + 32,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
+          builder: (stfCtx, setSheetState) {
+            final bottomInset = MediaQuery.viewInsetsOf(sheetCtx).bottom;
+            return Padding(
+              padding: EdgeInsets.only(bottom: bottomInset),
+              child: Container(
+                constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetCtx).height * 0.85),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                 Center(
                   child: Container(
                     width: 36,
@@ -251,9 +254,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           ),
                         ),
                 ),
-              ],
-            ),
-          ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );

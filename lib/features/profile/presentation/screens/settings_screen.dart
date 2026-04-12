@@ -702,34 +702,43 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       isScrollControlled: true,
       backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
-            const SizedBox(height: 20),
-            Text(l10n.settingsEditProfileSheetTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
-            const SizedBox(height: 20),
-            _buildSheetField(nameCtrl, l10n.settingsEditProfileFieldName),
-            const SizedBox(height: 12),
-            _buildSheetField(usernameCtrl, l10n.settingsEditProfileFieldUsername),
-            const SizedBox(height: 12),
-            _buildSheetField(bioCtrl, l10n.settingsEditProfileFieldBio, maxLines: 3),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await _updateField('name', nameCtrl.text.trim());
-                await _updateField('username', usernameCtrl.text.trim());
-                await _updateField('bio', bioCtrl.text.trim());
-                if (context.mounted) Navigator.pop(context);
-              },
-              child: Text(l10n.actionSave, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+      builder: (sheetCtx) {
+        final bottomInset = MediaQuery.viewInsetsOf(sheetCtx).bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: Container(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetCtx).height * 0.85),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
+                  const SizedBox(height: 20),
+                  Text(l10n.settingsEditProfileSheetTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
+                  const SizedBox(height: 20),
+                  _buildSheetField(nameCtrl, l10n.settingsEditProfileFieldName),
+                  const SizedBox(height: 12),
+                  _buildSheetField(usernameCtrl, l10n.settingsEditProfileFieldUsername),
+                  const SizedBox(height: 12),
+                  _buildSheetField(bioCtrl, l10n.settingsEditProfileFieldBio, maxLines: 3),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _updateField('name', nameCtrl.text.trim());
+                      await _updateField('username', usernameCtrl.text.trim());
+                      await _updateField('bio', bioCtrl.text.trim());
+                      if (context.mounted) Navigator.pop(context);
+                    },
+                    child: Text(l10n.actionSave, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -740,33 +749,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       isScrollControlled: true,
       backgroundColor: context.pal.card,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => Padding(
-        padding: EdgeInsets.fromLTRB(24, 20, 24, MediaQuery.of(context).viewInsets.bottom + 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
-            const SizedBox(height: 20),
-            Text(l10n.settingsChangePasswordTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
-            const SizedBox(height: 8),
-            Text(l10n.settingsChangePasswordBody, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                await FirebaseAuth.instance.sendPasswordResetEmail(email: _user?.email ?? '');
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.settingsChangePasswordSent(_user?.email ?? ''), style: GoogleFonts.dmSans(fontSize: 13))),
-                  );
-                }
-              },
-              child: Text(l10n.settingsChangePasswordButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+      builder: (sheetCtx) {
+        final bottomInset = MediaQuery.viewInsetsOf(sheetCtx).bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: Container(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(sheetCtx).height * 0.85),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
+                  const SizedBox(height: 20),
+                  Text(l10n.settingsChangePasswordTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
+                  const SizedBox(height: 8),
+                  Text(l10n.settingsChangePasswordBody, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.sendPasswordResetEmail(email: _user?.email ?? '');
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.settingsChangePasswordSent(_user?.email ?? ''), style: GoogleFonts.dmSans(fontSize: 13))),
+                        );
+                      }
+                    },
+                    child: Text(l10n.settingsChangePasswordButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
