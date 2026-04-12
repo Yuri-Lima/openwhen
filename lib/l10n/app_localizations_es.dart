@@ -865,6 +865,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo subir el audio. Inténtalo de nuevo.';
 
   @override
+  String get writeLetterSendErrorEmailLookup =>
+      'No se pudo verificar el email del destinatario. Revisa tu conexión e inténtalo de nuevo.';
+
+  @override
   String get writeLetterSendErrorLoadProfile =>
       'No se pudo cargar tu perfil. Inténtalo de nuevo.';
 
@@ -875,6 +879,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get writeLetterSendErrorSave =>
       'No se pudo guardar la carta. Inténtalo de nuevo.';
+
+  @override
+  String get writeLetterSendErrorUnexpected =>
+      'Ocurrió un error al enviar. Inténtalo de nuevo.';
 
   @override
   String get voiceLetterTitle => 'Mensaje de voz';
@@ -2546,6 +2554,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get resendEmailCooldown => 'Espera unos minutos antes de reenviar.';
+
+  @override
+  String get resendEmailGenericError =>
+      'No se pudo reenviar el email. Inténtalo más tarde.';
 
   @override
   String get letterModerationWarning =>

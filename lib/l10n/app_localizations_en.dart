@@ -865,6 +865,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not upload audio. Please try again.';
 
   @override
+  String get writeLetterSendErrorEmailLookup =>
+      'Could not verify the recipient email. Please check your connection and try again.';
+
+  @override
   String get writeLetterSendErrorLoadProfile =>
       'Could not load your profile. Please try again.';
 
@@ -875,6 +879,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get writeLetterSendErrorSave =>
       'Could not save your letter. Please try again.';
+
+  @override
+  String get writeLetterSendErrorUnexpected =>
+      'Something went wrong while sending. Please try again.';
 
   @override
   String get voiceLetterTitle => 'Voice message';
@@ -2535,6 +2543,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resendEmailCooldown =>
       'Please wait a few minutes before resending.';
+
+  @override
+  String get resendEmailGenericError =>
+      'Could not resend the email. Please try again later.';
 
   @override
   String get letterModerationWarning =>

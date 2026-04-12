@@ -405,6 +405,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   String _letterSendErrorMessage(AppLocalizations l10n, LetterSendStep step, Object e) {
     final base = switch (step) {
+      LetterSendStep.emailLookup => l10n.writeLetterSendErrorEmailLookup,
       LetterSendStep.moderation => l10n.letterModerationUnavailable,
       LetterSendStep.voiceUpload => l10n.writeLetterVoiceUploadError,
       LetterSendStep.loadSenderProfile => l10n.writeLetterSendErrorLoadProfile,
@@ -422,6 +423,21 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   }
 
   Future<void> _saveLetter() async {
+    try {
+      await _saveLetterInner();
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('[LetterSend] unexpected error: $e\n$st');
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.writeLetterSendErrorUnexpected)),
+        );
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _saveLetterInner() async {
     if (!await requireVerifiedEmail(context)) return;
     final l10n = AppLocalizations.of(context)!;
     if (_titleController.text.trim().isEmpty) {
@@ -447,25 +463,35 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         }
         // Check if this email belongs to an existing user before treating as external
         final normalizedEmail = emailTrim.toLowerCase();
-        final existingUserSnap = await FirebaseFirestore.instance
-            .collection(FirestoreCollections.users)
-            .where('email', isEqualTo: normalizedEmail)
-            .limit(1)
-            .get();
-        if (!mounted) return;
+        try {
+          final existingUserSnap = await FirebaseFirestore.instance
+              .collection(FirestoreCollections.users)
+              .where('email', isEqualTo: normalizedEmail)
+              .limit(1)
+              .get();
+          if (!mounted) return;
 
-        if (existingUserSnap.docs.isNotEmpty) {
-          final userDoc = existingUserSnap.docs.first;
-          final userData = userDoc.data();
-          _receiverUid = userDoc.id;
-          _receiverName = userData['displayName'] ?? userData['name'] ?? emailTrim;
-          _receiverUsername = userData['username'] ?? '';
-          _receiverHasAccount = true;
-        } else {
-          _receiverUid = null;
-          _receiverName = emailTrim;
-          _receiverUsername = '';
-          _receiverHasAccount = false;
+          if (existingUserSnap.docs.isNotEmpty) {
+            final userDoc = existingUserSnap.docs.first;
+            final userData = userDoc.data();
+            _receiverUid = userDoc.id;
+            _receiverName = userData['displayName'] ?? userData['name'] ?? emailTrim;
+            _receiverUsername = userData['username'] ?? '';
+            _receiverHasAccount = true;
+          } else {
+            _receiverUid = null;
+            _receiverName = emailTrim;
+            _receiverUsername = '';
+            _receiverHasAccount = false;
+          }
+        } catch (e) {
+          if (kDebugMode) debugPrint('[LetterSend] email lookup failed: $e');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(_letterSendErrorMessage(l10n, LetterSendStep.emailLookup, e))),
+            );
+          }
+          return;
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));

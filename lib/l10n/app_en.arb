@@ -281,9 +281,11 @@
   "writeLetterVoiceOpenSettings": "Open settings",
   "writeLetterVoiceWillSend": "Will be sent with the letter",
   "writeLetterVoiceUploadError": "Could not upload audio. Please try again.",
+  "writeLetterSendErrorEmailLookup": "Could not verify the recipient email. Please check your connection and try again.",
   "writeLetterSendErrorLoadProfile": "Could not load your profile. Please try again.",
   "writeLetterSendErrorFriendshipCheck": "Could not verify friend status. Please try again.",
   "writeLetterSendErrorSave": "Could not save your letter. Please try again.",
+  "writeLetterSendErrorUnexpected": "Something went wrong while sending. Please try again.",
 
   "voiceLetterTitle": "Voice message",
   "voiceLetterSubtitle": "Recorded by the sender",
@@ -851,6 +853,7 @@
   "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
   "resendEmailSuccess": "Email resent successfully!",
   "resendEmailCooldown": "Please wait a few minutes before resending.",
+  "resendEmailGenericError": "Could not resend the email. Please try again later.",
 
   "letterModerationWarning": "Your letter has a tone that could hurt. Would you like to review it before sealing?",
   "letterModerationBlocked": "This letter cannot be sent. OpenWhen exists to connect people with love, resilience, and genuine connection.",

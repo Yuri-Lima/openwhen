@@ -1667,6 +1667,12 @@ abstract class AppLocalizations {
   /// **'Não foi possível enviar o áudio. Tente de novo.'**
   String get writeLetterVoiceUploadError;
 
+  /// No description provided for @writeLetterSendErrorEmailLookup.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível verificar o email do destinatário. Verifique sua conexão e tente novamente.'**
+  String get writeLetterSendErrorEmailLookup;
+
   /// No description provided for @writeLetterSendErrorLoadProfile.
   ///
   /// In pt_BR, this message translates to:
@@ -1684,6 +1690,12 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Não foi possível salvar a carta. Tente novamente.'**
   String get writeLetterSendErrorSave;
+
+  /// No description provided for @writeLetterSendErrorUnexpected.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ocorreu um erro ao enviar. Tente novamente.'**
+  String get writeLetterSendErrorUnexpected;
 
   /// No description provided for @voiceLetterTitle.
   ///
@@ -4684,6 +4696,12 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Aguarde alguns minutos antes de reenviar.'**
   String get resendEmailCooldown;
+
+  /// No description provided for @resendEmailGenericError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível reenviar o email. Tente novamente mais tarde.'**
+  String get resendEmailGenericError;
 
   /// No description provided for @letterModerationWarning.
   ///

@@ -866,6 +866,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não foi possível enviar o áudio. Tente de novo.';
 
   @override
+  String get writeLetterSendErrorEmailLookup =>
+      'Não foi possível verificar o email do destinatário. Verifique a sua ligação e tente novamente.';
+
+  @override
   String get writeLetterSendErrorLoadProfile =>
       'Não foi possível carregar o seu perfil. Tente novamente.';
 
@@ -876,6 +880,10 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get writeLetterSendErrorSave =>
       'Não foi possível salvar a carta. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorUnexpected =>
+      'Ocorreu um erro ao enviar. Tente novamente.';
 
   @override
   String get voiceLetterTitle => 'Mensagem de voz';
@@ -2538,6 +2546,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
 
   @override
+  String get resendEmailGenericError =>
+      'Não foi possível reenviar o email. Tente novamente mais tarde.';
+
+  @override
   String get letterModerationWarning =>
       'A sua carta tem um tom que pode magoar. Quer rever antes de selar?';
 
@@ -3459,6 +3471,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Não foi possível enviar o áudio. Tente de novo.';
 
   @override
+  String get writeLetterSendErrorEmailLookup =>
+      'Não foi possível verificar o email do destinatário. Verifique a sua ligação e tente novamente.';
+
+  @override
   String get writeLetterSendErrorLoadProfile =>
       'Não foi possível carregar o seu perfil. Tente novamente.';
 
@@ -3469,6 +3485,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get writeLetterSendErrorSave =>
       'Não foi possível salvar a carta. Tente novamente.';
+
+  @override
+  String get writeLetterSendErrorUnexpected =>
+      'Ocorreu um erro ao enviar. Tente novamente.';
 
   @override
   String get voiceLetterTitle => 'Mensagem de voz';
@@ -5129,6 +5149,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
+
+  @override
+  String get resendEmailGenericError =>
+      'Não foi possível reenviar o email. Tente novamente mais tarde.';
 
   @override
   String get letterModerationWarning =>

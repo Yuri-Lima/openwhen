@@ -293,9 +293,11 @@
   "writeLetterVoiceOpenSettings": "Abrir configurações",
   "writeLetterVoiceWillSend": "Será enviada com a carta",
   "writeLetterVoiceUploadError": "Não foi possível enviar o áudio. Tente de novo.",
+  "writeLetterSendErrorEmailLookup": "Não foi possível verificar o email do destinatário. Verifique sua conexão e tente novamente.",
   "writeLetterSendErrorLoadProfile": "Não foi possível carregar o seu perfil. Tente novamente.",
   "writeLetterSendErrorFriendshipCheck": "Não foi possível verificar amizade. Tente novamente.",
   "writeLetterSendErrorSave": "Não foi possível salvar a carta. Tente novamente.",
+  "writeLetterSendErrorUnexpected": "Ocorreu um erro ao enviar. Tente novamente.",
 
   "voiceLetterTitle": "Mensagem de voz",
   "voiceLetterSubtitle": "Gravada pelo remetente",
@@ -879,6 +881,7 @@
   "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
   "resendEmailSuccess": "Email reenviado com sucesso!",
   "resendEmailCooldown": "Aguarde alguns minutos antes de reenviar.",
+  "resendEmailGenericError": "Não foi possível reenviar o email. Tente novamente mais tarde.",
 
   "letterModerationWarning": "Sua carta tem um tom que pode machucar. Quer revisar antes de selar?",
   "letterModerationBlocked": "Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.",

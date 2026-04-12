@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
@@ -655,10 +655,11 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                 if (context.mounted) {
                   final msg = e.toString().contains('resource-exhausted')
                       ? l10n.resendEmailCooldown
-                      : e.toString();
+                      : l10n.resendEmailGenericError;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(msg)),
                   );
+                  if (kDebugMode) debugPrint('[ResendEmail] error: $e');
                 }
               }
             },
