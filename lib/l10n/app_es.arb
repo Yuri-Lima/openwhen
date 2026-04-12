@@ -914,5 +914,10 @@
   "mediaModerationAudioRemovedTitle": "Audio eliminado",
   "mediaModerationAudioRemovedBody": "Un audio que subiste fue eliminado por no cumplir con las directrices de OpenWhen.",
   "mediaModerationImageUnavailable": "Imagen no disponible",
-  "mediaModerationAudioUnavailable": "Audio no disponible"
+  "mediaModerationAudioUnavailable": "Audio no disponible",
+
+  "followersTabFollowers": "Seguidores",
+  "followersTabFollowing": "Siguiendo",
+  "followersEmpty": "Aún no hay seguidores",
+  "followingEmpty": "Aún no sigue a nadie"
 }

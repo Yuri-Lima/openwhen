@@ -914,5 +914,10 @@
   "mediaModerationAudioRemovedTitle": "Audio removed",
   "mediaModerationAudioRemovedBody": "An audio recording you uploaded was removed for not meeting OpenWhen's guidelines.",
   "mediaModerationImageUnavailable": "Image unavailable",
-  "mediaModerationAudioUnavailable": "Audio unavailable"
+  "mediaModerationAudioUnavailable": "Audio unavailable",
+
+  "followersTabFollowers": "Followers",
+  "followersTabFollowing": "Following",
+  "followersEmpty": "No followers yet",
+  "followingEmpty": "Not following anyone yet"
 }

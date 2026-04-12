@@ -38,6 +38,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
 - [ ] **Nox Card** (card da coruja por nível, animação compartilhável) — ver [ROADMAP.md](ROADMAP.md) Fase 2 e [BUSINESS.md](BUSINESS.md)
 - [ ] **Links reais de download do app** — substituir botões/placeholders de "Baixar o app" por links verdadeiros da App Store e Google Play em todas as telas e páginas web onde aparecem
+- [ ] **Lista de Seguidores / Seguindo** — tela com tabs + lazy load (20 por página, cursor `startAfter`); contadores clicáveis em ambos os perfis; otimizar contadores para usar `followersCount`/`followingCount` denormalizados em vez de `StreamBuilder` que lê N docs; ver [`FOLLOWERS_LIST_PLAN.md`](FOLLOWERS_LIST_PLAN.md)
 - [x] Feed em **3 camadas**
 - [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**
@@ -268,7 +269,6 @@ Cartas que machucam não têm lugar aqui.
 - [x] Central de privacidade no app — usuário vê todos os dados armazenados — `privacy_center_screen.dart` (testar)
 
 ### Pendente
-- [ ] Backup redundante das cartas fora do Firebase
 - [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
 - [x] Criar email de contato para solicitações de privacidade — **7 endereços** configurados via Cloudflare Email Routing (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) → redirecionamento para Gmail; migrar para caixas dedicadas quando o volume justificar

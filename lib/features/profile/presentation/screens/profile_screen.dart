@@ -12,6 +12,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/avatar_upload_helper.dart';
 import '../../../gamification/profile_badges_strip.dart';
 import 'settings_screen.dart';
+import 'followers_list_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -197,34 +198,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 24),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance.collection('follows').where('followingUid', isEqualTo: user?.uid).snapshots(),
-                              builder: (context, followersSnap) {
-                                final followers = followersSnap.data?.docs.length ?? 0;
-                                return StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance.collection('follows').where('followerUid', isEqualTo: user?.uid).snapshots(),
-                                  builder: (context, followingSnap) {
-                                    final following = followingSnap.data?.docs.length ?? 0;
-                                    final lettersSent = (data?['lettersSentCount'] as num?)?.toInt() ?? 0;
-                                    final opened = (data?['openedLettersCount'] as num?)?.toInt() ?? 0;
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                            Builder(
+                              builder: (context) {
+                                final followers = (data?['followersCount'] as num?)?.toInt() ?? 0;
+                                final following = (data?['followingCount'] as num?)?.toInt() ?? 0;
+                                final lettersSent = (data?['lettersSentCount'] as num?)?.toInt() ?? 0;
+                                final opened = (data?['openedLettersCount'] as num?)?.toInt() ?? 0;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            _buildCounter(l10n.profileStatFollowers, followers),
-                                            _buildDividerVertical(),
-                                            _buildCounter(l10n.profileStatFollowing, following),
-                                            _buildDividerVertical(),
-                                            _buildCounter(l10n.profileStatSent, lettersSent),
-                                            _buildDividerVertical(),
-                                            _buildCounter(l10n.profileStatOpened, opened),
-                                          ],
-                                        ),
-                                        const ProfileBadgesStrip(),
+                                        _buildTappableCounter(l10n.profileStatFollowers, followers, () {
+                                          Navigator.push(context, MaterialPageRoute(
+                                            builder: (_) => FollowersListScreen(userId: user!.uid, initialTabFollowers: true),
+                                          ));
+                                        }),
+                                        _buildDividerVertical(),
+                                        _buildTappableCounter(l10n.profileStatFollowing, following, () {
+                                          Navigator.push(context, MaterialPageRoute(
+                                            builder: (_) => FollowersListScreen(userId: user!.uid, initialTabFollowers: false),
+                                          ));
+                                        }),
+                                        _buildDividerVertical(),
+                                        _buildCounter(l10n.profileStatSent, lettersSent),
+                                        _buildDividerVertical(),
+                                        _buildCounter(l10n.profileStatOpened, opened),
                                       ],
-                                    );
-                                  },
+                                    ),
+                                    const ProfileBadgesStrip(),
+                                  ],
                                 );
                               },
                             ),
@@ -283,6 +286,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: 2),
           Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTappableCounter(String label, int value, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Column(
+          children: [
+            Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
+            const SizedBox(height: 2),
+            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+          ],
+        ),
       ),
     );
   }

@@ -942,5 +942,10 @@
   "mediaModerationAudioRemovedTitle": "Áudio removido",
   "mediaModerationAudioRemovedBody": "Um áudio que enviou foi removido por não cumprir as diretrizes do OpenWhen.",
   "mediaModerationImageUnavailable": "Imagem indisponível",
-  "mediaModerationAudioUnavailable": "Áudio indisponível"
+  "mediaModerationAudioUnavailable": "Áudio indisponível",
+
+  "followersTabFollowers": "Seguidores",
+  "followersTabFollowing": "Seguindo",
+  "followersEmpty": "Nenhum seguidor ainda",
+  "followingEmpty": "Não segue ninguém ainda"
 }
