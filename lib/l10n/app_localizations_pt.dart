@@ -2500,6 +2500,113 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get privacyCenterTitle => 'Central de Privacidade';
+
+  @override
+  String get privacyCenterSubtitle => 'Ver todos os seus dados armazenados';
+
+  @override
+  String get privacyCenterIntro =>
+      'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.';
+
+  @override
+  String get privacyCenterProfile => 'Perfil';
+
+  @override
+  String get privacyCenterFieldName => 'Nome';
+
+  @override
+  String get privacyCenterFieldUsername => 'Username';
+
+  @override
+  String get privacyCenterFieldEmail => 'Email';
+
+  @override
+  String get privacyCenterFieldBio => 'Bio';
+
+  @override
+  String get privacyCenterFieldCountry => 'País';
+
+  @override
+  String get privacyCenterFieldLanguage => 'Idioma';
+
+  @override
+  String get privacyCenterFieldCreatedAt => 'Criado em';
+
+  @override
+  String get privacyCenterFieldPhoto => 'Foto';
+
+  @override
+  String get privacyCenterYes => 'Sim';
+
+  @override
+  String get privacyCenterNo => 'Não';
+
+  @override
+  String get privacyCenterLetters => 'Cartas';
+
+  @override
+  String get privacyCenterLettersSent => 'Enviadas';
+
+  @override
+  String get privacyCenterLettersReceived => 'Recebidas';
+
+  @override
+  String get privacyCenterLettersLocked => 'Trancadas';
+
+  @override
+  String get privacyCenterLettersWithLocation => 'Com localização';
+
+  @override
+  String get privacyCenterCapsules => 'Cápsulas';
+
+  @override
+  String get privacyCenterCapsulesTotal => 'Total';
+
+  @override
+  String get privacyCenterSocial => 'Social';
+
+  @override
+  String get privacyCenterFollowers => 'Seguidores';
+
+  @override
+  String get privacyCenterFollowing => 'Seguindo';
+
+  @override
+  String get privacyCenterBlocks => 'Bloqueios';
+
+  @override
+  String get privacyCenterEngagement => 'Engajamento';
+
+  @override
+  String get privacyCenterComments => 'Comentários';
+
+  @override
+  String get privacyCenterLikes => 'Curtidas';
+
+  @override
+  String get privacyCenterBadges => 'Conquistas';
+
+  @override
+  String get privacyCenterBadgesUnlocked => 'Desbloqueadas';
+
+  @override
+  String get privacyCenterBilling => 'Assinatura';
+
+  @override
+  String get privacyCenterSubscriptionTier => 'Plano';
+
+  @override
+  String get privacyCenterSubscriptionStatus => 'Status';
+
+  @override
+  String get privacyCenterLocation => 'Localização';
+
+  @override
+  String get privacyCenterLocationExplainer =>
+      'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.';
+
+  @override
   String get emailVerificationTitle => 'Verifique seu email';
 
   @override
@@ -5120,6 +5227,113 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String settingsDeleteScheduled(int day, int month, int year) {
     return 'Exclusão agendada para $day/$month/$year. Seus dados foram enviados por email.';
   }
+
+  @override
+  String get privacyCenterTitle => 'Central de Privacidade';
+
+  @override
+  String get privacyCenterSubtitle => 'Ver todos os seus dados armazenados';
+
+  @override
+  String get privacyCenterIntro =>
+      'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.';
+
+  @override
+  String get privacyCenterProfile => 'Perfil';
+
+  @override
+  String get privacyCenterFieldName => 'Nome';
+
+  @override
+  String get privacyCenterFieldUsername => 'Username';
+
+  @override
+  String get privacyCenterFieldEmail => 'Email';
+
+  @override
+  String get privacyCenterFieldBio => 'Bio';
+
+  @override
+  String get privacyCenterFieldCountry => 'País';
+
+  @override
+  String get privacyCenterFieldLanguage => 'Idioma';
+
+  @override
+  String get privacyCenterFieldCreatedAt => 'Criado em';
+
+  @override
+  String get privacyCenterFieldPhoto => 'Foto';
+
+  @override
+  String get privacyCenterYes => 'Sim';
+
+  @override
+  String get privacyCenterNo => 'Não';
+
+  @override
+  String get privacyCenterLetters => 'Cartas';
+
+  @override
+  String get privacyCenterLettersSent => 'Enviadas';
+
+  @override
+  String get privacyCenterLettersReceived => 'Recebidas';
+
+  @override
+  String get privacyCenterLettersLocked => 'Trancadas';
+
+  @override
+  String get privacyCenterLettersWithLocation => 'Com localização';
+
+  @override
+  String get privacyCenterCapsules => 'Cápsulas';
+
+  @override
+  String get privacyCenterCapsulesTotal => 'Total';
+
+  @override
+  String get privacyCenterSocial => 'Social';
+
+  @override
+  String get privacyCenterFollowers => 'Seguidores';
+
+  @override
+  String get privacyCenterFollowing => 'Seguindo';
+
+  @override
+  String get privacyCenterBlocks => 'Bloqueios';
+
+  @override
+  String get privacyCenterEngagement => 'Engajamento';
+
+  @override
+  String get privacyCenterComments => 'Comentários';
+
+  @override
+  String get privacyCenterLikes => 'Curtidas';
+
+  @override
+  String get privacyCenterBadges => 'Conquistas';
+
+  @override
+  String get privacyCenterBadgesUnlocked => 'Desbloqueadas';
+
+  @override
+  String get privacyCenterBilling => 'Assinatura';
+
+  @override
+  String get privacyCenterSubscriptionTier => 'Plano';
+
+  @override
+  String get privacyCenterSubscriptionStatus => 'Status';
+
+  @override
+  String get privacyCenterLocation => 'Localização';
+
+  @override
+  String get privacyCenterLocationExplainer =>
+      'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.';
 
   @override
   String get emailVerificationTitle => 'Verifique seu email';

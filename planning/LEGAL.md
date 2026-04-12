@@ -22,7 +22,7 @@
 | Export automático ao deletar | ✅ Implementada (testar) | `functions/src/export_user_data.ts` + `deletion_request_service.dart` |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
-| Central de privacidade no app | 🔲 Pendente (Yuri) | — |
+| Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |
 
 ### Testes Pendentes — Privacy & Data Lifecycle (12/04/2026)
 
@@ -40,6 +40,9 @@
 | Cartas locked (anonymize) | Remetente com carta locked pede anonymize | Carta anonimizada; media tratado igual ao delete_all |
 | Cápsulas locked | Cápsula com openDate futuro | Mesmo comportamento das cartas; fotos migradas |
 | Fallback imediato | `requestImmediateDeletion` (admin/legacy) | Exclusão direta funciona como antes (sem grace period) |
+| Central de privacidade — carregamento | Utilizador com dados diversos abre a Central | Todas as seções carregam; contagens corretas; sem erros |
+| Central de privacidade — vazio | Utilizador novo (sem cartas/cápsulas) abre a Central | Seções mostram "0" ou lista vazia; sem crash |
+| Central de privacidade — navegação | Aceder via Configurações → Central de Privacidade | Tela abre corretamente; botão voltar funciona |
 
 ---
 

@@ -4619,6 +4619,216 @@ abstract class AppLocalizations {
   /// **'Exclusão agendada para {day}/{month}/{year}. Seus dados foram enviados por email.'**
   String settingsDeleteScheduled(int day, int month, int year);
 
+  /// No description provided for @privacyCenterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Central de Privacidade'**
+  String get privacyCenterTitle;
+
+  /// No description provided for @privacyCenterSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ver todos os seus dados armazenados'**
+  String get privacyCenterSubtitle;
+
+  /// No description provided for @privacyCenterIntro.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.'**
+  String get privacyCenterIntro;
+
+  /// No description provided for @privacyCenterProfile.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Perfil'**
+  String get privacyCenterProfile;
+
+  /// No description provided for @privacyCenterFieldName.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nome'**
+  String get privacyCenterFieldName;
+
+  /// No description provided for @privacyCenterFieldUsername.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Username'**
+  String get privacyCenterFieldUsername;
+
+  /// No description provided for @privacyCenterFieldEmail.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Email'**
+  String get privacyCenterFieldEmail;
+
+  /// No description provided for @privacyCenterFieldBio.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Bio'**
+  String get privacyCenterFieldBio;
+
+  /// No description provided for @privacyCenterFieldCountry.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'País'**
+  String get privacyCenterFieldCountry;
+
+  /// No description provided for @privacyCenterFieldLanguage.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Idioma'**
+  String get privacyCenterFieldLanguage;
+
+  /// No description provided for @privacyCenterFieldCreatedAt.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criado em'**
+  String get privacyCenterFieldCreatedAt;
+
+  /// No description provided for @privacyCenterFieldPhoto.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Foto'**
+  String get privacyCenterFieldPhoto;
+
+  /// No description provided for @privacyCenterYes.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sim'**
+  String get privacyCenterYes;
+
+  /// No description provided for @privacyCenterNo.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não'**
+  String get privacyCenterNo;
+
+  /// No description provided for @privacyCenterLetters.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Cartas'**
+  String get privacyCenterLetters;
+
+  /// No description provided for @privacyCenterLettersSent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviadas'**
+  String get privacyCenterLettersSent;
+
+  /// No description provided for @privacyCenterLettersReceived.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Recebidas'**
+  String get privacyCenterLettersReceived;
+
+  /// No description provided for @privacyCenterLettersLocked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Trancadas'**
+  String get privacyCenterLettersLocked;
+
+  /// No description provided for @privacyCenterLettersWithLocation.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Com localização'**
+  String get privacyCenterLettersWithLocation;
+
+  /// No description provided for @privacyCenterCapsules.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Cápsulas'**
+  String get privacyCenterCapsules;
+
+  /// No description provided for @privacyCenterCapsulesTotal.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Total'**
+  String get privacyCenterCapsulesTotal;
+
+  /// No description provided for @privacyCenterSocial.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Social'**
+  String get privacyCenterSocial;
+
+  /// No description provided for @privacyCenterFollowers.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguidores'**
+  String get privacyCenterFollowers;
+
+  /// No description provided for @privacyCenterFollowing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguindo'**
+  String get privacyCenterFollowing;
+
+  /// No description provided for @privacyCenterBlocks.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Bloqueios'**
+  String get privacyCenterBlocks;
+
+  /// No description provided for @privacyCenterEngagement.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Engajamento'**
+  String get privacyCenterEngagement;
+
+  /// No description provided for @privacyCenterComments.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Comentários'**
+  String get privacyCenterComments;
+
+  /// No description provided for @privacyCenterLikes.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Curtidas'**
+  String get privacyCenterLikes;
+
+  /// No description provided for @privacyCenterBadges.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Conquistas'**
+  String get privacyCenterBadges;
+
+  /// No description provided for @privacyCenterBadgesUnlocked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Desbloqueadas'**
+  String get privacyCenterBadgesUnlocked;
+
+  /// No description provided for @privacyCenterBilling.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Assinatura'**
+  String get privacyCenterBilling;
+
+  /// No description provided for @privacyCenterSubscriptionTier.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Plano'**
+  String get privacyCenterSubscriptionTier;
+
+  /// No description provided for @privacyCenterSubscriptionStatus.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Status'**
+  String get privacyCenterSubscriptionStatus;
+
+  /// No description provided for @privacyCenterLocation.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Localização'**
+  String get privacyCenterLocation;
+
+  /// No description provided for @privacyCenterLocationExplainer.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.'**
+  String get privacyCenterLocationExplainer;
+
   /// No description provided for @emailVerificationTitle.
   ///
   /// In pt_BR, this message translates to:

@@ -29,6 +29,7 @@ import '../../../../core/services/account_deletion_service.dart';
 import '../../../../core/services/deletion_request_service.dart';
 import '../../../../core/services/privacy_log_service.dart';
 import '../widgets/pending_deletion_banner.dart';
+import 'privacy_center_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -428,6 +429,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           if (!context.mounted) return;
                           _showExportDialog(context);
                         },
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: Icons.shield_outlined,
+                        iconColor: const Color(0xFF10B981),
+                        iconBg: const Color(0xFFECFDF5),
+                        label: l10n.privacyCenterTitle,
+                        subtitle: l10n.privacyCenterSubtitle,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PrivacyCenterScreen(),
+                          ),
+                        ),
                       ),
                       _buildDivider(),
                       _buildMenuItem(

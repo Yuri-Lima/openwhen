@@ -265,9 +265,9 @@ Cartas que machucam não têm lugar aqui.
 - [x] Export automático de todos os dados ao deletar conta — `export_user_data.ts` + `deletion_request_service.dart` (testar)
 - [x] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function) — `request_deletion.ts` + `scheduled_deletion.ts` (testar)
 - [x] Manter entrega de cartas locked mesmo após conta deletada — `delete_account.ts` preservação automática (testar)
+- [x] Central de privacidade no app — usuário vê todos os dados armazenados — `privacy_center_screen.dart` (testar)
 
 ### Pendente
-- [ ] Central de privacidade no app — usuário vê todos os dados armazenados
 - [ ] Backup redundante das cartas fora do Firebase
 - [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
