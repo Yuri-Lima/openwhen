@@ -271,14 +271,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                               tooltip: l10n.searchTitle,
                             ),
                             const SizedBox(width: 4),
-                            _iconBtn(
-                              Icons.notifications_outlined,
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => const ModerationNotificationsScreen()),
-                              ),
-                              tooltip: l10n.moderationNotificationsTitle,
-                            ),
+                            _notificationBellBtn(l10n),
                           ],
                         ),
                       ],
@@ -473,6 +466,61 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  /// Bell icon with a red dot when there are unread notifications.
+  Widget _notificationBellBtn(AppLocalizations l10n) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return _iconBtn(
+        Icons.notifications_outlined,
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ModerationNotificationsScreen()),
+        ),
+        tooltip: l10n.moderationNotificationsTitle,
+      );
+    }
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection(FirestoreCollections.users)
+          .doc(uid)
+          .collection(FirestoreCollections.userNotifications)
+          .where('read', isEqualTo: false)
+          .limit(1)
+          .snapshots(),
+      builder: (context, snap) {
+        final hasUnread = snap.hasData && snap.data!.docs.isNotEmpty;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _iconBtn(
+              Icons.notifications_outlined,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ModerationNotificationsScreen()),
+              ),
+              tooltip: l10n.moderationNotificationsTitle,
+            ),
+            if (hasUnread)
+              Positioned(
+                right: 6,
+                top: 6,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: 1.5),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 

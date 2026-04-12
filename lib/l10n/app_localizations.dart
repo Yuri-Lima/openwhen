@@ -4595,6 +4595,30 @@ abstract class AppLocalizations {
   /// **'Falha ao deletar conta. Tente novamente mais tarde.'**
   String get settingsDeleteError;
 
+  /// No description provided for @settingsDeletePendingBanner.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sua conta será excluída em {days} dia(s). Você pode cancelar a exclusão a qualquer momento.'**
+  String settingsDeletePendingBanner(int days);
+
+  /// No description provided for @settingsDeleteCancelButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Cancelar exclusão'**
+  String get settingsDeleteCancelButton;
+
+  /// No description provided for @settingsDeleteCancelled.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exclusão de conta cancelada. Sua conta está ativa novamente.'**
+  String get settingsDeleteCancelled;
+
+  /// No description provided for @settingsDeleteScheduled.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exclusão agendada para {day}/{month}/{year}. Seus dados foram enviados por email.'**
+  String settingsDeleteScheduled(int day, int month, int year);
+
   /// No description provided for @emailVerificationTitle.
   ///
   /// In pt_BR, this message translates to:

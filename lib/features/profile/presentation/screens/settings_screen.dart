@@ -26,7 +26,9 @@ import '../../../admin/presentation/admin_moderation_screen.dart';
 import 'moderation_notifications_screen.dart';
 import 'subscription_plans_screen.dart';
 import '../../../../core/services/account_deletion_service.dart';
+import '../../../../core/services/deletion_request_service.dart';
 import '../../../../core/services/privacy_log_service.dart';
+import '../widgets/pending_deletion_banner.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -89,6 +91,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           final notifComment = data?['notifComment'] ?? true;
           final notifFollow = data?['notifFollow'] ?? true;
           final notifLetter = data?['notifLetter'] ?? true;
+          final accountStatus = data?['accountStatus'] as String? ?? 'active';
+          final isPendingDeletion = accountStatus == 'pending_deletion';
+          final deletionScheduledFor = data?['deletionScheduledFor'] as Timestamp?;
+          final deletionDaysRemaining = deletionScheduledFor != null
+              ? deletionScheduledFor.toDate().difference(DateTime.now()).inDays.clamp(0, 999)
+              : 0;
 
           return Column(
             children: [
@@ -135,6 +143,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
+
+                    // ── Pending Deletion Banner ──
+                    if (isPendingDeletion)
+                      PendingDeletionBanner(
+                        daysRemaining: deletionDaysRemaining,
+                        messageBuilder: (days) => l10n.settingsDeletePendingBanner(days),
+                        cancelLabel: l10n.settingsDeleteCancelButton,
+                        onCancel: () => _cancelDeletion(context),
+                      ),
 
                     _buildSectionTitle(l10n.settingsMyAccount),
                     _buildMenuCard([
@@ -952,23 +969,61 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return;
       }
 
-      // Step 2: Call Cloud Function (handles everything server-side)
-      await AccountDeletionService.requestDeletion(mode);
+      // Step 2: Request soft deletion (export + 15-day grace period)
+      final scheduledFor = await AccountDeletionService.requestSoftDeletion(mode);
 
       // Step 3: Sign out locally
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
+
+      // Show confirmation with scheduled date
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.settingsDeleteScheduled(scheduledFor.day, scheduledFor.month, scheduledFor.year)),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+
       await ref.read(authNotifierProvider.notifier).signOut();
       if (context.mounted) {
         await _handleSignOutResult(context);
       }
     } catch (e, st) {
-      debugPrint('Account deletion failed: $e\n$st');
+      debugPrint('Account deletion request failed: $e\n$st');
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.settingsDeleteError)),
       );
+    }
+  }
+
+  Future<void> _cancelDeletion(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      await DeletionRequestService.cancelDeletion();
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.settingsDeleteCancelled,
+                style: GoogleFonts.dmSans(fontSize: 13)),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Cancel deletion failed: $e');
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.errorGeneric(e.toString()),
+                style: GoogleFonts.dmSans(fontSize: 13)),
+          ),
+        );
+      }
     }
   }
 

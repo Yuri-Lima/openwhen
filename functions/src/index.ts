@@ -23,6 +23,9 @@ export {moderateContent} from "./moderation/moderate_content";
 export {moderateUploadedFile} from "./moderation/moderate_storage";
 
 export {deleteUserAccount} from "./delete_account";
+export {exportUserData} from "./export_user_data";
+export {requestAccountDeletion, cancelAccountDeletion} from "./request_deletion";
+export {processScheduledDeletions} from "./scheduled_deletion";
 
 export {
   claimExternalLetters,

@@ -1,5 +1,5 @@
 # OpenWhen — Proteção Legal e Privacidade
-### Abril 2026 (atualizado: 10 de abril de 2026)
+### Abril 2026 (atualizado: 12 de abril de 2026)
 
 ---
 
@@ -19,8 +19,27 @@
 | Domínio `openwhen.live` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
 | Revisão com advogado | 🔲 Pendente | — |
 | Emails do domínio (Cloudflare Email Routing) | ✅ Ativo | 7 endereços → redirecionamento para `y.m.lima19@gmail.com` |
-| Export automático ao deletar | 🔲 Pendente (Yuri) | — |
+| Export automático ao deletar | ✅ Implementada (testar) | `functions/src/export_user_data.ts` + `deletion_request_service.dart` |
+| Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
+| Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | 🔲 Pendente (Yuri) | — |
+
+### Testes Pendentes — Privacy & Data Lifecycle (12/04/2026)
+
+| Teste | Cenário | O que validar |
+|-------|---------|---------------|
+| Export completo | Utilizador com cartas, cápsulas, comentários, likes, follows | JSON contém todos os dados; signed URL funciona; email chega com link |
+| Export com media | Cartas com voice e handwritten | `mediaFiles[].signedUrl` preenchidos e acessíveis |
+| Soft delete request | Confirmar exclusão com re-auth | `accountStatus` muda para `pending_deletion`; email de confirmação chega; `deletionScheduledFor` = now + 15 dias |
+| Bloqueio de envio | Conta em `pending_deletion` tenta enviar carta | Envio bloqueado (verificar `canSendContent` no client) |
+| Banner UI | Login com conta `pending_deletion` | Banner vermelho aparece com dias restantes e botão cancelar |
+| Cancelamento | Clicar "Cancelar exclusão" durante grace period | `accountStatus` volta a `active`; campos de deletion limpos; banner desaparece |
+| Rate limit | 4º pedido de exclusão no mesmo mês | Erro `resource-exhausted` retornado |
+| Scheduled deletion | Simular `deletionScheduledFor` no passado | `processScheduledDeletions` executa; dados deletados/anonimizados; audit log criado |
+| Cartas locked (delete_all) | Remetente com carta locked + openDate futuro pede delete_all | Carta preservada como anónima; voice removido; handwritten migrado para `anon_` prefix |
+| Cartas locked (anonymize) | Remetente com carta locked pede anonymize | Carta anonimizada; media tratado igual ao delete_all |
+| Cápsulas locked | Cápsula com openDate futuro | Mesmo comportamento das cartas; fotos migradas |
+| Fallback imediato | `requestImmediateDeletion` (admin/legacy) | Exclusão direta funciona como antes (sem grace period) |
 
 ---
 

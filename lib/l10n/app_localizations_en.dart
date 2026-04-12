@@ -2481,6 +2481,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Account deletion failed. Please try again later.';
 
   @override
+  String settingsDeletePendingBanner(int days) {
+    return 'Your account will be deleted in $days day(s). You can cancel the deletion at any time.';
+  }
+
+  @override
+  String get settingsDeleteCancelButton => 'Cancel deletion';
+
+  @override
+  String get settingsDeleteCancelled =>
+      'Account deletion cancelled. Your account is active again.';
+
+  @override
+  String settingsDeleteScheduled(int day, int month, int year) {
+    return 'Deletion scheduled for $day/$month/$year. Your data has been sent via email.';
+  }
+
+  @override
   String get emailVerificationTitle => 'Verify your email';
 
   @override

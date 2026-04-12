@@ -830,6 +830,12 @@
   "settingsDeleteWrongPassword": "Incorrect password. Please try again.",
   "settingsDeleteReauthFailed": "Authentication failed. Please try again.",
   "settingsDeleteError": "Account deletion failed. Please try again later.",
+  "settingsDeletePendingBanner": "Your account will be deleted in {days} day(s). You can cancel the deletion at any time.",
+  "@settingsDeletePendingBanner": { "placeholders": { "days": { "type": "int" } } },
+  "settingsDeleteCancelButton": "Cancel deletion",
+  "settingsDeleteCancelled": "Account deletion cancelled. Your account is active again.",
+  "settingsDeleteScheduled": "Deletion scheduled for {day}/{month}/{year}. Your data has been sent via email.",
+  "@settingsDeleteScheduled": { "placeholders": { "day": { "type": "int" }, "month": { "type": "int" }, "year": { "type": "int" } } },
 
   "emailVerificationTitle": "Verify your email",
   "emailVerificationSubtitle": "We sent a verification link to {email}. Confirm it to unlock sending letters, capsules and comments.",

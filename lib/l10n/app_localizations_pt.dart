@@ -2483,6 +2483,23 @@ class AppLocalizationsPt extends AppLocalizations {
       'Falha ao deletar conta. Tente novamente mais tarde.';
 
   @override
+  String settingsDeletePendingBanner(int days) {
+    return 'Sua conta será excluída em $days dia(s). Você pode cancelar a exclusão a qualquer momento.';
+  }
+
+  @override
+  String get settingsDeleteCancelButton => 'Cancelar exclusão';
+
+  @override
+  String get settingsDeleteCancelled =>
+      'Exclusão de conta cancelada. Sua conta está ativa novamente.';
+
+  @override
+  String settingsDeleteScheduled(int day, int month, int year) {
+    return 'Exclusão agendada para $day/$month/$year. Seus dados foram enviados por email.';
+  }
+
+  @override
   String get emailVerificationTitle => 'Verifique seu email';
 
   @override
@@ -5086,6 +5103,23 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get settingsDeleteError =>
       'Falha ao deletar conta. Tente novamente mais tarde.';
+
+  @override
+  String settingsDeletePendingBanner(int days) {
+    return 'Sua conta será excluída em $days dia(s). Você pode cancelar a exclusão a qualquer momento.';
+  }
+
+  @override
+  String get settingsDeleteCancelButton => 'Cancelar exclusão';
+
+  @override
+  String get settingsDeleteCancelled =>
+      'Exclusão de conta cancelada. Sua conta está ativa novamente.';
+
+  @override
+  String settingsDeleteScheduled(int day, int month, int year) {
+    return 'Exclusão agendada para $day/$month/$year. Seus dados foram enviados por email.';
+  }
 
   @override
   String get emailVerificationTitle => 'Verifique seu email';

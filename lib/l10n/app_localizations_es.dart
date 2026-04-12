@@ -2493,6 +2493,23 @@ class AppLocalizationsEs extends AppLocalizations {
       'Error al eliminar la cuenta. Inténtalo más tarde.';
 
   @override
+  String settingsDeletePendingBanner(int days) {
+    return 'Tu cuenta será eliminada en $days día(s). Puedes cancelar la eliminación en cualquier momento.';
+  }
+
+  @override
+  String get settingsDeleteCancelButton => 'Cancelar eliminación';
+
+  @override
+  String get settingsDeleteCancelled =>
+      'Eliminación de cuenta cancelada. Tu cuenta está activa de nuevo.';
+
+  @override
+  String settingsDeleteScheduled(int day, int month, int year) {
+    return 'Eliminación programada para $day/$month/$year. Tus datos han sido enviados por email.';
+  }
+
+  @override
   String get emailVerificationTitle => 'Verifica tu email';
 
   @override

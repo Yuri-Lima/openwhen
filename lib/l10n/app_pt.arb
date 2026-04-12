@@ -858,6 +858,12 @@
   "settingsDeleteWrongPassword": "Senha incorreta. Tente novamente.",
   "settingsDeleteReauthFailed": "Falha na autenticação. Tente novamente.",
   "settingsDeleteError": "Falha ao deletar conta. Tente novamente mais tarde.",
+  "settingsDeletePendingBanner": "Sua conta será excluída em {days} dia(s). Você pode cancelar a exclusão a qualquer momento.",
+  "@settingsDeletePendingBanner": { "placeholders": { "days": { "type": "int" } } },
+  "settingsDeleteCancelButton": "Cancelar exclusão",
+  "settingsDeleteCancelled": "Exclusão de conta cancelada. Sua conta está ativa novamente.",
+  "settingsDeleteScheduled": "Exclusão agendada para {day}/{month}/{year}. Seus dados foram enviados por email.",
+  "@settingsDeleteScheduled": { "placeholders": { "day": { "type": "int" }, "month": { "type": "int" }, "year": { "type": "int" } } },
 
   "emailVerificationTitle": "Verifique seu email",
   "emailVerificationSubtitle": "Enviámos um link de verificação para {email}. Confirme para desbloquear o envio de cartas, cápsulas e comentários.",

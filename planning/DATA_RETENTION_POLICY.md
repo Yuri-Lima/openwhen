@@ -245,96 +245,47 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 2. ✅ Link para Termos de Uso e Política de Privacidade no registro
 3. ✅ Cloud Function `deleteUserAccount` com re-auth + limpeza completa
 4. ✅ Corrigir fluxo de deleção no client (re-auth, try-catch, diálogo de escolha)
-5. 🔲 Exportação de dados básica (JSON zip)
+5. ✅ Exportação de dados completa (JSON + signed URLs, server-side) — `functions/src/export_user_data.ts` (testar)
 
 ### P1 (Importante — primeiros 30 dias)
-6. 🔲 Período de carência de 30 dias (soft delete)
-7. 🔲 Email de confirmação de deleção
-8. 🔲 Tooltip de localização no envio de carta
+6. ✅ Período de carência de 15 dias corridos (soft delete) — `functions/src/request_deletion.ts` + `scheduled_deletion.ts` (testar)
+7. ✅ Email de confirmação de deleção — SendGrid via `request_deletion.ts` (testar)
+8. ✅ Preservação de cartas/cápsulas locked com openDate futuro — `delete_account.ts` (testar)
+9. 🔲 Tooltip de localização no envio de carta
 
 ### P2 (Desejável — roadmap)
-9. 🔲 Dashboard de privacidade (ver quais dados estão armazenados)
-10. 🔲 Retenção automática (cron para limpar reports/feedback antigos)
+10. 🔲 Dashboard de privacidade (ver quais dados estão armazenados)
+11. 🔲 Retenção automática (cron para limpar reports/feedback antigos)
 
 ---
 
-## 8. Problemas Atuais no Código (settings_screen.dart:868-910)
+## 8. Fluxo Atual de Exclusão — Implementado (12/04/2026)
 
-```dart
-// ❌ ATUAL — Problemas identificados:
-onPressed: () async {
-  Navigator.pop(context);
-  // 1. Sem try-catch → requires-recent-login silenciado
-  // 2. Deleta Firestore antes de Auth → estado inconsistente se Auth falhar
-  // 3. Sem re-autenticação
-  // 4. Não limpa: cartas, cápsulas, follows, likes, comments, storage, stripe
-  // 5. Sem diálogo de escolha (apagar vs anonimizar)
-  // 6. Sem período de carência
-  await FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(_user?.uid).delete();
-  await _user?.delete();  // ← throws requires-recent-login silently
-  if (context.mounted) {
-    await ref.read(authNotifierProvider.notifier).signOut();
-  }
-}
-```
+Todos os problemas anteriores (sem re-auth, sem try-catch, sem cleanup completo) foram corrigidos. O fluxo atual é:
 
-### Fluxo corrigido proposto:
+1. **Re-autenticação** via `AccountDeletionService.reauthenticateWithPassword()`
+2. **Export automático** server-side via `exportUserData` Cloud Function (JSON + signed URLs, email via SendGrid)
+3. **Soft delete** via `requestAccountDeletion` (marca `accountStatus = 'pending_deletion'`, prazo 15 dias corridos)
+4. **Sign out** local
+5. **Scheduled function** `processScheduledDeletions` (diária, 03:00 UTC) executa a exclusão após o prazo
+6. **Cartas/cápsulas locked** com `openDate` futuro são sempre preservadas (anonimizadas), voice removido
+7. **Cancelamento** possível durante os 15 dias via `cancelAccountDeletion`
 
-```dart
-// ✅ PROPOSTO
-onPressed: () async {
-  // 1. Fechar modal
-  Navigator.pop(context);
-
-  // 2. Re-autenticar (pedir senha/Google sign-in novamente)
-  final reauthed = await _reauthenticateUser(context);
-  if (!reauthed) return;
-
-  // 3. Mostrar diálogo de escolha (apagar tudo vs anonimizar)
-  final mode = await _showDeletionChoiceDialog(context);
-  if (mode == null) return; // cancelou
-
-  // 4. Chamar Cloud Function (faz tudo server-side)
-  try {
-    await CallableQueue.enqueue(() =>
-      FirebaseFunctions.instance
-        .httpsCallable('deleteUserAccount')
-        .call({'mode': mode}),
-      label: 'deleteUserAccount',
-    );
-  } catch (e) {
-    // Mostrar erro
-    return;
-  }
-
-  // 5. Sign out local
-  await ref.read(authNotifierProvider.notifier).signOut();
-}
-```
+Referências: `settings_screen.dart`, `account_deletion_service.dart`, `deletion_request_service.dart`, `delete_account.ts`, `request_deletion.ts`, `scheduled_deletion.ts`, `export_user_data.ts`
 
 ---
 
-## 9. Cloud Function — Estrutura
+## 9. Cloud Functions — Estrutura Atual
 
-```javascript
-// functions/src/deleteUserAccount.js
-exports.deleteUserAccount = functions.https.onCall(async (data, context) => {
-  // Verificar autenticação
-  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', '...');
+| Function | Tipo | Ficheiro |
+|----------|------|----------|
+| `deleteUserAccount` | onCall | `delete_account.ts` (callable direto, legado/admin) |
+| `exportUserData` | onCall | `export_user_data.ts` (export JSON + email) |
+| `requestAccountDeletion` | onCall | `request_deletion.ts` (soft delete 15 dias) |
+| `cancelAccountDeletion` | onCall | `request_deletion.ts` (reverter para active) |
+| `processScheduledDeletions` | onSchedule | `scheduled_deletion.ts` (diária 03:00 UTC) |
 
-  const uid = context.auth.uid;
-  const mode = data.mode; // 'delete_all' | 'anonymize'
-
-  // ... executar passos 2-16 do §3.2
-  // Usar batch writes para atomicidade onde possível
-  // Storage deletions separadas (não suportam batch)
-
-  // Último passo: deletar Auth user
-  await admin.auth().deleteUser(uid);
-
-  return { success: true };
-});
-```
+Lógica core extraída em `executeAccountDeletion()` (reutilizada pelo callable e scheduler).
 
 ---
 

@@ -28,6 +28,21 @@ class AppUser {
   /// Mirror of Stripe subscription status, e.g. `active`, `past_due`, `canceled`.
   final String? subscriptionStatus;
 
+  /// Account lifecycle: `active` | `pending_deletion`.
+  /// When `pending_deletion`, the user can still log in but cannot send
+  /// new letters/capsules. A scheduled Cloud Function will execute the
+  /// actual deletion after the grace period expires.
+  final String accountStatus;
+
+  /// When the user requested account deletion (null if not requested).
+  final DateTime? deletionRequestedAt;
+
+  /// The deletion mode chosen: `delete_all` or `anonymize` (null if not requested).
+  final String? deletionMode;
+
+  /// Scheduled date for the actual deletion (requestedAt + 15 days corridos).
+  final DateTime? deletionScheduledFor;
+
   AppUser({
     required this.uid,
     required this.name,
@@ -46,6 +61,10 @@ class AppUser {
     this.stripeCustomerId,
     this.stripeSubscriptionId,
     this.subscriptionStatus,
+    this.accountStatus = 'active',
+    this.deletionRequestedAt,
+    this.deletionMode,
+    this.deletionScheduledFor,
   });
 
   factory AppUser.fromFirestore(DocumentSnapshot doc) {
@@ -68,7 +87,30 @@ class AppUser {
       stripeCustomerId: data['stripeCustomerId'] as String?,
       stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
       subscriptionStatus: data['subscriptionStatus'] as String?,
+      accountStatus: data['accountStatus'] as String? ?? 'active',
+      deletionRequestedAt: data['deletionRequestedAt'] != null
+          ? (data['deletionRequestedAt'] as Timestamp).toDate()
+          : null,
+      deletionMode: data['deletionMode'] as String?,
+      deletionScheduledFor: data['deletionScheduledFor'] != null
+          ? (data['deletionScheduledFor'] as Timestamp).toDate()
+          : null,
     );
+  }
+
+  /// Whether this account is pending deletion (grace period active).
+  bool get isPendingDeletion => accountStatus == 'pending_deletion';
+
+  /// Whether the user can perform write actions (send letters, capsules, etc.).
+  /// Blocked when account is pending deletion.
+  bool get canSendContent => accountStatus == 'active';
+
+  /// Days remaining until the scheduled deletion executes.
+  /// Returns 0 if not pending or if the date has passed.
+  int get deletionDaysRemaining {
+    if (deletionScheduledFor == null) return 0;
+    final diff = deletionScheduledFor!.difference(DateTime.now()).inDays;
+    return diff > 0 ? diff : 0;
   }
 
   Map<String, dynamic> toFirestore() {
@@ -90,6 +132,12 @@ class AppUser {
       if (stripeCustomerId != null) 'stripeCustomerId': stripeCustomerId,
       if (stripeSubscriptionId != null) 'stripeSubscriptionId': stripeSubscriptionId,
       if (subscriptionStatus != null) 'subscriptionStatus': subscriptionStatus,
+      'accountStatus': accountStatus,
+      if (deletionRequestedAt != null)
+        'deletionRequestedAt': Timestamp.fromDate(deletionRequestedAt!),
+      if (deletionMode != null) 'deletionMode': deletionMode,
+      if (deletionScheduledFor != null)
+        'deletionScheduledFor': Timestamp.fromDate(deletionScheduledFor!),
     };
   }
 }
