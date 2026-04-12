@@ -32,9 +32,9 @@
 
 ### 4. Email quebrado
 - Recuperação de senha não chega ao usuário
-- Verificação de email no cadastro não existe
-- Para App Store é bloqueador — usuário pode perder acesso a cartas emocionais importantes
-- **Solução:** documentado em MVP_CHECKLIST.md
+- ~~Verificação de email no cadastro não existe~~ → **IMPLEMENTADO ✅**
+- Guard `requireVerifiedEmail()` bloqueia ações-chave (cartas, comentários, cápsulas) até email verificado
+- Bottom sheet com reenvio e verificação inline
 
 ### 5. Busca não funciona
 - Lupa do feed não faz nada ao clicar

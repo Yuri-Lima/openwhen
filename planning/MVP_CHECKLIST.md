@@ -146,15 +146,11 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - Provável causa: domínio padrão do Firebase bloqueado como spam
 - Solução Yuri: configurar domínio personalizado no Firebase Console → Authentication → Templates → configurar SMTP customizado ou verificar authorized domains
 
-**2. Verificação de email no cadastro — não existe**
-- Usuário cria conta com qualquer email sem confirmar que é dono
-- Obrigatório para App Store e Google Play
-- Solução Yuri: após `createUserWithEmailAndPassword` adicionar:
-```dart
-  await user.sendEmailVerification();
-```
-- Bloquear login até email verificado com `user.emailVerified`
-- Mostrar tela intermediária pedindo para verificar email
+**2. Verificação de email no cadastro — IMPLEMENTADO ✅**
+- [x] `sendEmailVerification()` disparado no registo (`register_screen.dart`, `auth_repository.dart`)
+- [x] Guard `requireVerifiedEmail()` em `lib/core/auth/email_verification_guard.dart` — verifica `user.emailVerified` antes de ações protegidas (enviar cartas, comentar, criar cápsulas)
+- [x] Bottom sheet `email_verification_sheet.dart` com opções: "Já verifiquei" (reload + check), "Reenviar email" (cooldown 60s), "Mais tarde"
+- Abordagem: soft-block (login permitido, ações-chave bloqueadas até verificação)
 
 **3. Notificações de engajamento — não existem**
 - Curtida: autor não recebe notificação quando alguém curte

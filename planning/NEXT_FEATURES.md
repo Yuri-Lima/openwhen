@@ -9,7 +9,7 @@
 Responsável: Yuri
 
 - [ ] Email de recuperação de senha funcionando
-- [ ] Verificação de email no cadastro
+- [x] Verificação de email no cadastro ✅
 - [ ] Notificações de curtida, comentário e seguidor (Cloud Functions)
 - [ ] Lupa do feed com navegação para SearchScreen
 - [ ] Busca de usuários retornando resultados
