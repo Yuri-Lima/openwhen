@@ -104,6 +104,16 @@ class AdminFunctionsService {
     return _asMap(result.data);
   }
 
+  /// One-shot: recalculates `followersCount` / `followingCount` for every user
+  /// based on the actual `follows` collection. Returns stats about the run.
+  Future<Map<String, dynamic>> backfillFollowCounters() async {
+    final result = await SafeCallable.call(
+      'backfillFollowCounters',
+      label: 'backfillFollowCounters',
+    );
+    return _asMap(result.data);
+  }
+
   Map<String, dynamic> _asMap(Object? data) {
     if (data is Map) {
       return Map<String, dynamic>.from(data);

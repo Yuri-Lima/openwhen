@@ -317,6 +317,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           .where('senderUid', isEqualTo: uid)
           .where('status', isEqualTo: 'opened')
           .where('isPublic', isEqualTo: true)
+          .limit(50)
           .snapshots(),
       builder: (context, snapshot) {
         final l10n = AppLocalizations.of(context)!;

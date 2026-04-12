@@ -48,6 +48,7 @@ Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> followingFeedMergedStr
       followsSub = firestore
           .collection('follows')
           .where('followerUid', isEqualTo: followerUid)
+          .limit(500)
           .snapshots()
           .listen(
         (followSnap) {

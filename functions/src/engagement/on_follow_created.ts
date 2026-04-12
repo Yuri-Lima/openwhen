@@ -6,7 +6,7 @@
  */
 
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
-import {getFirestore} from "firebase-admin/firestore";
+import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 
 import {sendEngagementNotification} from "./send_engagement_push";
@@ -30,6 +30,30 @@ export const onFollowCreated = onDocumentCreated(
     }
 
     const db = getFirestore();
+
+    // ── Increment denormalized counters ─────────────────────────────
+    await Promise.all([
+      db
+        .collection("users")
+        .doc(followingUid)
+        .update({followersCount: FieldValue.increment(1)})
+        .catch((err) =>
+          logger.warn("onFollowCreated: failed to increment followersCount", {
+            followingUid,
+            err,
+          })
+        ),
+      db
+        .collection("users")
+        .doc(followerUid)
+        .update({followingCount: FieldValue.increment(1)})
+        .catch((err) =>
+          logger.warn("onFollowCreated: failed to increment followingCount", {
+            followerUid,
+            err,
+          })
+        ),
+    ]);
 
     // ── Resolve follower profile ────────────────────────────────────
     const followerSnap = await db.collection("users").doc(followerUid).get();

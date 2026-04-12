@@ -252,6 +252,17 @@ Cartas que machucam não têm lugar aqui.
 
 ---
 
+## 🔴 Custos Firebase — ANTES DO LANÇAMENTO
+
+- [ ] **Análise completa de custos Firebase** — entender a estrutura de preços (Firestore leituras/escritas, Cloud Functions invocações/CPU, Storage, Hosting bandwidth) com estimativas por DAU
+- [ ] **Budget Alerts configurados** na Google Cloud Console (alertas a 50%, 80% e 100% de um teto mensal)
+- [ ] **Firebase Usage dashboard ativado** e monitorização planeada para os primeiros dias/semanas
+- [ ] Estimativas documentadas em [`planning/custos/GASTOS.md`](custos/GASTOS.md)
+
+> ⚠️ **Sem esta análise, NÃO lançar em produção.** Ver aviso detalhado em [`PRODUCTION.md`](PRODUCTION.md).
+
+---
+
 ## 🔴 Legal e Privacidade — ANTES DO LANÇAMENTO
 
 ### Concluído

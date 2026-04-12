@@ -62,18 +62,20 @@ class _PrivacyCenterScreenState extends State<PrivacyCenterScreen> {
     }
 
     try {
-      // Run all queries in parallel
+      // Run all queries in parallel (limited to 500 docs each to cap memory/cost).
+      // Privacy center shows a summary; full export uses a dedicated function.
+      const privacyLimit = 500;
       final results = await Future.wait([
-        _firestore.collection(FirestoreCollections.users).doc(uid).get(),                          // 0: profile
-        _firestore.collection(FirestoreCollections.letters).where('senderUid', isEqualTo: uid).get(),    // 1: sent
-        _firestore.collection(FirestoreCollections.letters).where('receiverUid', isEqualTo: uid).get(),  // 2: received
-        _firestore.collection(FirestoreCollections.capsules).where('senderUid', isEqualTo: uid).get(),   // 3: capsules
-        _firestore.collection(FirestoreCollections.comments).where('userUid', isEqualTo: uid).get(),     // 4: comments
-        _firestore.collection(FirestoreCollections.likes).where('userUid', isEqualTo: uid).get(),        // 5: likes
-        _firestore.collection(FirestoreCollections.follows).where('followingUid', isEqualTo: uid).get(), // 6: followers
-        _firestore.collection(FirestoreCollections.follows).where('followerUid', isEqualTo: uid).get(),  // 7: following
-        _firestore.collection(FirestoreCollections.blocks).where('blockedBy', isEqualTo: uid).get(),     // 8: blocks
-        _firestore.collection('users/$uid/badgeUnlocks').get(),                                          // 9: badges
+        _firestore.collection(FirestoreCollections.users).doc(uid).get(),                                            // 0: profile
+        _firestore.collection(FirestoreCollections.letters).where('senderUid', isEqualTo: uid).limit(privacyLimit).get(),    // 1: sent
+        _firestore.collection(FirestoreCollections.letters).where('receiverUid', isEqualTo: uid).limit(privacyLimit).get(),  // 2: received
+        _firestore.collection(FirestoreCollections.capsules).where('senderUid', isEqualTo: uid).limit(privacyLimit).get(),   // 3: capsules
+        _firestore.collection(FirestoreCollections.comments).where('userUid', isEqualTo: uid).limit(privacyLimit).get(),     // 4: comments
+        _firestore.collection(FirestoreCollections.likes).where('userUid', isEqualTo: uid).limit(privacyLimit).get(),        // 5: likes
+        _firestore.collection(FirestoreCollections.follows).where('followingUid', isEqualTo: uid).limit(privacyLimit).get(), // 6: followers
+        _firestore.collection(FirestoreCollections.follows).where('followerUid', isEqualTo: uid).limit(privacyLimit).get(),  // 7: following
+        _firestore.collection(FirestoreCollections.blocks).where('blockedBy', isEqualTo: uid).limit(privacyLimit).get(),     // 8: blocks
+        _firestore.collection('users/$uid/badgeUnlocks').limit(privacyLimit).get(),                                          // 9: badges
       ]);
 
       final profileSnap = results[0] as DocumentSnapshot;

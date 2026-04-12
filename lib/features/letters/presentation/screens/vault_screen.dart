@@ -345,6 +345,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .collection(FirestoreCollections.letters)
           .where('receiverUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
+          .limit(200)
           .snapshots(),
       builder: (context, lockedSnap) {
         return StreamBuilder<QuerySnapshot>(
@@ -352,6 +353,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               .collection(FirestoreCollections.letters)
               .where('receiverUid', isEqualTo: uid)
               .where('status', isEqualTo: 'opened')
+              .limit(200)
               .snapshots(),
           builder: (context, openedSnap) {
             final l10n = AppLocalizations.of(context)!;
@@ -415,6 +417,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .collection(FirestoreCollections.letters)
           .where('senderUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
+          .limit(200)
           .snapshots(),
       builder: (context, lockedSnap) {
         return StreamBuilder<QuerySnapshot>(
@@ -422,6 +425,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               .collection(FirestoreCollections.letters)
               .where('senderUid', isEqualTo: uid)
               .where('status', isEqualTo: 'opened')
+              .limit(200)
               .snapshots(),
           builder: (context, openedSnap) {
             final l10n = AppLocalizations.of(context)!;

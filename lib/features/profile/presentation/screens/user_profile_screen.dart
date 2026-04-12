@@ -47,9 +47,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           .collection('follows')
           .where('followerUid', isEqualTo: _currentUid)
           .where('followingUid', isEqualTo: widget.userId)
+          .limit(1)
           .get();
-      for (final doc in snap.docs) {
-        await doc.reference.delete();
+      if (snap.docs.isNotEmpty) {
+        await snap.docs.first.reference.delete();
       }
     } else {
       await firestore.collection('follows').add({
@@ -163,6 +164,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                         .collection('follows')
                                         .where('followerUid', isEqualTo: _currentUid)
                                         .where('followingUid', isEqualTo: widget.userId)
+                                        .limit(1)
                                         .snapshots(),
                                     builder: (context, followSnap) {
                                       final isFollowing = (followSnap.data?.docs ?? []).isNotEmpty;
@@ -260,6 +262,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       .where('senderUid', isEqualTo: widget.userId)
                       .where('isPublic', isEqualTo: true)
                       .where('status', isEqualTo: 'opened')
+                      .limit(50)
                       .snapshots(),
                   builder: (context, snapshot) {
                     final docs = snapshot.data?.docs ?? [];

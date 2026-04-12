@@ -31,6 +31,7 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   bool _loadingReviews = true;
   bool _loadingIncidents = true;
   bool _loadingModerationInfo = true;
+  bool _runningBackfill = false;
   AdminModerationInfo? _moderationInfo;
   String? _error;
 
@@ -143,6 +144,32 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     if (mounted) setState(() => _loadingIncidents = false);
   }
 
+  Future<void> _runBackfill() async {
+    if (_runningBackfill) return;
+    setState(() => _runningBackfill = true);
+    try {
+      final result = await _admin.backfillFollowCounters();
+      if (!mounted) return;
+      final updated = result['usersUpdated'] ?? 0;
+      final follows = result['totalFollowDocs'] ?? 0;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Backfill complete: $updated users updated ($follows follow docs scanned)'),
+          backgroundColor: Colors.green.shade700,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Backfill failed: $e'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+    }
+    if (mounted) setState(() => _runningBackfill = false);
+  }
+
   String _ts(Map<String, dynamic> m) {
     final c = m['createdAt'];
     if (c is Timestamp) {
@@ -163,6 +190,30 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
           l10n.adminModerationTitle,
           style: GoogleFonts.dmSerifDisplay(fontSize: 20, fontStyle: FontStyle.italic),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'backfill_follows') _runBackfill();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'backfill_follows',
+                enabled: !_runningBackfill,
+                child: Row(
+                  children: [
+                    if (_runningBackfill)
+                      const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                    else
+                      const Icon(Icons.sync, size: 18),
+                    const SizedBox(width: 12),
+                    Text(_runningBackfill ? 'Backfill running...' : 'Backfill follow counters'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
