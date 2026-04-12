@@ -32,8 +32,10 @@ class CallableResult<T> {
 class SafeCallable {
   SafeCallable._();
 
-  /// Whether the current runtime should bypass the native Firebase Functions
-  /// SDK and use direct HTTP instead.
+  // TODO(remove-http-fallback): When FlutterFire ships BoM >= 4.12.0 with
+  //  Firebase iOS SDK 12.12.0+, set this to `false` (or delete SafeCallable
+  //  entirely and revert callers to the native SDK).
+  //  Track: https://github.com/firebase/flutterfire/issues/18153
   static bool get _useHttpFallback => !kIsWeb && Platform.isIOS;
 
   // ── public API ──────────────────────────────────────────────────────────
