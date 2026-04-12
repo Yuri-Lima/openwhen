@@ -20,7 +20,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _bioCtrl = TextEditingController();
   bool _loading = false;
   bool _saving = false;
-  String? _usernameError;
 
   @override
   void initState() {
@@ -45,19 +44,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() => _loading = false);
   }
 
-  Future<bool> _isUsernameAvailable(String username) async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    final snap = await FirebaseFirestore.instance
-        .collection(FirestoreCollections.users)
-        .where('username', isEqualTo: username.toLowerCase())
-        .get();
-    return snap.docs.isEmpty || (snap.docs.length == 1 && snap.docs.first.id == uid);
-  }
-
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     final name = _nameCtrl.text.trim();
-    final username = _usernameCtrl.text.trim().toLowerCase().replaceAll('@', '').replaceAll(' ', '');
     final bio = _bioCtrl.text.trim();
 
     if (name.isEmpty) {
@@ -67,27 +56,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
-    if (username.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.editProfileErrorUsernameEmpty)),
-      );
-      return;
-    }
-
-    if (username.length < 3) {
-      setState(() => _usernameError = l10n.editProfileErrorUsernameShort);
-      return;
-    }
-
-    setState(() { _saving = true; _usernameError = null; });
-
-    final available = await _isUsernameAvailable(username);
-    if (!available) {
-      setState(() { _usernameError = l10n.editProfileErrorUsernameTaken; _saving = false; });
-      return;
-    }
+    setState(() => _saving = true);
 
     final uid = FirebaseAuth.instance.currentUser?.uid;
+    final username = _usernameCtrl.text.trim().toLowerCase();
     final searchTokens = buildUserSearchTokens(
       username: username,
       displayName: name,
@@ -100,7 +72,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .update({
       'displayName': name,
       'name': name,
-      'username': username,
       'searchTokens': searchTokens,
       'bio': bio,
     });
@@ -184,11 +155,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hint: l10n.editProfileHintUsername,
                     icon: Icons.alternate_email_rounded,
                     prefix: '@',
-                    error: _usernameError,
-                    onChanged: (_) => setState(() => _usernameError = null),
+                    readOnly: true,
                   ),
-                  const SizedBox(height: 4),
-                  Text(l10n.editProfileUsernameRules, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
                   const SizedBox(height: 20),
 
                   Text(l10n.editProfileSectionBio, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
@@ -242,39 +210,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     required String hint,
     required IconData icon,
     String? prefix,
-    String? error,
-    ValueChanged<String>? onChanged,
+    bool readOnly = false,
   }) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        decoration: BoxDecoration(
-          color: context.pal.card,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: error != null ? context.pal.accent : context.pal.border),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Row(children: [
-          Icon(icon, size: 18, color: context.pal.inkFaint),
-          const SizedBox(width: 10),
-          if (prefix != null)
-            Text(prefix, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
-          Expanded(child: TextField(
-            controller: controller,
-            onChanged: onChanged,
-            style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-          )),
-        ]),
+    return Container(
+      decoration: BoxDecoration(
+        color: readOnly ? context.pal.card.withOpacity(0.5) : context.pal.card,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: context.pal.border),
       ),
-      if (error != null) ...[
-        const SizedBox(height: 4),
-        Text(error, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.accent)),
-      ],
-    ]);
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(children: [
+        Icon(icon, size: 18, color: context.pal.inkFaint),
+        const SizedBox(width: 10),
+        if (prefix != null)
+          Text(prefix, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
+        Expanded(child: TextField(
+          controller: controller,
+          readOnly: readOnly,
+          enabled: !readOnly,
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            color: readOnly ? context.pal.inkFaint : context.pal.ink,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+        )),
+      ]),
+    );
   }
 }
