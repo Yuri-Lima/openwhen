@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -78,6 +79,184 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       }
     }
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  void _showForgotPassword(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final resetEmailController = TextEditingController(
+      text: _emailController.text.trim(),
+    );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.pal.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetCtx) {
+        bool isSending = false;
+        return StatefulBuilder(
+          builder: (stfCtx, setSheetState) => Padding(
+            padding: EdgeInsets.fromLTRB(
+              24, 20, 24,
+              MediaQuery.of(sheetCtx).viewInsets.bottom + 32,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: context.pal.border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.forgotPasswordTitle,
+                  style: GoogleFonts.dmSerifDisplay(
+                    fontSize: 20,
+                    color: context.pal.ink,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.forgotPasswordBody,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    color: context.pal.inkSoft,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: resetEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                  autofocus: true,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: context.pal.ink,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: l10n.forgotPasswordHint,
+                    hintStyle: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      color: context.pal.inkSoft.withOpacity(0.5),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.mail_outline,
+                      color: context.pal.inkSoft,
+                      size: 20,
+                    ),
+                    filled: true,
+                    fillColor: context.pal.bg,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 14,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: context.pal.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: context.pal.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: context.pal.accent),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: isSending
+                      ? null
+                      : () async {
+                          final email = resetEmailController.text.trim();
+                          if (email.isEmpty || !email.contains('@')) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  l10n.forgotPasswordErrorInvalidEmail,
+                                  style: GoogleFonts.dmSans(fontSize: 13),
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          setSheetState(() => isSending = true);
+                          try {
+                            await FirebaseAuth.instance
+                                .sendPasswordResetEmail(email: email);
+                            if (sheetCtx.mounted) Navigator.pop(sheetCtx);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    l10n.forgotPasswordSent(email),
+                                    style: GoogleFonts.dmSans(fontSize: 13),
+                                  ),
+                                ),
+                              );
+                            }
+                          } on FirebaseAuthException catch (e) {
+                            setSheetState(() => isSending = false);
+                            if (!context.mounted) return;
+                            final msg = switch (e.code) {
+                              'user-not-found' =>
+                                l10n.forgotPasswordErrorNoUser,
+                              'invalid-email' =>
+                                l10n.forgotPasswordErrorInvalidEmail,
+                              _ => l10n.forgotPasswordErrorGeneric,
+                            };
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  msg,
+                                  style: GoogleFonts.dmSans(fontSize: 13),
+                                ),
+                              ),
+                            );
+                          } catch (_) {
+                            setSheetState(() => isSending = false);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  l10n.forgotPasswordErrorGeneric,
+                                  style: GoogleFonts.dmSans(fontSize: 13),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                  child: isSending
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.pal.white,
+                          ),
+                        )
+                      : Text(
+                          l10n.forgotPasswordButton,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildField({
@@ -346,7 +525,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => _showForgotPassword(context),
             child: Text(
               l10n.loginForgotPassword,
               style: GoogleFonts.dmSans(

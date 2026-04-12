@@ -431,6 +431,30 @@ abstract class AppLocalizations {
   /// **'Esqueceu a senha?'**
   String get loginForgotPassword;
 
+  /// No description provided for @forgotPasswordTitle.
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordBody.
+  String get forgotPasswordBody;
+
+  /// No description provided for @forgotPasswordHint.
+  String get forgotPasswordHint;
+
+  /// No description provided for @forgotPasswordButton.
+  String get forgotPasswordButton;
+
+  /// No description provided for @forgotPasswordSent.
+  String forgotPasswordSent(String email);
+
+  /// No description provided for @forgotPasswordErrorNoUser.
+  String get forgotPasswordErrorNoUser;
+
+  /// No description provided for @forgotPasswordErrorInvalidEmail.
+  String get forgotPasswordErrorInvalidEmail;
+
+  /// No description provided for @forgotPasswordErrorGeneric.
+  String get forgotPasswordErrorGeneric;
+
   /// No description provided for @loginButtonSignIn.
   ///
   /// In pt_BR, this message translates to:

@@ -185,6 +185,32 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loginForgotPassword => 'Esqueceu a senha?';
 
   @override
+  String get forgotPasswordTitle => 'Recuperar senha';
+
+  @override
+  String get forgotPasswordBody => 'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
+
+  @override
+  String get forgotPasswordHint => 'seu e-mail';
+
+  @override
+  String get forgotPasswordButton => 'Enviar link de recuperação';
+
+  @override
+  String forgotPasswordSent(String email) {
+    return 'Link de recuperação enviado para $email';
+  }
+
+  @override
+  String get forgotPasswordErrorNoUser => 'Nenhuma conta encontrada com este e-mail.';
+
+  @override
+  String get forgotPasswordErrorInvalidEmail => 'Por favor, insira um e-mail válido.';
+
+  @override
+  String get forgotPasswordErrorGeneric => 'Algo deu errado. Tente novamente.';
+
+  @override
   String get loginButtonSignIn => 'Entrar';
 
   @override
@@ -2688,6 +2714,32 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get loginForgotPassword => 'Esqueceu a senha?';
+
+  @override
+  String get forgotPasswordTitle => 'Recuperar senha';
+
+  @override
+  String get forgotPasswordBody => 'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
+
+  @override
+  String get forgotPasswordHint => 'seu e-mail';
+
+  @override
+  String get forgotPasswordButton => 'Enviar link de recuperação';
+
+  @override
+  String forgotPasswordSent(String email) {
+    return 'Link de recuperação enviado para $email';
+  }
+
+  @override
+  String get forgotPasswordErrorNoUser => 'Nenhuma conta encontrada com este e-mail.';
+
+  @override
+  String get forgotPasswordErrorInvalidEmail => 'Por favor, insira um e-mail válido.';
+
+  @override
+  String get forgotPasswordErrorGeneric => 'Algo deu errado. Tente novamente.';
 
   @override
   String get loginButtonSignIn => 'Entrar';

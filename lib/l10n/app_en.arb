@@ -61,6 +61,19 @@
   "hintPassword": "your password",
   "labelPassword": "Password",
   "loginForgotPassword": "Forgot your password?",
+  "forgotPasswordTitle": "Reset password",
+  "forgotPasswordBody": "Enter the email address associated with your account and we'll send you a link to reset your password.",
+  "forgotPasswordHint": "your email",
+  "forgotPasswordButton": "Send reset link",
+  "forgotPasswordSent": "Reset link sent to {email}",
+  "@forgotPasswordSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "forgotPasswordErrorNoUser": "No account found with this email.",
+  "forgotPasswordErrorInvalidEmail": "Please enter a valid email address.",
+  "forgotPasswordErrorGeneric": "Something went wrong. Please try again.",
   "loginButtonSignIn": "Sign In",
   "loginRegisterBlurb": "Create your account in a single step: name, email, and password on the next screen.",
   "loginBullet1": "Letters to open in the future",

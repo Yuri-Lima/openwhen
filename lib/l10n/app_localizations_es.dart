@@ -186,6 +186,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String get loginForgotPassword => '¿Olvidaste tu contraseña?';
 
   @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordBody => 'Ingresa el correo electrónico asociado a tu cuenta y te enviaremos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordHint => 'tu correo electrónico';
+
+  @override
+  String get forgotPasswordButton => 'Enviar enlace de recuperación';
+
+  @override
+  String forgotPasswordSent(String email) {
+    return 'Enlace de recuperación enviado a $email';
+  }
+
+  @override
+  String get forgotPasswordErrorNoUser => 'No se encontró una cuenta con este correo.';
+
+  @override
+  String get forgotPasswordErrorInvalidEmail => 'Por favor, ingresa un correo electrónico válido.';
+
+  @override
+  String get forgotPasswordErrorGeneric => 'Algo salió mal. Inténtalo de nuevo.';
+
+  @override
   String get loginButtonSignIn => 'Iniciar sesión';
 
   @override

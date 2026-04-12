@@ -62,6 +62,19 @@
   "hintPassword": "sua senha",
   "labelPassword": "Senha",
   "loginForgotPassword": "Esqueceu a senha?",
+  "forgotPasswordTitle": "Recuperar senha",
+  "forgotPasswordBody": "Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.",
+  "forgotPasswordHint": "seu e-mail",
+  "forgotPasswordButton": "Enviar link de recuperação",
+  "forgotPasswordSent": "Link de recuperação enviado para {email}",
+  "@forgotPasswordSent": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "forgotPasswordErrorNoUser": "Nenhuma conta encontrada com este e-mail.",
+  "forgotPasswordErrorInvalidEmail": "Por favor, insira um e-mail válido.",
+  "forgotPasswordErrorGeneric": "Algo deu errado. Tente novamente.",
   "loginButtonSignIn": "Entrar",
   "loginRegisterBlurb": "Crie sua conta em um único passo: nome, e-mail e senha na próxima tela.",
   "loginBullet1": "Cartas para abrir no futuro",
