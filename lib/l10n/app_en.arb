@@ -862,5 +862,12 @@
   "capsuleModerationBlocked": "This capsule cannot be created. OpenWhen exists to connect people with love, resilience, and genuine connection.",
   "capsuleModerationUnavailable": "Content verification is temporarily unavailable. Please try again shortly.",
   "capsuleModerationReviewBtn": "Review capsule",
-  "capsuleModerationSendAnywayBtn": "Create anyway"
+  "capsuleModerationSendAnywayBtn": "Create anyway",
+
+  "mediaModerationImageRemovedTitle": "Image removed",
+  "mediaModerationImageRemovedBody": "An image you uploaded was removed for not meeting OpenWhen's guidelines.",
+  "mediaModerationAudioRemovedTitle": "Audio removed",
+  "mediaModerationAudioRemovedBody": "An audio recording you uploaded was removed for not meeting OpenWhen's guidelines.",
+  "mediaModerationImageUnavailable": "Image unavailable",
+  "mediaModerationAudioUnavailable": "Audio unavailable"
 }

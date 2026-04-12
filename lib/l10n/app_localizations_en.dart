@@ -2574,4 +2574,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get capsuleModerationSendAnywayBtn => 'Create anyway';
+
+  @override
+  String get mediaModerationImageRemovedTitle => 'Image removed';
+
+  @override
+  String get mediaModerationImageRemovedBody =>
+      'An image you uploaded was removed for not meeting OpenWhen\'s guidelines.';
+
+  @override
+  String get mediaModerationAudioRemovedTitle => 'Audio removed';
+
+  @override
+  String get mediaModerationAudioRemovedBody =>
+      'An audio recording you uploaded was removed for not meeting OpenWhen\'s guidelines.';
+
+  @override
+  String get mediaModerationImageUnavailable => 'Image unavailable';
+
+  @override
+  String get mediaModerationAudioUnavailable => 'Audio unavailable';
 }

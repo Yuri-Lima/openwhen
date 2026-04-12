@@ -54,3 +54,49 @@ export function copyApproved(locale: string | undefined): {
   const k = pickLocale(locale);
   return APPROVED[k] ?? APPROVED.en;
 }
+
+// ─── Media removal copy (image / audio moderation) ──────────────────
+
+const MEDIA_REMOVED_IMAGE: Record<string, {title: string; body: string}> = {
+  en: {
+    title: "Image removed",
+    body: "An image you uploaded was removed for not meeting OpenWhen's guidelines.",
+  },
+  pt: {
+    title: "Imagem removida",
+    body: "Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen.",
+  },
+  es: {
+    title: "Imagen eliminada",
+    body: "Una imagen que subiste fue eliminada por no cumplir con las directrices de OpenWhen.",
+  },
+};
+
+const MEDIA_REMOVED_AUDIO: Record<string, {title: string; body: string}> = {
+  en: {
+    title: "Audio removed",
+    body: "An audio recording you uploaded was removed for not meeting OpenWhen's guidelines.",
+  },
+  pt: {
+    title: "Áudio removido",
+    body: "Um áudio que você enviou foi removido por não atender às diretrizes do OpenWhen.",
+  },
+  es: {
+    title: "Audio eliminado",
+    body: "Un audio que subiste fue eliminado por no cumplir con las directrices de OpenWhen.",
+  },
+};
+
+/**
+ * Server-side copy for media removal notifications.
+ * `mediaType` is "image" or "audio".
+ * Locale defaults to "en" when not supplied.
+ */
+export function copyMediaRemoved(
+  mediaType: "image" | "audio",
+  locale?: string | undefined
+): {title: string; body: string} {
+  const k = pickLocale(locale);
+  const map = mediaType === "image" ? MEDIA_REMOVED_IMAGE : MEDIA_REMOVED_AUDIO;
+  return map[k] ?? map.en;
+}

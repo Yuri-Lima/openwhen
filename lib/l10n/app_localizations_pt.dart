@@ -2575,6 +2575,26 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get capsuleModerationSendAnywayBtn => 'Criar assim mesmo';
+
+  @override
+  String get mediaModerationImageRemovedTitle => 'Imagem removida';
+
+  @override
+  String get mediaModerationImageRemovedBody =>
+      'Uma imagem que enviou foi removida por não cumprir as diretrizes do OpenWhen.';
+
+  @override
+  String get mediaModerationAudioRemovedTitle => 'Áudio removido';
+
+  @override
+  String get mediaModerationAudioRemovedBody =>
+      'Um áudio que enviou foi removido por não cumprir as diretrizes do OpenWhen.';
+
+  @override
+  String get mediaModerationImageUnavailable => 'Imagem indisponível';
+
+  @override
+  String get mediaModerationAudioUnavailable => 'Áudio indisponível';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5148,4 +5168,24 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get capsuleModerationSendAnywayBtn => 'Criar assim mesmo';
+
+  @override
+  String get mediaModerationImageRemovedTitle => 'Imagem removida';
+
+  @override
+  String get mediaModerationImageRemovedBody =>
+      'Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen.';
+
+  @override
+  String get mediaModerationAudioRemovedTitle => 'Áudio removido';
+
+  @override
+  String get mediaModerationAudioRemovedBody =>
+      'Um áudio que você enviou foi removido por não atender às diretrizes do OpenWhen.';
+
+  @override
+  String get mediaModerationImageUnavailable => 'Imagem indisponível';
+
+  @override
+  String get mediaModerationAudioUnavailable => 'Áudio indisponível';
 }

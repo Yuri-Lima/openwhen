@@ -890,5 +890,12 @@
   "capsuleModerationBlocked": "Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.",
   "capsuleModerationUnavailable": "A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.",
   "capsuleModerationReviewBtn": "Rever cápsula",
-  "capsuleModerationSendAnywayBtn": "Criar assim mesmo"
+  "capsuleModerationSendAnywayBtn": "Criar assim mesmo",
+
+  "mediaModerationImageRemovedTitle": "Imagem removida",
+  "mediaModerationImageRemovedBody": "Uma imagem que enviou foi removida por não cumprir as diretrizes do OpenWhen.",
+  "mediaModerationAudioRemovedTitle": "Áudio removido",
+  "mediaModerationAudioRemovedBody": "Um áudio que enviou foi removido por não cumprir as diretrizes do OpenWhen.",
+  "mediaModerationImageUnavailable": "Imagem indisponível",
+  "mediaModerationAudioUnavailable": "Áudio indisponível"
 }

@@ -20,6 +20,7 @@ export {
 } from "./moderation/admin_review";
 
 export {moderateContent} from "./moderation/moderate_content";
+export {moderateUploadedFile} from "./moderation/moderate_storage";
 
 export {deleteUserAccount} from "./delete_account";
 

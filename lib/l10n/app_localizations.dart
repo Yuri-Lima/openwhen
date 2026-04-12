@@ -4750,6 +4750,42 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Criar assim mesmo'**
   String get capsuleModerationSendAnywayBtn;
+
+  /// No description provided for @mediaModerationImageRemovedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Imagem removida'**
+  String get mediaModerationImageRemovedTitle;
+
+  /// No description provided for @mediaModerationImageRemovedBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen.'**
+  String get mediaModerationImageRemovedBody;
+
+  /// No description provided for @mediaModerationAudioRemovedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Áudio removido'**
+  String get mediaModerationAudioRemovedTitle;
+
+  /// No description provided for @mediaModerationAudioRemovedBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Um áudio que você enviou foi removido por não atender às diretrizes do OpenWhen.'**
+  String get mediaModerationAudioRemovedBody;
+
+  /// No description provided for @mediaModerationImageUnavailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Imagem indisponível'**
+  String get mediaModerationImageUnavailable;
+
+  /// No description provided for @mediaModerationAudioUnavailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Áudio indisponível'**
+  String get mediaModerationAudioUnavailable;
 }
 
 class _AppLocalizationsDelegate
