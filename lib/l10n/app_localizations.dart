@@ -432,27 +432,51 @@ abstract class AppLocalizations {
   String get loginForgotPassword;
 
   /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Recuperar senha'**
   String get forgotPasswordTitle;
 
   /// No description provided for @forgotPasswordBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.'**
   String get forgotPasswordBody;
 
   /// No description provided for @forgotPasswordHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'seu e-mail'**
   String get forgotPasswordHint;
 
   /// No description provided for @forgotPasswordButton.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar link de recuperação'**
   String get forgotPasswordButton;
 
   /// No description provided for @forgotPasswordSent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link de recuperação enviado para {email}'**
   String forgotPasswordSent(String email);
 
   /// No description provided for @forgotPasswordErrorNoUser.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma conta encontrada com este e-mail.'**
   String get forgotPasswordErrorNoUser;
 
   /// No description provided for @forgotPasswordErrorInvalidEmail.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Por favor, insira um e-mail válido.'**
   String get forgotPasswordErrorInvalidEmail;
 
   /// No description provided for @forgotPasswordErrorGeneric.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Algo deu errado. Tente novamente.'**
   String get forgotPasswordErrorGeneric;
 
   /// No description provided for @loginButtonSignIn.

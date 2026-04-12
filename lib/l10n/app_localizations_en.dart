@@ -187,7 +187,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordTitle => 'Reset password';
 
   @override
-  String get forgotPasswordBody => 'Enter the email address associated with your account and we\'ll send you a link to reset your password.';
+  String get forgotPasswordBody =>
+      'Enter the email address associated with your account and we\'ll send you a link to reset your password.';
 
   @override
   String get forgotPasswordHint => 'your email';
@@ -204,10 +205,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordErrorNoUser => 'No account found with this email.';
 
   @override
-  String get forgotPasswordErrorInvalidEmail => 'Please enter a valid email address.';
+  String get forgotPasswordErrorInvalidEmail =>
+      'Please enter a valid email address.';
 
   @override
-  String get forgotPasswordErrorGeneric => 'Something went wrong. Please try again.';
+  String get forgotPasswordErrorGeneric =>
+      'Something went wrong. Please try again.';
 
   @override
   String get loginButtonSignIn => 'Sign In';

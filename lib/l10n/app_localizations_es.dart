@@ -189,7 +189,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forgotPasswordTitle => 'Recuperar contraseña';
 
   @override
-  String get forgotPasswordBody => 'Ingresa el correo electrónico asociado a tu cuenta y te enviaremos un enlace para restablecer tu contraseña.';
+  String get forgotPasswordBody =>
+      'Ingresa el correo electrónico asociado a tu cuenta y te enviaremos un enlace para restablecer tu contraseña.';
 
   @override
   String get forgotPasswordHint => 'tu correo electrónico';
@@ -203,13 +204,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get forgotPasswordErrorNoUser => 'No se encontró una cuenta con este correo.';
+  String get forgotPasswordErrorNoUser =>
+      'No se encontró una cuenta con este correo.';
 
   @override
-  String get forgotPasswordErrorInvalidEmail => 'Por favor, ingresa un correo electrónico válido.';
+  String get forgotPasswordErrorInvalidEmail =>
+      'Por favor, ingresa un correo electrónico válido.';
 
   @override
-  String get forgotPasswordErrorGeneric => 'Algo salió mal. Inténtalo de nuevo.';
+  String get forgotPasswordErrorGeneric =>
+      'Algo salió mal. Inténtalo de nuevo.';
 
   @override
   String get loginButtonSignIn => 'Iniciar sesión';

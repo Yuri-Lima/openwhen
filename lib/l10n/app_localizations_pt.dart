@@ -188,7 +188,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get forgotPasswordTitle => 'Recuperar senha';
 
   @override
-  String get forgotPasswordBody => 'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
+  String get forgotPasswordBody =>
+      'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
 
   @override
   String get forgotPasswordHint => 'seu e-mail';
@@ -202,10 +203,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get forgotPasswordErrorNoUser => 'Nenhuma conta encontrada com este e-mail.';
+  String get forgotPasswordErrorNoUser =>
+      'Nenhuma conta encontrada com este e-mail.';
 
   @override
-  String get forgotPasswordErrorInvalidEmail => 'Por favor, insira um e-mail válido.';
+  String get forgotPasswordErrorInvalidEmail =>
+      'Por favor, insira um e-mail válido.';
 
   @override
   String get forgotPasswordErrorGeneric => 'Algo deu errado. Tente novamente.';
@@ -2719,7 +2722,8 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get forgotPasswordTitle => 'Recuperar senha';
 
   @override
-  String get forgotPasswordBody => 'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
+  String get forgotPasswordBody =>
+      'Insira o e-mail associado à sua conta e enviaremos um link para redefinir sua senha.';
 
   @override
   String get forgotPasswordHint => 'seu e-mail';
@@ -2733,10 +2737,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get forgotPasswordErrorNoUser => 'Nenhuma conta encontrada com este e-mail.';
+  String get forgotPasswordErrorNoUser =>
+      'Nenhuma conta encontrada com este e-mail.';
 
   @override
-  String get forgotPasswordErrorInvalidEmail => 'Por favor, insira um e-mail válido.';
+  String get forgotPasswordErrorInvalidEmail =>
+      'Por favor, insira um e-mail válido.';
 
   @override
   String get forgotPasswordErrorGeneric => 'Algo deu errado. Tente novamente.';
