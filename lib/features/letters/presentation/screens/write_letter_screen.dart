@@ -443,10 +443,28 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           );
           return;
         }
-        _receiverUid = null;
-        _receiverName = emailTrim;
-        _receiverUsername = '';
-        _receiverHasAccount = false;
+        // Check if this email belongs to an existing user before treating as external
+        final normalizedEmail = emailTrim.toLowerCase();
+        final existingUserSnap = await FirebaseFirestore.instance
+            .collection(FirestoreCollections.users)
+            .where('email', isEqualTo: normalizedEmail)
+            .limit(1)
+            .get();
+        if (!mounted) return;
+
+        if (existingUserSnap.docs.isNotEmpty) {
+          final userDoc = existingUserSnap.docs.first;
+          final userData = userDoc.data();
+          _receiverUid = userDoc.id;
+          _receiverName = userData['displayName'] ?? userData['name'] ?? emailTrim;
+          _receiverUsername = userData['username'] ?? '';
+          _receiverHasAccount = true;
+        } else {
+          _receiverUid = null;
+          _receiverName = emailTrim;
+          _receiverUsername = '';
+          _receiverHasAccount = false;
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackRecipient)));
         return;
