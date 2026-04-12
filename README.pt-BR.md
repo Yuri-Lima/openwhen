@@ -13,7 +13,7 @@
 
 *Cartas temporizadas, cápsulas do tempo e uma camada social emocional — com QR Code físico ligando o mundo real ao app.*
 
-[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md) · [Baseline de performance](planning/PERFORMANCE_BASELINE.md) · [Negócio](planning/BUSINESS.md)
+[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md) · [Negócio](planning/BUSINESS.md)
 
 </div>
 
@@ -52,7 +52,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Backend** | Firebase Auth, Cloud Firestore, Storage, Cloud Messaging; **Cloud Functions** para Stripe e moderação de conteúdo (ver [`functions/README.md`](functions/README.md)) |
 | **Localização** | `geolocator` (+ permissões por plataforma) para compartilhar no envio e checagem de proximidade na abertura |
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
-| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível; **busca de utilizadores** usa queries Firestore indexadas com limite de resultados (não leitura completa da coleção `users`) — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) e [PERFORMANCE_BASELINE.md](planning/PERFORMANCE_BASELINE.md) |
+| **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível; **busca de utilizadores** usa queries Firestore indexadas com limite de resultados (não leitura completa da coleção `users`) — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
 | **Ícones (UI)** | `flutter_svg` + kit SVG em `assets/icons/` — ver **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
 | **Ícone do app (launcher)** | `flutter_launcher_icons` (dev) — fonte `assets/branding/app_icon.png`; regenere com `dart run flutter_launcher_icons` |
@@ -203,7 +203,7 @@ openwhen/
 
 ## Roadmap e progresso
 
-**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/DEVICE_TESTING.md`](planning/DEVICE_TESTING.md). **Problemas operacionais** (erro ao enviar carta, ecrã admin): [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md).
+**Núcleo do MVP (🔴 crítico) concluído** — ver [`planning/MVP_CHECKLIST.md`](planning/MVP_CHECKLIST.md). **Próximo:** itens 🟡 Importantes. Para **produção** (variáveis de build, Firebase, Instagram): [`planning/PRODUCTION.md`](planning/PRODUCTION.md). QA em dispositivo: [`planning/PRODUCTION.md`](planning/PRODUCTION.md) (secção 9). **Problemas operacionais** (erro ao enviar carta, ecrã admin): [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md).
 
 | Documento | Função |
 |-----------|--------|

@@ -2,7 +2,7 @@
 
 Este documento reúne **tudo o que precisa de estar definido** para compilar, publicar e operar o app em **modo produção**: ficheiros locais, variáveis de build (`dart-define`), Firebase, Meta/Instagram, billing opcional, assinaturas móveis e referências ao resto da documentação. A **checklist acionável** (por fases A–G) está na [secção 8](#8-checklist-de-produção-completa).
 
-**Relacionado:** [README.md](../README.md) (Firebase, CLI), [DEVICE_TESTING.md](DEVICE_TESTING.md) (QA em dispositivo), [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (envio de carta, `permission-denied`, ecrã admin), [ARCHITECTURE.md](ARCHITECTURE.md) (stack, moderação, Instagram Stories), [functions/README.md](../functions/README.md) (Stripe, moderação por IA e Cloud Functions).
+**Relacionado:** [README.md](../README.md) (Firebase, CLI), secção [9](#9-testes-em-dispositivo-real-qa) (QA em dispositivo), [TROUBLESHOOTING.md](TROUBLESHOOTING.md) (envio de carta, `permission-denied`, ecrã admin), [ARCHITECTURE.md](ARCHITECTURE.md) (stack, moderação, Instagram Stories), [functions/README.md](../functions/README.md) (Stripe, moderação por IA e Cloud Functions).
 
 ---
 
@@ -80,7 +80,7 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 | Ação | Comando / nota |
 |------|----------------|
 | Deploy de regras Firestore e Storage | `firebase deploy --only firestore:rules,storage` (e índices se necessário: `firestore:indexes`) |
-| Validar permissões | Garantir que fluxos principais não devolvem `PERMISSION_DENIED` (ver [DEVICE_TESTING.md](DEVICE_TESTING.md)) |
+| Validar permissões | Garantir que fluxos principais não devolvem `PERMISSION_DENIED` (ver secção [9](#9-testes-em-dispositivo-real-qa)) |
 | **`permission-denied` ao enviar carta** | Regras em `firestore.rules` (cartas, `users`, `badgeUnlocks`) devem estar deployadas e alinhadas ao repo; ver [TROUBLESHOOTING.md](TROUBLESHOOTING.md) §1 |
 | **`systemConfig/app`** | Documento de flags remotas: `reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc. Criar/editar na consola ou Admin SDK (o cliente não escreve). Ver [ARCHITECTURE.md](ARCHITECTURE.md) (secção “Config remota”). |
 
@@ -176,7 +176,7 @@ Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, *
 
 ## 6. Notificações push (FCM)
 
-- **iOS:** conta Apple Developer, capability **Push Notifications** no Xcode, APNs configurado no Firebase Console (ver [DEVICE_TESTING.md](DEVICE_TESTING.md)).
+- **iOS:** conta Apple Developer, capability **Push Notifications** no Xcode, APNs configurado no Firebase Console (ver secção [9](#9-testes-em-dispositivo-real-qa)).
 - **Android:** `POST_NOTIFICATIONS` em Android 13+; testar em dispositivo real.
 
 ---
@@ -194,7 +194,7 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 ## 8. Checklist de produção (completa)
 
-Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: [DEVICE_TESTING.md](DEVICE_TESTING.md); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
+Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: secção [9](#9-testes-em-dispositivo-real-qa); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
 
 **Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
 
@@ -246,13 +246,62 @@ flowchart LR
 
 ### G. QA antes do release
 
-- [ ] Regressão em **dispositivos reais** iOS e Android conforme [DEVICE_TESTING.md](DEVICE_TESTING.md) (login, feed, cofre, cartas/cápsulas, localização, push, Instagram conforme build).
+- [ ] Regressão em **dispositivos reais** iOS e Android conforme secção [9](#9-testes-em-dispositivo-real-qa) (login, feed, cofre, cartas/cápsulas, localização, push, Instagram conforme build).
 - [ ] Se aplicável ao release, critérios [MVP_CHECKLIST.md](MVP_CHECKLIST.md) verificados.
 
 ---
 
-## 9. Histórico de alterações deste guia
+## 9. Testes em dispositivo real (QA)
 
+**Configuração de build para produção** (variáveis `dart-define`, ficheiros Firebase, Instagram): ver secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase) a [3](#3-instagram--meta-facebook-app-id).
+
+Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxos críticos do MVP já implementados — ver [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md)).
+
+### Pré-requisitos
+
+- Flutter SDK e Xcode (iOS) / Android Studio (Android)
+- Arquivos locais: `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`
+- Conta Apple Developer para push em iOS (APNs configurado no Firebase Console)
+- Checklist completa antes de produção / lojas: secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo) (Ficheiros Firebase, Variáveis, Instagram, Firebase, Cloud Functions, Push, Lojas)
+
+### Android
+
+1. `flutter pub get`
+2. Conectar dispositivo com USB debugging ou usar emulador com Play Services
+3. `flutter run` (ou `flutter build apk --release` + instalar APK)
+4. Confirmar permissões: notificações (Android 13+), galeria para foto de perfil, **localização** ao criar carta/cápsula com partilha de GPS e ao abrir com `openRequiresProximity` (deve pedir localização no destinatário)
+5. Fluxos mínimos: login → feed → cofre → criar carta/cápsula **com** e **sem** localização / **com** restrição de 10 m → abrir no local e longe do ponto → perfil → alterar foto → configurações → permissão de push
+6. **Instagram Stories:** build com `--dart-define=FB_APP_ID=…` (Meta App ID). Instalar **Instagram** no dispositivo. Abrir detalhe de carta ou cápsula → partilhar → confirmar que a app Instagram abre no fluxo de Stories (ou, sem Instagram, que a folha de partilha mostra o PNG). Repetir no ecrã de QR Code (botão "Instagram Stories").
+
+### iOS
+
+1. No iPhone: **Ajustes → Privacidade e segurança → Modo de desenvolvedor** (Developer Mode) ligado, e confiar no Mac quando o Xcode/cabo pedir.
+2. Abrir `ios/Runner.xcworkspace` no Xcode e definir **Signing & Capabilities** (time + bundle id)
+3. Adicionar capability **Push Notifications** se ainda não existir (FCM)
+4. `flutter run` em dispositivo físico (push não valida no simulador da mesma forma)
+5. Na primeira execução, aceitar alertas de fotos, notificações e **localização** quando testar envio com GPS ou abertura com proximidade
+6. Repetir os mesmos fluxos do Android (incluindo localização nos fluxos de carta/cápsula)
+7. **Instagram Stories:** igual ao passo 6 do Android (`FB_APP_ID` + app Instagram instalada)
+
+### Firebase (produção)
+
+- Deploy das regras após QA em staging:  
+  `firebase deploy --only firestore:rules,storage`
+- Validar que leituras/escritas do app não retornam `PERMISSION_DENIED` nos fluxos acima
+
+**Documentação completa:** identificadores do projeto, instalação da Firebase CLI, JDK 21 para Emulator Suite, portas e deploy — ver [README.md](../README.md#firebase-configuration) (English) ou `README.pt-BR.md` (seções *Configuração Firebase* e *Firebase CLI e emuladores*).
+
+**Problemas com envio de carta ou ecrã admin moderação:** [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+### Regressão web (opcional)
+
+- `flutter run -d chrome` — avatar (galeria), abertura de cápsula e feed continuam funcionando; FCM no web exige configuração extra (VAPID / service worker) e pode estar limitado.
+
+---
+
+## 10. Histórico de alterações deste guia
+
+- **2026-04:** DEVICE_TESTING.md absorvido na secção [9](#9-testes-em-dispositivo-real-qa); referências cruzadas atualizadas; secção "Histórico" renumerada para §10.
 - **2026-03:** secção [8](#8-checklist-de-produção-completa) expandida em checklist A–G (identidade/keystore, segredos, Firebase, flags, push, lojas, QA); diagrama de ordem sugerida; referências cruzadas a DEVICE_TESTING e MVP_CHECKLIST.
 - **2026-03:** nota futura “filas e workers” (Pub/Sub, Cloud Tasks, RabbitMQ) na secção 5.
 - **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).

@@ -4,7 +4,7 @@
 > **Legislações aplicáveis:** GDPR (UE), LGPD (Brasil), CCPA/CPRA (Califórnia), COPPA (EUA — idade mínima 13+)
 > **Escopo:** Global (app disponível mundialmente)
 >
-> **Nota:** Os períodos de retenção documentados aqui estão refletidos na Política de Privacidade do app (Seção 9 — "Retenção de Dados") e na página web pública (`hosting/public/privacy.html`). Ver também [`LEGAL.md`](LEGAL.md) e [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md).
+> **Nota:** Os períodos de retenção documentados aqui estão refletidos na Política de Privacidade do app (Seção 9 — "Retenção de Dados") e na página web pública (`hosting/public/privacy.html`). Ver também [`LEGAL.md`](LEGAL.md) (secção 1).
 
 ---
 

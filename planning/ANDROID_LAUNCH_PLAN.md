@@ -4,7 +4,7 @@
 
 **Objetivo:** Publicar o OpenWhen na Google Play Store (produção pública ou closed/open testing).
 
-**Referências:** [PRODUCTION.md](PRODUCTION.md) (checklist A–G), [MVP_CHECKLIST.md](MVP_CHECKLIST.md), [DEVICE_TESTING.md](DEVICE_TESTING.md), [LEGAL.md](LEGAL.md), [BUSINESS.md](BUSINESS.md).
+**Referências:** [PRODUCTION.md](PRODUCTION.md) (checklist A–G, QA secção 9), [MVP_CHECKLIST.md](MVP_CHECKLIST.md), [LEGAL.md](LEGAL.md), [BUSINESS.md](BUSINESS.md).
 
 ---
 
@@ -316,7 +316,7 @@ O app já tem funcionalidade de deletar conta (Configurações → Excluir conta
 
 ## Fase 8 — QA em dispositivo real
 
-Seguir o protocolo de [DEVICE_TESTING.md](DEVICE_TESTING.md), com atenção especial a:
+Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção especial a:
 
 ### 8.1 Checklist Android pré-submissão
 

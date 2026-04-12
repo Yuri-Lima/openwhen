@@ -11,6 +11,44 @@ Documento de contexto para investidores e parceiros. Detalhes técnicos: [`ARCHI
 
 ---
 
+## Estrutura jurídica e abertura
+
+### Por Que Delaware C-Corp
+
+- Leis favoráveis para startups de tecnologia (referência: Google, Facebook, Stripe, Airbnb).
+- Investidores americanos exigem Delaware C-Corp.
+- Sem imposto estadual sobre empresas que não operam lá.
+- Proteção legal maior para os founders (separação de bens pessoais).
+
+### Custos
+
+| Fase | Descrição | Valor |
+|------|-----------|-------|
+| **Abertura** | Stripe Atlas | $500 |
+| **Anuais** | Registered Agent + Delaware Franchise Tax | $950 a $2.450 |
+
+Recomendação: **Stripe Atlas ($500)** — já temos conta no Stripe, integração direta com pagamentos, suporte especializado.
+
+### Conta Bancária
+
+Mercury Bank (mercury.com): 100% online, gratuito, feito para startups, integra com Stripe.
+
+### Quando Abrir
+
+Abrir quando o app estiver **pronto para lançar**. Assim já lança com empresa pronta e processa pagamentos desde o primeiro dia. Antes disso, não aceitar dinheiro de usuários, investimento ou assinar contratos em nome da empresa.
+
+### Passo a Passo
+
+1. App pronto para lançar
+2. Abrir pelo Stripe Atlas (stripe.com/atlas) — $500
+3. Abrir conta no Mercury Bank (mercury.com) — gratuito
+4. Atualizar Stripe com dados da empresa
+5. Convidar Yuri Lima como Developer no Stripe
+6. Configurar APIs de pagamento
+7. Contratar contador quando começar a faturar
+
+---
+
 ## Proposta de valor
 
 OpenWhen combina **cartas temporizadas**, uma **rede social emocional** e **QR Code físico** para aproximar pessoas no tempo certo — não apenas no feed infinito.

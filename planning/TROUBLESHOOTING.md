@@ -1,7 +1,7 @@
 # OpenWhen — Troubleshooting
 
 Operational notes for **developers** when something fails in production or on device.  
-**Configuração de produção** (`dart-define`, deploy Firebase): [PRODUCTION.md](PRODUCTION.md) · **QA em dispositivo:** [DEVICE_TESTING.md](DEVICE_TESTING.md).
+**Configuração de produção** (`dart-define`, deploy Firebase): [PRODUCTION.md](PRODUCTION.md) · **QA em dispositivo:** [PRODUCTION.md](PRODUCTION.md) (secção 9).
 
 ---
 
@@ -221,7 +221,7 @@ Adicionado em `register_screen.dart`: checkbox obrigatório "Confirmo que tenho 
 firebase deploy --only firestore:rules,storage
 ```
 
-Validate main flows after deploy ([DEVICE_TESTING.md](DEVICE_TESTING.md)).
+Validate main flows after deploy ([PRODUCTION.md](PRODUCTION.md) secção 9).
 
 ---
 

@@ -10,9 +10,9 @@
 | Política de Privacidade (LGPD+GDPR+CCPA) | ✅ Implementada | `lib/l10n/app_*.arb` (17 seções, 3 idiomas) |
 | Termos de Uso + cláusula encerramento | ✅ Implementada | `lib/l10n/app_*.arb` (8 seções, 3 idiomas) |
 | Aviso de cartas pendentes na exclusão | ✅ Implementada | `settings_screen.dart` (banner warning) |
-| Plano de contingência 90 dias | ✅ Documentado | [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) |
+| Plano de contingência 90 dias | ✅ Documentado | secção 1 abaixo |
 | Página web pública (sem login) | ✅ Criada | `hosting/public/privacy.html` + `terms.html` |
-| Fundo de Continuidade | ✅ Documentado | Termos de Uso §7 + [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) §5 |
+| Fundo de Continuidade | ✅ Documentado | Termos de Uso §7 + secção 4 abaixo |
 | Política de retenção de dados | ✅ Documentada | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) |
 | COPPA (idade 13+) | ✅ Checkbox no registro | `register_screen.dart` |
 | Cloud Function deleteUserAccount | ✅ Implementada | `functions/src/delete_account.ts` |
@@ -42,12 +42,133 @@ O OpenWhen faz uma promessa implícita ao usuário — "sua carta será entregue
 ### Cláusula nos Termos de Uso (Seção 7 — implementada)
 "O OpenWhen empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a notificar todos os usuários com no mínimo 90 dias de antecedência."
 
-### Plano de contingência — ver [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md)
-- Notificação por email + push + banner com 90 dias de antecedência
-- Export automático de todas as cartas disponível pelo app
-- Entrega antecipada de cartas com openDate dentro do período
-- Após 90+7 dias — dados deletados permanentemente
-- Audit logs mantidos por 3 anos (sem PII)
+### 1.1. Gatilhos de Ativação
+
+O plano de contingência será ativado quando qualquer uma destas situações ocorrer:
+- Decisão voluntária dos fundadores de encerrar o serviço
+- Incapacidade financeira de manter a infraestrutura por mais de 3 meses
+- Ordem judicial ou regulatória que impeça a continuidade do serviço
+- Aquisição por terceiro que não assuma os compromissos de continuidade
+
+### 1.2. Cronograma de Encerramento (90 dias)
+
+#### Dia 0 — Decisão e Preparação Interna
+
+- [ ] Decisão formal documentada por escrito
+- [ ] Inventário de todas as cartas e cápsulas com datas de abertura futuras
+- [ ] Inventário de todos os usuários ativos (com e-mail verificado)
+- [ ] Preparação do e-mail de notificação (PT-BR, EN, ES)
+- [ ] Bloqueio de novos cadastros
+- [ ] Desativação de funcionalidades de pagamento (Stripe)
+
+#### Dia 1 — Notificação aos Usuários
+
+- [ ] Envio de e-mail a todos os usuários cadastrados com:
+  - Explicação clara do encerramento
+  - Data exata do encerramento (Dia 90)
+  - Instruções para exportar dados
+  - Link direto para exportação no app
+  - Informações sobre o que acontece com cartas pendentes
+  - Contato para dúvidas: suporte@openwhen.live
+- [ ] Notificação push via FCM a todos os dispositivos
+- [ ] Banner permanente no app informando sobre o encerramento
+- [ ] Atualização dos Termos de Uso com data de encerramento
+
+#### Dias 1–60 — Período de Exportação Ativa
+
+- [ ] Funcionalidade de exportação de dados (ZIP) disponível e destacada
+- [ ] Cloud Function de exportação automática para usuários que solicitarem via e-mail
+- [ ] Entrega de todas as cartas com `openDate` <= Dia 90
+  - Cartas com data de abertura dentro do período: entrega antecipada com aviso
+  - Cartas com data de abertura após Dia 90: notificação ao destinatário com conteúdo
+- [ ] Entrega de todas as cápsulas com `openDate` <= Dia 90
+- [ ] E-mail lembrete no Dia 30 e no Dia 60
+
+#### Dia 60 — Lembrete Final
+
+- [ ] E-mail de lembrete: "Faltam 30 dias para o encerramento"
+- [ ] Notificação push
+- [ ] Para cartas com `openDate` > Dia 90:
+  - Opção A: Entregar antecipadamente com aviso ao destinatário
+  - Opção B: Enviar conteúdo por e-mail ao destinatário (se tiver e-mail)
+  - Opção C: Incluir no arquivo de exportação do remetente
+
+#### Dia 80 — Última Chance
+
+- [ ] E-mail: "Faltam 10 dias — exporte seus dados agora"
+- [ ] Desativação de novas funcionalidades (não é mais possível criar cartas/cápsulas)
+- [ ] Feed e funcionalidades sociais desativados
+- [ ] Apenas visualização e exportação funcionam
+
+#### Dia 90 — Encerramento
+
+- [ ] App entra em modo read-only com mensagem de encerramento
+- [ ] Último e-mail com link de download dos dados (se exportação automática habilitada)
+- [ ] Cancelamento de todas as assinaturas Stripe ativas
+
+#### Dia 90 + 7 dias — Exclusão
+
+- [ ] Exclusão permanente de todos os dados do Firestore
+- [ ] Exclusão de todos os arquivos do Firebase Storage
+- [ ] Exclusão de todos os registros do Firebase Auth
+- [ ] Manutenção apenas dos `deletionAuditLogs` (hasheados, sem PII) por 3 anos
+- [ ] Remoção do app das lojas (App Store e Google Play)
+- [ ] Desativação do projeto Firebase
+
+### 1.3. Tratamento de Cartas Pendentes
+
+#### Cartas com openDate dentro do período de 90 dias
+- Entregues normalmente no cronograma original
+- Destinatário recebe aviso adicional sobre o encerramento
+
+#### Cartas com openDate após o encerramento
+Prioridade de resolução:
+1. **Entrega antecipada** com notificação ao destinatário explicando a situação
+2. **Envio por e-mail** se o destinatário tem e-mail cadastrado
+3. **Inclusão no pacote de exportação** do remetente
+4. **Último recurso:** notificação ao remetente de que a carta não pôde ser entregue
+
+#### Cartas externas (destinatário sem conta)
+- E-mail enviado ao destinatário externo com o conteúdo da carta
+- Link para download expira em 30 dias após o Dia 90
+
+### 1.4. Comunicação
+
+#### Canais
+- E-mail (primário — atinge 100% dos usuários com e-mail verificado)
+- Notificação push FCM (secundário)
+- Banner in-app (terciário)
+- Redes sociais (complementar)
+
+#### Idiomas
+- Todas as comunicações em PT-BR, EN e ES
+
+#### Tom
+- Transparente e honesto
+- Agradecimento aos usuários
+- Instruções claras e práticas
+- Sem linguagem jurídica excessiva
+
+### 1.5. Responsabilidades
+
+| Tarefa | Responsável |
+|--------|-------------|
+| Decisão e comunicação estratégica | Diego |
+| Implementação técnica (export, entrega, exclusão) | Yuri |
+| E-mails e notificações | Diego + Yuri |
+| Compliance legal | Diego (com assessoria jurídica) |
+| Desativação de pagamentos (Stripe) | Yuri |
+| Remoção das lojas | Diego |
+| Manutenção dos audit logs | Yuri |
+
+### 1.6. Testes do Plano
+
+Antes do lançamento, validar:
+- [ ] Cloud Function de exportação de dados funciona e gera ZIP completo
+- [ ] E-mail de notificação é enviado corretamente nos 3 idiomas
+- [ ] Entrega antecipada de cartas funciona
+- [ ] Fluxo de exclusão total do Firestore funciona sem resíduos
+- [ ] `deletionAuditLogs` registra corretamente sem PII
 
 ---
 
@@ -99,12 +220,32 @@ Banner amarelo no bottom sheet de exclusão informando sobre cartas locked envia
 
 ## 4. Fundo de Continuidade
 
-Documentado nos Termos de Uso (Seção 7) e detalhado em [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) §5.
+### Conceito
+Reserva financeira mantida pela Empresa para garantir a infraestrutura mínima necessária para entregar cartas já comprometidas, mesmo sem receita.
 
-- **Meta:** reserva para cobrir Firebase/GCP por **2 anos**
-- **Alimentação:** 5% da receita mensal líquida (quando houver receita)
-- **Transparência:** saldo informado nos Termos quando atingir meta
-- **Revisão:** trimestral
+### Meta
+- **Mínimo:** cobrir custos de Firebase/GCP + domínio por 2 anos
+- **Custos fixos conhecidos:**
+  - Domínio `openwhen.live` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
+  - Cloudflare Email Routing (7 endereços → Gmail): **gratuito** (incluído no plano Free)
+- **Estimativa de custo mensal** (a ser atualizada conforme escala):
+  - Firestore reads/writes: ~$X/mês
+  - Cloud Storage: ~$X/mês
+  - Cloud Functions: ~$X/mês
+  - FCM: gratuito
+  - **Total estimado:** a calcular após primeiros 3 meses de operação
+- **Reserva mínima para 2 anos:** $56.40 (domínio) + custos Firebase estimados
+
+### Política de Alimentação
+- A partir do momento em que o app gerar receita:
+  - 5% da receita mensal líquida destinada ao Fundo
+  - Revisão trimestral do saldo vs. custo projetado
+  - Transparência: saldo informado nos Termos de Uso quando atingir meta
+
+### Documentação
+- Saldo e custos registados em planilha interna
+- Relatório trimestral disponível para auditoria
+- Menção nos Termos de Uso quando o fundo estiver ativo
 
 ---
 
@@ -157,11 +298,12 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 ## 7. Documentos Relacionados
 
 - [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) — Política detalhada de retenção e exclusão
-- [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) — Plano de contingência de encerramento (90 dias)
 - [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) — Checklist com itens legais e seus status
 - `hosting/public/privacy.html` — Página web pública da Política de Privacidade
 - `hosting/public/terms.html` — Página web pública dos Termos de Uso
 
+**Nota:** O conteúdo do plano de contingência de encerramento foi consolidado nas secções 1 e 4 deste documento.
+
 ---
 *Documento criado por Diego Rocha — CEO & Founder OpenWhen*
-*Atualizado em 10 de abril de 2026*
+*Atualizado em 12 de abril de 2026 (consolidado com CONTINGENCY_PLAN.md)*

@@ -11,7 +11,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Tela de **abertura da cápsula** (animação, revelar perguntas/respostas, fluxo de publicar após revisão)
 - [x] **Avatar de perfil** com upload (funcional em web e mobile)
 - [x] **Notificações FCM** (configuração, permissões, handlers)
-- [x] **Testes em celular real** (build iOS/Android, fluxos principais) — ver [`DEVICE_TESTING.md`](DEVICE_TESTING.md)
+- [x] **Testes em celular real** (build iOS/Android, fluxos principais) — ver [`PRODUCTION.md`](PRODUCTION.md) (secção 9)
 - [x] **Regras Firestore de produção** (deploy e validação) — `firestore.rules` + `storage.rules`; executar `firebase deploy --only firestore:rules,storage`
 
 ---
@@ -202,7 +202,7 @@ Cartas que machucam não têm lugar aqui.
 - [ ] Score 5-7 → aviso gentil, pessoa decide
 - [ ] Score 8-10 → bloqueado, carta não é salva
 - [ ] Arquivo: `functions/src/moderation/moderate_content.ts`
-- [ ] Detalhes completos: `planning/CONTENT_MODERATION.md`
+- [ ] Detalhes completos: `planning/MODERATION.md`
 
 ---
 
@@ -212,9 +212,9 @@ Cartas que machucam não têm lugar aqui.
 - [x] Escrever Política de Privacidade completa (LGPD + GDPR + CCPA) — **17 seções** em 3 idiomas (EN, PT-BR, ES) nos ARBs + `legal_screen.dart`
 - [x] Escrever Termos de Uso com cláusula de encerramento de serviço — nova Seção 7 (aviso 90 dias, exportação, Fundo de Continuidade). Em 3 idiomas.
 - [x] Adicionar aviso na tela de deletar conta sobre cartas pendentes — banner warning no bottom sheet de exclusão. Em 3 idiomas.
-- [x] Documentar plano de contingência de 90 dias — [`planning/CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md)
+- [x] Documentar plano de contingência de 90 dias — [`LEGAL.md`](LEGAL.md) (secção 1)
 - [x] Criar página web de privacidade acessível sem login — `hosting/public/privacy.html` + `terms.html` (EN/PT/ES, dark mode)
-- [x] Documentar Fundo de Continuidade nos Termos de Uso — Seção 7 + [`CONTINGENCY_PLAN.md`](CONTINGENCY_PLAN.md) §5
+- [x] Documentar Fundo de Continuidade nos Termos de Uso — Seção 7 + [`LEGAL.md`](LEGAL.md) §4
 
 ### Pendente
 - [ ] Export automático de todos os dados ao deletar conta

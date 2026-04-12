@@ -11,7 +11,7 @@
 
 ## Performance e carregamento diferido
 
-- **Baseline:** como medir antes/depois (bundle web, DevTools, Firestore) — [`planning/PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md).
+- **Baseline:** como medir antes/depois (bundle web, DevTools, Firestore) — ver secção [Performance e carregamento diferido](#performance-e-carregamento-diferido) abaixo.
 - **Code splitting (web):** [`lib/core/navigation/deferred_screens.dart`](../lib/core/navigation/deferred_screens.dart) importa em modo `deferred` as telas **Escrever carta**, **Nova cápsula** e **Buscar**; cada uma mostra um `CircularProgressIndicator` até `loadLibrary()` completar. As rotas nomeadas `/write`, `/create-capsule` e `/search` em [`main.dart`](../lib/main.dart) usam estes shells.
 - **Exportação PDF/ZIP:** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta ou definições).
 - **Cofre — abas:** o corpo do cofre mostra **apenas a aba selecionada** (sem `TabBarView` que montava as três de uma vez), reduzindo listeners Firestore simultâneos. **Swipe horizontal entre abas** deixou de estar disponível; mudança só por toque nas tabs.

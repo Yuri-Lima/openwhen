@@ -16,7 +16,7 @@ Foco original: experiência completa de cartas + cápsulas, estabilidade e segur
 | Tela de abertura da cápsula (animação, revelar Q&A, publicar após revisão) | P0         | Concluído | Fecha o loop da feature cápsulas                        |
 | Avatar de perfil (upload; web + mobile)                                    | P0         | Concluído | `file_picker` / Storage                                 |
 | Notificações FCM                                                           | P0         | Concluído | Lembretes e eventos de abertura                         |
-| Testes em dispositivo real (iOS/Android)                                   | P0         | Concluído | Ver `[DEVICE_TESTING.md](DEVICE_TESTING.md)`            |
+| Testes em dispositivo real (iOS/Android)                                   | P0         | Concluído | Ver `[PRODUCTION.md](PRODUCTION.md) (secção 9)`            |
 | Regras Firestore de produção                                               | P0         | Concluído | `firestore.rules` + `storage.rules`; deploy e validação |
 
 
@@ -42,7 +42,101 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 
 **Exportar cartas (PDF / ZIP)** está concluído no checklist 🟡 (export no cliente: Configurações). A linha na Fase 3 abaixo referencia **evoluções** opcionais (ex.: processamento server-side, batch grande); a entrega MVP segue o checklist.
 
-**Performance (cliente):** carregamento diferido de código (`deferred` para escrever carta / cápsula / busca e para export PDF-ZIP), cofre com subscrições Firestore só na aba visível; **busca de utilizadores** com queries Firestore indexadas e limite de resultados (`lib/core/user_search/`, substituição do antigo `collection(users).get()` — ver [`CHANGELOG.md`](CHANGELOG.md)) — ver [`ARCHITECTURE.md`](ARCHITECTURE.md) e [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md).
+**Performance (cliente):** carregamento diferido de código (`deferred` para escrever carta / cápsula / busca e para export PDF-ZIP), cofre com subscrições Firestore só na aba visível; **busca de utilizadores** com queries Firestore indexadas e limite de resultados (`lib/core/user_search/`, substituição do antigo `collection(users).get()` — ver [`CHANGELOG.md`](CHANGELOG.md)) — ver [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+### Cronograma pós-lançamento (detalhado)
+
+**Semana 1 — Bloqueadores (antes de qualquer lançamento)**
+
+- Email de recuperação de senha funcionando
+- Verificação de email no cadastro ✅
+- Notificações de curtida, comentário e seguidor (Cloud Functions)
+- Lupa do feed com navegação para SearchScreen
+- Busca de usuários retornando resultados
+
+**Semana 2 — Retenção**
+
+- Contagem regressiva no cofre — "Abre em 47 dias"
+- Card compartilhável ao enviar carta — "Selei uma carta 🦉"
+- Data mínima de 30 dias nas cápsulas
+- Resposta à carta (ver especificações prioritárias)
+
+**Semana 3 — Crescimento orgânico**
+
+- Preview da carta antes de selar
+- Explicação clara do fluxo de publicação
+- Sugestões de datas especiais no momento de criar carta
+
+**Mês 2 — Pós primeiros usuários**
+
+- Landing page web para quem recebe carta sem ter conta
+- Feed com identidade visual própria — envelopes que se abrem ao rolar
+- Sistema de sugestões por datas especiais (aniversários, Natal etc)
+
+**Mês 3+ — Para investidores**
+
+- Gift When / Nox Card
+- Analytics completo para mostrar métricas
+- Meta: 1.000 usuários ativos antes de buscar investimento
+
+### Especificações de funcionalidades prioritárias
+
+#### Resposta à Carta
+
+**Conceito:** criação de um loop emocional contínuo entre usuários. Quando um destinatário abre uma carta, pode responder com uma carta selada que o remetente original receberá. Cria retenção (motivo para voltar) e diferencial único no mercado.
+
+**Para o usuário:**
+1. Destinatário abre a carta e lê
+2. Aparece botão "Responder com carta selada"
+3. Tela de escrever carta abre pré-preenchida com o remetente original como destinatário
+4. Usuário escolhe quando a resposta pode ser aberta
+5. O remetente original recebe notificação: "Você recebeu uma resposta selada 🦉"
+6. No cofre as cartas aparecem agrupadas como um fio de conversa
+
+**Firestore — novo campo:**
+```
+letters/{letterId}: {
+  ...campos existentes,
+  replyToLetterId: string | null,  // ID da carta original
+  threadId: string | null,          // ID do fio de conversa
+}
+```
+
+**Flutter — mudanças:**
+- `letter_opening_screen.dart` — adicionar botão "Responder com carta selada"
+- `write_letter_screen.dart` — aceitar parâmetro `replyToLetterId` e `receiverUid` pré-preenchidos
+- `vault_screen.dart` — agrupar cartas com mesmo `threadId` em fio de conversa
+- `notification_service.dart` — notificação "Você recebeu uma resposta selada"
+
+**Cloud Function:**
+- Ao criar carta com `replyToLetterId` → notificar remetente original via FCM
+
+#### Contagem Regressiva no Cofre
+
+**Conceito:** em vez de mostrar apenas a data de abertura, mostrar contagem regressiva ("Abre em 47 dias", "Abre amanhã!", "Abre em 2 horas!").
+
+**Implementação:**
+- `vault_screen.dart` — calcular diferença entre `openDate` e `DateTime.now()`
+- Mostrar em vermelho quando faltar menos de 7 dias
+- Mostrar pulsando quando faltar menos de 24 horas
+
+#### Card Compartilhável ao Enviar
+
+**Conceito:** ao enviar uma carta, gerar um card animado para Stories que comunica "Acabei de selar uma carta para alguém especial 🦉 — Abre em [data]", sem revelar destinatário nem conteúdo. Reutiliza infraestrutura de Stories/Reels.
+
+**Implementação:**
+- Reutilizar a infra de `instagram_stories_share_service.dart`
+- Criar template de card com envelope fechado + data de abertura
+- Disparar após confirmação de envio em `write_letter_screen.dart`
+
+#### Preview Antes de Selar
+
+**Conceito:** antes de enviar, mostrar exatamente como o destinatário vai ver a carta (papel bege com linhas, fonte itálica, nome do remetente, estado emocional com cor), permitindo edição se necessário.
+
+**Implementação:**
+- Adicionar passo final no fluxo de criação da carta
+- Reutilizar o widget de leitura da carta (`letter_opening_screen.dart`)
+- Botão "Parece ótimo, selar!" ou "Editar"
 
 ---
 
@@ -83,12 +177,41 @@ Foco: expansão de produto e mercado.
 
 **Expansão Gift (após MVP do Gift):** PIX e carteiras digitais (BR); Wise (transferências internacionais); Apple Pay / Google Pay; parcerias bancárias; API bancária própria; licença de *money transmission* nos EUA (fase tardia). Códigos de resgate ou créditos para **premium** podem reutilizar a mesma stack de pagamentos — detalhar na implementação.
 
+### Estratégia para Investidores
+
+**O que mostrar:**
+1. A animação de abertura — o momento emocional único
+2. Número de usuários e retenção (DAU/WAU)
+3. O plano do Gift When como modelo de receita escalável
+
+**O que NÃO mostrar primeiro:**
+- Lista de funcionalidades técnicas
+- Código ou arquitetura
+- Funcionalidades que ainda não funcionam
+
+**Metas de readiness para buscar investimento:**
+- 1.000 usuários ativos
+- Retenção D7 acima de 40%
+- Pelo menos 1 carta aberta por usuário por semana
+- Gift When em MVP mesmo que básico
+
+### Sobre o App Completo e Retenção de Usuários
+
+O app completo é um argumento para investidores — não o principal argumento para usuários. A retenção é impulsionada por:
+
+1. **Receber uma carta e querer responder** — cria loop emocional contínuo
+2. **Ter uma carta aguardando para abrir** — motivo para voltar na data
+3. **Receber notificações de curtida no feed** — validação social e comunidade
+
+Funcionalidades avançadas (GPS, voz, cápsula coletiva, recomendações) devem existir em background — o usuário as descobre quando está engajado, não na primeira experiência. A simplicidade inicial + retenção forte é mais convincente para investidores do que feature bloat.
+
 ---
 
 ## Como usar este roadmap
 
 - Acompanhe o detalhamento de MVP em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`.
 - Mudanças de escopo: atualizar esta tabela e o changelog em `[CHANGELOG.md](CHANGELOG.md)`.
-- **Novas ideias de produto:** preferir linhas neste roadmap (+ parágrafo em `[BUSINESS.md](BUSINESS.md)` se houver impacto em receita ou mercado) e itens em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`; evitar um arquivo `.md` dedicado por feature — reservar arquivos em `planning/` a temas transversais (ex.: design system, testes em dispositivo).
+- **Novas ideias de produto:** preferir linhas neste roadmap (+ parágrafo em `[BUSINESS.md](BUSINESS.md)` se houver impacto em receita ou mercado) e itens em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`; reservar arquivos em `planning/` a temas transversais (ex.: design system, testes em dispositivo).
+- O cronograma detalhado (Semana 1–Mês 3+) e as especificações de funcionalidades prioritárias foram consolidados neste documento a partir de `NEXT_FEATURES.md`, mantendo centralização de roadmap e estratégia.
 - Funcionalidades de **IA com perfilamento, fotos de terceiros ou biometria/emotion** (recomendações, círculo familiar, face): revisar **privacidade, bases legais e fornecedores** antes do lançamento.
 
