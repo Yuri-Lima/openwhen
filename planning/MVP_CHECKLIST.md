@@ -27,6 +27,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Badges / gamificação leve
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
 - [ ] **Nox Card** (card da coruja por nível, animação compartilhável) — ver [ROADMAP.md](ROADMAP.md) Fase 2 e [BUSINESS.md](BUSINESS.md)
+- [ ] **Links reais de download do app** — substituir botões/placeholders de "Baixar o app" por links verdadeiros da App Store e Google Play em todas as telas e páginas web onde aparecem
 - [x] Feed em **3 camadas**
 - [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**
@@ -144,10 +145,9 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🔴 Email — problemas críticos
 
-**1. Email de recuperação de senha não chega**
-- O código dispara `sendPasswordResetEmail` mas o email não chega ao usuário
-- Provável causa: domínio padrão do Firebase bloqueado como spam
-- Solução Yuri: configurar domínio personalizado no Firebase Console → Authentication → Templates → configurar SMTP customizado ou verificar authorized domains
+**1. Email de recuperação de senha — CONCLUÍDO ✅**
+- [x] Domínio personalizado configurado no Firebase Console (Authentication → Templates)
+- [x] Emails de recuperação chegando corretamente aos usuários
 
 **2. Verificação de email no cadastro — IMPLEMENTADO ✅**
 - [x] `sendEmailVerification()` disparado no registo (`register_screen.dart`, `auth_repository.dart`)
@@ -188,24 +188,22 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-## 🔴 Moderação de conteúdo nas cartas (falta implementar — ANTES DO LANÇAMENTO)
+## ~~🔴 Moderação de conteúdo nas cartas~~ (concluído ✅)
 
 **Filosofia:** O OpenWhen só permite amor, superação e conexão genuína.
 Cartas que machucam não têm lugar aqui.
 
-**Camada 1 — Visual em tempo real (Diego)**
-- [ ] Aviso suave enquanto pessoa escreve se detectar conteúdo ofensivo
-- [ ] Botão enviar bloqueado até corrigir
-- [ ] Mensagem: "O OpenWhen existe para conectar com amor 🦉"
-- [ ] Arquivo: `lib/features/letters/presentation/screens/write_letter_screen.dart`
+~~**Camada 1 — Visual em tempo real**~~ *(removida — moderação ocorre apenas no envio, via Camada 2)*
 
-**Camada 2 — IA no momento do envio (Yuri)**
-- [ ] Antes de salvar no Firestore, analisar score de risco via OpenAI
-- [ ] Score 1-4 → envia normalmente
-- [ ] Score 5-7 → aviso gentil, pessoa decide
-- [ ] Score 8-10 → bloqueado, carta não é salva
-- [ ] Arquivo: `functions/src/moderation/moderate_content.ts`
-- [ ] Detalhes completos: `planning/MODERATION.md`
+**Camada 2 — IA no momento do envio (Yuri) ✅**
+- [x] Antes de salvar no Firestore, analisar score de risco via OpenAI
+- [x] Score 1-4 → envia normalmente
+- [x] Score 5-7 → aviso gentil, pessoa decide
+- [x] Score 8-10 → bloqueado, carta não é salva
+- [x] Arquivo: `functions/src/moderation/moderate_content.ts`
+- [x] Detalhes completos: `planning/MODERATION.md`
+- [x] Moderação de mídia (imagens + áudio) via Storage trigger
+- [x] Localização em 4 idiomas + config fail-closed por defeito
 
 ---
 
