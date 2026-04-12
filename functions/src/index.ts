@@ -34,6 +34,12 @@ export {onSendGridWebhook} from "./sendgrid_webhook";
 
 export {checkUsernameAvailable} from "./check_username";
 
+export {
+  onLikeCreated,
+  onCommentCreated,
+  onFollowCreated,
+} from "./engagement";
+
 setGlobalOptions({region: "us-central1"});
 
 initializeApp();

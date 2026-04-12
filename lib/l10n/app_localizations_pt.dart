@@ -1985,10 +1985,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get moderationNotificationsSection => 'Moderação';
 
   @override
-  String get moderationNotificationsEntry => 'Notificações de moderação';
+  String get moderationNotificationsEntry => 'Notificações';
 
   @override
-  String get moderationNotificationsTitle => 'Notificações de moderação';
+  String get moderationNotificationsTitle => 'Notificações';
 
   @override
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';
@@ -4590,10 +4590,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get moderationNotificationsSection => 'Moderação';
 
   @override
-  String get moderationNotificationsEntry => 'Notificações de moderação';
+  String get moderationNotificationsEntry => 'Notificações';
 
   @override
-  String get moderationNotificationsTitle => 'Notificações de moderação';
+  String get moderationNotificationsTitle => 'Notificações';
 
   @override
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';

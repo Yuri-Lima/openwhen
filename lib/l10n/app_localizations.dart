@@ -3722,13 +3722,13 @@ abstract class AppLocalizations {
   /// No description provided for @moderationNotificationsEntry.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Notificações de moderação'**
+  /// **'Notificações'**
   String get moderationNotificationsEntry;
 
   /// No description provided for @moderationNotificationsTitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Notificações de moderação'**
+  /// **'Notificações'**
   String get moderationNotificationsTitle;
 
   /// No description provided for @moderationNotificationsEmpty.

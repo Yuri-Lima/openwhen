@@ -13,7 +13,17 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Notificações FCM** (configuração, permissões, handlers)
 - [x] **Testes em celular real** (build iOS/Android, fluxos principais) — ver [`PRODUCTION.md`](PRODUCTION.md) (secção 9)
 - [x] **Regras Firestore de produção** (deploy e validação) — `firestore.rules` + `storage.rules`; executar `firebase deploy --only firestore:rules,storage`
-- [ ] **Notificações de engajamento** (curtida, comentário, novo seguidor) via Cloud Functions — ref: UX_AUDIT.md #3
+- [x] **Notificações de engajamento** (curtida, comentário, novo seguidor) via Cloud Functions — ref: UX_AUDIT.md #3
+  - [x] Cloud Functions: `onLikeCreated`, `onCommentCreated`, `onFollowCreated` (`functions/src/engagement/`)
+  - [x] Helper centralizado `sendEngagementPush` (FCM push + Firestore in-app notification)
+  - [x] Anti-spam: deduplicação de curtidas na mesma carta (janela 5 min)
+  - [x] Verificação de bloqueio (ambas direções) e self-notification
+  - [x] Limpeza automática de FCM token inválido
+  - [x] Localização server-side (en, pt, es) via `preferredLanguage`
+  - [x] Tela de notificações expandida para tipos `engagement` (like, comment, follow) com ícones
+  - [x] Deep linking: tap em like/comment → carta, tap em follow → perfil do seguidor
+  - [x] Índice Firestore composto para deduplicação (`notifications: dedupeKey + read + createdAt`)
+  - [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
 
 ---
 
@@ -139,7 +149,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
-**Progresso MVP (estimativa):** núcleo **🔴 Crítico** concluído no código e neste checklist. **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos. **🔴 Email** — item 4 (validação + bounce) implementado no código, pendente deploy; itens 1-3 pendentes. Manter revisão manual (QA em dispositivo físico) antes do lançamento.
+**Progresso MVP (estimativa):** núcleo **🔴 Crítico** totalmente concluído (incl. notificações de engajamento). **🟡 Importante** — pendente: Sign in with Apple; restantes concluídos. **🔴 Email** — itens 1, 2 e 4 concluídos; item 3 (engajamento) concluído. **🔴 Moderação** — concluída. **🔴 Legal** — itens pendentes documentados. Manter revisão manual (QA em dispositivo físico) antes do lançamento.
 
 ---
 
@@ -155,11 +165,11 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Bottom sheet `email_verification_sheet.dart` com opções: "Já verifiquei" (reload + check), "Reenviar email" (cooldown 60s), "Mais tarde"
 - Abordagem: soft-block (login permitido, ações-chave bloqueadas até verificação)
 
-**3. Notificações de engajamento — não existem**
-- Curtida: autor não recebe notificação quando alguém curte
-- Comentário: autor não recebe notificação de novo comentário  
-- Seguidor: usuário não recebe notificação de novo seguidor
-- Solução Yuri: Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` → buscar FCM token do autor → disparar push via Firebase Admin SDK
+**3. Notificações de engajamento — IMPLEMENTADO ✅**
+- [x] Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` (`functions/src/engagement/`)
+- [x] FCM push + notificação in-app (Firestore `users/{uid}/notifications`)
+- [x] Tela de notificações expandida com ícones e deep linking
+- [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
 
 **4. Validação de email externo + notificação de bounce — IMPLEMENTADO ✅**
 - [x] Validação de email no cliente melhorada (regex em `lib/core/utils/validators.dart` em vez de `contains('@')`)

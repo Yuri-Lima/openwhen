@@ -1984,10 +1984,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moderationNotificationsSection => 'Moderation';
 
   @override
-  String get moderationNotificationsEntry => 'Moderation notifications';
+  String get moderationNotificationsEntry => 'Notifications';
 
   @override
-  String get moderationNotificationsTitle => 'Moderation notifications';
+  String get moderationNotificationsTitle => 'Notifications';
 
   @override
   String get moderationNotificationsEmpty => 'No notifications yet.';

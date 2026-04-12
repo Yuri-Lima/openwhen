@@ -1992,10 +1992,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get moderationNotificationsSection => 'Moderación';
 
   @override
-  String get moderationNotificationsEntry => 'Notificaciones de moderación';
+  String get moderationNotificationsEntry => 'Notificaciones';
 
   @override
-  String get moderationNotificationsTitle => 'Notificaciones de moderación';
+  String get moderationNotificationsTitle => 'Notificaciones';
 
   @override
   String get moderationNotificationsEmpty => 'Sin notificaciones.';
