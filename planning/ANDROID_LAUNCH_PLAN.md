@@ -45,7 +45,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 
 | Item | Nota |
 |------|------|
-| Notificações de engajamento (likes, comments, follows) | Cloud Functions pendentes. Não bloqueia lançamento mas afeta retenção. |
+| Notificações de engajamento (likes, comments, follows) | ✅ Deploy concluído (12 abr 2026). |
 | Export automático ao deletar conta | Google Play data deletion requirement (2024+). Verificar se a Cloud Function `deleteUserAccount` já atende. |
 | Revisar Termos com advogado | Recomendado antes de escalar; pode ser pós-launch se necessário. |
 

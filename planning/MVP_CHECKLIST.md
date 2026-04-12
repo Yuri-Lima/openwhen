@@ -23,7 +23,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
   - [x] Tela de notificações expandida para tipos `engagement` (like, comment, follow) com ícones
   - [x] Deep linking: tap em like/comment → carta, tap em follow → perfil do seguidor
   - [x] Índice Firestore composto para deduplicação (`notifications: dedupeKey + read + createdAt`)
-  - [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
+  - [x] **Deploy concluído** (12 abr 2026): `firebase deploy --only functions,firestore:indexes`
 
 ---
 
@@ -169,7 +169,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` (`functions/src/engagement/`)
 - [x] FCM push + notificação in-app (Firestore `users/{uid}/notifications`)
 - [x] Tela de notificações expandida com ícones e deep linking
-- [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
+- [x] **Deploy concluído** (12 abr 2026): `firebase deploy --only functions,firestore:indexes`
 
 **4. Validação de email externo + notificação de bounce — IMPLEMENTADO ✅**
 - [x] Validação de email no cliente melhorada (regex em `lib/core/utils/validators.dart` em vez de `contains('@')`)
