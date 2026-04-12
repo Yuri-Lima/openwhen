@@ -16,7 +16,7 @@
 | Política de retenção de dados | ✅ Documentada | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) |
 | COPPA (idade 13+) | ✅ Checkbox no registro | `register_screen.dart` |
 | Cloud Function deleteUserAccount | ✅ Implementada | `functions/src/delete_account.ts` |
-| Domínio `openwhen.life` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
+| Domínio `openwhen.live` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
 | Revisão com advogado | 🔲 Pendente | — |
 | Emails do domínio (Cloudflare Email Routing) | ✅ Ativo | 7 endereços → redirecionamento para `y.m.lima19@gmail.com` |
 | Export automático ao deletar | 🔲 Pendente (Yuri) | — |
@@ -134,7 +134,7 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 
 ## 6. Domínio e Hosting
 
-O domínio **`openwhen.life`** está registado e gerido na **Cloudflare** (renova anualmente, expira Apr 10, 2027 — $28.20/ano). O DNS aponta para o **Firebase Hosting**, que serve as páginas web públicas (`privacy.html`, `terms.html`) e o ficheiro `assetlinks.json` (Android App Links). Os deep links do app (`https://openwhen.life/letter/...`, `https://openwhen.life/capsule/...`) são resolvidos pelo Firebase Hosting + entitlements iOS e intent-filters Android.
+O domínio **`openwhen.live`** está registado e gerido na **Cloudflare** (renova anualmente, expira Apr 10, 2027 — $28.20/ano). O DNS aponta para o **Firebase Hosting**, que serve as páginas web públicas (`privacy.html`, `terms.html`) e o ficheiro `assetlinks.json` (Android App Links). Os deep links do app (`https://openwhen.live/letter/...`, `https://openwhen.live/capsule/...`) são resolvidos pelo Firebase Hosting + entitlements iOS e intent-filters Android.
 
 ### Emails do domínio
 
@@ -142,13 +142,13 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 
 | Endereço | Finalidade |
 |----------|------------|
-| `privacy@openwhen.life` | Solicitações de privacidade (inglês) |
-| `privacidade@openwhen.life` | Solicitações de privacidade (português) |
-| `suporte@openwhen.life` | Suporte geral |
-| `dpo@openwhen.life` | Encarregado de Proteção de Dados |
-| `juridico@openwhen.life` | Departamento jurídico |
-| `info@openwhen.life` | Informações gerais |
-| `noreply@openwhen.life` | Remetente de emails transacionais (SendGrid) |
+| `privacy@openwhen.live` | Solicitações de privacidade (inglês) |
+| `privacidade@openwhen.live` | Solicitações de privacidade (português) |
+| `suporte@openwhen.live` | Suporte geral |
+| `dpo@openwhen.live` | Encarregado de Proteção de Dados |
+| `juridico@openwhen.live` | Departamento jurídico |
+| `info@openwhen.live` | Informações gerais |
+| `noreply@openwhen.live` | Remetente de emails transacionais (SendGrid) |
 
 **Nota:** quando o volume justificar, migrar para caixas dedicadas (ex: Google Workspace ou Zoho). O redirecionamento Cloudflare é suficiente para a fase atual.
 

@@ -11,7 +11,7 @@ import '../theme/open_when_palette.dart';
 
 const int kFeedbackMaxMessageLength = 4000;
 
-const String _kSupportEmail = 'suporte@openwhen.life';
+const String _kSupportEmail = 'suporte@openwhen.live';
 
 String _feedbackPlatformLabel() {
   if (kIsWeb) return 'web';

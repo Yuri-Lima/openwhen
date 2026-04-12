@@ -45,7 +45,7 @@ O plano de contingência será ativado quando qualquer uma destas situações oc
   - Instruções para exportar dados
   - Link direto para exportação no app
   - Informações sobre o que acontece com cartas pendentes
-  - Contato para dúvidas: suporte@openwhen.life
+  - Contato para dúvidas: suporte@openwhen.live
 - [ ] Notificação push via FCM a todos os dispositivos
 - [ ] Banner permanente no app informando sobre o encerramento
 - [ ] Atualização dos Termos de Uso com data de encerramento
@@ -120,7 +120,7 @@ Reserva financeira mantida pela Empresa para garantir a infraestrutura mínima n
 ### Meta
 - **Mínimo:** cobrir custos de Firebase/GCP + domínio por 2 anos
 - **Custos fixos conhecidos:**
-  - Domínio `openwhen.life` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
+  - Domínio `openwhen.live` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
   - Cloudflare Email Routing (7 endereços → Gmail): **gratuito** (incluído no plano Free)
 - **Estimativa de custo mensal** (a ser atualizada conforme escala):
   - Firestore reads/writes: ~$X/mês

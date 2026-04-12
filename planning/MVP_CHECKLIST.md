@@ -130,7 +130,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 - [x] Firebase (Auth, Firestore, Storage, FCM dependência no projeto)
 - [x] Índices Firestore deployados (incl. cápsulas)
-- [x] **Domínio `openwhen.life`** — registado na Cloudflare (DNS gerido lá); conectado ao Firebase Hosting (páginas públicas, `assetlinks.json`, deep links)
+- [x] **Domínio `openwhen.live`** — registado na Cloudflare (DNS gerido lá); conectado ao Firebase Hosting (páginas públicas, `assetlinks.json`, deep links)
 - [x] **Subscrição (scaffold)** — Cloud Functions Stripe (`functions/`), camada `lib/core/billing/`, ecrã de planos; **desactivado por defeito** (`BILLING_ENABLED=false`) até Stripe e deploy — ver `functions/README.md` e `ARCHITECTURE.md`
 
 ---

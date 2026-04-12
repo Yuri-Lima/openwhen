@@ -31,9 +31,9 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.letter,
       truncatedTitle: _truncate(title),
-      deepLink: 'https://openwhen.life/letter/$docId',
+      deepLink: 'https://openwhen.live/letter/$docId',
       dateSubtitle: dateSubtitle,
-      brandLine: 'openwhen.life',
+      brandLine: 'openwhen.live',
     );
   }
 
@@ -48,9 +48,9 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.capsule,
       truncatedTitle: _truncate(combined),
-      deepLink: 'https://openwhen.life/capsule/$docId',
+      deepLink: 'https://openwhen.live/capsule/$docId',
       dateSubtitle: dateSubtitle,
-      brandLine: 'openwhen.life',
+      brandLine: 'openwhen.live',
     );
   }
 }

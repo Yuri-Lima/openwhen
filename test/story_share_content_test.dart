@@ -7,7 +7,7 @@ void main() {
     final c = StoryShareContent.letter(docId: 'x', title: long, dateSubtitle: 'Opens on 1 Jan');
     expect(c.truncatedTitle.length, lessThanOrEqualTo(StoryShareContent.maxTitleLength));
     expect(c.truncatedTitle.endsWith('…'), isTrue);
-    expect(c.deepLink, 'https://openwhen.life/letter/x');
+    expect(c.deepLink, 'https://openwhen.live/letter/x');
   });
 
   test('StoryShareContent.capsule combines title and theme', () {
@@ -18,6 +18,6 @@ void main() {
       dateSubtitle: 'Opened',
     );
     expect(c.truncatedTitle.length, lessThanOrEqualTo(StoryShareContent.maxTitleLength));
-    expect(c.deepLink, 'https://openwhen.life/capsule/c1');
+    expect(c.deepLink, 'https://openwhen.live/capsule/c1');
   });
 }

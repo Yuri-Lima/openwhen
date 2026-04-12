@@ -1,4 +1,4 @@
-/// Parsed `https://openwhen.life/letter/...` / `.../capsule/...` before navigation.
+/// Parsed `https://openwhen.live/letter/...` / `.../capsule/...` before navigation.
 class PendingDeepLink {
   PendingDeepLink._();
 
@@ -8,7 +8,7 @@ class PendingDeepLink {
   /// Stores letter or capsule id from a universal link / app link.
   static void storeFromUri(Uri uri) {
     final host = uri.host.toLowerCase();
-    if (host != 'openwhen.life' && host != 'www.openwhen.life') return;
+    if (host != 'openwhen.live' && host != 'www.openwhen.live') return;
     final segs = uri.pathSegments.where((s) => s.isNotEmpty).toList();
     if (segs.length >= 2 && segs[0] == 'letter') {
       pendingLetterId = segs[1];

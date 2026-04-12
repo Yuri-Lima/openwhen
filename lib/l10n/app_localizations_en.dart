@@ -1557,7 +1557,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get qrFooterBrand => 'openwhen.life';
+  String get qrFooterBrand => 'openwhen.live';
 
   @override
   String get qrShareWhatsAppLabel => 'WhatsApp';
@@ -2068,7 +2068,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feedbackCouldNotOpenEmail =>
-      'Could not open email. Please contact suporte@openwhen.life.';
+      'Could not open email. Please contact suporte@openwhen.live.';
 
   @override
   String feedbackEmailBodyPrefix(String category) {
@@ -2205,7 +2205,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsSection8Body =>
-      'These Terms are governed by the laws of the Federative Republic of Brazil. The courts of São Paulo/SP are hereby elected to resolve any disputes arising from this instrument, with express waiver of any other jurisdiction, however privileged. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@openwhen.life. Last updated: April 10, 2026.';
+      'These Terms are governed by the laws of the Federative Republic of Brazil. The courts of São Paulo/SP are hereby elected to resolve any disputes arising from this instrument, with express waiver of any other jurisdiction, however privileged. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@openwhen.live. Last updated: April 10, 2026.';
 
   @override
   String get privacyIntro =>
@@ -2252,7 +2252,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection6Body =>
-      'The Platform uses automated content moderation powered by artificial intelligence (OpenAI Moderations API) to analyze text content (such as comments) for potentially harmful material. This system may: (a) allow content to be published without intervention (low risk score); (b) present a gentle warning to the author while allowing publication (medium risk score); or (c) block content from being published (high risk score). When human moderation is enabled, flagged content is queued for manual review by our moderation team before a final decision is made. No automated decision is based on sensitive personal data categories. Pursuant to GDPR Article 22, you have the right not to be subject to decisions based solely on automated processing that produce legal or similarly significant effects. You may contest any automated moderation decision by contacting us at privacidade@openwhen.life or through the in-app report/feedback feature. Under LGPD Article 20, you may request a review of automated decisions that affect your interests.';
+      'The Platform uses automated content moderation powered by artificial intelligence (OpenAI Moderations API) to analyze text content (such as comments) for potentially harmful material. This system may: (a) allow content to be published without intervention (low risk score); (b) present a gentle warning to the author while allowing publication (medium risk score); or (c) block content from being published (high risk score). When human moderation is enabled, flagged content is queued for manual review by our moderation team before a final decision is made. No automated decision is based on sensitive personal data categories. Pursuant to GDPR Article 22, you have the right not to be subject to decisions based solely on automated processing that produce legal or similarly significant effects. You may contest any automated moderation decision by contacting us at privacidade@openwhen.live or through the in-app report/feedback feature. Under LGPD Article 20, you may request a review of automated decisions that affect your interests.';
 
   @override
   String get privacySection7Title =>
@@ -2281,7 +2281,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection10Body =>
-      'Your rights vary depending on your jurisdiction. You can exercise any of the rights below via the app (Settings > Data and Privacy), by emailing privacidade@openwhen.life (or privacy@openwhen.life for English), or by contacting our DPO.\n\n— LGPD (Brazil — Art. 18): You have the right to: (i) confirmation of processing; (ii) access to your data; (iii) correction of incomplete or inaccurate data; (iv) anonymization, blocking, or deletion of unnecessary or excessive data; (v) portability to another service provider; (vi) deletion of data processed based on consent; (vii) information about third parties with whom data has been shared; (viii) information about the possibility of denying consent and its consequences; (ix) revocation of consent. Response deadline: 15 business days. You may file a complaint with the ANPD (Autoridade Nacional de Proteção de Dados): https://www.gov.br/anpd.\n\n— GDPR (EU/EEA — Arts. 15–22): You have the right to: (i) access (Art. 15); (ii) rectification (Art. 16); (iii) erasure / right to be forgotten (Art. 17); (iv) restriction of processing (Art. 18); (v) data portability (Art. 20); (vi) object to processing based on legitimate interest (Art. 21); (vii) not be subject to solely automated decisions, including profiling (Art. 22) — see Section 6 above; (viii) withdraw consent at any time (Art. 7(3)). Response deadline: 30 days. You may lodge a complaint with your local supervisory authority.\n\n— CCPA/CPRA (California): As a California consumer, you have the right to: (i) know what PI we collect, use, disclose, and sell (Right to Know); (ii) request deletion of your PI (Right to Delete) — response deadline: 45 days; (iii) correct inaccurate PI (Right to Correct); (iv) opt out of the sale or sharing of PI — we do not sell or share your PI, but you may submit a request at any time; (v) limit the use of sensitive PI — we do not use sensitive PI beyond what is necessary to provide our services; (vi) non-discrimination for exercising your rights. You may designate an authorized agent to submit requests on your behalf. We verify requests using your account email. Categories of PI collected, purposes, and third-party disclosures are detailed in Sections 2, 5, and 7.';
+      'Your rights vary depending on your jurisdiction. You can exercise any of the rights below via the app (Settings > Data and Privacy), by emailing privacidade@openwhen.live (or privacy@openwhen.live for English), or by contacting our DPO.\n\n— LGPD (Brazil — Art. 18): You have the right to: (i) confirmation of processing; (ii) access to your data; (iii) correction of incomplete or inaccurate data; (iv) anonymization, blocking, or deletion of unnecessary or excessive data; (v) portability to another service provider; (vi) deletion of data processed based on consent; (vii) information about third parties with whom data has been shared; (viii) information about the possibility of denying consent and its consequences; (ix) revocation of consent. Response deadline: 15 business days. You may file a complaint with the ANPD (Autoridade Nacional de Proteção de Dados): https://www.gov.br/anpd.\n\n— GDPR (EU/EEA — Arts. 15–22): You have the right to: (i) access (Art. 15); (ii) rectification (Art. 16); (iii) erasure / right to be forgotten (Art. 17); (iv) restriction of processing (Art. 18); (v) data portability (Art. 20); (vi) object to processing based on legitimate interest (Art. 21); (vii) not be subject to solely automated decisions, including profiling (Art. 22) — see Section 6 above; (viii) withdraw consent at any time (Art. 7(3)). Response deadline: 30 days. You may lodge a complaint with your local supervisory authority.\n\n— CCPA/CPRA (California): As a California consumer, you have the right to: (i) know what PI we collect, use, disclose, and sell (Right to Know); (ii) request deletion of your PI (Right to Delete) — response deadline: 45 days; (iii) correct inaccurate PI (Right to Correct); (iv) opt out of the sale or sharing of PI — we do not sell or share your PI, but you may submit a request at any time; (v) limit the use of sensitive PI — we do not use sensitive PI beyond what is necessary to provide our services; (vi) non-discrimination for exercising your rights. You may designate an authorized agent to submit requests on your behalf. We verify requests using your account email. Categories of PI collected, purposes, and third-party disclosures are detailed in Sections 2, 5, and 7.';
 
   @override
   String get privacySection11Title => '11. ACCOUNT DELETION';
@@ -2295,14 +2295,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection12Body =>
-      'Pursuant to LGPD Article 18 V and GDPR Article 20, you have the right to receive your personal data in a structured, commonly used, and machine-readable format. You can export your data via Settings > Data and Privacy > Export My Data. The export includes: your profile information (JSON), all letters you sent (JSON + attached media files), capsules you created (JSON + photos), your comments (JSON), likes (JSON), follower/following lists (JSON), and badges (JSON). The export is generated as a ZIP archive. You may also request a manual export by contacting privacidade@openwhen.life.';
+      'Pursuant to LGPD Article 18 V and GDPR Article 20, you have the right to receive your personal data in a structured, commonly used, and machine-readable format. You can export your data via Settings > Data and Privacy > Export My Data. The export includes: your profile information (JSON), all letters you sent (JSON + attached media files), capsules you created (JSON + photos), your comments (JSON), likes (JSON), follower/following lists (JSON), and badges (JSON). The export is generated as a ZIP archive. You may also request a manual export by contacting privacidade@openwhen.live.';
 
   @override
   String get privacySection13Title => '13. CHILDREN\'S PRIVACY';
 
   @override
   String get privacySection13Body =>
-      'OpenWhen is not directed at children under 13 years of age. In compliance with COPPA (16 CFR Part 312), we do not knowingly collect personal information from children under 13. During registration, users must confirm that they are 13 years of age or older. If we become aware that we have collected data from a child under 13 without verifiable parental consent, we will promptly delete such data. Parents or guardians who believe their child has provided personal data to us may contact us at privacidade@openwhen.life to request deletion. For users aged 13 to 17, we recommend parental guidance when using the Platform.';
+      'OpenWhen is not directed at children under 13 years of age. In compliance with COPPA (16 CFR Part 312), we do not knowingly collect personal information from children under 13. During registration, users must confirm that they are 13 years of age or older. If we become aware that we have collected data from a child under 13 without verifiable parental consent, we will promptly delete such data. Parents or guardians who believe their child has provided personal data to us may contact us at privacidade@openwhen.live to request deletion. For users aged 13 to 17, we recommend parental guidance when using the Platform.';
 
   @override
   String get privacySection14Title => '14. SECURITY MEASURES';
@@ -2330,7 +2330,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection17Body =>
-      'If you have questions about this Policy, wish to exercise your rights, or need to report a privacy concern, please contact us:\n\n• Data Protection Officer (DPO): dpo@openwhen.life\n• Privacy requests (Portuguese): privacidade@openwhen.life\n• Privacy requests (English): privacy@openwhen.life\n• Legal department: juridico@openwhen.life\n• General support: suporte@openwhen.life\n\nBrazil — You may file a complaint with the ANPD: https://www.gov.br/anpd\nEU/EEA — You may lodge a complaint with your local data protection supervisory authority.\nCalifornia — You may contact the California Attorney General: https://oag.ca.gov/privacy\n\nOpenWhen Tecnologia Ltda.\nLast updated: April 10, 2026.';
+      'If you have questions about this Policy, wish to exercise your rights, or need to report a privacy concern, please contact us:\n\n• Data Protection Officer (DPO): dpo@openwhen.live\n• Privacy requests (Portuguese): privacidade@openwhen.live\n• Privacy requests (English): privacy@openwhen.live\n• Legal department: juridico@openwhen.live\n• General support: suporte@openwhen.live\n\nBrazil — You may file a complaint with the ANPD: https://www.gov.br/anpd\nEU/EEA — You may lodge a complaint with your local data protection supervisory authority.\nCalifornia — You may contact the California Attorney General: https://oag.ca.gov/privacy\n\nOpenWhen Tecnologia Ltda.\nLast updated: April 10, 2026.';
 
   @override
   String get letterPrivacyPublicLabel => 'Public';

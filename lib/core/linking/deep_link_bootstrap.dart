@@ -7,7 +7,7 @@ import '../navigation/app_navigator_key.dart';
 import 'deep_link_coordinator.dart';
 import 'pending_deep_link.dart';
 
-/// Subscribes to `https://openwhen.life/letter/...` and `/capsule/...` while the app runs.
+/// Subscribes to `https://openwhen.live/letter/...` and `/capsule/...` while the app runs.
 Future<void> initDeepLinks() async {
   if (kIsWeb) {
     return;
