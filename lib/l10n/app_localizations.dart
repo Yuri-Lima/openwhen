@@ -5038,6 +5038,30 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Áudio indisponível'**
   String get mediaModerationAudioUnavailable;
+
+  /// No description provided for @followersTabFollowers.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguidores'**
+  String get followersTabFollowers;
+
+  /// No description provided for @followersTabFollowing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seguindo'**
+  String get followersTabFollowing;
+
+  /// No description provided for @followersEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhum seguidor ainda'**
+  String get followersEmpty;
+
+  /// No description provided for @followingEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não segue ninguém ainda'**
+  String get followingEmpty;
 }
 
 class _AppLocalizationsDelegate

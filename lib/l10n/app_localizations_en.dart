@@ -2730,4 +2730,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mediaModerationAudioUnavailable => 'Audio unavailable';
+
+  @override
+  String get followersTabFollowers => 'Followers';
+
+  @override
+  String get followersTabFollowing => 'Following';
+
+  @override
+  String get followersEmpty => 'No followers yet';
+
+  @override
+  String get followingEmpty => 'Not following anyone yet';
 }

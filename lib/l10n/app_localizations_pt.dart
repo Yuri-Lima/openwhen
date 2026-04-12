@@ -2731,6 +2731,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get mediaModerationAudioUnavailable => 'Áudio indisponível';
+
+  @override
+  String get followersTabFollowers => 'Seguidores';
+
+  @override
+  String get followersTabFollowing => 'Seguindo';
+
+  @override
+  String get followersEmpty => 'Nenhum seguidor ainda';
+
+  @override
+  String get followingEmpty => 'Não segue ninguém ainda';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5460,4 +5472,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get mediaModerationAudioUnavailable => 'Áudio indisponível';
+
+  @override
+  String get followersTabFollowers => 'Seguidores';
+
+  @override
+  String get followersTabFollowing => 'Seguindo';
+
+  @override
+  String get followersEmpty => 'Nenhum seguidor ainda';
+
+  @override
+  String get followingEmpty => 'Não segue ninguém ainda';
 }
