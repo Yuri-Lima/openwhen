@@ -3472,7 +3472,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get writeLetterSendErrorEmailLookup =>
-      'Não foi possível verificar o email do destinatário. Verifique a sua ligação e tente novamente.';
+      'Não foi possível verificar o email do destinatário. Verifique sua conexão e tente novamente.';
 
   @override
   String get writeLetterSendErrorLoadProfile =>
