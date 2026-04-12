@@ -46,7 +46,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 | Item | Nota |
 |------|------|
 | Notificações de engajamento (likes, comments, follows) | ✅ Deploy concluído (12 abr 2026). |
-| Export automático ao deletar conta | Google Play data deletion requirement (2024+). Verificar se a Cloud Function `deleteUserAccount` já atende. |
+| Export automático ao deletar conta | ✅ Implementado (testar). `export_user_data.ts` — JSON completo + signed URL via email. Atende Google Play data deletion requirement. |
 | Revisar Termos com advogado | Recomendado antes de escalar; pode ser pós-launch se necessário. |
 
 ### 1.3 Versão do app

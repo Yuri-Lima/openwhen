@@ -322,7 +322,78 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 
 ---
 
-## 7. Documentos Relacionados
+## 7. OpenWhen Physical — Considerações Legais para Envio Físico
+
+**Contexto:** o roadmap prevê a possibilidade futura de enviar cartas impressas reais e/ou produtos/presentes físicos ao destinatário, com entrega programada para a data de abertura. Esta secção documenta as áreas legais que devem ser investigadas **antes** de activar qualquer feature de envio físico.
+
+### 7.1. Regulamentação de Envio Postal
+
+| Região | Regulador / Lei | Pontos a investigar |
+|--------|-----------------|---------------------|
+| Brasil | Correios / ANATEL / CDC (Código de Defesa do Consumidor) | Responsabilidade por atraso/extravio; prazos de entrega; direito de arrependimento (7 dias — Art. 49 CDC) para compras online de produtos |
+| EUA | USPS / FTC / State consumer protection laws | Shipping disclosure rules (FTC Mail Order Rule — 16 CFR Part 435); liability; return policies |
+| Internacional | Convenções postais (UPU); alfândega | Declaração aduaneira; itens proibidos por país; impostos de importação |
+
+### 7.2. Tributação
+
+- **Brasil:** ICMS sobre produtos físicos vendidos; ISS sobre serviço de intermediação; Nota Fiscal obrigatória (NF-e ou NFC-e)
+- **EUA:** Sales tax (varia por estado); nexus rules se OpenWhen fizer fulfillment de produtos
+- **Cross-border:** impostos de importação/exportação; responsabilidade do remetente vs. destinatário (Incoterms se aplicável)
+- **Stripe:** activar Stripe Tax ou integrar com serviço de cálculo de impostos (TaxJar, Avalara)
+
+### 7.3. Produtos Proibidos e Política de Itens Aceites
+
+Criar política explícita de itens que **não podem** ser enviados via OpenWhen Physical:
+
+- Armas, munições, explosivos
+- Substâncias controladas, drogas, medicamentos sem receita
+- Materiais perigosos (inflamáveis, corrosivos, radioactivos)
+- Animais vivos
+- Itens perecíveis sem cadeia de frio (avaliar caso a caso para alimentos)
+- Materiais obscenos ou ilegais
+- Dinheiro em espécie, documentos de identidade
+
+A lista deve ser alinhada com as políticas dos Correios/USPS e do parceiro de fulfillment.
+
+### 7.4. Responsabilidade e Seguros
+
+- **Extravio/dano:** quem é responsável — OpenWhen, o parceiro de fulfillment, ou a transportadora?
+- **Seguro de envio:** obrigatório acima de determinado valor? Incluído no preço ou opcional?
+- **Custódia de itens (Physical 3):** se o utilizador envia um objecto pessoal para armazenamento temporário, OpenWhen assume responsabilidade — necessário seguro e termos de custódia claros
+- **Prazo de reclamação:** definir prazo para o destinatário reportar problemas (ex.: 7 dias após recepção)
+
+### 7.5. Termos de Uso e Política de Privacidade — Actualizações Necessárias
+
+Quando a feature for activada, actualizar:
+
+- [ ] **Termos de Uso:** nova secção sobre envio físico, responsabilidades, política de reembolso/devolução, itens proibidos
+- [ ] **Política de Privacidade:** recolha de endereço físico do destinatário (dado pessoal sensível); base legal (consentimento ou execução contratual); partilha com parceiro logístico; retenção e eliminação do endereço após entrega
+- [ ] **Stripe KYC:** actualizar descrição do negócio para incluir "tangible goods" (ver [`BUSINESS.md`](BUSINESS.md))
+- [ ] **Páginas web públicas:** `terms.html` e `privacy.html` actualizados
+
+### 7.6. Protecção de Dados do Destinatário
+
+O envio físico exige recolher o **endereço postal do destinatário** — dado pessoal que pode ser sensível. Pontos a garantir:
+
+- Consentimento claro ou base legal para recolha do endereço (LGPD Art. 7; GDPR Art. 6)
+- Endereço partilhado **apenas** com o parceiro logístico, não com o remetente (preservar surpresa)
+- Endereço eliminado após confirmação de entrega (minimização de dados)
+- Opção para o destinatário recusar entregas físicas (opt-out)
+
+### 7.7. Status
+
+| Item | Status |
+|------|--------|
+| Pesquisa legal (envio postal BR) | 🔲 Pendente |
+| Pesquisa legal (envio postal EUA) | 🔲 Pendente |
+| Política de itens aceites/proibidos | 🔲 Pendente |
+| Termos de Uso actualizados (envio físico) | 🔲 Pendente |
+| Política de Privacidade actualizada (endereço) | 🔲 Pendente |
+| Revisão com advogado (envio físico) | 🔲 Pendente |
+
+---
+
+## 8. Documentos Relacionados
 
 - [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) — Política detalhada de retenção e exclusão
 - [`MVP_CHECKLIST.md`](MVP_CHECKLIST.md) — Checklist com itens legais e seus status

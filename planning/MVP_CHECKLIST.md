@@ -80,6 +80,40 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
+## Futuro — OpenWhen Physical (carta real & produtos; ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md))
+
+**Physical 1 — Carta impressa premium**
+
+- [ ] Pesquisa de parceiros de impressão/fulfillment (Lob, Stannp, gráficas locais BR)
+- [ ] Pesquisa legal concluída (envio postal, impostos, responsabilidade)
+- [ ] Design do template de carta impressa (papel premium, selo da coruja, personalização por emoção)
+- [ ] API de integração com parceiro de fulfillment
+- [ ] Cálculo de lead time por região/país (programar envio para chegar na data de abertura)
+- [ ] Fluxo no app: escolher "Carta física" ao criar carta
+- [ ] Pagamento via Stripe (preço fixo por unidade)
+- [ ] Tracking de envio com notificação ao remetente e destinatário
+- [ ] MVP testado e lançado
+
+**Physical 2 — Presentes de parceiros (marketplace)**
+
+- [ ] Curadoria de parceiros (floristas, livrarias, chocolatiers, artesãos)
+- [ ] Catálogo de presentes no app (fotos, preços, descrições)
+- [ ] Integração logística com parceiros (API ou manual inicial)
+- [ ] Política de itens aceites e itens proibidos
+- [ ] Fluxo de compra: carta + presente combinados
+- [ ] Comissão/markup configurado no Stripe
+- [ ] MVP testado e lançado
+
+**Physical 3 — Item custom do utilizador (futuro)**
+
+- [ ] Modelo de custódia temporária (armazém/fulfillment center)
+- [ ] Seguro para itens em custódia
+- [ ] Termos legais para custódia de objectos pessoais
+- [ ] Fluxo de envio do item pelo utilizador ao armazém
+- [ ] Envio programado ao destinatário na data de abertura
+
+---
+
 ## Concluído (referência)
 
 ### Autenticação e onboarding
@@ -227,11 +261,13 @@ Cartas que machucam não têm lugar aqui.
 - [x] Criar página web de privacidade acessível sem login — `hosting/public/privacy.html` + `terms.html` (EN/PT/ES, dark mode)
 - [x] Documentar Fundo de Continuidade nos Termos de Uso — Seção 7 + [`LEGAL.md`](LEGAL.md) §4
 
+### Implementado — pendente de testes (12/04/2026)
+- [x] Export automático de todos os dados ao deletar conta — `export_user_data.ts` + `deletion_request_service.dart` (testar)
+- [x] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function) — `request_deletion.ts` + `scheduled_deletion.ts` (testar)
+- [x] Manter entrega de cartas locked mesmo após conta deletada — `delete_account.ts` preservação automática (testar)
+
 ### Pendente
-- [ ] Export automático de todos os dados ao deletar conta
 - [ ] Central de privacidade no app — usuário vê todos os dados armazenados
-- [ ] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function)
-- [ ] Manter entrega de cartas locked mesmo após conta deletada
 - [ ] Backup redundante das cartas fora do Firebase
 - [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
