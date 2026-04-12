@@ -2536,6 +2536,45 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
+
+  @override
+  String get letterModerationWarning =>
+      'A sua carta tem um tom que pode magoar. Quer rever antes de selar?';
+
+  @override
+  String get letterModerationBlocked =>
+      'Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.';
+
+  @override
+  String get letterModerationUnavailable =>
+      'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.';
+
+  @override
+  String get letterModerationReviewBtn => 'Rever carta';
+
+  @override
+  String get letterModerationSendAnywayBtn => 'Enviar assim mesmo';
+
+  @override
+  String get letterModerationStepLabel => 'A verificar conteúdo…';
+
+  @override
+  String get capsuleModerationWarning =>
+      'A sua cápsula tem um tom que pode magoar. Quer rever antes de selar?';
+
+  @override
+  String get capsuleModerationBlocked =>
+      'Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.';
+
+  @override
+  String get capsuleModerationUnavailable =>
+      'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.';
+
+  @override
+  String get capsuleModerationReviewBtn => 'Rever cápsula';
+
+  @override
+  String get capsuleModerationSendAnywayBtn => 'Criar assim mesmo';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5070,4 +5109,43 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get resendEmailCooldown => 'Aguarde alguns minutos antes de reenviar.';
+
+  @override
+  String get letterModerationWarning =>
+      'Sua carta tem um tom que pode machucar. Quer revisar antes de selar?';
+
+  @override
+  String get letterModerationBlocked =>
+      'Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.';
+
+  @override
+  String get letterModerationUnavailable =>
+      'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.';
+
+  @override
+  String get letterModerationReviewBtn => 'Revisar carta';
+
+  @override
+  String get letterModerationSendAnywayBtn => 'Enviar assim mesmo';
+
+  @override
+  String get letterModerationStepLabel => 'Verificando conteúdo…';
+
+  @override
+  String get capsuleModerationWarning =>
+      'Sua cápsula tem um tom que pode machucar. Quer revisar antes de selar?';
+
+  @override
+  String get capsuleModerationBlocked =>
+      'Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.';
+
+  @override
+  String get capsuleModerationUnavailable =>
+      'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.';
+
+  @override
+  String get capsuleModerationReviewBtn => 'Revisar cápsula';
+
+  @override
+  String get capsuleModerationSendAnywayBtn => 'Criar assim mesmo';
 }

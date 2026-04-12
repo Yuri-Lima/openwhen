@@ -27,6 +27,7 @@ import '../../../../shared/utils/location_prompt_flow.dart';
 import '../../../../core/utils/email_normalization.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/auth/email_verification_guard.dart';
+import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
 import '../voice_letter.dart';
@@ -404,6 +405,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   String _letterSendErrorMessage(AppLocalizations l10n, LetterSendStep step, Object e) {
     final base = switch (step) {
+      LetterSendStep.moderation => l10n.letterModerationUnavailable,
       LetterSendStep.voiceUpload => l10n.writeLetterVoiceUploadError,
       LetterSendStep.loadSenderProfile => l10n.writeLetterSendErrorLoadProfile,
       LetterSendStep.checkFriendship => l10n.writeLetterSendErrorFriendshipCheck,
@@ -484,7 +486,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     if (!mounted) return;
 
     setState(() => _isLoading = true);
-    LetterSendStep step = LetterSendStep.voiceUpload;
+    LetterSendStep step = LetterSendStep.moderation;
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser == null) {
@@ -496,6 +498,79 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         }
         return;
       }
+
+      // ── AI moderation (before any Firestore writes) ──────────────────
+      final moderationText = [
+        _titleController.text.trim(),
+        if (!_isHandwritten) _messageController.text.trim(),
+      ].where((s) => s.isNotEmpty).join('\n');
+
+      if (moderationText.isNotEmpty) {
+        final modResult = await SendModerationHelper.moderate(
+          ref: ref,
+          text: moderationText,
+          contentType: 'letter',
+          langCode: Localizations.localeOf(context).languageCode,
+        );
+        if (!mounted) return;
+
+        switch (modResult.decision) {
+          case ModerationDecision.blocked:
+            await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('🦉', style: TextStyle(fontSize: 32)),
+                content: Text(l10n.letterModerationBlocked),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.letterModerationReviewBtn),
+                  ),
+                ],
+              ),
+            );
+            if (mounted) setState(() => _isLoading = false);
+            return;
+
+          case ModerationDecision.warning:
+            final sendAnyway = await showDialog<bool>(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('🦉', style: TextStyle(fontSize: 32)),
+                content: Text(l10n.letterModerationWarning),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(l10n.letterModerationReviewBtn),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(l10n.letterModerationSendAnywayBtn),
+                  ),
+                ],
+              ),
+            );
+            if (sendAnyway != true) {
+              if (mounted) setState(() => _isLoading = false);
+              return;
+            }
+
+          case ModerationDecision.unavailable:
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.letterModerationUnavailable)),
+              );
+              setState(() => _isLoading = false);
+            }
+            return;
+
+          case ModerationDecision.allowed:
+          case ModerationDecision.skipped:
+            break;
+        }
+      }
+      // ── end moderation ───────────────────────────────────────────────
+
       final firestore = FirebaseFirestore.instance;
 
       String? voiceUrlToSave;

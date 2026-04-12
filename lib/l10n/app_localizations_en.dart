@@ -2535,4 +2535,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resendEmailCooldown =>
       'Please wait a few minutes before resending.';
+
+  @override
+  String get letterModerationWarning =>
+      'Your letter has a tone that could hurt. Would you like to review it before sealing?';
+
+  @override
+  String get letterModerationBlocked =>
+      'This letter cannot be sent. OpenWhen exists to connect people with love, resilience, and genuine connection.';
+
+  @override
+  String get letterModerationUnavailable =>
+      'Content verification is temporarily unavailable. Please try again shortly.';
+
+  @override
+  String get letterModerationReviewBtn => 'Review letter';
+
+  @override
+  String get letterModerationSendAnywayBtn => 'Send anyway';
+
+  @override
+  String get letterModerationStepLabel => 'Checking content…';
+
+  @override
+  String get capsuleModerationWarning =>
+      'Your capsule has a tone that could hurt. Would you like to review it before sealing?';
+
+  @override
+  String get capsuleModerationBlocked =>
+      'This capsule cannot be created. OpenWhen exists to connect people with love, resilience, and genuine connection.';
+
+  @override
+  String get capsuleModerationUnavailable =>
+      'Content verification is temporarily unavailable. Please try again shortly.';
+
+  @override
+  String get capsuleModerationReviewBtn => 'Review capsule';
+
+  @override
+  String get capsuleModerationSendAnywayBtn => 'Create anyway';
 }

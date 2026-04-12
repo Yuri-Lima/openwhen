@@ -850,5 +850,17 @@
   "resendEmailDialogBody": "The email to {email} failed. You can edit the address and resend.",
   "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
   "resendEmailSuccess": "Email resent successfully!",
-  "resendEmailCooldown": "Please wait a few minutes before resending."
+  "resendEmailCooldown": "Please wait a few minutes before resending.",
+
+  "letterModerationWarning": "Your letter has a tone that could hurt. Would you like to review it before sealing?",
+  "letterModerationBlocked": "This letter cannot be sent. OpenWhen exists to connect people with love, resilience, and genuine connection.",
+  "letterModerationUnavailable": "Content verification is temporarily unavailable. Please try again shortly.",
+  "letterModerationReviewBtn": "Review letter",
+  "letterModerationSendAnywayBtn": "Send anyway",
+  "letterModerationStepLabel": "Checking content…",
+  "capsuleModerationWarning": "Your capsule has a tone that could hurt. Would you like to review it before sealing?",
+  "capsuleModerationBlocked": "This capsule cannot be created. OpenWhen exists to connect people with love, resilience, and genuine connection.",
+  "capsuleModerationUnavailable": "Content verification is temporarily unavailable. Please try again shortly.",
+  "capsuleModerationReviewBtn": "Review capsule",
+  "capsuleModerationSendAnywayBtn": "Create anyway"
 }

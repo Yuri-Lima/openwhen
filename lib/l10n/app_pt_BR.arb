@@ -878,5 +878,17 @@
   "resendEmailDialogBody": "O email para {email} falhou. Você pode editar o endereço e reenviar.",
   "@resendEmailDialogBody": { "placeholders": { "email": { "type": "String" } } },
   "resendEmailSuccess": "Email reenviado com sucesso!",
-  "resendEmailCooldown": "Aguarde alguns minutos antes de reenviar."
+  "resendEmailCooldown": "Aguarde alguns minutos antes de reenviar.",
+
+  "letterModerationWarning": "Sua carta tem um tom que pode machucar. Quer revisar antes de selar?",
+  "letterModerationBlocked": "Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.",
+  "letterModerationUnavailable": "A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.",
+  "letterModerationReviewBtn": "Revisar carta",
+  "letterModerationSendAnywayBtn": "Enviar assim mesmo",
+  "letterModerationStepLabel": "Verificando conteúdo…",
+  "capsuleModerationWarning": "Sua cápsula tem um tom que pode machucar. Quer revisar antes de selar?",
+  "capsuleModerationBlocked": "Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.",
+  "capsuleModerationUnavailable": "A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.",
+  "capsuleModerationReviewBtn": "Revisar cápsula",
+  "capsuleModerationSendAnywayBtn": "Criar assim mesmo"
 }

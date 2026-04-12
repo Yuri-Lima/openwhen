@@ -147,8 +147,15 @@ export const moderateContent = onCall({cors: true}, async (request) => {
   }
 
   const {allowed} = applyModerationPolicy(flagged);
+
+  // Compute maxScore so the client can classify severity locally
+  // (thresholds live in dart_defines.json — zero-cost compile-time consts).
+  const scores = Object.values(categoryScores);
+  const maxScore = scores.length > 0 ? Math.max(...scores) : 0;
+
   return {
     ...mod,
     allowed,
+    maxScore,
   };
 });

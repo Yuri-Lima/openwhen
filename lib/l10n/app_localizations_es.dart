@@ -2546,4 +2546,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get resendEmailCooldown => 'Espera unos minutos antes de reenviar.';
+
+  @override
+  String get letterModerationWarning =>
+      'Tu carta tiene un tono que podría herir. ¿Quieres revisarla antes de sellarla?';
+
+  @override
+  String get letterModerationBlocked =>
+      'Esta carta no puede ser enviada. OpenWhen existe para conectar personas con amor, superación y conexión genuina.';
+
+  @override
+  String get letterModerationUnavailable =>
+      'La verificación de contenido no está disponible temporalmente. Inténtalo de nuevo en unos instantes.';
+
+  @override
+  String get letterModerationReviewBtn => 'Revisar carta';
+
+  @override
+  String get letterModerationSendAnywayBtn => 'Enviar de todos modos';
+
+  @override
+  String get letterModerationStepLabel => 'Verificando contenido…';
+
+  @override
+  String get capsuleModerationWarning =>
+      'Tu cápsula tiene un tono que podría herir. ¿Quieres revisarla antes de sellarla?';
+
+  @override
+  String get capsuleModerationBlocked =>
+      'Esta cápsula no puede ser creada. OpenWhen existe para conectar personas con amor, superación y conexión genuina.';
+
+  @override
+  String get capsuleModerationUnavailable =>
+      'La verificación de contenido no está disponible temporalmente. Inténtalo de nuevo en unos instantes.';
+
+  @override
+  String get capsuleModerationReviewBtn => 'Revisar cápsula';
+
+  @override
+  String get capsuleModerationSendAnywayBtn => 'Crear de todos modos';
 }

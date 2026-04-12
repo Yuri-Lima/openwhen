@@ -4684,6 +4684,72 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Aguarde alguns minutos antes de reenviar.'**
   String get resendEmailCooldown;
+
+  /// No description provided for @letterModerationWarning.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sua carta tem um tom que pode machucar. Quer revisar antes de selar?'**
+  String get letterModerationWarning;
+
+  /// No description provided for @letterModerationBlocked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.'**
+  String get letterModerationBlocked;
+
+  /// No description provided for @letterModerationUnavailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.'**
+  String get letterModerationUnavailable;
+
+  /// No description provided for @letterModerationReviewBtn.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Revisar carta'**
+  String get letterModerationReviewBtn;
+
+  /// No description provided for @letterModerationSendAnywayBtn.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar assim mesmo'**
+  String get letterModerationSendAnywayBtn;
+
+  /// No description provided for @letterModerationStepLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Verificando conteúdo…'**
+  String get letterModerationStepLabel;
+
+  /// No description provided for @capsuleModerationWarning.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sua cápsula tem um tom que pode machucar. Quer revisar antes de selar?'**
+  String get capsuleModerationWarning;
+
+  /// No description provided for @capsuleModerationBlocked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.'**
+  String get capsuleModerationBlocked;
+
+  /// No description provided for @capsuleModerationUnavailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A verificação de conteúdo está temporariamente indisponível. Tente novamente em alguns instantes.'**
+  String get capsuleModerationUnavailable;
+
+  /// No description provided for @capsuleModerationReviewBtn.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Revisar cápsula'**
+  String get capsuleModerationReviewBtn;
+
+  /// No description provided for @capsuleModerationSendAnywayBtn.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criar assim mesmo'**
+  String get capsuleModerationSendAnywayBtn;
 }
 
 class _AppLocalizationsDelegate

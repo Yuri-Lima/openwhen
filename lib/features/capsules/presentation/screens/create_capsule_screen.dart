@@ -19,6 +19,7 @@ import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/auth/email_verification_guard.dart';
+import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
 import '../../../../shared/utils/location_prompt_flow.dart';
@@ -255,6 +256,78 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     if (!mounted) return;
     setState(() => _saving = true);
     try {
+      // ── AI moderation (before any Firestore writes) ──────────────────
+      final moderationText = [
+        _titleCtrl.text.trim(),
+        _messageCtrl.text.trim(),
+      ].where((s) => s.isNotEmpty).join('\n');
+
+      if (moderationText.isNotEmpty) {
+        final modResult = await SendModerationHelper.moderate(
+          ref: ref,
+          text: moderationText,
+          contentType: 'capsule',
+          langCode: Localizations.localeOf(context).languageCode,
+        );
+        if (!mounted) return;
+
+        switch (modResult.decision) {
+          case ModerationDecision.blocked:
+            await showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('🦉', style: TextStyle(fontSize: 32)),
+                content: Text(l10n.capsuleModerationBlocked),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.capsuleModerationReviewBtn),
+                  ),
+                ],
+              ),
+            );
+            if (mounted) setState(() => _saving = false);
+            return;
+
+          case ModerationDecision.warning:
+            final createAnyway = await showDialog<bool>(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('🦉', style: TextStyle(fontSize: 32)),
+                content: Text(l10n.capsuleModerationWarning),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(l10n.capsuleModerationReviewBtn),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(l10n.capsuleModerationSendAnywayBtn),
+                  ),
+                ],
+              ),
+            );
+            if (createAnyway != true) {
+              if (mounted) setState(() => _saving = false);
+              return;
+            }
+
+          case ModerationDecision.unavailable:
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.capsuleModerationUnavailable)),
+              );
+              setState(() => _saving = false);
+            }
+            return;
+
+          case ModerationDecision.allowed:
+          case ModerationDecision.skipped:
+            break;
+        }
+      }
+      // ── end moderation ───────────────────────────────────────────────
+
       final uid = FirebaseAuth.instance.currentUser!.uid;
       final userDoc = await FirebaseFirestore.instance.collection(FirestoreCollections.users).doc(uid).get();
       final senderName = userDoc.data()?['displayName'] ?? userDoc.data()?['name'] ?? '';

@@ -11,6 +11,7 @@ class ModerationCallResult {
     this.reason,
     this.flagged,
     this.reviewId,
+    this.maxScore,
   });
 
   final bool allowed;
@@ -19,6 +20,10 @@ class ModerationCallResult {
   final String? reason;
   final bool? flagged;
   final String? reviewId;
+
+  /// Highest category_score returned by the provider (0.0–1.0).
+  /// Used by the client to classify severity against compile-time thresholds.
+  final double? maxScore;
 }
 
 class ModerationFunctionsService {
@@ -49,6 +54,7 @@ class ModerationFunctionsService {
       reason: data['reason'] as String?,
       flagged: data['flagged'] as bool?,
       reviewId: data['reviewId'] as String?,
+      maxScore: (data['maxScore'] as num?)?.toDouble(),
     );
   }
 
