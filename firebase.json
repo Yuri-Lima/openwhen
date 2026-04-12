@@ -41,6 +41,16 @@
           { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
         ]
       }
+    ],
+    "rewrites": [
+      {
+        "source": "/letter/**",
+        "destination": "/letter/index.html"
+      },
+      {
+        "source": "/capsule/**",
+        "destination": "/letter/index.html"
+      }
     ]
   },
   "functions": [
