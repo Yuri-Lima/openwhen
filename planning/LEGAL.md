@@ -236,6 +236,12 @@ Reserva financeira mantida pela Empresa para garantir a infraestrutura mínima n
   - **Total estimado:** a calcular após primeiros 3 meses de operação
 - **Reserva mínima para 2 anos:** $56.40 (domínio) + custos Firebase estimados
 
+### Data-alvo
+- **Início da acumulação:** quando o app gerar receita (estimativa: Q3 2026)
+- **Meta de 2 anos:** ter reserva suficiente até Q3 2028
+- **Custo mínimo estimado (2 anos):** $56.40 (domínio) + custos Firebase (a calcular após 3 meses de operação)
+- **Tracking de custos:** ver [`custos/GASTOS.md`](custos/GASTOS.md)
+
 ### Política de Alimentação
 - A partir do momento em que o app gerar receita:
   - 5% da receita mensal líquida destinada ao Fundo
@@ -276,6 +282,8 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 ## 6. Domínio e Hosting
 
 O domínio **`openwhen.live`** está registado e gerido na **Cloudflare** (renova anualmente, expira Apr 10, 2027 — $28.20/ano). O DNS aponta para o **Firebase Hosting**, que serve as páginas web públicas (`privacy.html`, `terms.html`) e o ficheiro `assetlinks.json` (Android App Links). Os deep links do app (`https://openwhen.live/letter/...`, `https://openwhen.live/capsule/...`) são resolvidos pelo Firebase Hosting + entitlements iOS e intent-filters Android.
+
+> ⚠️ **Renovação obrigatória:** domínio expira em 10 de abril de 2027. Configurar lembrete no Cloudflare (auto-renew) ou calendário (90, 30 e 7 dias antes).
 
 ### Emails do domínio
 

@@ -6,7 +6,7 @@ Este documento organiza entregas por fase. Prioridades: **P0** (crítico), **P1*
 
 ---
 
-## Fase 1 — MVP core (concluída)
+## Fase 1 — MVP core (concluída — março 2026)
 
 Foco original: experiência completa de cartas + cápsulas, estabilidade e segurança. Itens **P0** abaixo estão entregues no código e marcados no checklist (🔴 Crítico).
 
@@ -35,7 +35,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 | Badges / gamificação                                                               | P1         | Concluído | Médio          | Metas leves no cliente; `lib/features/gamification/` (desbloqueio, faixa no perfil); regras Firestore `users/{uid}/badgeUnlocks`                                                      |
 | Temas do app (paletas + automático/sistema)                                        | P1         | Concluído | Baixo          | Evolução do “toggle claro/escuro”; `open_when_palette.dart`, Configurações                                                                                                            |
 | Feed em 3 camadas                                                                  | P1         | Concluído | Alto           | Explorar / Destaques / Seguindo; filtros emocionais com até 3 chips fixados; ver `[ARCHITECTURE.md](ARCHITECTURE.md)` secção “Feed”                                                   |
-| Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Pendente  | Médio          | Alinha com fotos/voz; vídeo→carta fica para fase posterior (storage, UX, custo)                                                                                                       |
+| Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Pendente  | Médio          | **Nota:** moderação de imagens e áudio já implementada (ver [MODERATION.md](MODERATION.md)); esta linha refere-se à feature de **OCR visível** e **transcrição para texto** como UX do utilizador. Vídeo→carta fica para fase posterior.                                                                                                       |
 | Multilíngue (pt-BR, en, es)                                                        | P1         | Concluído | Alto           | Também no checklist 🟡; expansão para mais locales → Fase 3                                                                                                                           |
 | **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **OpenWhen Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
 
@@ -50,7 +50,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 
 - Email de recuperação de senha funcionando
 - Verificação de email no cadastro ✅
-- Notificações de curtida, comentário e seguidor (Cloud Functions)
+- Notificações de curtida, comentário e seguidor (Cloud Functions) — ref: UX_AUDIT.md #3
 - Lupa do feed com navegação para SearchScreen
 - Busca de usuários retornando resultados
 
@@ -60,6 +60,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 - Card compartilhável ao enviar carta — "Selei uma carta 🦉"
 - Data mínima de 30 dias nas cápsulas
 - Resposta à carta (ver especificações prioritárias)
+- Simplificação do onboarding — reduzir fricção na primeira experiência (ref: UX_AUDIT.md #1)
 
 **Semana 3 — Crescimento orgânico**
 

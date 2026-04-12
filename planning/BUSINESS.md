@@ -133,3 +133,4 @@ Produto planejado: o remetente pode **adicionar um valor financeiro** à carta t
 - Conversão para notificações ativas (FCM)
 
 Roadmap de entregas: [`ROADMAP.md`](ROADMAP.md).
+Estratégia para investidores e metas de readiness: [`ROADMAP.md`](ROADMAP.md) Fase 4 (§Estratégia para Investidores).

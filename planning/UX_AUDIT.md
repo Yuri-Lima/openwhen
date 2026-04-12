@@ -110,5 +110,29 @@ O usuário não precisa de voz, GPS, proximidade, QR Code e cápsula coletiva ao
 Precisa de uma primeira carta enviada com sucesso e uma notificação que o faça voltar no dia seguinte.
 
 ---
+
+## Rastreamento dos Problemas Críticos
+
+**#1 — Primeira experiência complexa demais**
+- Registado em: `MVP_CHECKLIST.md` (🟡 Importante) + `ROADMAP.md` (Semana 2)
+- Status: Planejado para Semana 2 (Retenção)
+
+**#2 — Loop de engajamento vazio sem amigos**
+- Registado em: `ROADMAP.md` (Semana 2 e Mês 2, "Resposta à Carta" e "Feed com identidade visual própria")
+- Status: Parcialmente planejado (resposta à carta em Semana 2)
+
+**#3 — Notificações de engajamento não existem**
+- Registado em: `MVP_CHECKLIST.md` (🔴 Crítico) + `ROADMAP.md` (Semana 1)
+- Status: Bloqueador — antes de qualquer lançamento
+
+**#4 — Email quebrado**
+- Registado em: `EMAIL_VALIDATION_PLAN.md` ✅ Concluído (2026-04-11)
+- Status: Verificação de email implementada; recuperação de senha em investigação
+
+**#5 — Busca não funciona**
+- Registado em: `CHANGELOG.md` ✅ Corrigido (UserSearchService)
+- Status: Solução implementada (`lib/core/user_search/`); lupa do feed ligada em Semana 1
+
+---
 *Auditoria realizada em Abril 2026*
 *Diego Rocha & Yuri Lima — OpenWhen Inc.*

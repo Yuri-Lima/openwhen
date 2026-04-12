@@ -100,6 +100,12 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 | **Busca (lista de utilizadores)** | [`UserSearchService`](../lib/core/user_search/user_search_service.dart) — **não** há `get()` na coleção `users` para pesquisa; usa queries com `limit` (prefixo em `username` + `searchTokens` com `array-contains`). **Até ~abril/2026** o cliente carregava todos os documentos de `users` — ver [`CHANGELOG.md`](CHANGELOG.md). Seguir/Seguindo na tela Buscar: leituras em **batch** (`whereIn` em chunks), não um listener por linha. Pull-to-refresh com throttle (~3 s). Utilizadores sem `searchTokens` (dados antigos) continuam encontráveis por prefixo de `@username` até guardarem o perfil. |
 | **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
 
+### Manutenção periódica
+
+- [ ] **Domínio `openwhen.live`:** verificar estado de renovação no Cloudflare (expira 10 de abril de 2027). Activar auto-renew.
+- [ ] **Certificados SSL:** geridos automaticamente pelo Cloudflare/Firebase Hosting — verificar se não há alertas.
+- [ ] **Secrets Firebase:** rotação de `OPENAI_API_KEY` e `SENDGRID_API_KEY` se comprometidas.
+
 ---
 
 ## 5. Cloud Functions — billing (Stripe) e moderação por IA
@@ -128,6 +134,9 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
 6. ✅ **`preferredLanguage`:** campo sincronizado com Firestore via `locale_provider.dart` quando o utilizador muda o idioma; incluído na criação de conta. Webhook faz fallback: `preferredLanguage` → `language` (2 chars) → `"en"`.
 
 Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+
+**Webhook URL:** `https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook`
+**Webhook ID (SendGrid):** `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
 
 ### Email de autenticação (SMTP + templates + página de ação)
 
@@ -252,6 +261,8 @@ flowchart LR
 ---
 
 ## 9. Testes em dispositivo real (QA)
+
+> **Problemas conhecidos:** antes de iniciar QA, consultar [TROUBLESHOOTING.md](TROUBLESHOOTING.md) para workarounds de problemas conhecidos (ex.: §2 SIGABRT no admin iOS, §1 permission-denied ao enviar carta).
 
 **Configuração de build para produção** (variáveis `dart-define`, ficheiros Firebase, Instagram): ver secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase) a [3](#3-instagram--meta-facebook-app-id).
 

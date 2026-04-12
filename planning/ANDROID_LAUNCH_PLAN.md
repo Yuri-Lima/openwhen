@@ -35,7 +35,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 
 | Item | Status | Ação necessária | Referência |
 |------|--------|-----------------|------------|
-| **Moderação de cartas (Camada 2 — IA no envio)** | 🔴 Pendente | Implementar score de risco via OpenAI antes de salvar no Firestore. Google Play exige moderação de UGC. | MVP_CHECKLIST.md §Moderação |
+| **Moderação de cartas (Camada 2 — IA no envio)** | ✅ Implementado (12 abr 2026) | Text moderation (letters + capsules) e media moderation (images + audio) implementados. Ver MODERATION.md para detalhes. | MODERATION.md |
 | **Sign in with Apple** | 🟡 Pendente | Obrigatório para iOS (Apple exige), mas Google Play também recomenda. Pode ser pós-launch Android se necessário. | MVP_CHECKLIST.md §Importante |
 | **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@openwhen.live`. | PRODUCTION.md §Email |
 | **Deploy da action page de email** | ⏳ Pendente | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
@@ -150,7 +150,7 @@ No Firebase Console → Firestore → `systemConfig/app`, garantir que existem o
 | Campo | Valor recomendado para launch |
 |-------|-------------------------------|
 | `reportsEnabled` | `true` |
-| `aiModerationEnabled` | `true` (se Camada 2 implementada) ou `false` |
+| `aiModerationEnabled` | `true` (Camada 2 implementada desde 12 abr 2026) |
 | `aiModerationFailClosed` | `true` (bloqueia se IA falhar — mais seguro) |
 
 ### 4.3 Verificar google-services.json
@@ -381,7 +381,7 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 
 | Motivo | Como evitar |
 |--------|-------------|
-| UGC sem moderação | Implementar moderação de cartas (Fase 1, item 1.1) |
+| UGC sem moderação | ✅ Implementado — text + media moderation ativa (Fase 1, item 1.1) |
 | Privacy policy ausente ou incompleta | ✅ Já temos — verificar URL acessível |
 | Metadata inappropriate | Não usar termos enganosos na descrição |
 | Broken functionality | QA extensivo (Fase 8) |
@@ -451,7 +451,7 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 
 ### Ambos
 
-1. [ ] Decidir se lança com moderação IA ativa ou se aceita risco de revisão manual
+1. [x] ✅ Moderação IA ativa (text + media) — implementado 12 abr 2026
 2. [ ] Decidir se faz closed testing antes ou vai direto para production
 3. [ ] Revisar Data Safety form juntos
 4. [ ] Definir conta de teste para o revisor do Google

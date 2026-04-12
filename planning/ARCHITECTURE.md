@@ -188,6 +188,8 @@ Lido por [`lib/core/config/system_config_provider.dart`](../lib/core/config/syst
 - **Cliente:** lista lexical em [`comments_screen.dart`](../lib/features/feed/presentation/screens/comments_screen.dart); denúncias em [`shared/moderation/report_flow.dart`](../lib/shared/moderation/report_flow.dart); opcionalmente IA quando `aiModerationEnabled` via [`ModerationFunctionsService`](../lib/core/moderation/moderation_functions_service.dart).
 - **Servidor:** Firebase Cloud Functions em [`functions/src/moderation/`](../functions/src/moderation/) — adapter **OpenAI** (Moderation API) por defeito; `MODERATION_PROVIDER` reservado para mais provedores; fallback + coleção `moderationIncidents` em falhas. Ver [`functions/README.md`](../functions/README.md).
 - **Superadmin:** [`AdminModerationScreen`](../lib/features/admin/presentation/admin_moderation_screen.dart) — quatro abas (denúncias, feedback, revisão humana, alertas IA); `TabBar` **rolável** (`isScrollable: true`) para rótulos completos em ecrãs estreitos; texto longo nos cartões com `SelectionArea` + scroll horizontal quando necessário; banner com `adminGetModerationInfo` (provedor efectivo e se a chave está configurada no runtime, sem expor segredos). Os dados são carregados **após** o primeiro frame (`addPostFrameCallback`) para não chamar `setState` durante `initState`, e os callables admin são invocados **em série** (`_loadAllAdminData`), não em paralelo — evita `SIGABRT` em iOS por stress no SDK nativo (ver [`TROUBLESHOOTING.md`](TROUBLESHOOTING.md) §2).
+- **Thresholds (compile-time):** definidos em `config/dart_defines.json` e lidos via `double.fromEnvironment()`. `MODERATION_WARNING_THRESHOLD` (default `0.40`) → dialog de aviso; `MODERATION_BLOCK_THRESHOLD` (default `0.70`) ou `flagged` → bloqueio. Detalhes completos: [`MODERATION.md`](MODERATION.md).
+- **Moderação de media (Storage):** Cloud Function `moderateUploadedFile` com trigger `onObjectFinalized` — analisa imagens via OpenAI `omni-moderation-latest` (gratuito) e áudio via Whisper (transcrição) + moderação de texto. Detalhes: [`MODERATION.md`](MODERATION.md).
 
 ### Carta (`letters`) — campos relevantes (subset)
 
@@ -219,6 +221,24 @@ Quando um utilizador envia uma carta a um email sem conta, a Cloud Function `onL
 - **Firestore rules:** campos de email delivery (`inviteEmailStatus*`, `inviteEmailSentAt`, `receiverEmailNormalized`, `deliveryMode`, `lastResendAt`) protegidos contra escrita do cliente; `delete` restrito ao sender.
 
 Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed Webhook) + secrets Firebase. Ver [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+
+### Inventário de Cloud Functions
+
+| Function | Tipo | Trigger | Ficheiro | Estado |
+|----------|------|---------|----------|--------|
+| `moderateContent` | Callable | Cliente chama antes de publicar comentário/carta/cápsula | `functions/src/moderation/moderate_content.ts` | ✅ Deployed |
+| `moderateUploadedFile` | Storage trigger | `onObjectFinalized` em avatars, capsules/photos, handwritten, voiceLetters | `functions/src/moderation/moderate_storage.ts` | ✅ Deployed |
+| `adminGetModerationInfo` | Callable | Admin screen — info de provedor/chave | `functions/src/moderation/moderate_content.ts` | ✅ Deployed |
+| `onLetterCreatedSendExternalInviteEmail` | Firestore trigger | Criação de carta com `receiverEmail` | `functions/src/external_letters.ts` | ✅ Deployed |
+| `resendExternalInviteEmail` | Callable | Reenvio manual com rate limiting (5 min) | `functions/src/external_letters.ts` | ✅ Deployed |
+| `onSendGridWebhook` | HTTP | Webhook SendGrid (bounce/delivered/dropped/deferred) | `functions/src/sendgrid_webhook.ts` | ✅ Deployed |
+| `deleteUserAccount` | Callable | Exclusão de conta (2 modos) | `functions/src/delete_account.ts` | ✅ Deployed |
+| `bootstrapAdminClaim` | Callable | Bootstrap de claim admin | `functions/src/admin/bootstrap_admin.ts` | ✅ Deployed |
+| `createCheckoutSession` | Callable | Stripe Checkout (billing) | `functions/src/billing/` | ⏳ Desactivado (`BILLING_ENABLED=false`) |
+| `createPortalSession` | Callable | Stripe Customer Portal (billing) | `functions/src/billing/` | ⏳ Desactivado |
+| `stripeWebhook` | HTTP | Webhook Stripe (subscription events) | `functions/src/billing/` | ⏳ Desactivado |
+
+**Nota:** função `commitLetterSend` é uma **transação Firestore no cliente** ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)), não uma Cloud Function.
 
 ### Cápsula (`capsules`) — campos principais
 

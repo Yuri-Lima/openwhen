@@ -13,17 +13,20 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Notificações FCM** (configuração, permissões, handlers)
 - [x] **Testes em celular real** (build iOS/Android, fluxos principais) — ver [`PRODUCTION.md`](PRODUCTION.md) (secção 9)
 - [x] **Regras Firestore de produção** (deploy e validação) — `firestore.rules` + `storage.rules`; executar `firebase deploy --only firestore:rules,storage`
+- [ ] **Notificações de engajamento** (curtida, comentário, novo seguidor) via Cloud Functions — ref: UX_AUDIT.md #3
 
 ---
 
 ## 🟡 Importante (logo após o núcleo do MVP)
 
 - [ ] **Sign in with Apple** — Firebase Auth (`OAuthProvider` + nonce), pacote `sign_in_with_apple`, capability no App ID, provedor Apple no Firebase Console, ligar o botão em `login_screen.dart` (hoje só UI)
+- [ ] **Simplificação do onboarding** (reduzir passos, experiência guiada) — ref: UX_AUDIT.md #1
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
 - [x] Compartilhamento Stories/Reels
 - [x] Tela **Cartas recebidas** dedicada (locked + opened numa aba, com filtros)
 - [x] Badges / gamificação leve
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
+- [ ] **Nox Card** (card da coruja por nível, animação compartilhável) — ver [ROADMAP.md](ROADMAP.md) Fase 2 e [BUSINESS.md](BUSINESS.md)
 - [x] Feed em **3 camadas**
 - [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**

@@ -191,7 +191,7 @@ O botão "Deletar conta" em Settings executava:
 ### Correção implementada
 
 1. **Re-autenticação:** `AccountDeletionService.reauthenticateWithPassword()` pede senha antes
-2. **Escolha do usuário:** modal com opção "Apagar tudo" vs "Anonimizar cartas"
+2. **Escolha do usuário:** modal com opção "Excluir Tudo" vs "Anonimizar cartas"
 3. **Cloud Function `deleteUserAccount`:** limpeza completa server-side (15 etapas, inclui Stripe, Storage, Auth)
 4. **Loading overlay:** feedback visual durante processamento
 5. **Tratamento de erros:** wrong-password, timeout, etc. com mensagens l10n

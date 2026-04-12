@@ -87,15 +87,22 @@
 - **Art. 20 — Portabilidade:** O usuário pode solicitar exportação dos seus dados em formato legível por máquina.
 - **Art. 7 — Consentimento:** Deve ser livre, específico, informado e inequívoco.
 - **Art. 13/14 — Transparência:** O usuário deve saber quais dados são coletados e por quê.
-- **Prazo de execução:** 30 dias para atender solicitação de deleção/exportação.
+- **Prazo de execução:** 30 dias corridos para atender solicitação de deleção/exportação (Art. 12 §3).
 
 ### 2.2 LGPD (Lei Geral de Proteção de Dados — Brasil)
 - **Art. 18 — Direitos do titular:** Confirmação, acesso, correção, anonimização, portabilidade, eliminação.
 - **Art. 15 — Término do tratamento:** Dados devem ser eliminados após o fim da finalidade.
 - **Art. 8 — Consentimento:** Deve ser fornecido por escrito ou por outro meio que demonstre a manifestação de vontade do titular.
-- **Prazo:** "Prazo razoável" — a ANPD recomenda 15 dias úteis.
+- **Prazo de execução:** 15 dias úteis para atender solicitação de deleção/exportação (ANPD 2019 recomendação).
 
-### 2.3 COPPA (Children's Online Privacy Protection Act — EUA)
+### 2.3 CCPA/CPRA (California Consumer Privacy Act — Califórnia/EUA)
+- **Direito de Saber:** O usuário pode solicitar quais dados pessoais são coletados.
+- **Direito de Exclusão:** O usuário pode solicitar deleção dos seus dados pessoais.
+- **Direito de Correção:** O usuário pode solicitar correção de dados imprecisos.
+- **Opt-out de venda/compartilhamento:** O usuário pode requerer que não vendamos dados (OpenWhen não vende dados).
+- **Prazo de execução:** 45 dias para atender solicitação de deleção/acesso/correção.
+
+### 2.4 COPPA (Children's Online Privacy Protection Act — EUA)
 - **Idade mínima:** 13 anos para criar conta sem consentimento parental.
 - **Verificação:** Não é obrigatória a verificação de idade com documento, mas deve haver declaração do usuário.
 - **Ação necessária:** Checkbox no registro: "Confirmo que tenho 13 anos ou mais."
@@ -108,7 +115,7 @@
 
 O usuário deve ver um modal com **duas opções** para o tratamento das suas cartas/cápsulas:
 
-**Opção A — "Apagar tudo"**
+**Opção A — "Excluir Tudo"**
 - Deleta todas as cartas enviadas e recebidas
 - Deleta todas as cápsulas (próprias e contribuições)
 - Deleta comentários, curtidas, follows
@@ -183,7 +190,7 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 
 ### 4.3 Na Deleção de Conta
 - [ ] **Confirmação:** "Entendo que esta ação é irreversível após 30 dias"
-- Seleção: "Apagar tudo" vs "Anonimizar minhas cartas"
+- Seleção: "Excluir Tudo" vs "Anonimizar minhas cartas"
 
 ### 4.4 Consentimento de Marketing (se aplicável no futuro)
 - [ ] "Aceito receber emails com novidades do OpenWhen" — **Opcional**, desmarcado por padrão
