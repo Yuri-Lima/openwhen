@@ -29,6 +29,7 @@ export const backfillFollowCounters = onCall(
       );
     }
 
+    try {
     const db = getFirestore();
     logger.info("backfillFollowCounters: starting");
 
@@ -94,6 +95,14 @@ export const backfillFollowCounters = onCall(
 
     for (const uid of allUids) {
       const userRef = db.collection("users").doc(uid);
+
+      // Skip UIDs whose user document was deleted (update would throw NOT_FOUND)
+      const userSnap = await userRef.get();
+      if (!userSnap.exists) {
+        logger.warn("backfillFollowCounters: skipping missing user doc", {uid});
+        continue;
+      }
+
       const update: Record<string, number> = {};
 
       const fc = followersMap.get(uid);
@@ -171,5 +180,12 @@ export const backfillFollowCounters = onCall(
       totalFollowDocs: totalFollows,
       usersUpdated: updatedCount,
     };
+    } catch (err) {
+      // Surface the real error message instead of generic INTERNAL
+      if (err instanceof HttpsError) throw err;
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error("backfillFollowCounters: unhandled error", {err: msg});
+      throw new HttpsError("internal", `Backfill failed: ${msg}`);
+    }
   }
 );
