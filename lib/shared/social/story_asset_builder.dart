@@ -58,22 +58,27 @@ class StoryAssetBuilder {
             RenderRepaintBoundary? boundary =
                 key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
             if (boundary == null) {
+              debugPrint('[StoryAssetBuilder] boundary is null after 2 frames');
               completer.complete(null);
               return;
             }
-            if (boundary.debugNeedsPaint) {
+            // Wait up to ~3 extra frames for pending paints (Impeller can be slower).
+            for (int i = 0; i < 3 && boundary!.debugNeedsPaint; i++) {
               await Future<void>.delayed(const Duration(milliseconds: 32));
               boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+              if (boundary == null) {
+                debugPrint('[StoryAssetBuilder] boundary lost during paint wait');
+                completer.complete(null);
+                return;
+              }
             }
-            if (boundary == null) {
-              completer.complete(null);
-              return;
-            }
-            final image = await boundary.toImage(pixelRatio: 1.0);
+            final image = await boundary!.toImage(pixelRatio: 1.0);
             final bd = await image.toByteData(format: ui.ImageByteFormat.png);
             completer.complete(bd?.buffer.asUint8List());
-          } catch (e, st) {
-            completer.completeError(e, st);
+          } catch (e) {
+            // Complete with null instead of error so callers get a graceful fallback.
+            debugPrint('[StoryAssetBuilder] toImage failed: $e');
+            completer.complete(null);
           } finally {
             entry.remove();
           }

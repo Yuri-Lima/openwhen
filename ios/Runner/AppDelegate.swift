@@ -72,12 +72,27 @@ private enum InstagramStoriesChannel {
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  /// Track whether the Instagram channel was already registered to avoid double-registration.
+  private var instagramChannelRegistered = false
+
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     // Needed so APNs delivers a device token before Dart calls FCM getToken().
     application.registerForRemoteNotifications()
+
+    // Fallback registration: if the implicit-engine callback hasn't fired yet,
+    // register the Instagram Stories channel via the classic controller path.
+    if !instagramChannelRegistered,
+       let controller = window?.rootViewController as? FlutterViewController {
+      let registrar = controller.registrar(forPlugin: "InstagramStoriesPlugin")
+      if let registrar = registrar {
+        InstagramStoriesChannel.register(with: registrar)
+        instagramChannelRegistered = true
+      }
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -93,8 +108,10 @@ private enum InstagramStoriesChannel {
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "InstagramStoriesPlugin") {
+    if !instagramChannelRegistered,
+       let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "InstagramStoriesPlugin") {
       InstagramStoriesChannel.register(with: registrar)
+      instagramChannelRegistered = true
     }
   }
 }
