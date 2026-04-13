@@ -286,7 +286,7 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 | Item | Estado |
 |------|--------|
-| `firebase deploy --only hosting` | ⏳ Necessário para publicar `auth/action.html` |
+| `firebase deploy --only hosting` | ✅ Concluído — `auth/action.html` publicada |
 | Domínio remetente `noreply@openwhen.live` | ⏳ 4 registros DNS no Cloudflare (2 TXT + 2 CNAME DKIM). Ver [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação"). |
 
 ### Se emails ainda forem para spam após a configuração

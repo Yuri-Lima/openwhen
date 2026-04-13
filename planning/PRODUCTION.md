@@ -174,7 +174,7 @@ Configuração feita em 2026-04-12 para resolver emails de verificação/reset a
 | **Domínio SendGrid** | ✅ Verificado | `em2352.openwhen.live` — SPF/DKIM ativos |
 | **Action URL (global)** | ✅ Configurada | `https://openwhen.live/auth/action.html` (aplica-se a todos os templates) |
 | **Sender name** | ✅ "OpenWhen" | Nos 3 templates: verification, password reset, email change |
-| **Página de ação** | ⏳ Deploy pendente | `hosting/public/auth/action.html` — dark theme com branding. Requer `firebase deploy --only hosting` |
+| **Página de ação** | ✅ Concluído | `hosting/public/auth/action.html` — dark theme com branding. Deploy feito via `firebase deploy --only hosting` |
 | **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@openwhen-923f5.firebaseapp.com` → `noreply@openwhen.live`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
 
 **DNS pendente para domínio customizado do remetente (Firebase Auth):**

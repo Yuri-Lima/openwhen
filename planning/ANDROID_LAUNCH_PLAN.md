@@ -38,7 +38,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 | **Moderação de cartas (Camada 2 — IA no envio)** | ✅ Implementado (12 abr 2026) | Text moderation (letters + capsules) e media moderation (images + audio) implementados. Ver MODERATION.md para detalhes. | MODERATION.md |
 | **Sign in with Apple** | 🟡 Pendente | Obrigatório para iOS (Apple exige), mas Google Play também recomenda. Pode ser pós-launch Android se necessário. | MVP_CHECKLIST.md §Importante |
 | **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@openwhen.live`. | PRODUCTION.md §Email |
-| **Deploy da action page de email** | ⏳ Pendente | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
+| **Deploy da action page de email** | ✅ Concluído | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
 | **Verificação de email no cadastro** | ✅ Implementado | `sendEmailVerification()` no registo + guard `requireVerifiedEmail()` bloqueia cartas/comentários/cápsulas até verificação. Soft-block (login permitido). | MVP_CHECKLIST.md §Email |
 
 ### 1.2 Recomendados (não bloqueadores, mas importantes)
