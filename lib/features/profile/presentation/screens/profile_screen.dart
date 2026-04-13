@@ -13,6 +13,7 @@ import '../../data/avatar_upload_helper.dart';
 import '../../../gamification/profile_badges_strip.dart';
 import 'settings_screen.dart';
 import 'followers_list_screen.dart';
+import '../../../letters/presentation/screens/vault_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -221,9 +222,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                           ));
                                         }),
                                         _buildDividerVertical(),
-                                        _buildCounter(l10n.profileStatSent, lettersSent),
+                                        _buildTappableCounter(l10n.profileStatSent, lettersSent, () {
+                                          Navigator.push(context, MaterialPageRoute(
+                                            builder: (_) => const VaultScreen(initialTabIndex: 1),
+                                          ));
+                                        }),
                                         _buildDividerVertical(),
-                                        _buildCounter(l10n.profileStatOpened, opened),
+                                        _buildTappableCounter(l10n.profileStatOpened, opened, () {
+                                          Navigator.push(context, MaterialPageRoute(
+                                            builder: (_) => const VaultScreen(initialTabIndex: 0),
+                                          ));
+                                        }),
                                       ],
                                     ),
                                     const ProfileBadgesStrip(),
