@@ -159,6 +159,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onboardingAlreadyHaveAccount => 'Ya tengo una cuenta';
 
   @override
+  String get firstActionTitle => '¿Qué te gustaría\nhacer primero?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Elige una opción para empezar — siempre puedes hacer la otra después.';
+
+  @override
+  String get firstActionLetterTitle => 'Enviar una carta';
+
+  @override
+  String get firstActionLetterSubtitle => 'Para alguien especial';
+
+  @override
+  String get firstActionCapsuleTitle => 'Crear una cápsula del tiempo';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'Para tu yo del futuro';
+
+  @override
+  String get firstActionSkip => 'Explorar primero';
+
+  @override
   String get loginHeroLetters => 'CARTAS PARA EL FUTURO';
 
   @override
@@ -1984,6 +2006,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get adminEntrySettings => 'Moderación (admin)';
+
+  @override
+  String get adminResetFirstAction => 'Resetear guía de primera acción';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Muestra la guía de nuevo en el próximo inicio';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'Guía de primera acción reseteada. Reinicia la app para verla.';
 
   @override
   String get adminModerationReviewsTab => 'Revisión humana';

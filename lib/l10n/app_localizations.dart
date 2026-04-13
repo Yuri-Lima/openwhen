@@ -377,6 +377,48 @@ abstract class AppLocalizations {
   /// **'Já tenho uma conta'**
   String get onboardingAlreadyHaveAccount;
 
+  /// No description provided for @firstActionTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O que gostaria de\nfazer primeiro?'**
+  String get firstActionTitle;
+
+  /// No description provided for @firstActionSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Escolha uma opção para começar — você pode fazer a outra depois.'**
+  String get firstActionSubtitle;
+
+  /// No description provided for @firstActionLetterTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Enviar uma carta'**
+  String get firstActionLetterTitle;
+
+  /// No description provided for @firstActionLetterSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Para alguém especial'**
+  String get firstActionLetterSubtitle;
+
+  /// No description provided for @firstActionCapsuleTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Criar uma cápsula do tempo'**
+  String get firstActionCapsuleTitle;
+
+  /// No description provided for @firstActionCapsuleSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Para o seu eu do futuro'**
+  String get firstActionCapsuleSubtitle;
+
+  /// No description provided for @firstActionSkip.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Explorar primeiro'**
+  String get firstActionSkip;
+
   /// No description provided for @loginHeroLetters.
   ///
   /// In pt_BR, this message translates to:
@@ -3706,6 +3748,24 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Moderação (admin)'**
   String get adminEntrySettings;
+
+  /// No description provided for @adminResetFirstAction.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Resetar guia de primeira ação'**
+  String get adminResetFirstAction;
+
+  /// No description provided for @adminResetFirstActionSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Mostra o guia novamente no próximo login'**
+  String get adminResetFirstActionSubtitle;
+
+  /// No description provided for @adminResetFirstActionDone.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Guia de primeira ação resetado. Reinicie o app para ver.'**
+  String get adminResetFirstActionDone;
 
   /// No description provided for @adminModerationReviewsTab.
   ///

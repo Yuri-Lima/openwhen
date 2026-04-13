@@ -158,6 +158,28 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingAlreadyHaveAccount => 'Já tenho uma conta';
 
   @override
+  String get firstActionTitle => 'O que gostaria de\nfazer primeiro?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Escolha uma opção para começar — pode fazer a outra depois.';
+
+  @override
+  String get firstActionLetterTitle => 'Enviar uma carta';
+
+  @override
+  String get firstActionLetterSubtitle => 'Para alguém especial';
+
+  @override
+  String get firstActionCapsuleTitle => 'Criar uma cápsula do tempo';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'Para o seu eu do futuro';
+
+  @override
+  String get firstActionSkip => 'Explorar primeiro';
+
+  @override
   String get loginHeroLetters => 'CARTAS PARA O FUTURO';
 
   @override
@@ -1979,6 +2001,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get adminEntrySettings => 'Moderação (admin)';
 
   @override
+  String get adminResetFirstAction => 'Resetar guia de primeira ação';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Mostra o guia novamente no próximo login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'Guia de primeira ação resetado. Reinicie o app para ver.';
+
+  @override
   String get adminModerationReviewsTab => 'Revisão humana';
 
   @override
@@ -2897,6 +2930,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingAlreadyHaveAccount => 'Já tenho uma conta';
+
+  @override
+  String get firstActionTitle => 'O que gostaria de\nfazer primeiro?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Escolha uma opção para começar — você pode fazer a outra depois.';
+
+  @override
+  String get firstActionLetterTitle => 'Enviar uma carta';
+
+  @override
+  String get firstActionLetterSubtitle => 'Para alguém especial';
+
+  @override
+  String get firstActionCapsuleTitle => 'Criar uma cápsula do tempo';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'Para o seu eu do futuro';
+
+  @override
+  String get firstActionSkip => 'Explorar primeiro';
 
   @override
   String get loginHeroLetters => 'CARTAS PARA O FUTURO';
@@ -4718,6 +4773,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get adminEntrySettings => 'Moderação (admin)';
+
+  @override
+  String get adminResetFirstAction => 'Resetar guia de primeira ação';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Mostra o guia novamente no próximo login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'Guia de primeira ação resetado. Reinicie o app para ver.';
 
   @override
   String get adminModerationReviewsTab => 'Revisão humana';

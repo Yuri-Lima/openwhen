@@ -157,6 +157,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingAlreadyHaveAccount => 'I already have an account';
 
   @override
+  String get firstActionTitle => 'What would you like\nto do first?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Choose one to get started — you can always do the other later.';
+
+  @override
+  String get firstActionLetterTitle => 'Send a letter';
+
+  @override
+  String get firstActionLetterSubtitle => 'For someone special';
+
+  @override
+  String get firstActionCapsuleTitle => 'Create a time capsule';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'For your future self';
+
+  @override
+  String get firstActionSkip => 'Explore first';
+
+  @override
   String get loginHeroLetters => 'LETTERS FOR THE FUTURE';
 
   @override
@@ -1976,6 +1998,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminEntrySettings => 'Moderation (admin)';
+
+  @override
+  String get adminResetFirstAction => 'Reset first-action guide';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Shows the guide again on next login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'First-action guide reset. Restart the app to see it.';
 
   @override
   String get adminModerationReviewsTab => 'Human review';
