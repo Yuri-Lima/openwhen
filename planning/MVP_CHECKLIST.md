@@ -29,6 +29,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 Importante (logo após o núcleo do MVP)
 
+- [ ] **Bug crítico: cursor preso no campo de texto da carta** — usuário não consegue reposicionar cursor para corrigir letra específica, precisa apagar tudo. Arquivo: write_letter_screen.dart. Responsável: Yuri. Corrigir antes do lançamento.
 - [ ] **Sign in with Apple** — Firebase Auth (`OAuthProvider` + nonce), pacote `sign_in_with_apple`, capability no App ID, provedor Apple no Firebase Console, ligar o botão em `login_screen.dart` (hoje só UI)
 - [ ] **Simplificação do onboarding** (reduzir passos, experiência guiada) — ref: UX_AUDIT.md #1
 - [x] Fotos na cápsula (mobile; web desabilitado com aviso)
