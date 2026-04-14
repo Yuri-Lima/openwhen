@@ -311,3 +311,29 @@ ou com um `GestureDetector` sobreposto bloqueando o toque.
 **Arquivo:** `lib/features/letters/presentation/screens/write_letter_screen.dart`
 **Responsável:** Yuri
 **Prioridade:** Corrigir antes do lançamento
+
+---
+
+## 🔴 Bug — Cloud Function checkUsernameAvailable não deployada
+
+**Problema:** Ao cadastrar, qualquer username digitado mostra "já está em uso".
+A Cloud Function `checkUsernameAvailable` existe no código mas não foi
+deployada em produção. O catch silencioso retorna `false` (indisponível)
+quando a função falha.
+
+**Solução Yuri:**
+1. Fazer deploy da função:
+```bash
+firebase deploy --only functions:checkUsernameAvailable
+```
+2. Corrigir o catch para não retornar false silenciosamente:
+```dart
+} catch (e) {
+  debugPrint('checkUsername error: $e');
+  return true; // assume disponível se não conseguir verificar
+}
+```
+
+**Arquivo:** `lib/features/auth/presentation/screens/register_screen.dart`
+**Responsável:** Yuri
+**Prioridade:** Crítico — bloqueia novos cadastros
