@@ -23,6 +23,7 @@ Stream<QuerySnapshot<Map<String, dynamic>>> lockedCapsulesSenderStream(String ui
       .collection(FirestoreCollections.capsules)
       .where('senderUid', isEqualTo: uid)
       .where('status', isEqualTo: 'locked')
+      .limit(100)
       .snapshots();
 }
 
@@ -35,5 +36,6 @@ Stream<QuerySnapshot<Map<String, dynamic>>> lockedCapsulesCollectiveParticipantS
       .where('participantUids', arrayContains: uid)
       .where('status', isEqualTo: 'locked')
       .where('isCollective', isEqualTo: true)
+      .limit(100)
       .snapshots();
 }

@@ -6,6 +6,30 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 
 ---
 
+> ### ⚠️ ATENÇÃO — Custos Firebase antes de lançar em produção
+>
+> **Antes de publicar o app nas lojas**, é **obrigatório** compreender a estrutura de custos do Firebase para evitar surpresas na faturação. O plano gratuito (Spark) tem limites apertados que são facilmente ultrapassados com utilizadores reais. Ao escalar para o plano **Blaze** (pay-as-you-go), os custos podem crescer rapidamente se não forem monitorizados.
+>
+> **Pontos críticos a analisar:**
+>
+> 1. **Firestore** — leituras, escritas e eliminações são cobradas por operação. Listeners em tempo real (streams) contam como leituras a cada alteração. Atenção especial ao feed público (queries com `limit`), ao separador "Seguindo" (até `ceil(n/10)` queries por atualização) e a qualquer listener que dispare em loop ou sem `limit`.
+> 2. **Cloud Functions** — invocações, tempo de CPU e memória são cobrados. Funções de moderação por IA (`moderateContent`) e webhooks (`onSendGridWebhook`) podem escalar com o volume de cartas enviadas.
+> 3. **Storage** — armazenamento de imagens (avatares, cartas) e bandwidth de download. Considerar compressão e limites de upload.
+> 4. **Authentication** — gratuito para a maioria dos métodos, mas verificações por SMS (se usadas) são cobradas.
+> 5. **Hosting** — bandwidth e armazenamento; normalmente baixo, mas picos de tráfego podem surpreender.
+>
+> **Ações recomendadas antes do lançamento:**
+>
+> - [ ] Ativar **Budget Alerts** na Google Cloud Console (ex.: alertas a 50%, 80% e 100% de um teto mensal definido).
+> - [ ] Rever a [calculadora de preços do Firebase](https://firebase.google.com/pricing) com estimativas realistas de utilizadores ativos diários (DAU) e operações por sessão.
+> - [ ] Ativar o **Firebase Usage dashboard** e monitorizar nos primeiros dias/semanas pós-lançamento.
+> - [ ] Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.
+> - [ ] Documentar estimativas e limites aceitáveis em [`planning/custos/GASTOS.md`](custos/GASTOS.md).
+>
+> **Sem esta análise, NÃO avançar para produção.** Um pico inesperado de utilizadores ou um bug que gere leituras em loop pode resultar em custos elevados em poucas horas.
+
+---
+
 ## 1. Ficheiros obrigatórios no cliente (Firebase)
 
 | Ficheiro | Função |
@@ -150,7 +174,7 @@ Configuração feita em 2026-04-12 para resolver emails de verificação/reset a
 | **Domínio SendGrid** | ✅ Verificado | `em2352.openwhen.live` — SPF/DKIM ativos |
 | **Action URL (global)** | ✅ Configurada | `https://openwhen.live/auth/action.html` (aplica-se a todos os templates) |
 | **Sender name** | ✅ "OpenWhen" | Nos 3 templates: verification, password reset, email change |
-| **Página de ação** | ⏳ Deploy pendente | `hosting/public/auth/action.html` — dark theme com branding. Requer `firebase deploy --only hosting` |
+| **Página de ação** | ✅ Concluído | `hosting/public/auth/action.html` — dark theme com branding. Deploy feito via `firebase deploy --only hosting` |
 | **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@openwhen-923f5.firebaseapp.com` → `noreply@openwhen.live`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
 
 **DNS pendente para domínio customizado do remetente (Firebase Auth):**
@@ -232,6 +256,7 @@ flowchart LR
 
 ### C. Firebase e backend
 
+- [ ] **⚠️ Análise de custos Firebase concluída** — Budget Alerts configurados na Google Cloud Console, estimativas de custo por DAU documentadas, Firebase Usage dashboard ativado. **Sem esta análise, não avançar** (ver [aviso no topo](#-atenção--custos-firebase-antes-de-lançar-em-produção)).
 - [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
 - [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).

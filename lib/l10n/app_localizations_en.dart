@@ -157,6 +157,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingAlreadyHaveAccount => 'I already have an account';
 
   @override
+  String get firstActionTitle => 'What would you like\nto do first?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Choose one to get started — you can always do the other later.';
+
+  @override
+  String get firstActionLetterTitle => 'Send a letter';
+
+  @override
+  String get firstActionLetterSubtitle => 'For someone special';
+
+  @override
+  String get firstActionCapsuleTitle => 'Create a time capsule';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'For your future self';
+
+  @override
+  String get firstActionSkip => 'Explore first';
+
+  @override
   String get loginHeroLetters => 'LETTERS FOR THE FUTURE';
 
   @override
@@ -1978,6 +2000,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminEntrySettings => 'Moderation (admin)';
 
   @override
+  String get adminResetFirstAction => 'Reset first-action guide';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Shows the guide again on next login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'First-action guide reset. Restart the app to see it.';
+
+  @override
   String get adminModerationReviewsTab => 'Human review';
 
   @override
@@ -2498,6 +2531,113 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get privacyCenterTitle => 'Privacy Center';
+
+  @override
+  String get privacyCenterSubtitle => 'View all your stored data';
+
+  @override
+  String get privacyCenterIntro =>
+      'Here you can see all the data OpenWhen stores about you. This includes your profile, letters, capsules, social interactions and more. In compliance with GDPR Art. 15 and LGPD Art. 18.';
+
+  @override
+  String get privacyCenterProfile => 'Profile';
+
+  @override
+  String get privacyCenterFieldName => 'Name';
+
+  @override
+  String get privacyCenterFieldUsername => 'Username';
+
+  @override
+  String get privacyCenterFieldEmail => 'Email';
+
+  @override
+  String get privacyCenterFieldBio => 'Bio';
+
+  @override
+  String get privacyCenterFieldCountry => 'Country';
+
+  @override
+  String get privacyCenterFieldLanguage => 'Language';
+
+  @override
+  String get privacyCenterFieldCreatedAt => 'Created at';
+
+  @override
+  String get privacyCenterFieldPhoto => 'Photo';
+
+  @override
+  String get privacyCenterYes => 'Yes';
+
+  @override
+  String get privacyCenterNo => 'No';
+
+  @override
+  String get privacyCenterLetters => 'Letters';
+
+  @override
+  String get privacyCenterLettersSent => 'Sent';
+
+  @override
+  String get privacyCenterLettersReceived => 'Received';
+
+  @override
+  String get privacyCenterLettersLocked => 'Locked';
+
+  @override
+  String get privacyCenterLettersWithLocation => 'With location';
+
+  @override
+  String get privacyCenterCapsules => 'Capsules';
+
+  @override
+  String get privacyCenterCapsulesTotal => 'Total';
+
+  @override
+  String get privacyCenterSocial => 'Social';
+
+  @override
+  String get privacyCenterFollowers => 'Followers';
+
+  @override
+  String get privacyCenterFollowing => 'Following';
+
+  @override
+  String get privacyCenterBlocks => 'Blocks';
+
+  @override
+  String get privacyCenterEngagement => 'Engagement';
+
+  @override
+  String get privacyCenterComments => 'Comments';
+
+  @override
+  String get privacyCenterLikes => 'Likes';
+
+  @override
+  String get privacyCenterBadges => 'Badges';
+
+  @override
+  String get privacyCenterBadgesUnlocked => 'Unlocked';
+
+  @override
+  String get privacyCenterBilling => 'Subscription';
+
+  @override
+  String get privacyCenterSubscriptionTier => 'Plan';
+
+  @override
+  String get privacyCenterSubscriptionStatus => 'Status';
+
+  @override
+  String get privacyCenterLocation => 'Location';
+
+  @override
+  String get privacyCenterLocationExplainer =>
+      'OpenWhen only saves your location when you choose to include it in a letter. Location is optional and controlled per letter.';
+
+  @override
   String get emailVerificationTitle => 'Verify your email';
 
   @override
@@ -2623,4 +2763,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mediaModerationAudioUnavailable => 'Audio unavailable';
+
+  @override
+  String get followersTabFollowers => 'Followers';
+
+  @override
+  String get followersTabFollowing => 'Following';
+
+  @override
+  String get followersEmpty => 'No followers yet';
+
+  @override
+  String get followingEmpty => 'Not following anyone yet';
 }

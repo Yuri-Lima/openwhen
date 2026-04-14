@@ -4,3 +4,4 @@
 export {onLikeCreated} from "./on_like_created";
 export {onCommentCreated} from "./on_comment_created";
 export {onFollowCreated} from "./on_follow_created";
+export {onFollowDeleted} from "./on_follow_deleted";

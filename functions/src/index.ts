@@ -41,7 +41,10 @@ export {
   onLikeCreated,
   onCommentCreated,
   onFollowCreated,
+  onFollowDeleted,
 } from "./engagement";
+
+export {backfillFollowCounters} from "./backfill_follow_counters";
 
 setGlobalOptions({region: "us-central1"});
 

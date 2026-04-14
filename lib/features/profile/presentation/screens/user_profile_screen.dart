@@ -10,6 +10,7 @@ import '../../../../shared/widgets/owl_watermark.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../core/navigation/deferred_screens.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'followers_list_screen.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -46,9 +47,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           .collection('follows')
           .where('followerUid', isEqualTo: _currentUid)
           .where('followingUid', isEqualTo: widget.userId)
+          .limit(1)
           .get();
-      for (final doc in snap.docs) {
-        await doc.reference.delete();
+      if (snap.docs.isNotEmpty) {
+        await snap.docs.first.reference.delete();
       }
     } else {
       await firestore.collection('follows').add({
@@ -162,6 +164,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                         .collection('follows')
                                         .where('followerUid', isEqualTo: _currentUid)
                                         .where('followingUid', isEqualTo: widget.userId)
+                                        .limit(1)
                                         .snapshots(),
                                     builder: (context, followSnap) {
                                       final isFollowing = (followSnap.data?.docs ?? []).isNotEmpty;
@@ -195,30 +198,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                               ],
                             ),
                             const SizedBox(height: 24),
-                            StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection('follows')
-                                  .where('followingUid', isEqualTo: widget.userId)
-                                  .snapshots(),
-                              builder: (context, followersSnap) {
-                                final followers = followersSnap.data?.docs.length ?? 0;
-                                return StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('follows')
-                                      .where('followerUid', isEqualTo: widget.userId)
-                                      .snapshots(),
-                                  builder: (context, followingSnap) {
-                                    final following = followingSnap.data?.docs.length ?? 0;
-                                    return Row(
-                                      children: [
-                                        _buildCounter(l10n.profileStatFollowers, followers),
-                                        _buildDivider(),
-                                        _buildCounter(l10n.profileStatFollowing, following),
-                                        _buildDivider(),
-                                        _buildCounter(l10n.profileStatLetters, _asInt(data?['lettersSentCount'])),
-                                      ],
-                                    );
-                                  },
+                            Builder(
+                              builder: (context) {
+                                final followers = (data?['followersCount'] as num?)?.toInt() ?? 0;
+                                final following = (data?['followingCount'] as num?)?.toInt() ?? 0;
+                                return Row(
+                                  children: [
+                                    _buildTappableCounter(l10n.profileStatFollowers, followers, () {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (_) => FollowersListScreen(userId: widget.userId, initialTabFollowers: true),
+                                      ));
+                                    }),
+                                    _buildDivider(),
+                                    _buildTappableCounter(l10n.profileStatFollowing, following, () {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (_) => FollowersListScreen(userId: widget.userId, initialTabFollowers: false),
+                                      ));
+                                    }),
+                                    _buildDivider(),
+                                    _buildCounter(l10n.profileStatLetters, _asInt(data?['lettersSentCount'])),
+                                  ],
                                 );
                               },
                             ),
@@ -263,6 +262,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       .where('senderUid', isEqualTo: widget.userId)
                       .where('isPublic', isEqualTo: true)
                       .where('status', isEqualTo: 'opened')
+                      .limit(50)
                       .snapshots(),
                   builder: (context, snapshot) {
                     final docs = snapshot.data?.docs ?? [];
@@ -367,6 +367,22 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           const SizedBox(height: 2),
           Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTappableCounter(String label, int value, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Column(
+          children: [
+            Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
+            const SizedBox(height: 2),
+            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+          ],
+        ),
       ),
     );
   }

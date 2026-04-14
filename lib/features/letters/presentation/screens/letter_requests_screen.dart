@@ -225,6 +225,7 @@ class LetterRequestsScreen extends StatelessWidget {
                   .collection(FirestoreCollections.letters)
                   .where('receiverUid', isEqualTo: uid)
                   .where('requestStatus', isEqualTo: 'pending')
+                  .limit(50)
                   .snapshots(),
               builder: (context, snapshot) {
                 final l10n = AppLocalizations.of(context)!;

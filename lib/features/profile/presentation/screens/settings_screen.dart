@@ -29,6 +29,7 @@ import '../../../../core/services/account_deletion_service.dart';
 import '../../../../core/services/deletion_request_service.dart';
 import '../../../../core/services/privacy_log_service.dart';
 import '../widgets/pending_deletion_banner.dart';
+import 'privacy_center_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -50,6 +51,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _refreshAdminClaim() async {
     final v = await currentUserHasAdminClaim();
     if (mounted) setState(() => _isAdmin = v);
+  }
+
+  Future<void> _resetFirstActionGuide(BuildContext context) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    await FirebaseFirestore.instance
+        .collection(FirestoreCollections.users)
+        .doc(uid)
+        .update({'hasCompletedFirstAction': false});
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.adminResetFirstActionDone)),
+      );
+    }
   }
 
   Widget _activePill(AppLocalizations l10n) {
@@ -431,6 +447,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       _buildDivider(),
                       _buildMenuItem(
+                        icon: Icons.shield_outlined,
+                        iconColor: const Color(0xFF10B981),
+                        iconBg: const Color(0xFFECFDF5),
+                        label: l10n.privacyCenterTitle,
+                        subtitle: l10n.privacyCenterSubtitle,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PrivacyCenterScreen(),
+                          ),
+                        ),
+                      ),
+                      _buildDivider(),
+                      _buildMenuItem(
                         icon: Icons.delete_outline,
                         iconColor: const Color(0xFFEF4444),
                         iconBg: const Color(0xFFFEF2F2),
@@ -492,22 +522,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ]),
 
                     if (_isAdmin == true) ...[
-                      _buildSectionTitle(l10n.adminModerationTitle),
-                      _buildMenuCard([
-                        _buildMenuItem(
-                          icon: Icons.admin_panel_settings_outlined,
-                          iconColor: const Color(0xFF6366F1),
-                          iconBg: const Color(0xFFEEF2FF),
-                          label: l10n.adminEntrySettings,
-                          onTap: () async {
-                            await Navigator.push<void>(
-                              context,
-                              MaterialPageRoute(builder: (_) => const AdminModerationScreen()),
-                            );
-                            await _refreshAdminClaim();
-                          },
+                      _buildSectionTitle('Admin'),
+                      Material(
+                        color: context.pal.card,
+                        borderRadius: BorderRadius.circular(16),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            leading: Container(
+                              width: 32, height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEEF2FF),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.admin_panel_settings_outlined, size: 17, color: Color(0xFF6366F1)),
+                            ),
+                            title: Text('Admin', style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            children: [
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.shield_outlined,
+                                iconColor: const Color(0xFF6366F1),
+                                iconBg: const Color(0xFFEEF2FF),
+                                label: l10n.adminEntrySettings,
+                                onTap: () async {
+                                  await Navigator.push<void>(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const AdminModerationScreen()),
+                                  );
+                                  await _refreshAdminClaim();
+                                },
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.restart_alt_rounded,
+                                iconColor: const Color(0xFFF59E0B),
+                                iconBg: const Color(0xFFFEF3C7),
+                                label: l10n.adminResetFirstAction,
+                                subtitle: l10n.adminResetFirstActionSubtitle,
+                                onTap: () => _resetFirstActionGuide(context),
+                              ),
+                            ],
+                          ),
                         ),
-                      ]),
+                      ),
                     ],
 
                     const SizedBox(height: 16),

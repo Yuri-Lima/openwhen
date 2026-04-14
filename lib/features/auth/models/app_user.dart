@@ -28,6 +28,10 @@ class AppUser {
   /// Mirror of Stripe subscription status, e.g. `active`, `past_due`, `canceled`.
   final String? subscriptionStatus;
 
+  /// Whether the user has completed the first-action guide after registration.
+  /// Defaults to `true` for existing users (no field in Firestore → skip guide).
+  final bool hasCompletedFirstAction;
+
   /// Account lifecycle: `active` | `pending_deletion`.
   /// When `pending_deletion`, the user can still log in but cannot send
   /// new letters/capsules. A scheduled Cloud Function will execute the
@@ -61,6 +65,7 @@ class AppUser {
     this.stripeCustomerId,
     this.stripeSubscriptionId,
     this.subscriptionStatus,
+    this.hasCompletedFirstAction = true,
     this.accountStatus = 'active',
     this.deletionRequestedAt,
     this.deletionMode,
@@ -87,6 +92,7 @@ class AppUser {
       stripeCustomerId: data['stripeCustomerId'] as String?,
       stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
       subscriptionStatus: data['subscriptionStatus'] as String?,
+      hasCompletedFirstAction: data['hasCompletedFirstAction'] as bool? ?? true,
       accountStatus: data['accountStatus'] as String? ?? 'active',
       deletionRequestedAt: data['deletionRequestedAt'] != null
           ? (data['deletionRequestedAt'] as Timestamp).toDate()
@@ -132,6 +138,7 @@ class AppUser {
       if (stripeCustomerId != null) 'stripeCustomerId': stripeCustomerId,
       if (stripeSubscriptionId != null) 'stripeSubscriptionId': stripeSubscriptionId,
       if (subscriptionStatus != null) 'subscriptionStatus': subscriptionStatus,
+      'hasCompletedFirstAction': hasCompletedFirstAction,
       'accountStatus': accountStatus,
       if (deletionRequestedAt != null)
         'deletionRequestedAt': Timestamp.fromDate(deletionRequestedAt!),

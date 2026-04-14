@@ -245,6 +245,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                   .collection(FirestoreCollections.comments)
                   .where('letterId', isEqualTo: widget.letterId)
                   .orderBy('createdAt', descending: false)
+                  .limit(200)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

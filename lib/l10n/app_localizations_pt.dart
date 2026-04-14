@@ -158,6 +158,28 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingAlreadyHaveAccount => 'Já tenho uma conta';
 
   @override
+  String get firstActionTitle => 'O que gostaria de\nfazer primeiro?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Escolha uma opção para começar — pode fazer a outra depois.';
+
+  @override
+  String get firstActionLetterTitle => 'Enviar uma carta';
+
+  @override
+  String get firstActionLetterSubtitle => 'Para alguém especial';
+
+  @override
+  String get firstActionCapsuleTitle => 'Criar uma cápsula do tempo';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'Para o seu eu do futuro';
+
+  @override
+  String get firstActionSkip => 'Explorar primeiro';
+
+  @override
   String get loginHeroLetters => 'CARTAS PARA O FUTURO';
 
   @override
@@ -1979,6 +2001,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get adminEntrySettings => 'Moderação (admin)';
 
   @override
+  String get adminResetFirstAction => 'Resetar guia de primeira ação';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Mostra o guia novamente no próximo login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'Guia de primeira ação resetado. Reinicie o app para ver.';
+
+  @override
   String get adminModerationReviewsTab => 'Revisão humana';
 
   @override
@@ -2500,6 +2533,113 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get privacyCenterTitle => 'Central de Privacidade';
+
+  @override
+  String get privacyCenterSubtitle => 'Ver todos os seus dados armazenados';
+
+  @override
+  String get privacyCenterIntro =>
+      'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.';
+
+  @override
+  String get privacyCenterProfile => 'Perfil';
+
+  @override
+  String get privacyCenterFieldName => 'Nome';
+
+  @override
+  String get privacyCenterFieldUsername => 'Username';
+
+  @override
+  String get privacyCenterFieldEmail => 'Email';
+
+  @override
+  String get privacyCenterFieldBio => 'Bio';
+
+  @override
+  String get privacyCenterFieldCountry => 'País';
+
+  @override
+  String get privacyCenterFieldLanguage => 'Idioma';
+
+  @override
+  String get privacyCenterFieldCreatedAt => 'Criado em';
+
+  @override
+  String get privacyCenterFieldPhoto => 'Foto';
+
+  @override
+  String get privacyCenterYes => 'Sim';
+
+  @override
+  String get privacyCenterNo => 'Não';
+
+  @override
+  String get privacyCenterLetters => 'Cartas';
+
+  @override
+  String get privacyCenterLettersSent => 'Enviadas';
+
+  @override
+  String get privacyCenterLettersReceived => 'Recebidas';
+
+  @override
+  String get privacyCenterLettersLocked => 'Trancadas';
+
+  @override
+  String get privacyCenterLettersWithLocation => 'Com localização';
+
+  @override
+  String get privacyCenterCapsules => 'Cápsulas';
+
+  @override
+  String get privacyCenterCapsulesTotal => 'Total';
+
+  @override
+  String get privacyCenterSocial => 'Social';
+
+  @override
+  String get privacyCenterFollowers => 'Seguidores';
+
+  @override
+  String get privacyCenterFollowing => 'Seguindo';
+
+  @override
+  String get privacyCenterBlocks => 'Bloqueios';
+
+  @override
+  String get privacyCenterEngagement => 'Engajamento';
+
+  @override
+  String get privacyCenterComments => 'Comentários';
+
+  @override
+  String get privacyCenterLikes => 'Curtidas';
+
+  @override
+  String get privacyCenterBadges => 'Conquistas';
+
+  @override
+  String get privacyCenterBadgesUnlocked => 'Desbloqueadas';
+
+  @override
+  String get privacyCenterBilling => 'Assinatura';
+
+  @override
+  String get privacyCenterSubscriptionTier => 'Plano';
+
+  @override
+  String get privacyCenterSubscriptionStatus => 'Status';
+
+  @override
+  String get privacyCenterLocation => 'Localização';
+
+  @override
+  String get privacyCenterLocationExplainer =>
+      'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.';
+
+  @override
   String get emailVerificationTitle => 'Verifique seu email';
 
   @override
@@ -2624,6 +2764,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get mediaModerationAudioUnavailable => 'Áudio indisponível';
+
+  @override
+  String get followersTabFollowers => 'Seguidores';
+
+  @override
+  String get followersTabFollowing => 'Seguindo';
+
+  @override
+  String get followersEmpty => 'Nenhum seguidor ainda';
+
+  @override
+  String get followingEmpty => 'Não segue ninguém ainda';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -2778,6 +2930,28 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get onboardingAlreadyHaveAccount => 'Já tenho uma conta';
+
+  @override
+  String get firstActionTitle => 'O que gostaria de\nfazer primeiro?';
+
+  @override
+  String get firstActionSubtitle =>
+      'Escolha uma opção para começar — você pode fazer a outra depois.';
+
+  @override
+  String get firstActionLetterTitle => 'Enviar uma carta';
+
+  @override
+  String get firstActionLetterSubtitle => 'Para alguém especial';
+
+  @override
+  String get firstActionCapsuleTitle => 'Criar uma cápsula do tempo';
+
+  @override
+  String get firstActionCapsuleSubtitle => 'Para o seu eu do futuro';
+
+  @override
+  String get firstActionSkip => 'Explorar primeiro';
 
   @override
   String get loginHeroLetters => 'CARTAS PARA O FUTURO';
@@ -4601,6 +4775,17 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get adminEntrySettings => 'Moderação (admin)';
 
   @override
+  String get adminResetFirstAction => 'Resetar guia de primeira ação';
+
+  @override
+  String get adminResetFirstActionSubtitle =>
+      'Mostra o guia novamente no próximo login';
+
+  @override
+  String get adminResetFirstActionDone =>
+      'Guia de primeira ação resetado. Reinicie o app para ver.';
+
+  @override
   String get adminModerationReviewsTab => 'Revisão humana';
 
   @override
@@ -5122,6 +5307,113 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
+  String get privacyCenterTitle => 'Central de Privacidade';
+
+  @override
+  String get privacyCenterSubtitle => 'Ver todos os seus dados armazenados';
+
+  @override
+  String get privacyCenterIntro =>
+      'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.';
+
+  @override
+  String get privacyCenterProfile => 'Perfil';
+
+  @override
+  String get privacyCenterFieldName => 'Nome';
+
+  @override
+  String get privacyCenterFieldUsername => 'Username';
+
+  @override
+  String get privacyCenterFieldEmail => 'Email';
+
+  @override
+  String get privacyCenterFieldBio => 'Bio';
+
+  @override
+  String get privacyCenterFieldCountry => 'País';
+
+  @override
+  String get privacyCenterFieldLanguage => 'Idioma';
+
+  @override
+  String get privacyCenterFieldCreatedAt => 'Criado em';
+
+  @override
+  String get privacyCenterFieldPhoto => 'Foto';
+
+  @override
+  String get privacyCenterYes => 'Sim';
+
+  @override
+  String get privacyCenterNo => 'Não';
+
+  @override
+  String get privacyCenterLetters => 'Cartas';
+
+  @override
+  String get privacyCenterLettersSent => 'Enviadas';
+
+  @override
+  String get privacyCenterLettersReceived => 'Recebidas';
+
+  @override
+  String get privacyCenterLettersLocked => 'Trancadas';
+
+  @override
+  String get privacyCenterLettersWithLocation => 'Com localização';
+
+  @override
+  String get privacyCenterCapsules => 'Cápsulas';
+
+  @override
+  String get privacyCenterCapsulesTotal => 'Total';
+
+  @override
+  String get privacyCenterSocial => 'Social';
+
+  @override
+  String get privacyCenterFollowers => 'Seguidores';
+
+  @override
+  String get privacyCenterFollowing => 'Seguindo';
+
+  @override
+  String get privacyCenterBlocks => 'Bloqueios';
+
+  @override
+  String get privacyCenterEngagement => 'Engajamento';
+
+  @override
+  String get privacyCenterComments => 'Comentários';
+
+  @override
+  String get privacyCenterLikes => 'Curtidas';
+
+  @override
+  String get privacyCenterBadges => 'Conquistas';
+
+  @override
+  String get privacyCenterBadgesUnlocked => 'Desbloqueadas';
+
+  @override
+  String get privacyCenterBilling => 'Assinatura';
+
+  @override
+  String get privacyCenterSubscriptionTier => 'Plano';
+
+  @override
+  String get privacyCenterSubscriptionStatus => 'Status';
+
+  @override
+  String get privacyCenterLocation => 'Localização';
+
+  @override
+  String get privacyCenterLocationExplainer =>
+      'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.';
+
+  @override
   String get emailVerificationTitle => 'Verifique seu email';
 
   @override
@@ -5246,4 +5538,16 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get mediaModerationAudioUnavailable => 'Áudio indisponível';
+
+  @override
+  String get followersTabFollowers => 'Seguidores';
+
+  @override
+  String get followersTabFollowing => 'Seguindo';
+
+  @override
+  String get followersEmpty => 'Nenhum seguidor ainda';
+
+  @override
+  String get followingEmpty => 'Não segue ninguém ainda';
 }

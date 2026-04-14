@@ -25,7 +25,14 @@ class InstagramStoriesShareService {
   }) async {
     File? pngFile;
     try {
-      pngFile = await StoryAssetBuilder.buildPngFile(context: context, content: content);
+      // ---------- 1. Build story PNG ----------
+      try {
+        pngFile = await StoryAssetBuilder.buildPngFile(context: context, content: content);
+      } catch (e) {
+        debugPrint('[InstagramShare] buildPngFile threw: $e');
+        // pngFile stays null → falls through to text-only fallback below.
+      }
+
       if (pngFile == null) {
         await Share.share(
           shareText,
@@ -37,6 +44,7 @@ class InstagramStoriesShareService {
 
       final xFile = XFile(pngFile.path, mimeType: 'image/png', name: 'openwhen_story.png');
 
+      // ---------- 2. Try native Instagram Stories ----------
       if (!kIsWeb && kFacebookAppIdConfigured && (Platform.isIOS || Platform.isAndroid)) {
         final available = await InstagramStoriesPlatform.isInstagramStoryAvailable();
         if (available) {
@@ -46,41 +54,31 @@ class InstagramStoriesShareService {
               facebookAppId: kFacebookAppId,
             ).timeout(const Duration(seconds: 30));
             return StoriesShareOutcome.nativeOpened;
-          } on PlatformException catch (e) {
-            if (e.code == 'INSTAGRAM_NOT_INSTALLED') {
-              await _shareFiles(
-                files: [xFile],
-                text: shareText,
-                subject: shareSubject,
-                origin: sharePositionOrigin,
-              );
-              return StoriesShareOutcome.fallback;
-            }
-            await _shareFiles(
-              files: [xFile],
-              text: shareText,
-              subject: shareSubject,
-              origin: sharePositionOrigin,
-            );
-            return StoriesShareOutcome.fallback;
-          } catch (_) {
-            await _shareFiles(
-              files: [xFile],
-              text: shareText,
-              subject: shareSubject,
-              origin: sharePositionOrigin,
-            );
-            return StoriesShareOutcome.fallback;
+          } catch (e) {
+            debugPrint('[InstagramShare] native share failed: $e');
+            // Fall through to share-sheet fallback with image.
           }
         }
       }
 
+      // ---------- 3. Fallback: share sheet with image ----------
       await _shareFiles(
         files: [xFile],
         text: shareText,
         subject: shareSubject,
         origin: sharePositionOrigin,
       );
+      return StoriesShareOutcome.fallback;
+    } catch (e) {
+      // ---------- 4. Ultimate safety net: text-only share ----------
+      debugPrint('[InstagramShare] unexpected error, text-only fallback: $e');
+      try {
+        await Share.share(
+          shareText,
+          subject: shareSubject,
+          sharePositionOrigin: sharePositionOrigin,
+        );
+      } catch (_) {}
       return StoriesShareOutcome.fallback;
     } finally {
       if (pngFile != null) {

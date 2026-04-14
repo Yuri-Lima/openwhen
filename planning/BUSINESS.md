@@ -81,13 +81,13 @@ OpenWhen combina **cartas temporizadas**, uma **rede social emocional** e **QR C
 Use na consola Stripe (inglês) — alinhado ao produto e à stack descrita acima; ajuste só se o go-to-market mudar.
 
 **English (short):**  
-“We operate OpenWhen, a consumer software application for scheduled digital letters, guided time capsules, and an emotional social feed. Through Stripe we sell recurring subscription plans (named tiers) that unlock premium digital features in the app. We may later add optional pay-per-feature upgrades and other in-app digital purchases using the same payment stack. All offerings are digital services; we do not ship physical goods.”
+“We operate OpenWhen, a consumer software application for scheduled digital letters, guided time capsules, and an emotional social feed. Through Stripe we sell recurring subscription plans (named tiers) that unlock premium digital features in the app. We may later add optional pay-per-feature upgrades, in-app digital purchases, and scheduled delivery of printed letters and curated physical gifts. Current offerings are digital services; physical goods fulfillment is on our product roadmap.”
 
 **English (longer, if the form allows):**  
-“OpenWhen (Delaware C-Corp) offers a cross-platform application where users write messages that unlock in the future—scheduled letters, time capsules, and optional sharing in a social layer—with QR code flows connecting physical touchpoints to the app. Stripe processes subscription payments for premium membership tiers (recurring billing) and, when activated, the Stripe Customer Portal for plan management. Future roadmap items may include sealed monetary gifts attached to letters and additional digital add-ons; those would remain in-app digital services. No tangible products are sold.”
+“OpenWhen (Delaware C-Corp) offers a cross-platform application where users write messages that unlock in the future—scheduled letters, time capsules, and optional sharing in a social layer—with QR code flows connecting physical touchpoints to the app. Stripe processes subscription payments for premium membership tiers (recurring billing) and, when activated, the Stripe Customer Portal for plan management. Future roadmap items may include sealed monetary gifts attached to letters, additional digital add-ons, and scheduled delivery of printed letters and curated physical gifts tied to letter opening dates. Current offerings are digital services; physical goods fulfillment will be added as a future product line.”
 
 **Português (referência interna / formulários em PT):**  
-“A OpenWhen oferece uma aplicação de software para cartas temporizadas, cápsulas do tempo guiadas e feed social emocional, com ponte por QR Code. Através do Stripe vendemos assinaturas recorrentes (planos nomeados) que desbloqueiam funcionalidades premium digitais na app. O roadmap pode incluir pay-per-feature e outros complementos digitais; tudo como serviço digital, sem envio de produtos físicos.”
+“A OpenWhen oferece uma aplicação de software para cartas temporizadas, cápsulas do tempo guiadas e feed social emocional, com ponte por QR Code. Através do Stripe vendemos assinaturas recorrentes (planos nomeados) que desbloqueiam funcionalidades premium digitais na app. O roadmap inclui pay-per-feature, complementos digitais, e futuramente envio de cartas impressas e presentes físicos programados para a data de abertura. Atualmente tudo como serviço digital; envio de produtos físicos será adicionado como linha de produto futura.”
 
 Premium futuro pode incluir recursos como exportação avançada, temas, ou cápsulas coletivas — a definir com dados de uso. **IA** futura no produto foca em **assistência à criação e personalização** (incl. contexto familiar: datas importantes, relações), com transparência — não em vigilância do utilizador.
 
@@ -111,6 +111,33 @@ Produto planejado: o remetente pode **adicionar um valor financeiro** à carta t
 
 **Outros (escala):** compra no app ou na web e **resgate** via código (saldo ou desbloqueio premium) pode reutilizar a mesma stack de pagamentos — alinhado ao marco de ~10k usuários e à Stripe, salvo decisão contrária de produto.
 
+### OpenWhen Physical — Carta Física & Produtos Selados
+
+**Visão:** expandir o OpenWhen do mundo digital para o físico — o utilizador pode enviar uma **carta real impressa** e/ou **presentes/produtos físicos** que chegam ao destinatário na data de abertura escolhida. O produto físico reforça o valor emocional da plataforma e cria uma nova vertical de receita com margem significativa.
+
+**Proposta de valor para o mercado:**
+- Nenhuma plataforma combina **carta temporizada + presente físico programado** — diferencial único
+- Ponte natural entre digital e físico já existente no OpenWhen (QR Code)
+- Apelo forte para datas comemorativas (aniversários, Natal, Dia dos Namorados, formaturas)
+- Potencial de viralidade: receber um pacote físico inesperado gera conteúdo orgânico (unboxing)
+
+**Modelo de receita (estimativas iniciais):**
+
+| Produto | Preço estimado (BR) | Preço estimado (EUA) | Margem estimada |
+|---------|---------------------|----------------------|-----------------|
+| Carta impressa premium (envelope + selo) | R$15–30 | $5–10 | 50–70% |
+| Carta + presente de catálogo (parceiro) | R$50–200+ | $20–80+ | 15–25% (comissão) |
+| Bundle carta + Gift When (digital + físico) | variável | variável | mista |
+
+**Parceiros potenciais (pesquisa inicial necessária):**
+- **Impressão/fulfillment (carta):** Lob (EUA), Stannp (global), gráficas locais (BR)
+- **Presentes/marketplace:** floristas, chocolatiers, livrarias, artesãos locais — curadoria por região
+- **Logística:** Correios (BR), USPS/UPS/FedEx (EUA); cálculo de lead time por CEP/ZIP
+
+**Impacto na estratégia Stripe/KYC:** quando a feature de envio físico for activada, o perfil Stripe do OpenWhen passará a incluir venda de produtos tangíveis (ver textos KYC atualizados abaixo). Até lá, manter a descrição actual (serviços digitais).
+
+**Pré-requisito sugerido:** validar demanda com **waitlist** ou **pesquisa com utilizadores** antes de investir em integração logística. Começar com carta impressa (Physical 1) antes de marketplace de presentes. Detalhes de implementação: [`ROADMAP.md`](ROADMAP.md) Fase 4.
+
 ---
 
 ## Diferenciais competitivos
@@ -120,6 +147,7 @@ Produto planejado: o remetente pode **adicionar um valor financeiro** à carta t
 3. **QR Code físico** — ponte entre mundo real e digital (presentes, eventos, lembranças).
 4. **Inteligência como apoio emocional** — roadmap prevê IA para sugestões alinhadas ao contexto (família, hábitos, criação de cartas), sempre com foco em confiança e opt-in onde houver dados sensíveis.
 5. **Presente emocional + valor prático** — carta temporizada com opcional de valor financeiro selado (OpenWhen Gift), incluindo ângulo viral (Nox Card) sem expor montante exato.
+6. **Do digital ao físico** — possibilidade futura de enviar carta impressa real e/ou presentes físicos programados para a data de abertura (OpenWhen Physical) — nenhuma plataforma combina temporização + envio físico programado.
 
 ---
 

@@ -21,6 +21,7 @@ import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/auth/presentation/screens/onboarding_screen.dart';
+import 'features/auth/presentation/screens/first_action_guide_screen.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/letters/presentation/screens/vault_screen.dart';
 import 'features/feed/presentation/screens/feed_screen.dart';
@@ -37,6 +38,7 @@ import 'shared/widgets/keyboard_dismiss_overlay_button.dart';
 import 'core/navigation/home_tab_provider.dart';
 
 bool _onboardingShown = false;
+bool _firstActionGuideDone = false;
 
 /// Best-effort: improves playback on iOS/Android; not available on web and may
 /// throw [MissingPluginException] after hot restart until a full rebuild.
@@ -238,7 +240,34 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     final authState = ref.watch(authStateProvider);
     return authState.when(
       data: (user) {
-        if (user != null) return const HomeScreen();
+        if (user != null) {
+          // Already completed the first-action guide this session → skip check.
+          if (_firstActionGuideDone) return const HomeScreen();
+
+          // Check Firestore flag once; defaults to true for existing users.
+          return StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection(FirestoreCollections.users)
+                .doc(user.uid)
+                .snapshots(),
+            builder: (context, snap) {
+              if (!snap.hasData) return const SplashScreen();
+              final data = snap.data?.data() as Map<String, dynamic>?;
+              final completed = data?['hasCompletedFirstAction'] as bool? ?? true;
+              if (completed) {
+                // Cache so we don't re-check every rebuild.
+                _firstActionGuideDone = true;
+                return const HomeScreen();
+              }
+              return FirstActionGuideScreen(
+                onComplete: () {
+                  _firstActionGuideDone = true;
+                  if (mounted) setState(() {});
+                },
+              );
+            },
+          );
+        }
         if (!_onboardingShown) {
           return OnboardingScreen(onFinish: () {
             _onboardingShown = true;

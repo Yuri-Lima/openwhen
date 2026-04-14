@@ -21,7 +21,10 @@ import '../vault_list_filters.dart';
 import '../widgets/vault_filter_sheet.dart';
 
 class VaultScreen extends ConsumerStatefulWidget {
-  const VaultScreen({super.key});
+  const VaultScreen({super.key, this.initialTabIndex = 0});
+
+  /// Tab to show on first render: 0 = Received, 1 = Sent, 2 = Capsules.
+  final int initialTabIndex;
 
   @override
   ConsumerState<VaultScreen> createState() => _VaultScreenState();
@@ -37,7 +40,11 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: widget.initialTabIndex.clamp(0, 2),
+    );
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
@@ -345,6 +352,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .collection(FirestoreCollections.letters)
           .where('receiverUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
+          .limit(200)
           .snapshots(),
       builder: (context, lockedSnap) {
         return StreamBuilder<QuerySnapshot>(
@@ -352,6 +360,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               .collection(FirestoreCollections.letters)
               .where('receiverUid', isEqualTo: uid)
               .where('status', isEqualTo: 'opened')
+              .limit(200)
               .snapshots(),
           builder: (context, openedSnap) {
             final l10n = AppLocalizations.of(context)!;
@@ -415,6 +424,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           .collection(FirestoreCollections.letters)
           .where('senderUid', isEqualTo: uid)
           .where('status', isEqualTo: 'locked')
+          .limit(200)
           .snapshots(),
       builder: (context, lockedSnap) {
         return StreamBuilder<QuerySnapshot>(
@@ -422,6 +432,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               .collection(FirestoreCollections.letters)
               .where('senderUid', isEqualTo: uid)
               .where('status', isEqualTo: 'opened')
+              .limit(200)
               .snapshots(),
           builder: (context, openedSnap) {
             final l10n = AppLocalizations.of(context)!;

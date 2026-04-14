@@ -23,7 +23,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
   - [x] Tela de notificações expandida para tipos `engagement` (like, comment, follow) com ícones
   - [x] Deep linking: tap em like/comment → carta, tap em follow → perfil do seguidor
   - [x] Índice Firestore composto para deduplicação (`notifications: dedupeKey + read + createdAt`)
-  - [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
+  - [x] **Deploy concluído** (12 abr 2026): `firebase deploy --only functions,firestore:indexes`
 
 ---
 
@@ -39,6 +39,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Temas do app** (várias paletas + opção automática/sistema) — `open_when_palette.dart` (classic, dark, midnight, sepia) + `theme_provider.dart` + seletor em Configurações
 - [ ] **Nox Card** (card da coruja por nível, animação compartilhável) — ver [ROADMAP.md](ROADMAP.md) Fase 2 e [BUSINESS.md](BUSINESS.md)
 - [ ] **Links reais de download do app** — substituir botões/placeholders de "Baixar o app" por links verdadeiros da App Store e Google Play em todas as telas e páginas web onde aparecem
+- [x] **Lista de Seguidores / Seguindo** — tela com tabs + lazy load (20 por página, cursor `startAfter`); contadores clicáveis em ambos os perfis; otimizar contadores para usar `followersCount`/`followingCount` denormalizados em vez de `StreamBuilder` que lê N docs; ver [`FOLLOWERS_LIST_PLAN.md`](FOLLOWERS_LIST_PLAN.md)
 - [x] Feed em **3 camadas**
 - [x] Exportar cartas (PDF / ZIP)
 - [x] **Multilíngue (pt-BR, en, es)**
@@ -78,6 +79,40 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [ ] Integração com Gift When (Fase 1 do Gift)
 - [ ] Compartilhamento para Stories e Reels
 - [ ] Cards colecionáveis (futuro)
+
+---
+
+## Futuro — OpenWhen Physical (carta real & produtos; ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md))
+
+**Physical 1 — Carta impressa premium**
+
+- [ ] Pesquisa de parceiros de impressão/fulfillment (Lob, Stannp, gráficas locais BR)
+- [ ] Pesquisa legal concluída (envio postal, impostos, responsabilidade)
+- [ ] Design do template de carta impressa (papel premium, selo da coruja, personalização por emoção)
+- [ ] API de integração com parceiro de fulfillment
+- [ ] Cálculo de lead time por região/país (programar envio para chegar na data de abertura)
+- [ ] Fluxo no app: escolher "Carta física" ao criar carta
+- [ ] Pagamento via Stripe (preço fixo por unidade)
+- [ ] Tracking de envio com notificação ao remetente e destinatário
+- [ ] MVP testado e lançado
+
+**Physical 2 — Presentes de parceiros (marketplace)**
+
+- [ ] Curadoria de parceiros (floristas, livrarias, chocolatiers, artesãos)
+- [ ] Catálogo de presentes no app (fotos, preços, descrições)
+- [ ] Integração logística com parceiros (API ou manual inicial)
+- [ ] Política de itens aceites e itens proibidos
+- [ ] Fluxo de compra: carta + presente combinados
+- [ ] Comissão/markup configurado no Stripe
+- [ ] MVP testado e lançado
+
+**Physical 3 — Item custom do utilizador (futuro)**
+
+- [ ] Modelo de custódia temporária (armazém/fulfillment center)
+- [ ] Seguro para itens em custódia
+- [ ] Termos legais para custódia de objectos pessoais
+- [ ] Fluxo de envio do item pelo utilizador ao armazém
+- [ ] Envio programado ao destinatário na data de abertura
 
 ---
 
@@ -170,7 +205,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] Cloud Functions `onDocumentCreated` em `likes`, `comments` e `follows` (`functions/src/engagement/`)
 - [x] FCM push + notificação in-app (Firestore `users/{uid}/notifications`)
 - [x] Tela de notificações expandida com ícones e deep linking
-- [x] **Deploy pendente:** `cd functions && npm run build && cd .. && firebase deploy --only functions,firestore:indexes`
+- [x] **Deploy concluído** (12 abr 2026): `firebase deploy --only functions,firestore:indexes`
 
 **4. Validação de email externo + notificação de bounce — IMPLEMENTADO ✅**
 - [x] Validação de email no cliente melhorada (regex em `lib/core/utils/validators.dart` em vez de `contains('@')`)
@@ -218,6 +253,17 @@ Cartas que machucam não têm lugar aqui.
 
 ---
 
+## 🔴 Custos Firebase — ANTES DO LANÇAMENTO
+
+- [ ] **Análise completa de custos Firebase** — entender a estrutura de preços (Firestore leituras/escritas, Cloud Functions invocações/CPU, Storage, Hosting bandwidth) com estimativas por DAU
+- [ ] **Budget Alerts configurados** na Google Cloud Console (alertas a 50%, 80% e 100% de um teto mensal)
+- [ ] **Firebase Usage dashboard ativado** e monitorização planeada para os primeiros dias/semanas
+- [ ] Estimativas documentadas em [`planning/custos/GASTOS.md`](custos/GASTOS.md)
+
+> ⚠️ **Sem esta análise, NÃO lançar em produção.** Ver aviso detalhado em [`PRODUCTION.md`](PRODUCTION.md).
+
+---
+
 ## 🔴 Legal e Privacidade — ANTES DO LANÇAMENTO
 
 ### Concluído
@@ -228,12 +274,13 @@ Cartas que machucam não têm lugar aqui.
 - [x] Criar página web de privacidade acessível sem login — `hosting/public/privacy.html` + `terms.html` (EN/PT/ES, dark mode)
 - [x] Documentar Fundo de Continuidade nos Termos de Uso — Seção 7 + [`LEGAL.md`](LEGAL.md) §4
 
+### Implementado — pendente de testes (12/04/2026)
+- [x] Export automático de todos os dados ao deletar conta — `export_user_data.ts` + `deletion_request_service.dart` (testar)
+- [x] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function) — `request_deletion.ts` + `scheduled_deletion.ts` (testar)
+- [x] Manter entrega de cartas locked mesmo após conta deletada — `delete_account.ts` preservação automática (testar)
+- [x] Central de privacidade no app — usuário vê todos os dados armazenados — `privacy_center_screen.dart` (testar)
+
 ### Pendente
-- [ ] Export automático de todos os dados ao deletar conta
-- [ ] Central de privacidade no app — usuário vê todos os dados armazenados
-- [ ] Solicitação de exclusão de dados com prazo de 15 dias (Cloud Function)
-- [ ] Manter entrega de cartas locked mesmo após conta deletada
-- [ ] Backup redundante das cartas fora do Firebase
 - [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
 - [x] Criar email de contato para solicitações de privacidade — **7 endereços** configurados via Cloudflare Email Routing (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) → redirecionamento para Gmail; migrar para caixas dedicadas quando o volume justificar

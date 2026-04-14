@@ -248,12 +248,8 @@ export async function executeAccountDeletion(
     .where("followerUid", "==", uid)
     .get();
   for (const doc of followsAsFollower.docs) {
-    const followingUid = doc.data().followingUid as string | undefined;
+    // delete triggers onFollowDeleted which decrements followersCount/followingCount
     await doc.ref.delete();
-    if (followingUid) {
-      await firestore.collection("users").doc(followingUid)
-        .update({followersCount: FieldValue.increment(-1)}).catch(() => {});
-    }
   }
 
   const followsAsFollowing = await firestore
@@ -261,12 +257,8 @@ export async function executeAccountDeletion(
     .where("followingUid", "==", uid)
     .get();
   for (const doc of followsAsFollowing.docs) {
-    const followerUid = doc.data().followerUid as string | undefined;
+    // delete triggers onFollowDeleted which decrements followersCount/followingCount
     await doc.ref.delete();
-    if (followerUid) {
-      await firestore.collection("users").doc(followerUid)
-        .update({followingCount: FieldValue.increment(-1)}).catch(() => {});
-    }
   }
 
   /* ── 8. Blocks (both directions) ──────────────────────── */

@@ -56,6 +56,7 @@ class AuthRepository {
       'preferredLanguage': 'pt',
       'country': null,
       'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
+      'hasCompletedFirstAction': false,
     });
 
     // Send email verification — required before first login.

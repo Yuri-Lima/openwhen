@@ -158,6 +158,7 @@ Foco: expansão de produto e mercado.
 | Moderação assistida (IA)                                                                  | P2         | Alto                  | **Base:** OpenAI Moderation API + adapters + `systemConfig`; ver [`ARCHITECTURE.md`](ARCHITECTURE.md). Evoluções (outras superfícies, políticas): política + custo                                                                                                                                                                                                                                                     |
 | Humor do dia / leitura facial (inferência emocional + sugestões)                          | P2         | Alto                  | Opt-in explícito; compliance regional; preferir revisão jurídica e fornecedor com DPA ou processamento on-device                                                                                                                                                                                                                                      |
 | Exportar cartas (PDF / ZIP) — evoluções                                                   | P2         | Médio                 | **MVP entregue** (`letter_export_service`, allowlist, Configurações). Aqui: melhorias futuras (escala, web/CORS, cloud) se necessário                                                                                                                                                                                                                 |
+| Backup redundante das cartas fora do Firebase                                             | P2         | Médio                 | Cópia de segurança dos dados (Firestore + Storage) para destino externo (ex.: Cloud Storage bucket separado, AWS S3); protecção contra perda acidental ou indisponibilidade do projecto Firebase                                                                                                                                                      |
 
 
 ---
@@ -177,6 +178,46 @@ Foco: expansão de produto e mercado.
 
 
 **Expansão Gift (após MVP do Gift):** PIX e carteiras digitais (BR); Wise (transferências internacionais); Apple Pay / Google Pay; parcerias bancárias; API bancária própria; licença de *money transmission* nos EUA (fase tardia). Códigos de resgate ou créditos para **premium** podem reutilizar a mesma stack de pagamentos — detalhar na implementação.
+
+### OpenWhen Physical — Carta Física & Produtos Selados
+
+**Conceito:** além das cartas digitais, o utilizador poderá enviar uma **carta física real** (impressa e selada com selo OpenWhen) e/ou **itens/produtos físicos** (presentes, livros, objetos simbólicos) ao destinatário, mantendo a mesma lógica temporal — o pacote só é enviado/entregue na **data de abertura** escolhida.
+
+**Para o utilizador:**
+1. Ao criar uma carta, escolhe "Carta digital" ou "Carta física" (ou ambas)
+2. Se carta física: escreve no app → a carta é impressa em papel premium com design OpenWhen (selo da coruja, papel envelhecido, personalização por emoção)
+3. Se incluir produto/presente: faz upload de foto do item ou seleciona de um **catálogo de parceiros** (ex.: flores, chocolates, livros, objetos artesanais)
+4. Define a data de abertura → o envio físico é disparado automaticamente na data escolhida (ou X dias antes para garantir entrega a tempo)
+5. Destinatário recebe o pacote físico + notificação no app + carta digital sincronizada
+
+**Modelos de operação (a avaliar):**
+
+| Modelo | Descrição | Prós | Contras |
+|--------|-----------|------|---------|
+| **Parceiro logístico (fulfillment)** | Integração com serviço de impressão e envio (ex.: Lob, Stannp, parceiro local BR) | Sem stock, escalável, menor investimento | Margem menor, dependência de terceiro |
+| **Marketplace de presentes** | Catálogo curado de parceiros (floristas, livrarias, artesãos) — OpenWhen como intermediário | Variedade, sem stock próprio, comissão | Complexidade de integração, qualidade variável |
+| **Print-on-demand (carta)** | Apenas a carta impressa + envelope premium, sem produto físico | Simples, margem alta, foco na emoção | Escopo limitado |
+
+**Receita:**
+- **Carta física:** preço fixo por unidade (ex.: R$15–30 / $5–10 USD) — inclui impressão, envelope premium e frete
+- **Produto/presente:** comissão sobre cada venda de parceiro (ex.: 10–20%) ou markup sobre preço de custo
+- **Bundle carta + presente:** preço combinado com desconto vs. itens separados
+
+**Fases de desenvolvimento:**
+
+| Fase | Escopo | Pré-requisitos |
+|------|--------|----------------|
+| **Physical 1 — Carta impressa** | Carta escrita no app → impressa em papel premium → enviada por correio ao destinatário na data certa | Parceiro de impressão/fulfillment; API de envio; pesquisa legal (envio postal, impostos) |
+| **Physical 2 — Presentes de parceiros** | Catálogo de presentes curados (marketplace) que acompanham a carta | Parcerias com fornecedores; gestão de catálogo; logística de entrega combinada |
+| **Physical 3 — Produto custom** | Utilizador envia item próprio (ex.: objecto pessoal) para armazenamento temporário e envio na data | Armazém/fulfillment center; seguro; termos legais para custódia de objectos |
+
+**Considerações críticas:**
+- **Logística temporal:** o envio deve ser programado para chegar na data de abertura (calcular lead time por região/país)
+- **Alcance geográfico:** começar por Brasil (Correios + parceiros locais) e EUA (USPS/UPS + Lob); expandir depois
+- **Legal:** regulamentação de envio postal, impostos sobre produtos, responsabilidade sobre itens em custódia — ver [`LEGAL.md`](LEGAL.md)
+- **Moderação:** itens proibidos (armas, substâncias, etc.) — política de itens aceites
+- **Integração com Gift When:** o presente físico pode substituir ou complementar o valor financeiro selado
+- **Stripe KYC:** se vender produtos físicos, atualizar descrição do negócio no Stripe (ver [`BUSINESS.md`](BUSINESS.md))
 
 ### Estratégia para Investidores
 
