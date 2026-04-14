@@ -236,3 +236,30 @@ Cartas que machucam não têm lugar aqui.
 - [x] Log de todas as solicitações de privacidade
 - [ ] Revisar Termos de Uso com advogado antes de lançar
 - [x] Criar email de contato para solicitações de privacidade — **7 endereços** configurados via Cloudflare Email Routing (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) → redirecionamento para Gmail; migrar para caixas dedicadas quando o volume justificar
+
+---
+
+## 🔴 Bug crítico — Cursor preso no campo de texto da carta
+
+**Problema:** O campo de mensagem da carta não permite reposicionar o cursor.
+Se o usuário erra uma letra no meio do texto, é obrigado a apagar tudo
+até chegar na letra errada. Não consegue tocar numa posição específica
+para corrigir apenas aquela letra.
+
+**Impacto:** Alto — cartas longas ficam impossíveis de editar.
+Usuário desiste de escrever ou envia carta com erro.
+
+**Reproduzir:**
+1. Abrir tela de escrever carta
+2. Digitar um texto longo
+3. Perceber um erro no meio do texto
+4. Tentar tocar na letra errada para corrigir
+5. Cursor não vai para a posição tocada — fica sempre no final
+
+**Causa provável:**
+O campo pode estar com `enableInteractiveSelection: false`
+ou com um `GestureDetector` sobreposto bloqueando o toque.
+
+**Arquivo:** `lib/features/letters/presentation/screens/write_letter_screen.dart`
+**Responsável:** Yuri
+**Prioridade:** Corrigir antes do lançamento
