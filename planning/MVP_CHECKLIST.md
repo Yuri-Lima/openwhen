@@ -337,3 +337,95 @@ firebase deploy --only functions:checkUsernameAvailable
 **Arquivo:** `lib/features/auth/presentation/screens/register_screen.dart`
 **Responsável:** Yuri
 **Prioridade:** Crítico — bloqueia novos cadastros
+
+---
+
+## 🟡 Follow Request — conta privada (falta implementar)
+
+**Problema:** Conta privada existe mas qualquer um pode seguir sem pedir permissão.
+Não existe sistema de solicitação/aceitação como no Instagram.
+
+**Como deve funcionar:**
+1. Usuário A toca em "Seguir" em conta privada
+2. Cria documento em `followRequests/{id}` com status `pending`
+3. Usuário B recebe notificação: "X quer te seguir"
+4. Usuário B aceita ou recusa
+5. Se aceita → cria o `follows/{id}` normalmente
+6. Só após aceite o usuário A vê cartas e feed de B
+
+**Responsável:** Yuri
+**Arquivos:** follows rules, profile_screen.dart, Cloud Function notificação
+
+---
+
+## 🔴 Auditoria Completa — Abril 2026 (pente fino pré-lançamento)
+
+> Auditoria realizada em 13/04/2026. Documento completo: [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md)
+
+### Bugs a corrigir antes do lançamento
+
+| # | Bug | Impacto | Responsável | Arquivo |
+|---|-----|---------|-------------|---------|
+| B1 | `checkUsernameAvailable` não deployada — todo cadastro retorna "username em uso" | 🔴 Bloqueia 100% dos cadastros | Yuri | `firebase deploy --only functions:checkUsernameAvailable` |
+| B2 | Cursor preso no campo de texto da carta — não reposiciona | 🔴 Frustra escrita de cartas longas | Yuri | `write_letter_screen.dart` |
+| B3 | Botão Apple (login) sem `onTap` — decoração pura | 🔴 App Store rejeita se Apple Sign-in não funcionar | Yuri | `login_screen.dart` |
+| B4 | Botão Google (login) sem `onTap` — decoração pura | 🟡 Confunde usuário | Yuri | `login_screen.dart` |
+| B5 | Budget Alerts Firebase não configurados | 🔴 Bug em loop pode gerar conta inesperada | Diego + Yuri | Google Cloud Console |
+| B6 | Aviso de conteúdo ofensivo hardcoded em PT-BR | 🟡 Usuários EN/ES vêm texto em português | Diego | `write_letter_screen.dart` |
+
+### Funcionalidades sugeridas pela auditoria
+
+**Diego pode fazer (sem conflito com Yuri):**
+
+- [ ] **Salvar carta como rascunho** — se usuário sair no meio da escrita, perder tudo é frustrante. Salvar em `shared_preferences` ou Firestore como `status: draft`. Arquivo: `write_letter_screen.dart`
+- [ ] **Data mínima 30 dias nas cápsulas** — cápsula para amanhã quebra a emoção do conceito. Validação simples no `DatePicker`. Arquivo: `create_capsule_screen.dart`
+- [ ] **Botão "Salvar carta"** no feed público — poder marcar cartas bonitas de outros para reler. Campo `savedLetters` no perfil + coleção `saves/{uid}`. Arquivo: `feed_screen.dart`
+- [ ] **"Silenciar" conta** — opção intermediária entre seguir e bloquear. Arquivo: `user_profile_screen.dart`
+- [ ] **Localizar aviso de conteúdo ofensivo** — mover string hardcoded para ARB. Arquivo: `write_letter_screen.dart` + ARBs
+- [ ] **Preview da carta antes de enviar** — dialog de confirmação mostrando destinatário, data e prévia do texto. Arquivo: `write_letter_screen.dart`
+
+**Yuri deve fazer:**
+
+- [ ] **Sign in with Apple** — obrigatório App Store. Implementar `OAuthProvider` + nonce, ligar botão em `login_screen.dart`
+- [ ] **Google Sign-in** — implementar `GoogleAuthProvider`, ligar botão em `login_screen.dart`
+- [ ] **Resposta à carta** — botão "Responder" ao abrir carta; abre `WriteLetterScreen` pré-preenchido. Campo `replyToLetterId` + `threadId` no Firestore. Alta retenção.
+- [ ] **Deploy `checkUsernameAvailable`** — crítico pré-lançamento
+- [ ] **Corrigir cursor na carta** — investigar `GestureDetector` sobreposto ou `enableInteractiveSelection`
+- [ ] **Budget Alerts** — Google Cloud Console → Billing → Budgets & Alerts
+- [ ] **Follow Request para contas privadas** — ver seção acima
+
+### Comparação com Instagram — o que aproveitar
+
+| Feature Instagram | Status OpenWhen | Prioridade |
+|---|---|---|
+| Feed de descoberta | ✅ Implementado (3 camadas) | — |
+| Notificações push | ✅ Implementado | — |
+| Salvar/bookmarks posts | ❌ Não existe | 🟡 Médio |
+| Rascunhos | ❌ Não existe | 🟡 Alto |
+| Silenciar contas | ❌ Só bloquear | 🟢 Baixo |
+| Follow Request (conta privada) | ❌ Não existe | 🟡 Médio |
+| Menções @usuario no texto | ❌ Não existe | 🟢 Baixo |
+| Múltiplas fotos por carta | ❌ 1 foto apenas | 🟢 Baixo |
+| Resposta à carta (loop emocional) | ❌ Planejado | 🔴 Alto (retenção) |
+| Editar legenda após publicar | ❌ Não verificado | 🟡 Médio |
+
+### Funcionalidades únicas do OpenWhen (não existem no Instagram)
+
+- Timer de abertura com data futura — diferencial absoluto
+- QR Code físico → bridge digital/físico
+- Abertura por proximidade GPS (10m)
+- Cápsulas coletivas
+- Animação emocional na abertura
+- Carta como presente selado (Gift When — roadmap)
+
+---
+
+## 🟢 Sugestões pós-beta (baseadas na auditoria)
+
+- [ ] **Card compartilhável ao enviar carta** — "Selei uma carta 🦉" para Stories sem revelar conteúdo. Marketing orgânico por carta enviada.
+- [ ] **Sugestões de datas especiais** — ao criar carta, sugerir: "Aniversário de X em 3 meses — quer escrever para ele?"
+- [ ] **Landing page para destinatário sem conta** — receber link da carta, ver prévia bloqueada emocionalmente, cadastrar para abrir. Conversão de novos usuários via carta recebida.
+- [ ] **Feed com visual de envelope** — envelopes que se abrem ao rolar; diferencia visualmente do Instagram
+- [ ] **Múltiplas fotos por carta** (carrossel até 5)
+- [ ] **Contagem regressiva animada no cofre** — "Abre em 47 dias" como elemento visual central
+- [ ] **Nox Card** — card da coruja por nível de uso, compartilhável, viral
