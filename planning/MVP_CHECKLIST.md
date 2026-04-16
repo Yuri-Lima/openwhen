@@ -7,6 +7,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 > **Documento de auditoria completa:** [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md)
 > **Estratégia de monetização e custos Firebase:** [`MONETIZACAO.md`](MONETIZACAO.md)
 > **Abertura da empresa (Delaware holding):** [`DELAWARE.md`](DELAWARE.md)
+> **Nova feature — Aniversário + Notificações:** [`ANIVERSARIO_NOTIFICACAO.md`](ANIVERSARIO_NOTIFICACAO.md)
+> **Nova feature — Cápsulas Coletivas (grupos):** [`CAPSULAS_COLETIVAS.md`](CAPSULAS_COLETIVAS.md)
 
 ---
 
@@ -40,6 +42,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [ ] **Preview da carta antes de selar** — dialog de confirmação com destinatário, data e prévia do conteúdo · **Diego** · `write_letter_screen.dart`
 - [ ] **Data mínima 30 dias nas cápsulas** — cápsula para amanhã quebra a emoção do conceito; validação no DatePicker · **Diego** · `create_capsule_screen.dart`
 - [ ] **Card compartilhável ao enviar carta** — "Selei uma carta 🦉" para Stories; marketing orgânico por carta enviada · **Diego + Yuri**
+- [ ] **Aniversário + notificação para seguidores** — campo `birthdate` + privacidade no perfil/cadastro; Cloud Function cron dispara push 3 dias antes; carta de aniversário abre no próximo aniversário; tela especial no dia + self-letter · **Yuri** · ver [`ANIVERSARIO_NOTIFICACAO.md`](ANIVERSARIO_NOTIFICACAO.md) · ~10–12 dias
 
 ---
 
@@ -65,6 +68,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟢 MÊS 3+ — para crescimento e investidores
 
+- [ ] **Cápsulas Coletivas (grupos)** — grupos de até 50 pessoas com data de abertura coletiva; admin cria e convida por link; todos contribuem em segredo; abertura simultânea com notificação push; monetização: admin paga R$14,99/grupo ou R$4,99/mês · **Yuri + Diego** · ver [`CAPSULAS_COLETIVAS.md`](CAPSULAS_COLETIVAS.md) · ~8–10 semanas
 - [ ] **Nox Card** — card da coruja por nível de uso, animação compartilhável; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 e [`BUSINESS.md`](BUSINESS.md)
 - [ ] **Análise Firebase completa** — documentar estimativas por DAU em [`MONETIZACAO.md`](MONETIZACAO.md) ✅ (ver documento)
 - [ ] **Ativar monetização** — apenas após ~10K usuários; ver [`MONETIZACAO.md`](MONETIZACAO.md)
@@ -118,6 +122,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 | Silenciar contas | ❌ Só bloquear | 🟢 Mês 2 |
 | Resposta (loop emocional) | ❌ Planejado | 🔴 Semana 2 |
 | Múltiplas fotos | ❌ 1 foto | 🟢 Mês 2 |
+| Aniversário + notificação seguidores | ❌ Não existe | 🟡 Semana 2 |
+| Grupos / cápsulas coletivas | ⚠️ Parcial (sem UX de grupo) | 🟢 Mês 3+ |
 
 ### Diferenciais únicos OpenWhen vs Instagram
 
@@ -233,10 +239,11 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 ---
 
-**Progresso geral (13/04/2026):**
+**Progresso geral (14/04/2026):**
 - 🔴 Bloqueadores pré-lançamento: **4 pendentes** (B1-B4 acima)
 - 🟡 Semana 1: **5 pendentes**
-- 🟡 Semana 2: **5 pendentes**
+- 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
+- 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
 - Legal: **concluído** (revisão com advogado pendente)
 - Monetização: **planejada** (ativar após 10K users)
