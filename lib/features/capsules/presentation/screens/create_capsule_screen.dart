@@ -923,7 +923,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
             final d = await showDatePicker(
               context: context,
               initialDate: DateTime.now().add(const Duration(days: 365)),
-              firstDate: DateTime.now().add(const Duration(days: 1)),
+              firstDate: DateTime.now().add(const Duration(days: 30)),
               lastDate: DateTime.now().add(const Duration(days: 365 * 50)),
               builder: (ctx, child) => Theme(data: Theme.of(ctx).copyWith(colorScheme: ColorScheme.fromSeed(seedColor: p.accent, brightness: p.brightness)), child: child!),
             );
