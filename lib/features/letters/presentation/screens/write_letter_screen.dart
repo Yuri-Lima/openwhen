@@ -12,10 +12,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/user_search/user_search_result.dart';
 import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/theme/open_when_palette.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
@@ -127,6 +129,41 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   void _onMessageChanged() => setState(() {});
 
+  // ── Rascunho automático ──────────────────────────────────────────────────
+  static const _kDraftTitle = 'letter_draft_title';
+  static const _kDraftMessage = 'letter_draft_message';
+
+  Future<void> _loadDraft() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final title = prefs.getString('${_kDraftTitle}_$uid') ?? '';
+    final message = prefs.getString('${_kDraftMessage}_$uid') ?? '';
+    if ((title.isNotEmpty || message.isNotEmpty) && mounted) {
+      setState(() {
+        _titleController.text = title;
+        _messageController.text = message;
+      });
+    }
+  }
+
+  Future<void> _saveDraft() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('${_kDraftTitle}_$uid', _titleController.text);
+    await prefs.setString('${_kDraftMessage}_$uid', _messageController.text);
+  }
+
+  Future<void> _clearDraft() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('${_kDraftTitle}_$uid');
+    await prefs.remove('${_kDraftMessage}_$uid');
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
   @override
   void initState() {
     super.initState();
@@ -139,10 +176,19 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverUsername = widget.recipientUsername;
       _receiverHasAccount = true;
     }
+
+    // Restaurar rascunho salvo (só se não veio com destinatário pré-definido)
+    if (widget.recipientUid == null) {
+      _loadDraft();
+    }
   }
 
   @override
   void dispose() {
+    // Salvar rascunho automaticamente ao sair (se houver conteúdo)
+    if (_titleController.text.isNotEmpty || _messageController.text.isNotEmpty) {
+      unawaited(_saveDraft());
+    }
     _recordingTimer?.cancel();
     _userSearchDebounce?.cancel();
     if (_isRecording) {
@@ -422,6 +468,118 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     return base;
   }
 
+  // ── Preview antes de selar ───────────────────────────────────────────────
+  Future<void> _previewAndSend() async {
+    final l10n = AppLocalizations.of(context)!;
+    final p = context.pal;
+
+    // Valida campos mínimos antes de mostrar o preview
+    if (_titleController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.writeLetterSnackTitle)),
+      );
+      return;
+    }
+
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final recipientLabel = _receiverName ?? _emailController.text.trim();
+        final messagePreview = _messageController.text.trim();
+        final previewText = messagePreview.length > 120
+            ? '${messagePreview.substring(0, 120)}…'
+            : messagePreview;
+        final dateStr = '${_openDate.day.toString().padLeft(2, '0')}/'
+            '${_openDate.month.toString().padLeft(2, '0')}/'
+            '${_openDate.year}';
+
+        return Container(
+          decoration: BoxDecoration(
+            color: p.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40, height: 4,
+                  decoration: BoxDecoration(
+                    color: p.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text('✉️', style: TextStyle(fontSize: 32)),
+              const SizedBox(height: 8),
+              Text(
+                _titleController.text.trim(),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: p.ink),
+              ),
+              const SizedBox(height: 16),
+              if (recipientLabel.isNotEmpty)
+                _previewRow(p, icon: Icons.person_outline, label: 'Para', value: recipientLabel),
+              _previewRow(p, icon: Icons.calendar_today_outlined, label: l10n.writeLetterOpenDateLabel, value: dateStr),
+              if (previewText.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: p.card,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: p.border),
+                  ),
+                  child: Text(
+                    previewText,
+                    style: TextStyle(color: p.inkFaint, fontSize: 14, height: 1.5),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 24),
+              Row(children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: Text(l10n.actionCancel),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: Text(l10n.writeLetterSend),
+                  ),
+                ),
+              ]),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (confirmed == true && mounted) {
+      await _saveLetter();
+    }
+  }
+
+  Widget _previewRow(OpenWhenPalette p, {required IconData icon, required String label, required String value}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(children: [
+        Icon(icon, size: 16, color: p.inkFaint),
+        const SizedBox(width: 8),
+        Text('$label: ', style: TextStyle(fontSize: 13, color: p.inkFaint)),
+        Flexible(child: Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: p.ink))),
+      ]),
+    );
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
   Future<void> _saveLetter() async {
     try {
       await _saveLetterInner();
@@ -695,7 +853,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           title: _titleController.text.trim(),
           openDate: _openDate,
         );
-        Navigator.pop(context);
+        await _clearDraft();
+        if (mounted) Navigator.pop(context);
       }
     } catch (e, st) {
       if (kDebugMode) {
@@ -1288,9 +1447,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Botao enviar
+                  // Botao enviar — abre preview antes de selar
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _saveLetter,
+                    onPressed: _isLoading ? null : _previewAndSend,
                     child: _isLoading
                         ? CircularProgressIndicator(color: context.pal.white)
                         : Text(l10n.writeLetterSend, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
