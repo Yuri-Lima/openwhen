@@ -12,10 +12,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/user_search/user_search_result.dart';
 import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/theme/open_when_palette.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
@@ -138,6 +140,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverName = widget.recipientName;
       _receiverUsername = widget.recipientUsername;
       _receiverHasAccount = true;
+    }
+
+    if (widget.recipientUid == null) {
+      _loadDraft();
     }
   }
 
@@ -345,6 +351,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverName = user.publicName;
       _receiverUsername = user.username;
       _receiverHasAccount = true;
+    }
+
+    if (widget.recipientUid == null) {
+      _loadDraft();
       _searchResults = [];
       _showResults = false;
       _searchController.clear();
@@ -478,6 +488,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             _receiverName = userData['displayName'] ?? userData['name'] ?? emailTrim;
             _receiverUsername = userData['username'] ?? '';
             _receiverHasAccount = true;
+    }
+
+    if (widget.recipientUid == null) {
+      _loadDraft();
           } else {
             _receiverUid = null;
             _receiverName = emailTrim;
@@ -1290,7 +1304,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
                   // Botao enviar
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _saveLetter,
+                    onPressed: _isLoading ? null : _previewAndSend,
                     child: _isLoading
                         ? CircularProgressIndicator(color: context.pal.white)
                         : Text(l10n.writeLetterSend, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
