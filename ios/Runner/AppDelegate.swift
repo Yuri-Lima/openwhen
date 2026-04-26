@@ -82,17 +82,6 @@ private enum InstagramStoriesChannel {
     // Needed so APNs delivers a device token before Dart calls FCM getToken().
     application.registerForRemoteNotifications()
 
-    // Fallback registration: if the implicit-engine callback hasn't fired yet,
-    // register the Instagram Stories channel via the classic controller path.
-    if !instagramChannelRegistered,
-       let controller = window?.rootViewController as? FlutterViewController {
-      let registrar = controller.registrar(forPlugin: "InstagramStoriesPlugin")
-      if let registrar = registrar {
-        InstagramStoriesChannel.register(with: registrar)
-        instagramChannelRegistered = true
-      }
-    }
-
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
