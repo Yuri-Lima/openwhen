@@ -277,25 +277,20 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 ### Correções aplicadas
 
-- **SMTP SendGrid:** Firebase Auth envia emails via `smtp.sendgrid.net:587` (STARTTLS). Domínio `whenote.app` autenticado no SendGrid (`em2352.whenote.app`) com SPF/DKIM ativos.
+- **SMTP Google Workspace Relay (desde 2026-04-26):** Firebase Auth envia emails via `smtp-relay.gmail.com:587` (STARTTLS). Conta Workspace `yurilima@whenote.com` com App Password. Sender address: `noreply@whenote.com`. Anteriormente usava SendGrid (`smtp.sendgrid.net`).
+- **Configuração Workspace Admin Console:** Apps → Google Workspace → Gmail → Routing → SMTP relay service: allowed senders "Any addresses", Require SMTP Authentication ✅, Require TLS encryption ✅. Descrição: "Firebase Auth SMTP Relay".
 - **Action URL customizada:** `https://whenote.app/auth/action.html` — página dark theme com branding Whenote. Aplica-se globalmente (todos os templates).
 - **Sender name:** "Whenote" nos 3 templates (verification, password reset, email change).
 - **Redirect:** `Navigator.popUntil((route) => route.isFirst)` em `register_screen.dart` — volta ao `AuthWrapper` que redireciona à `HomeScreen`.
 
-### Pendências
-
-| Item | Estado |
-|------|--------|
-| `firebase deploy --only hosting` | ✅ Concluído — `auth/action.html` publicada |
-| Domínio remetente `noreply@whenote.app` | ⏳ 4 registros DNS no Cloudflare (2 TXT + 2 CNAME DKIM). Ver [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação"). |
-
 ### Se emails ainda forem para spam após a configuração
 
 1. Verificar se o deploy do Hosting foi feito (`firebase deploy --only hosting`)
-2. Verificar se os CNAMEs do SendGrid (`em2352.whenote.app`) estão propagados: `dig CNAME em2352.whenote.app`
-3. Verificar no Firebase Console → Authentication → Templates → SMTP Settings que a password (API key SendGrid) está correta
-4. Enviar email de teste criando uma conta nova; verificar headers SPF/DKIM no Gmail (⋮ → Show original)
-5. Se o domínio customizado do remetente (`noreply@whenote.app`) estiver configurado, verificar que os 4 registros DNS Firebase foram adicionados e verificados
+2. Verificar no Firebase Console → Authentication → Templates → SMTP Settings que host é `smtp-relay.gmail.com`, username é `yurilima@whenote.com` e a App Password está correta
+3. Verificar no Google Workspace Admin Console → Apps → Gmail → Routing → SMTP relay service que a regra "Firebase Auth SMTP Relay" está ativa
+4. Enviar email de teste criando uma conta nova; verificar headers no Gmail (⋮ → Show original)
+5. Se a App Password expirar ou for revogada, gerar nova em `myaccount.google.com/u/1/apppasswords` (requer 2FA ativa)
+6. Limite: ~2.000 emails/dia no Workspace. Se exceder, considerar serviço dedicado
 
 ### Ficheiros
 
@@ -307,4 +302,4 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL no painel SendGrid e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP SendGrid + Action URL customizada + deploy Hosting + DNS pendente para domínio remetente.
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting.

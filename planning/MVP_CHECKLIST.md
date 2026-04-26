@@ -163,6 +163,31 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 ---
 
+## 🔴 App Store Connect (iOS 1.0) — Submissão
+
+> Configuração feita em 2026-04-26. Detalhes completos: [`PRODUCTION.md`](PRODUCTION.md) secção 7 e checklist F.
+
+### ✅ Concluído
+- [x] Descrição multi-parágrafo (3 128 chars) com features principais
+- [x] Keywords (85/100 chars): letters, capsules, time capsule, future, birthday, love letter, notes, journal, memories, gift
+- [x] Texto promocional + subtítulo "Letters to the future"
+- [x] URLs: suporte (`whenote.app/support`) e marketing (`whenote.app`)
+- [x] Copyright: 2026 Whenote
+- [x] Categorias: Social Networking (primária) + Lifestyle (secundária)
+- [x] Age ratings: 4+ (UGC = YES, restante NONE/NO) — 7 passos concluídos
+- [x] Pricing: Free ($0.00) em 175 países/regiões
+- [x] Contacto de revisão: Yuri Lima, +34613784493, y.m.lima19@gmail.com
+- [x] Página de suporte criada: `hosting/public/support.html` (EN/PT/ES, dark mode, 7 FAQs)
+- [x] `firebase.json` — rewrites para `/support`
+
+### Pendente
+- [ ] **Screenshots** — mínimo 3 para iPhone 6.5" (bloqueador de submissão)
+- [x] **Build IPA** — build 17 enviado via Transporter e visível no TestFlight
+- [ ] **Test account** — credenciais de login de teste para App Review (Sign-in required marcado)
+- [ ] **Deploy hosting** — `firebase deploy --only hosting` para publicar `support.html`
+
+---
+
 ## ✅ CONCLUÍDO — Referência completa
 
 ### Autenticação e onboarding

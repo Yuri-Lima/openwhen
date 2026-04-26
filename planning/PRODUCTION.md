@@ -110,7 +110,7 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 ### Domínio personalizado
 
-O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
+O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`, `support.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
 
 **Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.app` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
 
@@ -164,29 +164,34 @@ Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreated
 
 ### Email de autenticação (SMTP + templates + página de ação)
 
-Configuração feita em 2026-04-12 para resolver emails de verificação/reset a irem para spam e com aparência genérica. Guia completo: [`EMAIL_SETUP.md`](EMAIL_SETUP.md).
+Configuração inicial feita em 2026-04-12 (SendGrid). **Migrado para Google Workspace SMTP Relay em 2026-04-26.**
 
-**Estado atual:**
+**Estado atual (desde 2026-04-26):**
 
 | Componente | Estado | Detalhe |
 |------------|--------|---------|
-| **SendGrid SMTP** | ✅ Configurado | `smtp.sendgrid.net:587` STARTTLS, username `apikey` |
-| **Domínio SendGrid** | ✅ Verificado | `em2352.whenote.app` — SPF/DKIM ativos |
+| **Google Workspace SMTP Relay** | ✅ Configurado | `smtp-relay.gmail.com:587` STARTTLS |
+| **Sender address** | ✅ `noreply@whenote.com` | Remetente dos emails de auth |
+| **SMTP username** | ✅ `yurilima@whenote.com` | Conta Workspace com 2FA ativa |
+| **SMTP password** | ✅ App Password | `vpjt xycl yqvt kcmv` (gerada em myaccount.google.com → App Passwords, nome "Firebase SMTP") |
+| **Workspace Admin** | ✅ Relay ativado | Admin Console → Apps → Gmail → Routing → "Firebase Auth SMTP Relay" |
 | **Action URL (global)** | ✅ Configurada | `https://whenote.app/auth/action.html` (aplica-se a todos os templates) |
 | **Sender name** | ✅ "Whenote" | Nos 3 templates: verification, password reset, email change |
-| **Página de ação** | ✅ Concluído | `hosting/public/auth/action.html` — dark theme com branding. Deploy feito via `firebase deploy --only hosting` |
-| **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@whenote-923f5.firebaseapp.com` → `noreply@whenote.app`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
+| **Página de ação** | ✅ Concluído | `hosting/public/auth/action.html` — dark theme com branding |
 
-**DNS pendente para domínio customizado do remetente (Firebase Auth):**
+**Configuração do SMTP relay no Google Workspace Admin Console:**
 
-| Domain name | Type | Value |
-|---|---|---|
-| `whenote.app` | TXT | `v=spf1 include:_spf.firebaseemail.com ~all` |
-| `whenote.app` | TXT | `firebase=whenote-923f5` |
-| `firebase1._domainkey.whenote.app` | CNAME | `mail-whenote-live.dkim1._domainkey.firebaseemail.com.` |
-| `firebase2._domainkey.whenote.app` | CNAME | `mail-whenote-live.dkim2._domainkey.firebaseemail.com.` |
+- **Caminho:** `admin.google.com/u/1/` → Apps → Google Workspace → Gmail → Routing → SMTP relay service
+- **Regra:** "Firebase Auth SMTP Relay"
+- **Allowed senders:** Any addresses — necessário para Firebase (endereço externo)
+- **Require SMTP Authentication:** ✅
+- **Require TLS encryption:** ✅
 
-Após adicionar os 4 registros no Cloudflare, verificar no Firebase Console: Authentication → Templates → Customise domain → Verify.
+**Limite:** ~2.000 emails/dia (Workspace). Se exceder, considerar serviço dedicado.
+
+**Se a App Password expirar:** gerar nova em `myaccount.google.com/u/1/apppasswords` (requer 2FA) e atualizar no Firebase Console → Authentication → Templates → SMTP Settings.
+
+> **Histórico:** anteriormente usava SendGrid (`smtp.sendgrid.net`, username `apikey`, domínio `em2352.whenote.app`). Migrado para simplificar stack e eliminar dependência externa.
 
 **Redirect pós-registro:** corrigido em [`register_screen.dart`](../lib/features/auth/presentation/screens/register_screen.dart) — `Navigator.popUntil` após criação da conta para que o `AuthWrapper` redirecione à `HomeScreen`.
 
@@ -219,7 +224,7 @@ Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, *
 | Plataforma | O que verificar |
 |------------|-----------------|
 | **Android** | Keystore de release, `applicationId` / `namespace` em `build.gradle.kts`, Play Console (ficheiros de política, screenshots). |
-| **iOS** | Certificados e perfis no Apple Developer, **Signing & Capabilities** no Xcode, App Store Connect. |
+| **iOS** | Certificados e perfis no Apple Developer, **Signing & Capabilities** no Xcode, App Store Connect. **Metadata configurado (2026-04-26):** descrição, keywords, texto promocional, subtítulo, URLs (suporte + marketing), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free em 175 países, contacto de revisão. **Pendente:** screenshots (mín. 3 iPhone 6.5"), build IPA, credenciais de test account para App Review, deploy hosting (`firebase deploy --only hosting`). |
 
 Comandos específicos de build seguem a documentação oficial do Flutter; as variáveis `dart-define` da secção 2 aplicam-se a **todos** os `flutter build` de release.
 
@@ -274,8 +279,13 @@ flowchart LR
 
 ### F. Lojas e conformidade
 
-- [ ] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [BUSINESS.md](BUSINESS.md) se aplicável.
+- [x] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [BUSINESS.md](BUSINESS.md) se aplicável.
 - [ ] **Google Play:** formulário Data safety, classificação de conteúdo, ícones e screenshots conforme políticas atuais.
+- [x] **App Store Connect — metadata iOS 1.0:** descrição, keywords, texto promocional, subtítulo, URLs (suporte `whenote.app/support` + marketing `whenote.app`), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free 175 países, contacto de revisão preenchido.
+- [ ] **App Store — screenshots:** mínimo 3 para iPhone 6.5" (obrigatório para submissão).
+- [x] **App Store — build IPA:** build 17 enviado via Transporter e visível no TestFlight.
+- [ ] **App Store — test account:** credenciais de login de teste para a equipa de revisão Apple (Sign-in required marcado).
+- [ ] **Firebase Hosting deploy:** `firebase deploy --only hosting` para publicar `support.html` (URL de suporte na ficha da App Store).
 - [ ] **App Store:** questionário de privacidade da app; rever **`Info.plist`**: textos de uso (câmera, localização, microfone, etc.) coerentes com o comportamento real; **`UIBackgroundModes`** apenas com modos efetivamente necessários (evita perguntas extra na revisão).
 
 ### G. QA antes do release
@@ -337,6 +347,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 ## 10. Histórico de alterações deste guia
 
+- **2026-04:** Página de suporte (`support.html`) adicionada ao Firebase Hosting; App Store Connect iOS 1.0 configurado (metadata, pricing, age ratings); checklist F expandida com itens pendentes (screenshots, build, test account, deploy hosting).
 - **2026-04:** DEVICE_TESTING.md absorvido na secção [9](#9-testes-em-dispositivo-real-qa); referências cruzadas atualizadas; secção "Histórico" renumerada para §10.
 - **2026-03:** secção [8](#8-checklist-de-produção-completa) expandida em checklist A–G (identidade/keystore, segredos, Firebase, flags, push, lojas, QA); diagrama de ordem sugerida; referências cruzadas a DEVICE_TESTING e MVP_CHECKLIST.
 - **2026-03:** nota futura “filas e workers” (Pub/Sub, Cloud Tasks, RabbitMQ) na secção 5.
