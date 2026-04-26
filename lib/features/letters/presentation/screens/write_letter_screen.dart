@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/user_search/user_search_result.dart';
 import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
-import '../../../../shared/theme/open_when_palette.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../shared/widgets/owl_watermark.dart';
@@ -64,6 +64,8 @@ String emotionalStateLabel(AppLocalizations l10n, String key) {
 
 /// `false` até definirmos o fluxo ideal para link de música na carta.
 const bool kWriteLetterShowMusicUrlField = false;
+
+const String _kWriteLetterDraftPrefsKey = 'write_letter_draft_v1';
 
 class WriteLetterScreen extends ConsumerStatefulWidget {
   /// Dados opcionais para pré-popular o destinatário (ex: ação rápida do perfil).
@@ -129,6 +131,132 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   void _onMessageChanged() => setState(() {});
 
+  Future<void> _loadDraft() async {
+    if (widget.recipientUid != null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_kWriteLetterDraftPrefsKey);
+      if (raw == null || raw.isEmpty) return;
+      final data = jsonDecode(raw) as Map<String, dynamic>?;
+      if (data == null || !mounted) return;
+
+      _titleController.text = data['title'] as String? ?? '';
+      _messageController.text = data['message'] as String? ?? '';
+      _emailController.text = data['email'] as String? ?? '';
+      _musicUrlController.text = data['musicUrl'] as String? ?? '';
+      _isHandwritten = data['isHandwritten'] as bool? ?? false;
+      _isPrivate = data['isPrivate'] as bool? ?? true;
+      _messageExpanded = data['messageExpanded'] as bool? ?? false;
+
+      final openMs = data['openDateMs'];
+      if (openMs is int) {
+        _openDate = DateTime.fromMillisecondsSinceEpoch(openMs);
+      }
+      final emotionKey = data['emotion'] as String?;
+      if (emotionKey != null) {
+        for (final e in emotionalStates) {
+          if (e.key == emotionKey) {
+            _selectedEmotion = e;
+            break;
+          }
+        }
+      }
+      setState(() {});
+    } catch (_) {}
+  }
+
+  Future<void> _saveDraft() async {
+    if (widget.recipientUid != null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final data = <String, dynamic>{
+        'title': _titleController.text,
+        'message': _messageController.text,
+        'email': _emailController.text,
+        'musicUrl': _musicUrlController.text,
+        'isHandwritten': _isHandwritten,
+        'isPrivate': _isPrivate,
+        'messageExpanded': _messageExpanded,
+        'openDateMs': _openDate.millisecondsSinceEpoch,
+        'emotion': _selectedEmotion?.key,
+      };
+      await prefs.setString(_kWriteLetterDraftPrefsKey, jsonEncode(data));
+    } catch (_) {}
+  }
+
+  Future<void> _previewAndSend() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (!mounted) return;
+    final locale = Localizations.localeOf(context).toString();
+    final recipientLabel = _receiverName != null && _receiverName!.isNotEmpty
+        ? ((_receiverUsername != null && _receiverUsername!.isNotEmpty)
+            ? '@${_receiverUsername!} (${_receiverName!})'
+            : _receiverName!)
+        : _emailController.text.trim();
+    final emotionLabel =
+        _selectedEmotion != null ? emotionalStateLabel(l10n, _selectedEmotion!.key) : '—';
+    final bodyPreview = _isHandwritten
+        ? l10n.writeLetterTypeHandwritten
+        : (_messageController.text.trim().isEmpty
+            ? '—'
+            : _messageController.text.trim().length > 280
+                ? '${_messageController.text.trim().substring(0, 280)}…'
+                : _messageController.text.trim());
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.writeLetterTitle, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700)),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.writeLetterFieldTitle, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(
+                _titleController.text.trim().isEmpty ? '—' : _titleController.text.trim(),
+                style: GoogleFonts.dmSans(color: context.pal.ink),
+              ),
+              const SizedBox(height: 12),
+              Text(l10n.writeLetterRecipientSection, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(
+                recipientLabel.isEmpty ? '—' : recipientLabel,
+                style: GoogleFonts.dmSans(color: context.pal.ink),
+              ),
+              const SizedBox(height: 12),
+              Text(l10n.writeLetterOpenDateLabel, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(formatShortDate(_openDate, locale), style: GoogleFonts.dmSans(color: context.pal.ink)),
+              const SizedBox(height: 12),
+              Text(l10n.writeLetterFeeling, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(emotionLabel, style: GoogleFonts.dmSans(color: context.pal.ink)),
+              const SizedBox(height: 12),
+              Text(l10n.writeLetterFieldMessage, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 4),
+              Text(bodyPreview, style: GoogleFonts.dmSans(color: context.pal.ink)),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.actionCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.actionContinue),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true && mounted) {
+      await _saveLetter();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,12 +271,15 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     }
 
     if (widget.recipientUid == null) {
-      _loadDraft();
+      unawaited(_loadDraft());
     }
   }
 
   @override
   void dispose() {
+    if (widget.recipientUid == null) {
+      unawaited(_saveDraft());
+    }
     _recordingTimer?.cancel();
     _userSearchDebounce?.cancel();
     if (_isRecording) {
@@ -351,10 +482,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverName = user.publicName;
       _receiverUsername = user.username;
       _receiverHasAccount = true;
-    }
-
-    if (widget.recipientUid == null) {
-      _loadDraft();
       _searchResults = [];
       _showResults = false;
       _searchController.clear();
@@ -488,10 +615,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             _receiverName = userData['displayName'] ?? userData['name'] ?? emailTrim;
             _receiverUsername = userData['username'] ?? '';
             _receiverHasAccount = true;
-    }
-
-    if (widget.recipientUid == null) {
-      _loadDraft();
           } else {
             _receiverUid = null;
             _receiverName = emailTrim;
