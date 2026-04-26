@@ -620,12 +620,12 @@ Future<void> _shareCapsuleInstagram(
   required String locale,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final deepLink = 'https://openwhen.live/capsule/$docId';
+  final deepLink = 'https://whenote.app/capsule/$docId';
 
   if (kIsWeb) {
     await Share.share(
       '$title\n\n$deepLink',
-      subject: title.isEmpty ? 'OpenWhen' : title,
+      subject: title.isEmpty ? 'Whenote' : title,
     );
     return;
   }
@@ -651,7 +651,7 @@ Future<void> _shareCapsuleInstagram(
     context: context,
     content: content,
     shareText: '$title\n\n$deepLink',
-    shareSubject: title.isEmpty ? 'OpenWhen' : title,
+    shareSubject: title.isEmpty ? 'Whenote' : title,
     sharePositionOrigin: origin,
   );
   if (!context.mounted) return;

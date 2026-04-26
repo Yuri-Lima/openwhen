@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../theme/open_when_palette.dart';
+import '../theme/whenote_palette.dart';
 
 /// Shown in [MaterialApp.builder] when the software keyboard is open; tap to
 /// unfocus and collapse the keyboard app-wide.

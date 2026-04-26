@@ -1,4 +1,4 @@
-# OpenWhen — Troubleshooting
+# Whenote — Troubleshooting
 
 Operational notes for **developers** when something fails in production or on device.  
 **Configuração de produção** (`dart-define`, deploy Firebase): [PRODUCTION.md](PRODUCTION.md) · **QA em dispositivo:** [PRODUCTION.md](PRODUCTION.md) (secção 9).
@@ -271,15 +271,15 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 ### Causa raiz (corrigido 2026-04-12)
 
-1. **Remetente genérico:** `noreply@openwhen-923f5.firebaseapp.com` não tem reputação nem SPF/DKIM
+1. **Remetente genérico:** `noreply@whenote-923f5.firebaseapp.com` não tem reputação nem SPF/DKIM
 2. **Página de confirmação:** default do Firebase — texto plano sem branding
 3. **Redirect pós-registro:** `RegisterScreen` ficava empilhada sobre `AuthWrapper`, utilizador não via o app após criar conta
 
 ### Correções aplicadas
 
-- **SMTP SendGrid:** Firebase Auth envia emails via `smtp.sendgrid.net:587` (STARTTLS). Domínio `openwhen.live` autenticado no SendGrid (`em2352.openwhen.live`) com SPF/DKIM ativos.
-- **Action URL customizada:** `https://openwhen.live/auth/action.html` — página dark theme com branding OpenWhen. Aplica-se globalmente (todos os templates).
-- **Sender name:** "OpenWhen" nos 3 templates (verification, password reset, email change).
+- **SMTP SendGrid:** Firebase Auth envia emails via `smtp.sendgrid.net:587` (STARTTLS). Domínio `whenote.app` autenticado no SendGrid (`em2352.whenote.app`) com SPF/DKIM ativos.
+- **Action URL customizada:** `https://whenote.app/auth/action.html` — página dark theme com branding Whenote. Aplica-se globalmente (todos os templates).
+- **Sender name:** "Whenote" nos 3 templates (verification, password reset, email change).
 - **Redirect:** `Navigator.popUntil((route) => route.isFirst)` em `register_screen.dart` — volta ao `AuthWrapper` que redireciona à `HomeScreen`.
 
 ### Pendências
@@ -287,15 +287,15 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 | Item | Estado |
 |------|--------|
 | `firebase deploy --only hosting` | ✅ Concluído — `auth/action.html` publicada |
-| Domínio remetente `noreply@openwhen.live` | ⏳ 4 registros DNS no Cloudflare (2 TXT + 2 CNAME DKIM). Ver [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação"). |
+| Domínio remetente `noreply@whenote.app` | ⏳ 4 registros DNS no Cloudflare (2 TXT + 2 CNAME DKIM). Ver [`PRODUCTION.md`](PRODUCTION.md) (secção "Email de autenticação"). |
 
 ### Se emails ainda forem para spam após a configuração
 
 1. Verificar se o deploy do Hosting foi feito (`firebase deploy --only hosting`)
-2. Verificar se os CNAMEs do SendGrid (`em2352.openwhen.live`) estão propagados: `dig CNAME em2352.openwhen.live`
+2. Verificar se os CNAMEs do SendGrid (`em2352.whenote.app`) estão propagados: `dig CNAME em2352.whenote.app`
 3. Verificar no Firebase Console → Authentication → Templates → SMTP Settings que a password (API key SendGrid) está correta
 4. Enviar email de teste criando uma conta nova; verificar headers SPF/DKIM no Gmail (⋮ → Show original)
-5. Se o domínio customizado do remetente (`noreply@openwhen.live`) estiver configurado, verificar que os 4 registros DNS Firebase foram adicionados e verificados
+5. Se o domínio customizado do remetente (`noreply@whenote.app`) estiver configurado, verificar que os 4 registros DNS Firebase foram adicionados e verificados
 
 ### Ficheiros
 

@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../theme/open_when_palette.dart';
+import '../theme/whenote_palette.dart';
 import 'story_share_content.dart';
 
 /// Renders a 1080×1920 PNG for Instagram Stories (no message body — [StoryShareContent] only).
@@ -23,7 +23,7 @@ class StoryAssetBuilder {
     required BuildContext context,
     required StoryShareContent content,
   }) async {
-    final palette = Theme.of(context).extension<OpenWhenPalette>();
+    final palette = Theme.of(context).extension<WhenotePalette>();
     if (palette == null) return null;
 
     final completer = Completer<Uint8List?>();
@@ -92,7 +92,7 @@ class StoryAssetBuilder {
     if (bytes == null || bytes.isEmpty) return null;
 
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/openwhen_story_${DateTime.now().millisecondsSinceEpoch}.png');
+    final file = File('${dir.path}/whenote_story_${DateTime.now().millisecondsSinceEpoch}.png');
     await file.writeAsBytes(bytes, flush: true);
     return file;
   }
@@ -105,7 +105,7 @@ class _StoryShareTemplate extends StatelessWidget {
   });
 
   final StoryShareContent content;
-  final OpenWhenPalette palette;
+  final WhenotePalette palette;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ class _StoryShareTemplate extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'OpenWhen',
+              'Whenote',
               style: GoogleFonts.dmSans(
                 fontSize: 36,
                 fontWeight: FontWeight.w600,

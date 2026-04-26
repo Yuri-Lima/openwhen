@@ -30,7 +30,7 @@ function buildInviteHtml(p: {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${s} sent you a letter on OpenWhen</title>
+  <title>${s} sent you a letter on Whenote</title>
   <!--[if mso]>
   <noscript><xml>
     <o:OfficeDocumentSettings>
@@ -56,7 +56,7 @@ function buildInviteHtml(p: {
 <body style="margin:0;padding:0;background-color:#0D0B09;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 
   <div style="display:none;font-size:1px;color:#0D0B09;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-    ${s} wrote you a letter titled &ldquo;${t}&rdquo; on OpenWhen. Sign in to read it when it unlocks.
+    ${s} wrote you a letter titled &ldquo;${t}&rdquo; on Whenote. Sign in to read it when it unlocks.
   </div>
 
   <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#0D0B09;" class="email-bg">
@@ -79,7 +79,7 @@ function buildInviteHtml(p: {
                 </tr>
                 <tr>
                   <td align="center">
-                    <span style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#F5F0EB;letter-spacing:-0.3px;">OpenWhen</span>
+                    <span style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#F5F0EB;letter-spacing:-0.3px;">Whenote</span>
                   </td>
                 </tr>
               </table>
@@ -98,7 +98,7 @@ function buildInviteHtml(p: {
                     </p>
                     <p style="font-size:14px;color:#B8B0A8;line-height:1.7;margin:0 0 6px 0;">
                       <strong style="color:#F5F0EB;">${s}</strong> sent you a letter titled
-                      <strong style="color:#F5F0EB;">&ldquo;${t}&rdquo;</strong> on OpenWhen.
+                      <strong style="color:#F5F0EB;">&ldquo;${t}&rdquo;</strong> on Whenote.
                     </p>
                     <p style="font-size:14px;color:#B8B0A8;line-height:1.7;margin:0 0 28px 0;">
                       Sign in with this email address to read it when it unlocks.
@@ -153,12 +153,12 @@ function buildInviteHtml(p: {
           <tr>
             <td align="center" style="padding:8px 0 0 0;">
               <p style="font-size:11px;color:#7A726A;margin:0 0 4px 0;">
-                &copy; 2026 OpenWhen &middot; Write today. Feel tomorrow.
+                &copy; 2026 Whenote &middot; Write today. Feel tomorrow.
               </p>
               <p style="font-size:11px;color:#7A726A;margin:0;">
-                <a href="https://openwhen.live/privacy.html" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
+                <a href="https://whenote.app/privacy.html" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
                 &nbsp;&middot;&nbsp;
-                <a href="https://openwhen.live/terms.html" style="color:#B8B0A8;text-decoration:none;">Terms</a>
+                <a href="https://whenote.app/terms.html" style="color:#B8B0A8;text-decoration:none;">Terms</a>
               </p>
             </td>
           </tr>
@@ -177,7 +177,7 @@ function buildInvitePlainText(p: {
   return [
     `Hi,`,
     ``,
-    `${p.senderName} sent you a letter titled "${p.title}" on OpenWhen.`,
+    `${p.senderName} sent you a letter titled "${p.title}" on Whenote.`,
     ``,
     `Sign in with this email address to read it when it unlocks:`,
     p.link,
@@ -185,8 +185,8 @@ function buildInvitePlainText(p: {
     `If you didn't expect this message, you can safely ignore it.`,
     ``,
     `---`,
-    `OpenWhen — Write today. Feel tomorrow.`,
-    `https://openwhen.live`,
+    `Whenote — Write today. Feel tomorrow.`,
+    `https://whenote.app`,
   ].join("\n");
 }
 
@@ -203,8 +203,8 @@ async function sendSendgridInvite(params: {
     return;
   }
   const fromEmail =
-    process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.live";
-  const fromName = process.env.SENDGRID_FROM_NAME || "OpenWhen";
+    process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const content: Array<{type: string; value: string}> = [];
   if (params.plainText) {
@@ -323,10 +323,10 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
 
     const letterId = event.params.letterId as string;
     const senderUid = data.senderUid as string;
-    const title = (data.title as string) || "OpenWhen";
+    const title = (data.title as string) || "Whenote";
     const senderName = (data.senderName as string) || "Someone";
-    const link = `https://openwhen.live/letter/${letterId}`;
-    const subject = `${senderName} sent you a letter on OpenWhen`;
+    const link = `https://whenote.app/letter/${letterId}`;
+    const subject = `${senderName} sent you a letter on Whenote`;
     const templateParams = {senderName, title, link};
     const html = buildInviteHtml(templateParams);
     const plainText = buildInvitePlainText(templateParams);
@@ -387,9 +387,9 @@ export const resendExternalInviteEmail = onCall(
     }
 
     const senderName = (data.senderName as string) || "Someone";
-    const title = (data.title as string) || "OpenWhen";
-    const link = `https://openwhen.live/letter/${letterId}`;
-    const subject = `${senderName} sent you a letter on OpenWhen`;
+    const title = (data.title as string) || "Whenote";
+    const link = `https://whenote.app/letter/${letterId}`;
+    const subject = `${senderName} sent you a letter on Whenote`;
     const templateParams = {senderName, title, link};
     const html = buildInviteHtml(templateParams);
     const plainText = buildInvitePlainText(templateParams);

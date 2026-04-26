@@ -79,15 +79,15 @@ function followCopy(name: string): Copy {
   return {
     en: {
       title: `${name} started following you`,
-      body: "You have a new connection on OpenWhen.",
+      body: "You have a new connection on Whenote.",
     },
     pt: {
       title: `${name} começou a seguir você`,
-      body: "Você tem uma nova conexão no OpenWhen.",
+      body: "Você tem uma nova conexão no Whenote.",
     },
     es: {
       title: `${name} empezó a seguirte`,
-      body: "Tienes una nueva conexión en OpenWhen.",
+      body: "Tienes una nueva conexión en Whenote.",
     },
   };
 }

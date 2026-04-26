@@ -24,7 +24,7 @@ Uri subscriptionSuccessUri() {
       path: '/subscription-success',
     );
   }
-  return Uri.parse('openwhen://subscription-success');
+  return Uri.parse('whenote://subscription-success');
 }
 
 Uri subscriptionCancelUri() {
@@ -37,7 +37,7 @@ Uri subscriptionCancelUri() {
       path: '/subscription-cancel',
     );
   }
-  return Uri.parse('openwhen://subscription-cancel');
+  return Uri.parse('whenote://subscription-cancel');
 }
 
 Uri subscriptionPortalReturnUri() {
@@ -50,7 +50,7 @@ Uri subscriptionPortalReturnUri() {
       path: '/subscription-portal-return',
     );
   }
-  return Uri.parse('openwhen://subscription-portal-return');
+  return Uri.parse('whenote://subscription-portal-return');
 }
 
 class SubscriptionPlansScreen extends ConsumerStatefulWidget {

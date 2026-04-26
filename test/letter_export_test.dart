@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:openwhen/features/letters/export/letter_export_service.dart';
+import 'package:whenote/features/letters/export/letter_export_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

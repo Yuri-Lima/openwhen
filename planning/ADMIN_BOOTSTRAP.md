@@ -1,6 +1,6 @@
 # Admin e moderação — guia de configuração
 
-Este documento descreve o fluxo completo para: **deploy**, **segredo de bootstrap**, **tornar-te admin** e **usar o painel de moderação** no OpenWhen.
+Este documento descreve o fluxo completo para: **deploy**, **segredo de bootstrap**, **tornar-te admin** e **usar o painel de moderação** no Whenote.
 
 ---
 
@@ -17,7 +17,7 @@ Este documento descreve o fluxo completo para: **deploy**, **segredo de bootstra
 ## 2. Deploy (Firebase)
 
 ```bash
-cd /caminho/do/OpenWhen
+cd /caminho/do/Whenote
 firebase deploy --only firestore:rules,firestore:indexes,functions
 ```
 
@@ -78,7 +78,7 @@ curl -s -X POST \
   -d '{"data":{"secret":"O_MESMO_SEGREDO_QUE_ADMIN_BOOTSTRAP_SECRET"}}'
 ```
 
-Substitui `SEU_PROJECT_ID` (ex.: `openwhen-923f5`).
+Substitui `SEU_PROJECT_ID` (ex.: `whenote-923f5`).
 
 ### Depois do sucesso
 

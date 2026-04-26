@@ -1,6 +1,6 @@
 {
-    "name": "openwhen",
-    "short_name": "openwhen",
+    "name": "Whenote",
+    "short_name": "Whenote",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#EDE5D8",

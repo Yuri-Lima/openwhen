@@ -14,9 +14,9 @@ import 'fcm_token_manager.dart';
 final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
-  'openwhen_default',
-  'OpenWhen',
-  description: 'Notificações do OpenWhen',
+  'whenote_default',
+  'Whenote',
+  description: 'Notificações do Whenote',
   importance: Importance.high,
 );
 
@@ -185,7 +185,7 @@ class NotificationService {
     if (Platform.isAndroid) {
       await _localNotifications.show(
         id: message.hashCode,
-        title: title ?? 'OpenWhen',
+        title: title ?? 'Whenote',
         body: body,
         notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(

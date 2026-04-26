@@ -42,7 +42,7 @@ class InstagramStoriesShareService {
         return StoriesShareOutcome.fallback;
       }
 
-      final xFile = XFile(pngFile.path, mimeType: 'image/png', name: 'openwhen_story.png');
+      final xFile = XFile(pngFile.path, mimeType: 'image/png', name: 'whenote_story.png');
 
       // ---------- 2. Try native Instagram Stories ----------
       if (!kIsWeb && kFacebookAppIdConfigured && (Platform.isIOS || Platform.isAndroid)) {

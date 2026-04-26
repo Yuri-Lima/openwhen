@@ -36,7 +36,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   bool _sharing = false;
   bool _sharingInstagram = false;
 
-  String get _deepLink => 'https://openwhen.live/letter/${widget.docId}';
+  String get _deepLink => 'https://whenote.app/letter/${widget.docId}';
 
   Future<void> _shareQrCode() async {
     setState(() => _sharing = true);
@@ -54,7 +54,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
         return;
       }
       final bytes = byteData.buffer.asUint8List();
-      final xFile = XFile.fromData(bytes, mimeType: 'image/png', name: 'openwhen_qrcode.png');
+      final xFile = XFile.fromData(bytes, mimeType: 'image/png', name: 'whenote_qrcode.png');
       await Share.shareXFiles(
         [xFile],
         text: l10n.qrShareText(widget.title, _deepLink),

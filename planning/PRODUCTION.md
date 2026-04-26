@@ -1,4 +1,4 @@
-# OpenWhen — Checklist e configuração para produção
+# Whenote — Checklist e configuração para produção
 
 Este documento reúne **tudo o que precisa de estar definido** para compilar, publicar e operar o app em **modo produção**: ficheiros locais, variáveis de build (`dart-define`), Firebase, Meta/Instagram, billing opcional, assinaturas móveis e referências ao resto da documentação. A **checklist acionável** (por fases A–G) está na [secção 8](#8-checklist-de-produção-completa).
 
@@ -38,7 +38,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 | `android/app/google-services.json` | Projeto Firebase Android. |
 | `ios/Runner/GoogleService-Info.plist` | Projeto Firebase iOS. |
 
-Neste repositório, os três ficheiros estão **versionados** para o projeto **`openwhen-923f5`**. Sem eles (ou sem versões coerentes entre si), o build ou o runtime Firebase falham. Para **outro** projeto Firebase (ou após mudar bundle IDs / package name), regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção.
+Neste repositório, os três ficheiros estão **versionados** para o projeto **`whenote-923f5`**. Sem eles (ou sem versões coerentes entre si), o build ou o runtime Firebase falham. Para **outro** projeto Firebase (ou após mudar bundle IDs / package name), regenerar com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) alinhado ao projeto de produção.
 
 Identificadores do projeto atual estão descritos em [README.md](../README.md#firebase-configuration) (tabela Project identifiers).
 
@@ -110,9 +110,9 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 ### Domínio personalizado
 
-O domínio **`openwhen.live`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
+O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
 
-**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@openwhen.live` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
+**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.app` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
 
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
@@ -126,7 +126,7 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 ### Manutenção periódica
 
-- [ ] **Domínio `openwhen.live`:** verificar estado de renovação no Cloudflare (expira 10 de abril de 2027). Activar auto-renew.
+- [ ] **Domínio `whenote.app`:** verificar estado de renovação no Cloudflare (expira 10 de abril de 2027). Activar auto-renew.
 - [ ] **Certificados SSL:** geridos automaticamente pelo Cloudflare/Firebase Hosting — verificar se não há alertas.
 - [ ] **Secrets Firebase:** rotação de `OPENAI_API_KEY` e `SENDGRID_API_KEY` se comprometidas.
 
@@ -149,8 +149,8 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
    - `firebase functions:secrets:set SENDGRID_WEBHOOK_VERIFICATION_KEY` — copiar do painel SendGrid (passo 4)
 3. ✅ **Deploy:** `firebase deploy --only functions`
 4. ✅ **Painel SendGrid** → Settings → Mail Settings → Event Webhook:
-   - Nome: "OpenWhen Email Events"
-   - URL: `https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook`
+   - Nome: "Whenote Email Events"
+   - URL: `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
    - Eventos: Bounced, Dropped, Deferred, Delivered
    - **Signed Event Webhook** habilitado (verification key copiada para o passo 2)
    - Webhook ID: `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
@@ -159,7 +159,7 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
 
 Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
 
-**Webhook URL:** `https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook`
+**Webhook URL:** `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
 **Webhook ID (SendGrid):** `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
 
 ### Email de autenticação (SMTP + templates + página de ação)
@@ -171,20 +171,20 @@ Configuração feita em 2026-04-12 para resolver emails de verificação/reset a
 | Componente | Estado | Detalhe |
 |------------|--------|---------|
 | **SendGrid SMTP** | ✅ Configurado | `smtp.sendgrid.net:587` STARTTLS, username `apikey` |
-| **Domínio SendGrid** | ✅ Verificado | `em2352.openwhen.live` — SPF/DKIM ativos |
-| **Action URL (global)** | ✅ Configurada | `https://openwhen.live/auth/action.html` (aplica-se a todos os templates) |
-| **Sender name** | ✅ "OpenWhen" | Nos 3 templates: verification, password reset, email change |
+| **Domínio SendGrid** | ✅ Verificado | `em2352.whenote.app` — SPF/DKIM ativos |
+| **Action URL (global)** | ✅ Configurada | `https://whenote.app/auth/action.html` (aplica-se a todos os templates) |
+| **Sender name** | ✅ "Whenote" | Nos 3 templates: verification, password reset, email change |
 | **Página de ação** | ✅ Concluído | `hosting/public/auth/action.html` — dark theme com branding. Deploy feito via `firebase deploy --only hosting` |
-| **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@openwhen-923f5.firebaseapp.com` → `noreply@openwhen.live`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
+| **Domínio remetente** | ⏳ DNS pendente | Trocar `noreply@whenote-923f5.firebaseapp.com` → `noreply@whenote.app`. 4 registros DNS necessários no Cloudflare (ver tabela abaixo) |
 
 **DNS pendente para domínio customizado do remetente (Firebase Auth):**
 
 | Domain name | Type | Value |
 |---|---|---|
-| `openwhen.live` | TXT | `v=spf1 include:_spf.firebaseemail.com ~all` |
-| `openwhen.live` | TXT | `firebase=openwhen-923f5` |
-| `firebase1._domainkey.openwhen.live` | CNAME | `mail-openwhen-live.dkim1._domainkey.firebaseemail.com.` |
-| `firebase2._domainkey.openwhen.live` | CNAME | `mail-openwhen-live.dkim2._domainkey.firebaseemail.com.` |
+| `whenote.app` | TXT | `v=spf1 include:_spf.firebaseemail.com ~all` |
+| `whenote.app` | TXT | `firebase=whenote-923f5` |
+| `firebase1._domainkey.whenote.app` | CNAME | `mail-whenote-live.dkim1._domainkey.firebaseemail.com.` |
+| `firebase2._domainkey.whenote.app` | CNAME | `mail-whenote-live.dkim2._domainkey.firebaseemail.com.` |
 
 Após adicionar os 4 registros no Cloudflare, verificar no Firebase Console: Authentication → Templates → Customise domain → Verify.
 
@@ -343,4 +343,4 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 - **2026-03 (feed):** tabela “Firestore — custo” alargada com Explorar (paginação), Destaques (sort no cliente) e Seguindo (custo `ceil(n/10)`).
 - **2026-03:** documento criado para consolidar `FB_APP_ID`, `BILLING_ENABLED`, `FUNCTIONS_REGION` e requisitos Firebase/lojas.
 - **2026-03 (moderação IA):** secção 5 alargada (Stripe + moderação); Firestore `systemConfig/app`; checklist com IA; relações com ARCHITECTURE / functions README.
-- **2026-04:** domínio `openwhen.live` (Cloudflare → Firebase Hosting) documentado na secção 4.
+- **2026-04:** domínio `whenote.app` (Cloudflare → Firebase Hosting) documentado na secção 4.

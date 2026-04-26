@@ -9,8 +9,8 @@ Callable and HTTP endpoints for **Stripe** subscriptions and **AI content modera
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `SENDGRID_API_KEY` | For invite email | [Twilio SendGrid](https://www.twilio.com/en-us/products/email-api/pricing) API key; if unset, the Firestore trigger logs a warning and skips send (claim still works). |
-| `SENDGRID_FROM_EMAIL` | No | Verified sender address (default `noreply@openwhen.live`). |
-| `SENDGRID_FROM_NAME` | No | Display name (default `OpenWhen`). |
+| `SENDGRID_FROM_EMAIL` | No | Verified sender address (default `noreply@whenote.app`). |
+| `SENDGRID_FROM_NAME` | No | Display name (default `Whenote`). |
 
 Set the same variables on **`claimExternalLetters`** and **`onLetterCreatedSendExternalInviteEmail`** (or use project-wide env in Cloud Functions). Domain authentication (SPF/DKIM) should be configured in SendGrid for your from-domain.
 

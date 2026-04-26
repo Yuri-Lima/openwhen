@@ -323,17 +323,17 @@ async function sendExportEmail(params: ExportEmailParams): Promise<void> {
     return;
   }
 
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.live";
-  const fromName = process.env.SENDGRID_FROM_NAME || "OpenWhen";
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const isPt = params.locale.startsWith("pt");
   const isEs = params.locale.startsWith("es");
 
   const subject = isPt
-    ? "Seus dados do OpenWhen estão prontos"
+    ? "Seus dados do Whenote estão prontos"
     : isEs
-      ? "Tus datos de OpenWhen están listos"
-      : "Your OpenWhen data export is ready";
+      ? "Tus datos de Whenote están listos"
+      : "Your Whenote data export is ready";
 
   const html = buildExportEmailHtml(params, {isPt, isEs});
   const plainText = buildExportEmailPlainText(params, {isPt, isEs});
@@ -448,7 +448,7 @@ function buildExportEmailPlainText(
 
   if (lang.isPt) {
     return [
-      "Seus dados do OpenWhen estão prontos.",
+      "Seus dados do Whenote estão prontos.",
       `Export: ${letterCount} carta(s), ${capsuleCount} cápsula(s).`,
       `Link (expira em 7 dias): ${downloadUrl}`,
       "",
@@ -457,7 +457,7 @@ function buildExportEmailPlainText(
   }
   if (lang.isEs) {
     return [
-      "Tus datos de OpenWhen están listos.",
+      "Tus datos de Whenote están listos.",
       `Exportación: ${letterCount} carta(s), ${capsuleCount} cápsula(s).`,
       `Enlace (expira en 7 días): ${downloadUrl}`,
       "",
@@ -465,7 +465,7 @@ function buildExportEmailPlainText(
     ].join("\n");
   }
   return [
-    "Your OpenWhen data export is ready.",
+    "Your Whenote data export is ready.",
     `Export: ${letterCount} letter(s), ${capsuleCount} capsule(s).`,
     `Download link (expires in 7 days): ${downloadUrl}`,
     "",

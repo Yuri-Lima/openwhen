@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Openwhen</string>
+	<string>Whenote</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>openwhen</string>
+	<string>Whenote</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -38,19 +38,19 @@
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array/>
 	<key>NSCameraUsageDescription</key>
-	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<string>O Whenote pode usar a câmera para a foto de perfil.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<string>O Whenote pode usar a câmera para a foto de perfil.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+	<string>O Whenote usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>O OpenWhen usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+	<string>O Whenote usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>O OpenWhen usa o microfone para gravar mensagens de voz nas cartas.</string>
+	<string>O Whenote usa o microfone para gravar mensagens de voz nas cartas.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>O OpenWhen precisa acessar suas fotos para definir a imagem de perfil.</string>
+	<string>O Whenote precisa acessar suas fotos para definir a imagem de perfil.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>O OpenWhen pode usar a câmera para a foto de perfil.</string>
+	<string>O Whenote pode usar a câmera para a foto de perfil.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

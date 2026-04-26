@@ -155,7 +155,7 @@ async function sendFcmPush(
       android: {
         priority: "high",
         notification: {
-          channelId: "openwhen_default",
+          channelId: "whenote_default",
           clickAction: "FLUTTER_NOTIFICATION_CLICK",
         },
       },

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/features/feed/domain/feed_following_merge.dart';
+import 'package:whenote/features/feed/domain/feed_following_merge.dart';
 
 void main() {
   group('chunkIds', () {

@@ -1,4 +1,4 @@
-# OpenWhen — Proteção Legal e Privacidade
+# Whenote — Proteção Legal e Privacidade
 ### Abril 2026 (atualizado: 12 de abril de 2026)
 
 ---
@@ -16,7 +16,7 @@
 | Política de retenção de dados | ✅ Documentada | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) |
 | COPPA (idade 13+) | ✅ Checkbox no registro | `register_screen.dart` |
 | Cloud Function deleteUserAccount | ✅ Implementada | `functions/src/delete_account.ts` |
-| Domínio `openwhen.live` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
+| Domínio `whenote.app` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
 | Revisão com advogado | 🔲 Pendente | — |
 | Emails do domínio (Cloudflare Email Routing) | ✅ Ativo | 7 endereços → redirecionamento para `y.m.lima19@gmail.com` |
 | Export automático ao deletar | ✅ Implementada (testar) | `functions/src/export_user_data.ts` + `deletion_request_service.dart` |
@@ -59,10 +59,10 @@
 ## 1. Garantia de Entrega das Cartas
 
 ### O problema
-O OpenWhen faz uma promessa implícita ao usuário — "sua carta será entregue na data escolhida". Se o app fechar antes disso, podemos ser responsabilizados.
+O Whenote faz uma promessa implícita ao usuário — "sua carta será entregue na data escolhida". Se o app fechar antes disso, podemos ser responsabilizados.
 
 ### Cláusula nos Termos de Uso (Seção 7 — implementada)
-"O OpenWhen empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a notificar todos os usuários com no mínimo 90 dias de antecedência."
+"O Whenote empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a notificar todos os usuários com no mínimo 90 dias de antecedência."
 
 ### 1.1. Gatilhos de Ativação
 
@@ -91,7 +91,7 @@ O plano de contingência será ativado quando qualquer uma destas situações oc
   - Instruções para exportar dados
   - Link direto para exportação no app
   - Informações sobre o que acontece com cartas pendentes
-  - Contato para dúvidas: suporte@openwhen.live
+  - Contato para dúvidas: suporte@whenote.app
 - [ ] Notificação push via FCM a todos os dispositivos
 - [ ] Banner permanente no app informando sobre o encerramento
 - [ ] Atualização dos Termos de Uso com data de encerramento
@@ -248,7 +248,7 @@ Reserva financeira mantida pela Empresa para garantir a infraestrutura mínima n
 ### Meta
 - **Mínimo:** cobrir custos de Firebase/GCP + domínio por 2 anos
 - **Custos fixos conhecidos:**
-  - Domínio `openwhen.live` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
+  - Domínio `whenote.app` (Cloudflare): **$28.20/ano** (renova anualmente, expira Apr 10, 2027)
   - Cloudflare Email Routing (7 endereços → Gmail): **gratuito** (incluído no plano Free)
 - **Estimativa de custo mensal** (a ser atualizada conforme escala):
   - Firestore reads/writes: ~$X/mês
@@ -303,7 +303,7 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 
 ## 6. Domínio e Hosting
 
-O domínio **`openwhen.live`** está registado e gerido na **Cloudflare** (renova anualmente, expira Apr 10, 2027 — $28.20/ano). O DNS aponta para o **Firebase Hosting**, que serve as páginas web públicas (`privacy.html`, `terms.html`) e o ficheiro `assetlinks.json` (Android App Links). Os deep links do app (`https://openwhen.live/letter/...`, `https://openwhen.live/capsule/...`) são resolvidos pelo Firebase Hosting + entitlements iOS e intent-filters Android.
+O domínio **`whenote.app`** está registado e gerido na **Cloudflare** (renova anualmente, expira Apr 10, 2027 — $28.20/ano). O DNS aponta para o **Firebase Hosting**, que serve as páginas web públicas (`privacy.html`, `terms.html`) e o ficheiro `assetlinks.json` (Android App Links). Os deep links do app (`https://whenote.app/letter/...`, `https://whenote.app/capsule/...`) são resolvidos pelo Firebase Hosting + entitlements iOS e intent-filters Android.
 
 > ⚠️ **Renovação obrigatória:** domínio expira em 10 de abril de 2027. Configurar lembrete no Cloudflare (auto-renew) ou calendário (90, 30 e 7 dias antes).
 
@@ -313,19 +313,19 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 
 | Endereço | Finalidade |
 |----------|------------|
-| `privacy@openwhen.live` | Solicitações de privacidade (inglês) |
-| `privacidade@openwhen.live` | Solicitações de privacidade (português) |
-| `suporte@openwhen.live` | Suporte geral |
-| `dpo@openwhen.live` | Encarregado de Proteção de Dados |
-| `juridico@openwhen.live` | Departamento jurídico |
-| `info@openwhen.live` | Informações gerais |
-| `noreply@openwhen.live` | Remetente de emails transacionais (SendGrid) |
+| `privacy@whenote.app` | Solicitações de privacidade (inglês) |
+| `privacidade@whenote.app` | Solicitações de privacidade (português) |
+| `suporte@whenote.app` | Suporte geral |
+| `dpo@whenote.app` | Encarregado de Proteção de Dados |
+| `juridico@whenote.app` | Departamento jurídico |
+| `info@whenote.app` | Informações gerais |
+| `noreply@whenote.app` | Remetente de emails transacionais (SendGrid) |
 
 **Nota:** quando o volume justificar, migrar para caixas dedicadas (ex: Google Workspace ou Zoho). O redirecionamento Cloudflare é suficiente para a fase atual.
 
 ---
 
-## 7. OpenWhen Physical — Considerações Legais para Envio Físico
+## 7. Whenote Physical — Considerações Legais para Envio Físico
 
 **Contexto:** o roadmap prevê a possibilidade futura de enviar cartas impressas reais e/ou produtos/presentes físicos ao destinatário, com entrega programada para a data de abertura. Esta secção documenta as áreas legais que devem ser investigadas **antes** de activar qualquer feature de envio físico.
 
@@ -340,13 +340,13 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 ### 7.2. Tributação
 
 - **Brasil:** ICMS sobre produtos físicos vendidos; ISS sobre serviço de intermediação; Nota Fiscal obrigatória (NF-e ou NFC-e)
-- **EUA:** Sales tax (varia por estado); nexus rules se OpenWhen fizer fulfillment de produtos
+- **EUA:** Sales tax (varia por estado); nexus rules se Whenote fizer fulfillment de produtos
 - **Cross-border:** impostos de importação/exportação; responsabilidade do remetente vs. destinatário (Incoterms se aplicável)
 - **Stripe:** activar Stripe Tax ou integrar com serviço de cálculo de impostos (TaxJar, Avalara)
 
 ### 7.3. Produtos Proibidos e Política de Itens Aceites
 
-Criar política explícita de itens que **não podem** ser enviados via OpenWhen Physical:
+Criar política explícita de itens que **não podem** ser enviados via Whenote Physical:
 
 - Armas, munições, explosivos
 - Substâncias controladas, drogas, medicamentos sem receita
@@ -360,9 +360,9 @@ A lista deve ser alinhada com as políticas dos Correios/USPS e do parceiro de f
 
 ### 7.4. Responsabilidade e Seguros
 
-- **Extravio/dano:** quem é responsável — OpenWhen, o parceiro de fulfillment, ou a transportadora?
+- **Extravio/dano:** quem é responsável — Whenote, o parceiro de fulfillment, ou a transportadora?
 - **Seguro de envio:** obrigatório acima de determinado valor? Incluído no preço ou opcional?
-- **Custódia de itens (Physical 3):** se o utilizador envia um objecto pessoal para armazenamento temporário, OpenWhen assume responsabilidade — necessário seguro e termos de custódia claros
+- **Custódia de itens (Physical 3):** se o utilizador envia um objecto pessoal para armazenamento temporário, Whenote assume responsabilidade — necessário seguro e termos de custódia claros
 - **Prazo de reclamação:** definir prazo para o destinatário reportar problemas (ex.: 7 dias após recepção)
 
 ### 7.5. Termos de Uso e Política de Privacidade — Actualizações Necessárias
@@ -406,5 +406,5 @@ O envio físico exige recolher o **endereço postal do destinatário** — dado 
 **Nota:** O conteúdo do plano de contingência de encerramento foi consolidado nas secções 1 e 4 deste documento.
 
 ---
-*Documento criado por Diego Rocha — CEO & Founder OpenWhen*
+*Documento criado por Diego Rocha — CEO & Founder Whenote*
 *Atualizado em 12 de abril de 2026 (consolidado com CONTINGENCY_PLAN.md)*

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'open_when_palette.dart';
+import 'whenote_palette.dart';
 
-export 'open_when_palette.dart';
+export 'whenote_palette.dart';
 
 class AppTheme {
-  static ThemeData themeFromPalette(OpenWhenPalette p) {
+  static ThemeData themeFromPalette(WhenotePalette p) {
     return ThemeData(
       scaffoldBackgroundColor: p.bg,
       cardColor: p.card,

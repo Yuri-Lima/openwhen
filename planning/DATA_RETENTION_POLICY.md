@@ -1,4 +1,4 @@
-# Política de Retenção de Dados & Deleção de Conta — OpenWhen
+# Política de Retenção de Dados & Deleção de Conta — Whenote
 
 > **Última atualização:** 2026-04-10
 > **Legislações aplicáveis:** GDPR (UE), LGPD (Brasil), CCPA/CPRA (Califórnia), COPPA (EUA — idade mínima 13+)
@@ -99,7 +99,7 @@
 - **Direito de Saber:** O usuário pode solicitar quais dados pessoais são coletados.
 - **Direito de Exclusão:** O usuário pode solicitar deleção dos seus dados pessoais.
 - **Direito de Correção:** O usuário pode solicitar correção de dados imprecisos.
-- **Opt-out de venda/compartilhamento:** O usuário pode requerer que não vendamos dados (OpenWhen não vende dados).
+- **Opt-out de venda/compartilhamento:** O usuário pode requerer que não vendamos dados (Whenote não vende dados).
 - **Prazo de execução:** 45 dias para atender solicitação de deleção/acesso/correção.
 
 ### 2.4 COPPA (Children's Online Privacy Protection Act — EUA)
@@ -193,7 +193,7 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 - Seleção: "Excluir Tudo" vs "Anonimizar minhas cartas"
 
 ### 4.4 Consentimento de Marketing (se aplicável no futuro)
-- [ ] "Aceito receber emails com novidades do OpenWhen" — **Opcional**, desmarcado por padrão
+- [ ] "Aceito receber emails com novidades do Whenote" — **Opcional**, desmarcado por padrão
 
 ---
 

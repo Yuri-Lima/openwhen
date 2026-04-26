@@ -69,8 +69,8 @@ function allowedRedirectUrl(url: string): boolean {
     /^https:\/\/127\.0\.0\.1(:\d+)?\//,
     /^https:\/\/[\w-]+\.web\.app\//,
     /^https:\/\/[\w-]+\.firebaseapp\.com\//,
-    /^openwhen:\/\//,
-    /^https:\/\/openwhen\.app\//,
+    /^whenote:\/\//,
+    /^https:\/\/whenote\.app\//,
     /^https:\/\/example\.com\//,
   ];
   return patterns.some((re) => re.test(url));

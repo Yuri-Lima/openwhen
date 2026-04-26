@@ -64,7 +64,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   Future<void> _shareToInstagramStory(BuildContext triggerContext) async {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
-    final deepLink = 'https://openwhen.live/letter/${widget.docId}';
+    final deepLink = 'https://whenote.app/letter/${widget.docId}';
 
     if (kIsWeb) {
       await Share.share(

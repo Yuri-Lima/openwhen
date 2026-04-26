@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
                   const OwlLogo(size: 120),
                   const SizedBox(height: 24),
                   Text(
-                    'OpenWhen',
+                    'Whenote',
                     style: GoogleFonts.dmSerifDisplay(
                       fontSize: 32,
                       color: context.pal.white,

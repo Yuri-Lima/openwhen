@@ -60,30 +60,30 @@ export function copyApproved(locale: string | undefined): {
 const MEDIA_REMOVED_IMAGE: Record<string, {title: string; body: string}> = {
   en: {
     title: "Image removed",
-    body: "An image you uploaded was removed for not meeting OpenWhen's guidelines.",
+    body: "An image you uploaded was removed for not meeting Whenote's guidelines.",
   },
   pt: {
     title: "Imagem removida",
-    body: "Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen.",
+    body: "Uma imagem que você enviou foi removida por não atender às diretrizes do Whenote.",
   },
   es: {
     title: "Imagen eliminada",
-    body: "Una imagen que subiste fue eliminada por no cumplir con las directrices de OpenWhen.",
+    body: "Una imagen que subiste fue eliminada por no cumplir con las directrices de Whenote.",
   },
 };
 
 const MEDIA_REMOVED_AUDIO: Record<string, {title: string; body: string}> = {
   en: {
     title: "Audio removed",
-    body: "An audio recording you uploaded was removed for not meeting OpenWhen's guidelines.",
+    body: "An audio recording you uploaded was removed for not meeting Whenote's guidelines.",
   },
   pt: {
     title: "Áudio removido",
-    body: "Um áudio que você enviou foi removido por não atender às diretrizes do OpenWhen.",
+    body: "Um áudio que você enviou foi removido por não atender às diretrizes do Whenote.",
   },
   es: {
     title: "Audio eliminado",
-    body: "Un audio que subiste fue eliminado por no cumplir con las directrices de OpenWhen.",
+    body: "Un audio que subiste fue eliminado por no cumplir con las directrices de Whenote.",
   },
 };
 

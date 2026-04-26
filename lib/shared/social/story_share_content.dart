@@ -31,9 +31,9 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.letter,
       truncatedTitle: _truncate(title),
-      deepLink: 'https://openwhen.live/letter/$docId',
+      deepLink: 'https://whenote.app/letter/$docId',
       dateSubtitle: dateSubtitle,
-      brandLine: 'openwhen.live',
+      brandLine: 'whenote.app',
     );
   }
 
@@ -48,9 +48,9 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.capsule,
       truncatedTitle: _truncate(combined),
-      deepLink: 'https://openwhen.live/capsule/$docId',
+      deepLink: 'https://whenote.app/capsule/$docId',
       dateSubtitle: dateSubtitle,
-      brandLine: 'openwhen.live',
+      brandLine: 'whenote.app',
     );
   }
 }

@@ -186,7 +186,7 @@ class _VaultFilterSheetState extends State<_VaultFilterSheet> {
     );
   }
 
-  Widget _buildTabBody(AppLocalizations l10n, OpenWhenPalette p) {
+  Widget _buildTabBody(AppLocalizations l10n, WhenotePalette p) {
     switch (widget.tabIndex) {
       case 0:
         return _waitingBody(l10n, p);
@@ -201,7 +201,7 @@ class _VaultFilterSheetState extends State<_VaultFilterSheet> {
     }
   }
 
-  Widget _waitingBody(AppLocalizations l10n, OpenWhenPalette p) {
+  Widget _waitingBody(AppLocalizations l10n, WhenotePalette p) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -299,7 +299,7 @@ class _VaultFilterSheetState extends State<_VaultFilterSheet> {
   String _formatDate(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
-  Widget _openedBody(AppLocalizations l10n, OpenWhenPalette p) {
+  Widget _openedBody(AppLocalizations l10n, WhenotePalette p) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -368,7 +368,7 @@ class _VaultFilterSheetState extends State<_VaultFilterSheet> {
     );
   }
 
-  Widget _sentBody(AppLocalizations l10n, OpenWhenPalette p) {
+  Widget _sentBody(AppLocalizations l10n, WhenotePalette p) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -430,7 +430,7 @@ class _VaultFilterSheetState extends State<_VaultFilterSheet> {
     }
   }
 
-  Widget _capsulesBody(AppLocalizations l10n, OpenWhenPalette p) {
+  Widget _capsulesBody(AppLocalizations l10n, WhenotePalette p) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

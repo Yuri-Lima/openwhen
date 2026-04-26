@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'open_when_palette.dart';
+import 'whenote_palette.dart';
 
 /// Persisted app theme selection.
 enum AppThemeMode {
@@ -42,20 +42,20 @@ class ThemeModeNotifier extends Notifier<AppThemeMode> {
   }
 }
 
-/// Resolves [OpenWhenPalette] from user preference + platform brightness.
-OpenWhenPalette resolvePalette(AppThemeMode mode, Brightness platformBrightness) {
+/// Resolves [WhenotePalette] from user preference + platform brightness.
+WhenotePalette resolvePalette(AppThemeMode mode, Brightness platformBrightness) {
   switch (mode) {
     case AppThemeMode.system:
       return platformBrightness == Brightness.dark
-          ? OpenWhenPalette.dark()
-          : OpenWhenPalette.classic();
+          ? WhenotePalette.dark()
+          : WhenotePalette.classic();
     case AppThemeMode.classic:
-      return OpenWhenPalette.classic();
+      return WhenotePalette.classic();
     case AppThemeMode.dark:
-      return OpenWhenPalette.dark();
+      return WhenotePalette.dark();
     case AppThemeMode.midnight:
-      return OpenWhenPalette.midnight();
+      return WhenotePalette.midnight();
     case AppThemeMode.sepia:
-      return OpenWhenPalette.sepia();
+      return WhenotePalette.sepia();
   }
 }

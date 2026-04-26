@@ -2,13 +2,13 @@
 
 <a href="README.md" target="_blank" rel="noopener noreferrer">English</a> · **Português (Brasil)**
 
-# OpenWhen
+# Whenote
 
 **Escreva hoje. Sinta amanhã.** · *Write today. Feel tomorrow.*
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.11.3-0175C2?logo=dart)](https://dart.dev)
-[![Firebase](https://img.shields.io/badge/Firebase-openwhen--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
+[![Firebase](https://img.shields.io/badge/Firebase-whenote--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
 [![MVP](https://img.shields.io/badge/MVP-~100%25-success)](planning/MVP_CHECKLIST.md)
 
 *Cartas temporizadas, cápsulas do tempo e uma camada social emocional — com QR Code físico ligando o mundo real ao app.*
@@ -19,9 +19,9 @@
 
 ---
 
-## O que é o OpenWhen?
+## O que é o Whenote?
 
-O OpenWhen é um produto social multiplataforma para **escrever mensagens que desbloqueiam no futuro** — combinando **cartas agendadas**, **cápsulas do tempo guiadas** e um **feed** pensado para emoção, não só engajamento. Um fluxo de **QR Code** leva memórias do mundo físico para dentro do app.
+O Whenote é um produto social multiplataforma para **escrever mensagens que desbloqueiam no futuro** — combinando **cartas agendadas**, **cápsulas do tempo guiadas** e um **feed** pensado para emoção, não só engajamento. Um fluxo de **QR Code** leva memórias do mundo físico para dentro do app.
 
 **Para quem usa:** expressar o que importa, agendar com intenção e abrir no momento certo.
 
@@ -54,7 +54,7 @@ O OpenWhen é um produto social multiplataforma para **escrever mensagens que de
 | **Navegação** | Rotas do `MaterialApp` + navegação imperativa; `go_router` disponível para evolução |
 | **Performance** | Carregamento diferido (escrever / buscar / nova cápsula / export PDF-ZIP); cofre só escuta a aba visível; **busca de utilizadores** usa queries Firestore indexadas com limite de resultados (não leitura completa da coleção `users`) — ver [ARCHITECTURE.md](planning/ARCHITECTURE.md) |
 | **Fontes** | Google Fonts (DM Serif Display + DM Sans) |
-| **Ícones (UI)** | `flutter_svg` + kit SVG em `assets/icons/` — ver **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
+| **Ícones (UI)** | `flutter_svg` + kit SVG em `assets/icons/` — ver **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`WhenoteIcons`, `WhenoteSvgIcon`) |
 | **Ícone do app (launcher)** | `flutter_launcher_icons` (dev) — fonte `assets/branding/app_icon.png`; regenere com `dart run flutter_launcher_icons` |
 
 A arquitetura é **por features** em `lib/features/`, com auth em camadas `data` / `domain` / `presentation`. Veja **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** para a árvore de pastas e coleções do Firestore.
@@ -73,8 +73,8 @@ A arquitetura é **por features** em `lib/features/`, com auth em camadas `data`
 ### Comandos
 
 ```bash
-git clone https://github.com/Yuri-Lima/openwhen.git
-cd openwhen
+git clone https://github.com/Yuri-Lima/whenote.git
+cd whenote
 flutter pub get
 flutter run -d chrome
 ```
@@ -87,19 +87,19 @@ No dia a dia, o alvo padrão de desenvolvimento é **`flutter run -d chrome`**.
 
 | Campo | Valor |
 |-------|--------|
-| **ID do projeto** | `openwhen-923f5` |
+| **ID do projeto** | `whenote-923f5` |
 | **Número do projeto** | `393943450881` (ex.: FCM, algumas integrações no console) |
-| **Bucket padrão do Storage** | `openwhen-923f5.firebasestorage.app` (deve bater com `storageBucket` em `firebase_options.dart`) |
-| **Domínio de auth (web)** | `openwhen-923f5.firebaseapp.com` |
+| **Bucket padrão do Storage** | `whenote-923f5.firebasestorage.app` (deve bater com `storageBucket` em `firebase_options.dart`) |
+| **Domínio de auth (web)** | `whenote-923f5.firebaseapp.com` |
 
-Este repositório inclui **`lib/firebase_options.dart`**, **`android/app/google-services.json`** e **`ios/Runner/GoogleService-Info.plist`** para o projeto Firebase **`openwhen-923f5`**. Se você apontar o app para outro projeto Firebase, regenere esses arquivos com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) e mantenha `storageBucket` / IDs alinhados ao Console.
+Este repositório inclui **`lib/firebase_options.dart`**, **`android/app/google-services.json`** e **`ios/Runner/GoogleService-Info.plist`** para o projeto Firebase **`whenote-923f5`**. Se você apontar o app para outro projeto Firebase, regenere esses arquivos com [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) e mantenha `storageBucket` / IDs alinhados ao Console.
 
 #### Arquivos de backend (neste repositório)
 
 | Arquivo | Função |
 |---------|--------|
 | [`firebase.json`](firebase.json) | Caminhos das regras do Firestore/Storage e índices |
-| [`.firebaserc`](.firebaserc) | Projeto padrão da CLI (`openwhen-923f5`) |
+| [`.firebaserc`](.firebaserc) | Projeto padrão da CLI (`whenote-923f5`) |
 | [`firestore.rules`](firestore.rules) | Regras de segurança do Firestore |
 | [`firestore.indexes.json`](firestore.indexes.json) | Índices compostos |
 | [`storage.rules`](storage.rules) | Regras de segurança do Cloud Storage |
@@ -120,7 +120,7 @@ Este repositório inclui **`lib/firebase_options.dart`**, **`android/app/google-
    firebase login
    ```
 
-3. **Contexto do projeto:** Este repositório inclui [`.firebaserc`](.firebaserc) com o projeto padrão **`openwhen-923f5`**. Dá para sobrescrever com `--project openwhen-923f5` ou usar `firebase use --add` para aliases.
+3. **Contexto do projeto:** Este repositório inclui [`.firebaserc`](.firebaserc) com o projeto padrão **`whenote-923f5`**. Dá para sobrescrever com `--project whenote-923f5` ou usar `firebase use --add` para aliases.
 
 4. **Publicar regras de segurança e índices** (na raiz do repo):
 
@@ -171,7 +171,7 @@ Use os [emuladores](https://firebase.google.com/docs/emulator-suite) para testar
 ## Estrutura do projeto (resumida)
 
 ```
-openwhen/
+whenote/
 ├── assets/
 │   ├── branding/                # app_icon.png (1024×1024) para gerar ícones do launcher
 │   └── icons/                     # kit SVG (currentColor)
@@ -191,7 +191,7 @@ openwhen/
 │   │   ├── feed/
 │   │   └── profile/
 │   └── shared/
-│       ├── icons/                 # openwhen_icons.dart — OpenWhenIcons, OpenWhenSvgIcon
+│       ├── icons/                 # whenote_icons.dart — WhenoteIcons, WhenoteSvgIcon
 │       ├── theme/
 │       ├── utils/                 # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
 │       └── widgets/               # ex.: location_share_tile (copiar link do Maps)
@@ -238,7 +238,7 @@ Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 
 **Licença:** a definir (TBD).
 
-**Repositório:** [github.com/Yuri-Lima/openwhen](https://github.com/Yuri-Lima/openwhen) (branch `master`)
+**Repositório:** [github.com/Yuri-Lima/whenote](https://github.com/Yuri-Lima/whenote) (branch `master`)
 
 **Fundadores:** Diego Rocha & Yuri Lima
 

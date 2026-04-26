@@ -104,7 +104,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In pt_BR, this message translates to:
-  /// **'OpenWhen'**
+  /// **'Whenote'**
   String get appName;
 
   /// No description provided for @splashTagline.
@@ -260,7 +260,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationProximityNeedLocationBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Ative os serviços de localização e permita que o OpenWhen acesse sua localização para abrir isto.'**
+  /// **'Ative os serviços de localização e permita que o Whenote acesse sua localização para abrir isto.'**
   String get locationProximityNeedLocationBody;
 
   /// No description provided for @navFeed.
@@ -824,7 +824,7 @@ abstract class AppLocalizations {
   /// No description provided for @commentsModerationWarning.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Sua mensagem contém palavras inadequadas. O OpenWhen é um espaço de amor e respeito. 💌'**
+  /// **'Sua mensagem contém palavras inadequadas. O Whenote é um espaço de amor e respeito. 💌'**
   String get commentsModerationWarning;
 
   /// No description provided for @commentsModerationAiBlocked.
@@ -2084,7 +2084,7 @@ abstract class AppLocalizations {
   /// No description provided for @qrShareText.
   ///
   /// In pt_BR, this message translates to:
-  /// **'💌 Uma carta especial espera por você no OpenWhen!\n\n\"{title}\"\n\nEscaneie o QR Code ou acesse: {link}'**
+  /// **'💌 Uma carta especial espera por você no Whenote!\n\n\"{title}\"\n\nEscaneie o QR Code ou acesse: {link}'**
   String qrShareText(String title, String link);
 
   /// No description provided for @qrShareSubject.
@@ -2096,7 +2096,7 @@ abstract class AppLocalizations {
   /// No description provided for @qrShareLinkOnly.
   ///
   /// In pt_BR, this message translates to:
-  /// **'💌 Uma carta especial espera por você no OpenWhen!\n\n\"{title}\"\n\nAcesse: {link}'**
+  /// **'💌 Uma carta especial espera por você no Whenote!\n\n\"{title}\"\n\nAcesse: {link}'**
   String qrShareLinkOnly(String title, String link);
 
   /// No description provided for @qrShareWhatsApp.
@@ -2996,7 +2996,7 @@ abstract class AppLocalizations {
   /// No description provided for @qrFooterBrand.
   ///
   /// In pt_BR, this message translates to:
-  /// **'openwhen.live'**
+  /// **'whenote.app'**
   String get qrFooterBrand;
 
   /// No description provided for @qrShareWhatsAppLabel.
@@ -3188,7 +3188,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsAbout.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Sobre o OpenWhen'**
+  /// **'Sobre o Whenote'**
   String get settingsAbout;
 
   /// No description provided for @settingsAboutVersion.
@@ -3374,7 +3374,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalTitleAbout.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Sobre o OpenWhen'**
+  /// **'Sobre o Whenote'**
   String get legalTitleAbout;
 
   /// No description provided for @legalTitleHelp.
@@ -3404,13 +3404,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutWhatIsTitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O que é o OpenWhen'**
+  /// **'O que é o Whenote'**
   String get aboutWhatIsTitle;
 
   /// No description provided for @aboutWhatIsBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen é uma plataforma digital de comunicação temporal e rede social emocional. Permite criar cartas digitais com data futura de abertura, combinando o valor sentimental de uma carta física com a viralidade de uma rede social moderna.'**
+  /// **'O Whenote é uma plataforma digital de comunicação temporal e rede social emocional. Permite criar cartas digitais com data futura de abertura, combinando o valor sentimental de uma carta física com a viralidade de uma rede social moderna.'**
   String get aboutWhatIsBody;
 
   /// No description provided for @aboutSecurityTitle.
@@ -3434,7 +3434,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutComplianceBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen opera em total conformidade com a legislação brasileira vigente, incluindo LGPD, Marco Civil da Internet, Código de Defesa do Consumidor (Lei nº 8.078/1990) e demais normas aplicáveis ao setor de tecnologia.'**
+  /// **'O Whenote opera em total conformidade com a legislação brasileira vigente, incluindo LGPD, Marco Civil da Internet, Código de Defesa do Consumidor (Lei nº 8.078/1990) e demais normas aplicáveis ao setor de tecnologia.'**
   String get aboutComplianceBody;
 
   /// No description provided for @aboutCompanyTitle.
@@ -3446,7 +3446,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutCompanyBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'OpenWhen Tecnologia Ltda. — Empresa brasileira, com sede no Brasil. Foro de eleição: comarca de São Paulo/SP.'**
+  /// **'Whenote Tecnologia Ltda. — Empresa brasileira, com sede no Brasil. Foro de eleição: comarca de São Paulo/SP.'**
   String get aboutCompanyBody;
 
   /// No description provided for @aboutContacts.
@@ -3482,7 +3482,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutCopyright.
   ///
   /// In pt_BR, this message translates to:
-  /// **'© 2026 OpenWhen Tecnologia Ltda. Todos os direitos reservados.'**
+  /// **'© 2026 Whenote Tecnologia Ltda. Todos os direitos reservados.'**
   String get aboutCopyright;
 
   /// No description provided for @helpCenter.
@@ -3518,13 +3518,13 @@ abstract class AppLocalizations {
   /// No description provided for @helpFaq2Q.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O destinatário precisa ter conta no OpenWhen?'**
+  /// **'O destinatário precisa ter conta no Whenote?'**
   String get helpFaq2Q;
 
   /// No description provided for @helpFaq2A.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Sim. Atualmente o destinatário precisa ter uma conta cadastrada no OpenWhen para receber cartas. O envio para e-mails externos estará disponível em breve.'**
+  /// **'Sim. Atualmente o destinatário precisa ter uma conta cadastrada no Whenote para receber cartas. O envio para e-mails externos estará disponível em breve.'**
   String get helpFaq2A;
 
   /// No description provided for @helpFaq3Q.
@@ -3950,7 +3950,7 @@ abstract class AppLocalizations {
   /// No description provided for @feedbackCouldNotOpenEmail.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Não foi possível abrir o e-mail. Contate suporte@openwhen.live.'**
+  /// **'Não foi possível abrir o e-mail. Contate suporte@whenote.app.'**
   String get feedbackCouldNotOpenEmail;
 
   /// No description provided for @feedbackEmailBodyPrefix.
@@ -4088,7 +4088,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsIntro.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo OpenWhen (\"Plataforma\"), desenvolvido e operado pela OpenWhen Tecnologia Ltda. (\"Empresa\"), inscrita no CNPJ sob o nº [XX.XXX.XXX/0001-XX], com sede no Brasil. A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, nos termos do art. 8º da Lei nº 12.965/2014 (Marco Civil da Internet) e da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).'**
+  /// **'Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo Whenote (\"Plataforma\"), desenvolvido e operado pela Whenote Tecnologia Ltda. (\"Empresa\"), inscrita no CNPJ sob o nº [XX.XXX.XXX/0001-XX], com sede no Brasil. A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, nos termos do art. 8º da Lei nº 12.965/2014 (Marco Civil da Internet) e da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).'**
   String get termsIntro;
 
   /// No description provided for @termsSection1Title.
@@ -4100,7 +4100,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsSection1Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen é uma plataforma digital de comunicação temporal que permite aos usuários criar, enviar, receber e armazenar mensagens eletrônicas (\"Cartas\") programadas para abertura em data futura determinada pelo remetente. O serviço possui natureza de intermediação digital de comunicação privada e, quando autorizado pelo usuário, de publicação em ambiente de rede social (\"Feed Público\"). A Empresa atua como provedora de aplicação, nos termos do art. 5º, inciso VII, do Marco Civil da Internet.'**
+  /// **'O Whenote é uma plataforma digital de comunicação temporal que permite aos usuários criar, enviar, receber e armazenar mensagens eletrônicas (\"Cartas\") programadas para abertura em data futura determinada pelo remetente. O serviço possui natureza de intermediação digital de comunicação privada e, quando autorizado pelo usuário, de publicação em ambiente de rede social (\"Feed Público\"). A Empresa atua como provedora de aplicação, nos termos do art. 5º, inciso VII, do Marco Civil da Internet.'**
   String get termsSection1Body;
 
   /// No description provided for @termsSection2Title.
@@ -4148,7 +4148,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsSection5Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, nos termos da Lei nº 9.610/1998 (Lei de Direitos Autorais). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, irrevogável, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma, podendo revogar tal licença mediante a exclusão do conteúdo ou encerramento da conta. A marca, logotipo, design e código-fonte do OpenWhen são de titularidade exclusiva da Empresa e protegidos pela Lei nº 9.279/1996 (Lei da Propriedade Industrial).'**
+  /// **'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, nos termos da Lei nº 9.610/1998 (Lei de Direitos Autorais). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, irrevogável, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma, podendo revogar tal licença mediante a exclusão do conteúdo ou encerramento da conta. A marca, logotipo, design e código-fonte do Whenote são de titularidade exclusiva da Empresa e protegidos pela Lei nº 9.279/1996 (Lei da Propriedade Industrial).'**
   String get termsSection5Body;
 
   /// No description provided for @termsSection6Title.
@@ -4172,7 +4172,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsSection7Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a: (i) notificar todos os usuários cadastrados por e-mail e notificação no app com no mínimo 90 (noventa) dias de antecedência do encerramento definitivo; (ii) durante o período de aviso, disponibilizar a exportação de todos os dados do usuário (cartas, cápsulas, perfil, mídia) pelo app ou por e-mail; (iii) entregar todas as cartas bloqueadas cuja data de abertura caia dentro do período de aviso; (iv) após o período de 90 dias, excluir permanente e irreversivelmente todos os dados dos usuários dos seus servidores. A Empresa poderá estabelecer um Fundo de Continuidade — uma reserva financeira suficiente para manter a infraestrutura essencial (Firebase, armazenamento, funções de entrega) por pelo menos 2 (dois) anos mesmo que o app deixe de gerar receita. Quando estabelecido, a existência e o status deste fundo serão documentados nestes Termos. Este compromisso constitui uma garantia de produto, não uma obrigação legal, e poderá ser ajustado conforme a capacidade financeira da Empresa evolua.'**
+  /// **'O Whenote empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a: (i) notificar todos os usuários cadastrados por e-mail e notificação no app com no mínimo 90 (noventa) dias de antecedência do encerramento definitivo; (ii) durante o período de aviso, disponibilizar a exportação de todos os dados do usuário (cartas, cápsulas, perfil, mídia) pelo app ou por e-mail; (iii) entregar todas as cartas bloqueadas cuja data de abertura caia dentro do período de aviso; (iv) após o período de 90 dias, excluir permanente e irreversivelmente todos os dados dos usuários dos seus servidores. A Empresa poderá estabelecer um Fundo de Continuidade — uma reserva financeira suficiente para manter a infraestrutura essencial (Firebase, armazenamento, funções de entrega) por pelo menos 2 (dois) anos mesmo que o app deixe de gerar receita. Quando estabelecido, a existência e o status deste fundo serão documentados nestes Termos. Este compromisso constitui uma garantia de produto, não uma obrigação legal, e poderá ser ajustado conforme a capacidade financeira da Empresa evolua.'**
   String get termsSection7Body;
 
   /// No description provided for @termsSection8Title.
@@ -4184,13 +4184,13 @@ abstract class AppLocalizations {
   /// No description provided for @termsSection8Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias decorrentes deste instrumento, com renúncia expressa a qualquer outro foro, por mais privilegiado que seja. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@openwhen.live. Última atualização: 10 de abril de 2026.'**
+  /// **'Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias decorrentes deste instrumento, com renúncia expressa a qualquer outro foro, por mais privilegiado que seja. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 10 de abril de 2026.'**
   String get termsSection8Body;
 
   /// No description provided for @privacyIntro.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Esta Política de Privacidade (\"Política\") descreve como a OpenWhen Tecnologia Ltda. (\"Empresa\", \"nós\", \"nos\", \"nosso\") coleta, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel OpenWhen (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.'**
+  /// **'Esta Política de Privacidade (\"Política\") descreve como a Whenote Tecnologia Ltda. (\"Empresa\", \"nós\", \"nos\", \"nosso\") coleta, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.'**
   String get privacyIntro;
 
   /// No description provided for @privacySection1Title.
@@ -4262,7 +4262,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection6Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'A Plataforma utiliza moderação automatizada de conteúdo alimentada por inteligência artificial (API de Moderação da OpenAI) para analisar conteúdo textual (como comentários) em busca de material potencialmente prejudicial. Este sistema pode: (a) permitir a publicação do conteúdo sem intervenção (pontuação de risco baixa); (b) apresentar um aviso gentil ao autor permitindo a publicação (pontuação de risco média); ou (c) bloquear a publicação do conteúdo (pontuação de risco alta). Quando a moderação humana está ativada, conteúdo sinalizado é encaminhado para revisão manual pela nossa equipe antes de uma decisão final. Nenhuma decisão automatizada é baseada em categorias de dados pessoais sensíveis. Nos termos do GDPR art. 22, você tem o direito de não ser submetido a decisões baseadas unicamente em tratamento automatizado que produzam efeitos jurídicos ou igualmente significativos. Você pode contestar qualquer decisão automatizada de moderação contatando privacidade@openwhen.live ou através do recurso de denúncia/feedback no app. Nos termos da LGPD art. 20, você pode solicitar a revisão de decisões automatizadas que afetem seus interesses.'**
+  /// **'A Plataforma utiliza moderação automatizada de conteúdo alimentada por inteligência artificial (API de Moderação da OpenAI) para analisar conteúdo textual (como comentários) em busca de material potencialmente prejudicial. Este sistema pode: (a) permitir a publicação do conteúdo sem intervenção (pontuação de risco baixa); (b) apresentar um aviso gentil ao autor permitindo a publicação (pontuação de risco média); ou (c) bloquear a publicação do conteúdo (pontuação de risco alta). Quando a moderação humana está ativada, conteúdo sinalizado é encaminhado para revisão manual pela nossa equipe antes de uma decisão final. Nenhuma decisão automatizada é baseada em categorias de dados pessoais sensíveis. Nos termos do GDPR art. 22, você tem o direito de não ser submetido a decisões baseadas unicamente em tratamento automatizado que produzam efeitos jurídicos ou igualmente significativos. Você pode contestar qualquer decisão automatizada de moderação contatando privacidade@whenote.app ou através do recurso de denúncia/feedback no app. Nos termos da LGPD art. 20, você pode solicitar a revisão de decisões automatizadas que afetem seus interesses.'**
   String get privacySection6Body;
 
   /// No description provided for @privacySection7Title.
@@ -4310,7 +4310,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection10Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Seus direitos variam conforme sua jurisdição. Você pode exercer qualquer um dos direitos abaixo pelo app (Configurações > Dados e Privacidade), por e-mail para privacidade@openwhen.live (ou privacy@openwhen.live para inglês), ou contatando nosso DPO.\n\n— LGPD (Brasil — Art. 18): Você tem direito a: (i) confirmação da existência de tratamento; (ii) acesso aos dados; (iii) correção de dados incompletos ou inexatos; (iv) anonimização, bloqueio ou eliminação de dados desnecessários ou excessivos; (v) portabilidade a outro prestador de serviços; (vi) eliminação dos dados tratados com base no consentimento; (vii) informação sobre terceiros com quem os dados foram compartilhados; (viii) informação sobre a possibilidade de negar consentimento e suas consequências; (ix) revogação do consentimento. Prazo de resposta: 15 dias úteis. Você pode registrar reclamação junto à ANPD (Autoridade Nacional de Proteção de Dados): https://www.gov.br/anpd.\n\n— GDPR (UE/EEE — Arts. 15–22): Você tem direito a: (i) acesso (art. 15); (ii) retificação (art. 16); (iii) apagamento / direito ao esquecimento (art. 17); (iv) limitação do tratamento (art. 18); (v) portabilidade dos dados (art. 20); (vi) oposição ao tratamento baseado em interesse legítimo (art. 21); (vii) não ser submetido a decisões exclusivamente automatizadas, incluindo perfilamento (art. 22) — veja a Seção 6 acima; (viii) retirar o consentimento a qualquer momento (art. 7(3)). Prazo de resposta: 30 dias. Você pode apresentar reclamação à autoridade supervisora local.\n\n— CCPA/CPRA (Califórnia): Como consumidor da Califórnia, você tem direito a: (i) saber quais PI coletamos, usamos, divulgamos e vendemos (Direito de Saber); (ii) solicitar a exclusão de suas PI (Direito de Exclusão) — prazo de resposta: 45 dias; (iii) corrigir PI imprecisas (Direito de Correção); (iv) recusar a venda ou compartilhamento de PI — não vendemos nem compartilhamos suas PI, mas você pode enviar uma solicitação a qualquer momento; (v) limitar o uso de PI sensíveis — não utilizamos PI sensíveis além do necessário para prestar nossos serviços; (vi) não discriminação pelo exercício de seus direitos. Você pode designar um agente autorizado para enviar solicitações em seu nome. Verificamos solicitações usando o e-mail da sua conta. As categorias de PI coletadas, finalidades e divulgações a terceiros estão detalhadas nas Seções 2, 5 e 7.'**
+  /// **'Seus direitos variam conforme sua jurisdição. Você pode exercer qualquer um dos direitos abaixo pelo app (Configurações > Dados e Privacidade), por e-mail para privacidade@whenote.app (ou privacy@whenote.app para inglês), ou contatando nosso DPO.\n\n— LGPD (Brasil — Art. 18): Você tem direito a: (i) confirmação da existência de tratamento; (ii) acesso aos dados; (iii) correção de dados incompletos ou inexatos; (iv) anonimização, bloqueio ou eliminação de dados desnecessários ou excessivos; (v) portabilidade a outro prestador de serviços; (vi) eliminação dos dados tratados com base no consentimento; (vii) informação sobre terceiros com quem os dados foram compartilhados; (viii) informação sobre a possibilidade de negar consentimento e suas consequências; (ix) revogação do consentimento. Prazo de resposta: 15 dias úteis. Você pode registrar reclamação junto à ANPD (Autoridade Nacional de Proteção de Dados): https://www.gov.br/anpd.\n\n— GDPR (UE/EEE — Arts. 15–22): Você tem direito a: (i) acesso (art. 15); (ii) retificação (art. 16); (iii) apagamento / direito ao esquecimento (art. 17); (iv) limitação do tratamento (art. 18); (v) portabilidade dos dados (art. 20); (vi) oposição ao tratamento baseado em interesse legítimo (art. 21); (vii) não ser submetido a decisões exclusivamente automatizadas, incluindo perfilamento (art. 22) — veja a Seção 6 acima; (viii) retirar o consentimento a qualquer momento (art. 7(3)). Prazo de resposta: 30 dias. Você pode apresentar reclamação à autoridade supervisora local.\n\n— CCPA/CPRA (Califórnia): Como consumidor da Califórnia, você tem direito a: (i) saber quais PI coletamos, usamos, divulgamos e vendemos (Direito de Saber); (ii) solicitar a exclusão de suas PI (Direito de Exclusão) — prazo de resposta: 45 dias; (iii) corrigir PI imprecisas (Direito de Correção); (iv) recusar a venda ou compartilhamento de PI — não vendemos nem compartilhamos suas PI, mas você pode enviar uma solicitação a qualquer momento; (v) limitar o uso de PI sensíveis — não utilizamos PI sensíveis além do necessário para prestar nossos serviços; (vi) não discriminação pelo exercício de seus direitos. Você pode designar um agente autorizado para enviar solicitações em seu nome. Verificamos solicitações usando o e-mail da sua conta. As categorias de PI coletadas, finalidades e divulgações a terceiros estão detalhadas nas Seções 2, 5 e 7.'**
   String get privacySection10Body;
 
   /// No description provided for @privacySection11Title.
@@ -4334,7 +4334,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection12Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Nos termos da LGPD art. 18 V e GDPR art. 20, você tem o direito de receber seus dados pessoais em formato estruturado, de uso comum e leitura automática. Você pode exportar seus dados em Configurações > Dados e Privacidade > Exportar Meus Dados. A exportação inclui: suas informações de perfil (JSON), todas as cartas enviadas (JSON + arquivos de mídia anexados), cápsulas criadas (JSON + fotos), seus comentários (JSON), curtidas (JSON), listas de seguidores/seguindo (JSON) e badges (JSON). A exportação é gerada como um arquivo ZIP. Você também pode solicitar uma exportação manual contatando privacidade@openwhen.live.'**
+  /// **'Nos termos da LGPD art. 18 V e GDPR art. 20, você tem o direito de receber seus dados pessoais em formato estruturado, de uso comum e leitura automática. Você pode exportar seus dados em Configurações > Dados e Privacidade > Exportar Meus Dados. A exportação inclui: suas informações de perfil (JSON), todas as cartas enviadas (JSON + arquivos de mídia anexados), cápsulas criadas (JSON + fotos), seus comentários (JSON), curtidas (JSON), listas de seguidores/seguindo (JSON) e badges (JSON). A exportação é gerada como um arquivo ZIP. Você também pode solicitar uma exportação manual contatando privacidade@whenote.app.'**
   String get privacySection12Body;
 
   /// No description provided for @privacySection13Title.
@@ -4346,7 +4346,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection13Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Durante o cadastro, os usuários devem confirmar que têm 13 anos ou mais. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos sem consentimento parental verificável, excluiremos prontamente tais dados. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@openwhen.live para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma.'**
+  /// **'O Whenote não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Durante o cadastro, os usuários devem confirmar que têm 13 anos ou mais. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos sem consentimento parental verificável, excluiremos prontamente tais dados. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@whenote.app para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma.'**
   String get privacySection13Body;
 
   /// No description provided for @privacySection14Title.
@@ -4394,7 +4394,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection17Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@openwhen.live\n• Solicitações de privacidade (português): privacidade@openwhen.live\n• Solicitações de privacidade (inglês): privacy@openwhen.live\n• Departamento jurídico: juridico@openwhen.live\n• Suporte geral: suporte@openwhen.live\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nOpenWhen Tecnologia Ltda.\nÚltima atualização: 10 de abril de 2026.'**
+  /// **'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nWhenote Tecnologia Ltda.\nÚltima atualização: 10 de abril de 2026.'**
   String get privacySection17Body;
 
   /// No description provided for @letterPrivacyPublicLabel.
@@ -4694,7 +4694,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyCenterIntro.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Aqui você pode ver todos os dados que o OpenWhen armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.'**
+  /// **'Aqui você pode ver todos os dados que o Whenote armazena sobre você. Isso inclui seu perfil, cartas, cápsulas, interações sociais e mais. Conforme LGPD Art. 18 e GDPR Art. 15.'**
   String get privacyCenterIntro;
 
   /// No description provided for @privacyCenterProfile.
@@ -4886,7 +4886,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyCenterLocationExplainer.
   ///
   /// In pt_BR, this message translates to:
-  /// **'O OpenWhen salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.'**
+  /// **'O Whenote salva sua localização apenas quando você opta por incluí-la numa carta. A localização é opcional e controlada por carta.'**
   String get privacyCenterLocationExplainer;
 
   /// No description provided for @emailVerificationTitle.
@@ -5006,7 +5006,7 @@ abstract class AppLocalizations {
   /// No description provided for @letterModerationBlocked.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Esta carta não pode ser enviada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.'**
+  /// **'Esta carta não pode ser enviada. O Whenote existe para conectar pessoas com amor, superação e conexão genuína.'**
   String get letterModerationBlocked;
 
   /// No description provided for @letterModerationUnavailable.
@@ -5042,7 +5042,7 @@ abstract class AppLocalizations {
   /// No description provided for @capsuleModerationBlocked.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Esta cápsula não pode ser criada. O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína.'**
+  /// **'Esta cápsula não pode ser criada. O Whenote existe para conectar pessoas com amor, superação e conexão genuína.'**
   String get capsuleModerationBlocked;
 
   /// No description provided for @capsuleModerationUnavailable.
@@ -5072,7 +5072,7 @@ abstract class AppLocalizations {
   /// No description provided for @mediaModerationImageRemovedBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen.'**
+  /// **'Uma imagem que você enviou foi removida por não atender às diretrizes do Whenote.'**
   String get mediaModerationImageRemovedBody;
 
   /// No description provided for @mediaModerationAudioRemovedTitle.
@@ -5084,7 +5084,7 @@ abstract class AppLocalizations {
   /// No description provided for @mediaModerationAudioRemovedBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Um áudio que você enviou foi removido por não atender às diretrizes do OpenWhen.'**
+  /// **'Um áudio que você enviou foi removido por não atender às diretrizes do Whenote.'**
   String get mediaModerationAudioRemovedBody;
 
   /// No description provided for @mediaModerationImageUnavailable.

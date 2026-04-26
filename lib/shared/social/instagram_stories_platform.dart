@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class InstagramStoriesPlatform {
   InstagramStoriesPlatform._();
 
-  static const MethodChannel _channel = MethodChannel('com.openwhen.app/instagram_stories');
+  static const MethodChannel _channel = MethodChannel('com.whenote.app/instagram_stories');
 
   static Future<bool> isInstagramStoryAvailable() async {
     if (kIsWeb) return false;

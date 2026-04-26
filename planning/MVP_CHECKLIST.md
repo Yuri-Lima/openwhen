@@ -1,4 +1,4 @@
-# OpenWhen — Checklist do MVP
+# Whenote — Checklist do MVP
 
 Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 

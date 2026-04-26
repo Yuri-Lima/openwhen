@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/shared/utils/music_url.dart';
+import 'package:whenote/shared/utils/music_url.dart';
 
 void main() {
   group('isValidHttpsMusicUrl', () {

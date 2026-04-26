@@ -20,7 +20,7 @@ import {copyMediaRemoved} from "./notification_copy";
 // handwritten/{uid}_{ts}.jpg
 // voiceLetters/{uid}_{ts}.m4a
 
-const BUCKET = "openwhen-923f5.firebasestorage.app";
+const BUCKET = "whenote-923f5.firebasestorage.app";
 
 /** Signed URL lifetime for image moderation requests (10 minutes). */
 const SIGNED_URL_EXPIRY_MS = 10 * 60 * 1000;

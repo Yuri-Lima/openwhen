@@ -44,9 +44,9 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyD5Xha57ZzGMG7LECuL-BBWktdZkA5jB9w',
     appId: '1:393943450881:web:096295318582bd02f78700',
     messagingSenderId: '393943450881',
-    projectId: 'openwhen-923f5',
-    authDomain: 'openwhen-923f5.firebaseapp.com',
-    storageBucket: 'openwhen-923f5.firebasestorage.app',
+    projectId: 'whenote-923f5',
+    authDomain: 'whenote-923f5.firebaseapp.com',
+    storageBucket: 'whenote-923f5.firebasestorage.app',
     measurementId: 'G-3499DN7B5H',
   );
 
@@ -54,35 +54,35 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyDHKuny9dRSaNUs2Yr30PWAZfMRP9jGyxw',
     appId: '1:393943450881:android:6214bc3f37c32a58f78700',
     messagingSenderId: '393943450881',
-    projectId: 'openwhen-923f5',
-    storageBucket: 'openwhen-923f5.firebasestorage.app',
+    projectId: 'whenote-923f5',
+    storageBucket: 'whenote-923f5.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAtOU1vrWy3bvVuK08g0CkgkuFoxQ7_tHs',
     appId: '1:393943450881:ios:977521ca30587c3bf78700',
     messagingSenderId: '393943450881',
-    projectId: 'openwhen-923f5',
-    storageBucket: 'openwhen-923f5.firebasestorage.app',
-    iosBundleId: 'OPENWHEN-APP-2026',
+    projectId: 'whenote-923f5',
+    storageBucket: 'whenote-923f5.firebasestorage.app',
+    iosBundleId: 'WHENOTE-APP-2026',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAtOU1vrWy3bvVuK08g0CkgkuFoxQ7_tHs',
     appId: '1:393943450881:ios:3a3977948654cd18f78700',
     messagingSenderId: '393943450881',
-    projectId: 'openwhen-923f5',
-    storageBucket: 'openwhen-923f5.firebasestorage.app',
-    iosBundleId: 'com.openwhen.app',
+    projectId: 'whenote-923f5',
+    storageBucket: 'whenote-923f5.firebasestorage.app',
+    iosBundleId: 'com.whenote.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyD5Xha57ZzGMG7LECuL-BBWktdZkA5jB9w',
     appId: '1:393943450881:web:c4e98d607f2d2d69f78700',
     messagingSenderId: '393943450881',
-    projectId: 'openwhen-923f5',
-    authDomain: 'openwhen-923f5.firebaseapp.com',
-    storageBucket: 'openwhen-923f5.firebasestorage.app',
+    projectId: 'whenote-923f5',
+    authDomain: 'whenote-923f5.firebaseapp.com',
+    storageBucket: 'whenote-923f5.firebasestorage.app',
     measurementId: 'G-18MPNKK07T',
   );
 }

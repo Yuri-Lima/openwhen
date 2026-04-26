@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// Caminhos dos SVG em [assets/icons/]. Use com [OpenWhenSvgIcon] ou [SvgPicture.asset].
-abstract final class OpenWhenIcons {
+/// Caminhos dos SVG em [assets/icons/]. Use com [WhenoteSvgIcon] ou [SvgPicture.asset].
+abstract final class WhenoteIcons {
   static const String _base = 'assets/icons';
 
   static const String envelope = '$_base/envelope.svg';
@@ -30,9 +30,9 @@ abstract final class OpenWhenIcons {
   ];
 }
 
-/// Ícone SVG do kit OpenWhen; [color] aplica `BlendMode.srcIn` (adequado a traços `currentColor`).
-class OpenWhenSvgIcon extends StatelessWidget {
-  const OpenWhenSvgIcon(
+/// Ícone SVG do kit Whenote; [color] aplica `BlendMode.srcIn` (adequado a traços `currentColor`).
+class WhenoteSvgIcon extends StatelessWidget {
+  const WhenoteSvgIcon(
     this.assetPath, {
     super.key,
     this.size = 24,

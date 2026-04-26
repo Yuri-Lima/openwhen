@@ -2,13 +2,13 @@
 
 **English** · <a href="README.pt-BR.md" target="_blank" rel="noopener noreferrer">Português (Brasil)</a>
 
-# OpenWhen
+# Whenote
 
 **Write today. Feel tomorrow.** · *Escreva hoje. Sinta amanhã.*
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.41.5-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.11.3-0175C2?logo=dart)](https://dart.dev)
-[![Firebase](https://img.shields.io/badge/Firebase-openwhen--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
+[![Firebase](https://img.shields.io/badge/Firebase-whenote--923f5-FFCA28?logo=firebase)](https://firebase.google.com)
 [![MVP](https://img.shields.io/badge/MVP-~100%25-success)](planning/MVP_CHECKLIST.md)
 
 *Timed letters, time capsules, and an emotional social layer — with a physical QR bridge to the people you care about.*
@@ -19,9 +19,9 @@
 
 ---
 
-## What is OpenWhen?
+## What is Whenote?
 
-OpenWhen is a cross-platform social product for **writing messages that unlock in the future** — combining **scheduled letters**, **guided time capsules**, and a **feed** tuned for emotion, not just engagement. A **QR code** flow lets memories travel from the physical world into the app.
+Whenote is a cross-platform social product for **writing messages that unlock in the future** — combining **scheduled letters**, **guided time capsules**, and a **feed** tuned for emotion, not just engagement. A **QR code** flow lets memories travel from the physical world into the app.
 
 **For users:** express what matters, schedule it with intention, and open it when the moment is right.
 
@@ -33,7 +33,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 
 | Area | Highlights |
 |------|------------|
-| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (OpenWhen max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
+| **Letters** | Write, schedule, emotional opening animation (wax seal + owl micro-interaction), QR generation and sharing; **typed message** field starts **collapsed** and expands on tap; optional **voice message** (Whenote max **1 minute**, recorded on device, uploaded to Storage) with in-app playback on open/detail; optional **music link** (`https` only) opened externally (no in-app streaming for music); optional **location** on send (`geolocator`): dialogs ask whether to share coordinates with the recipient (detail tile copies a **Google Maps** URL to the clipboard) and whether opening requires the recipient to be **within 10 m** of that point (client-side check from the Vault before the opening screen — not a server guarantee) |
 | **Time capsules** | Themes (memories, goals, feelings, relationships, growth), 2–5 guided Q&A, lock until date/event; optional **collective capsule** (invite others to open together; author writes content); optional **music link** same as letters; same **optional location + optional 10 m opening gate** as letters |
 | **Social** | **Feed** with three layers (Explore / Highlights / Following), emotion filters (up to **3** pinned chips) + filter icon; likes & comments (card preview: up to 2 comments, “view all” up to 20; long comments clamp to 4 lines with **Read more**); follows, privacy; moderation (lexical filter, user reports, optional **AI moderation** via Cloud Functions when enabled in `systemConfig/app`) |
 | **Vault** | Tabs for waiting, opened, sent, and **capsules**; advanced **filter and sort** (bottom sheet, client-side on snapshot data) |
@@ -54,7 +54,7 @@ OpenWhen is a cross-platform social product for **writing messages that unlock i
 | **Navigation** | `MaterialApp` routes + imperative navigation; `go_router` available for future consolidation |
 | **Performance** | Deferred library loads for write / search / create capsule / PDF-ZIP export; vault tab listens only on the visible tab; **user search** uses indexed Firestore queries with a result cap (not a full `users` collection scan) — see [ARCHITECTURE.md](planning/ARCHITECTURE.md) |
 | **Fonts** | Google Fonts (DM Serif Display + DM Sans) |
-| **Icons (UI)** | `flutter_svg` + SVG kit under `assets/icons/` — see **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`OpenWhenIcons`, `OpenWhenSvgIcon`) |
+| **Icons (UI)** | `flutter_svg` + SVG kit under `assets/icons/` — see **[planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md)** (`WhenoteIcons`, `WhenoteSvgIcon`) |
 | **App launcher** | `flutter_launcher_icons` (dev) — source `assets/branding/app_icon.png`; regenerate with `dart run flutter_launcher_icons` |
 
 Architecture is **feature-first** under `lib/features/`, with auth split into `data` / `domain` / `presentation`. See **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.md)** for folder layout and Firestore collections.
@@ -73,8 +73,8 @@ Architecture is **feature-first** under `lib/features/`, with auth split into `d
 ### Run
 
 ```bash
-git clone https://github.com/Yuri-Lima/openwhen.git
-cd openwhen
+git clone https://github.com/Yuri-Lima/whenote.git
+cd whenote
 flutter pub get
 flutter run -d chrome
 ```
@@ -87,19 +87,19 @@ For day-to-day development, **`flutter run -d chrome`** is the default target.
 
 | Field | Value |
 |-------|--------|
-| **Project ID** | `openwhen-923f5` |
+| **Project ID** | `whenote-923f5` |
 | **Project number** | `393943450881` (e.g. FCM, some console integrations) |
-| **Default Storage bucket** | `openwhen-923f5.firebasestorage.app` (must match `storageBucket` in `firebase_options.dart`) |
-| **Auth domain (web)** | `openwhen-923f5.firebaseapp.com` |
+| **Default Storage bucket** | `whenote-923f5.firebasestorage.app` (must match `storageBucket` in `firebase_options.dart`) |
+| **Auth domain (web)** | `whenote-923f5.firebaseapp.com` |
 
-This repository includes **`lib/firebase_options.dart`**, **`android/app/google-services.json`**, and **`ios/Runner/GoogleService-Info.plist`** for the Firebase project **`openwhen-923f5`**. If you point the app at a different Firebase project, regenerate these files with [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) and keep `storageBucket` / bundle IDs aligned with the Console.
+This repository includes **`lib/firebase_options.dart`**, **`android/app/google-services.json`**, and **`ios/Runner/GoogleService-Info.plist`** for the Firebase project **`whenote-923f5`**. If you point the app at a different Firebase project, regenerate these files with [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/) and keep `storageBucket` / bundle IDs aligned with the Console.
 
 #### Backend config files (this repo)
 
 | File | Role |
 |------|------|
 | [`firebase.json`](firebase.json) | Firestore rules/indexes and Storage rules paths |
-| [`.firebaserc`](.firebaserc) | Default Firebase project for CLI (`openwhen-923f5`) |
+| [`.firebaserc`](.firebaserc) | Default Firebase project for CLI (`whenote-923f5`) |
 | [`firestore.rules`](firestore.rules) | Firestore security rules |
 | [`firestore.indexes.json`](firestore.indexes.json) | Composite indexes |
 | [`storage.rules`](storage.rules) | Cloud Storage security rules |
@@ -120,7 +120,7 @@ This repository includes **`lib/firebase_options.dart`**, **`android/app/google-
    firebase login
    ```
 
-3. **Project context:** This repository includes [`.firebaserc`](.firebaserc) with the default project **`openwhen-923f5`**. You can override per command with `--project openwhen-923f5` or run `firebase use --add` to add aliases.
+3. **Project context:** This repository includes [`.firebaserc`](.firebaserc) with the default project **`whenote-923f5`**. You can override per command with `--project whenote-923f5` or run `firebase use --add` to add aliases.
 
 4. **Deploy security rules and indexes** (from the repo root):
 
@@ -171,7 +171,7 @@ Use the [emulators](https://firebase.google.com/docs/emulator-suite) to exercise
 ## Project structure (abbreviated)
 
 ```
-openwhen/
+whenote/
 ├── assets/
 │   ├── branding/                  # app_icon.png (1024×1024) for launcher generation
 │   └── icons/                     # SVG icon kit (currentColor)
@@ -191,7 +191,7 @@ openwhen/
 │   │   ├── feed/
 │   │   └── profile/
 │   └── shared/
-│       ├── icons/                 # openwhen_icons.dart — OpenWhenIcons paths, OpenWhenSvgIcon
+│       ├── icons/                 # whenote_icons.dart — WhenoteIcons paths, WhenoteSvgIcon
 │       ├── theme/
 │       ├── utils/                 # music_url, voice_url; sender_location, location_capture, proximity_gate, location_prompt_flow, open_with_proximity
 │       └── widgets/               # e.g. location_share_tile (copy Maps link)
@@ -239,7 +239,7 @@ Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 
 **License:** TBD.
 
-**Repository:** [github.com/Yuri-Lima/openwhen](https://github.com/Yuri-Lima/openwhen) (branch `master`)
+**Repository:** [github.com/Yuri-Lima/whenote](https://github.com/Yuri-Lima/whenote) (branch `master`)
 
 **Founders:** Diego Rocha & Yuri Lima
 

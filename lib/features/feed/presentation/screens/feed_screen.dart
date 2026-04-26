@@ -245,7 +245,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                             Row(
                               children: [
                                 Text(
-                                  'OpenWhen',
+                                  'Whenote',
                                   style: GoogleFonts.dmSerifDisplay(
                                     fontSize: 26,
                                     color: context.pal.white,

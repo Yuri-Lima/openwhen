@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/firestore_collections.dart';
 import '../../l10n/app_localizations.dart';
-import '../theme/open_when_palette.dart';
+import '../theme/whenote_palette.dart';
 
 /// Reasons must match [firestore.rules] for `reports`.
 enum ReportReason {

@@ -83,7 +83,7 @@ sent | delivered | bounced | dropped | deferred | send_failed | null
 
 **Webhook URL (no painel SendGrid):**
 ```
-https://us-central1-openwhen-923f5.cloudfunctions.net/onSendGridWebhook
+https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook
 ```
 
 **Eventos a ativar:** Bounced, Dropped, Deferred, Delivered

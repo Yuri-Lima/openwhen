@@ -1,7 +1,7 @@
-# Git Workflow Skill — Rotina de Branches (openwhen)
+# Git Workflow Skill — Rotina de Branches (whenote)
 
 ## Visão Geral
-Esta skill define os comandos e comportamentos de git para o projeto **openwhen**. O remote padrão é `origin`. As branches principais são `master` (branch de trabalho local) e `main` (branch sincronizada com origin).
+Esta skill define os comandos e comportamentos de git para o projeto **whenote**. O remote padrão é `origin`. As branches principais são `master` (branch de trabalho local) e `main` (branch sincronizada com origin).
 
 ---
 

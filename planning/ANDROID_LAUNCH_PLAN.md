@@ -1,8 +1,8 @@
-# OpenWhen — Plano de Lançamento Android (Google Play Store)
+# Whenote — Plano de Lançamento Android (Google Play Store)
 
 ### Criado: 12 de abril de 2026
 
-**Objetivo:** Publicar o OpenWhen na Google Play Store (produção pública ou closed/open testing).
+**Objetivo:** Publicar o Whenote na Google Play Store (produção pública ou closed/open testing).
 
 **Referências:** [PRODUCTION.md](PRODUCTION.md) (checklist A–G, QA secção 9), [MVP_CHECKLIST.md](MVP_CHECKLIST.md), [LEGAL.md](LEGAL.md), [BUSINESS.md](BUSINESS.md).
 
@@ -37,7 +37,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 |------|--------|-----------------|------------|
 | **Moderação de cartas (Camada 2 — IA no envio)** | ✅ Implementado (12 abr 2026) | Text moderation (letters + capsules) e media moderation (images + audio) implementados. Ver MODERATION.md para detalhes. | MODERATION.md |
 | **Sign in with Apple** | 🟡 Pendente | Obrigatório para iOS (Apple exige), mas Google Play também recomenda. Pode ser pós-launch Android se necessário. | MVP_CHECKLIST.md §Importante |
-| **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@openwhen.live`. | PRODUCTION.md §Email |
+| **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@whenote.app`. | PRODUCTION.md §Email |
 | **Deploy da action page de email** | ✅ Concluído | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
 | **Verificação de email no cadastro** | ✅ Implementado | `sendEmailVerification()` no registo + guard `requireVerifiedEmail()` bloqueia cartas/comentários/cápsulas até verificação. Soft-block (login permitido). | MVP_CHECKLIST.md §Email |
 
@@ -66,7 +66,7 @@ Cada nova submissão ao Play Store exige `versionCode` incrementado.
 ### 2.1 Criar conta Google Play Console
 
 1. Aceder a [play.google.com/console](https://play.google.com/console)
-2. Registar como **Organização** (Delaware C-Corp — OpenWhen via Stripe Atlas)
+2. Registar como **Organização** (Delaware C-Corp — Whenote via Stripe Atlas)
    - Serão pedidos: nome legal da empresa, endereço, DUNS number (se aplicável), website
    - **Taxa única: $25 USD**
 3. Verificar identidade (Google pode pedir documentos da empresa)
@@ -78,7 +78,7 @@ Cada nova submissão ao Play Store exige `versionCode` incrementado.
 
 1. Play Console → **Create app**
 2. Preencher:
-   - **App name:** OpenWhen
+   - **App name:** Whenote
    - **Default language:** Português (Brasil) — com suporte a en, es
    - **App or game:** App
    - **Free or paid:** Free
@@ -86,7 +86,7 @@ Cada nova submissão ao Play Store exige `versionCode` incrementado.
 
 ### 2.3 applicationId final
 
-O `applicationId` atual é **`com.openwhen.app`** — este será o identificador permanente na Play Store. Confirmar que é o desejado antes de publicar (não pode ser alterado depois).
+O `applicationId` atual é **`com.whenote.app`** — este será o identificador permanente na Play Store. Confirmar que é o desejado antes de publicar (não pode ser alterado depois).
 
 ---
 
@@ -104,7 +104,7 @@ keytool -genkey -v \
   -alias upload
 ```
 
-**Dados a preencher:** nome, organização (OpenWhen Inc.), localização, senha segura.
+**Dados a preencher:** nome, organização (Whenote Inc.), localização, senha segura.
 
 > **⚠️ CRÍTICO:** Guardar o keystore e as senhas em local seguro (1Password, cofre). Se perder o keystore, não consegue atualizar o app na Play Store (a menos que use Play App Signing).
 
@@ -155,7 +155,7 @@ No Firebase Console → Firestore → `systemConfig/app`, garantir que existem o
 
 ### 4.3 Verificar google-services.json
 
-O ficheiro `android/app/google-services.json` contém 3 package names. Confirmar que `com.openwhen.app` é o client ativo. Os outros (`com.example.openwhen`, `com.openwhen.mobile`) podem ser removidos do projeto Firebase se não forem mais usados — limpeza opcional.
+O ficheiro `android/app/google-services.json` contém 3 package names. Confirmar que `com.whenote.app` é o client ativo. Os outros (`com.example.whenote`, `com.whenote.mobile`) podem ser removidos do projeto Firebase se não forem mais usados — limpeza opcional.
 
 ### 4.4 Firebase App Check (recomendado)
 
@@ -203,21 +203,21 @@ O ficheiro gerado estará em: `build/app/outputs/bundle/release/app-release.aab`
 
 | Campo | Valor sugerido |
 |-------|---------------|
-| **App name** | OpenWhen |
+| **App name** | Whenote |
 | **Short description** (80 chars) | "Escreva hoje. Sinta amanhã. Cartas temporizadas e cápsulas do tempo." |
 | **Full description** (4000 chars) | Ver rascunho abaixo |
 | **App icon** | 512×512 PNG (hi-res) — gerar a partir de `assets/branding/app_icon.png` |
 | **Feature graphic** | 1024×500 PNG — banner promocional (precisa ser criado) |
 | **Screenshots** | Mínimo 2, recomendado 8. Resoluções: telefone (16:9 ou 9:16), tablet (opcional) |
 | **App category** | Social |
-| **Contact email** | suporte@openwhen.live |
-| **Privacy policy URL** | https://openwhen.live/privacy.html |
+| **Contact email** | suporte@whenote.app |
+| **Privacy policy URL** | https://whenote.app/privacy.html |
 
 ### 6.2 Rascunho da descrição completa
 
-> **OpenWhen — Escreva hoje. Sinta amanhã.**
+> **Whenote — Escreva hoje. Sinta amanhã.**
 >
-> Já pensou em enviar uma carta que só será aberta no momento certo? Com o OpenWhen, você escreve mensagens com data marcada — cartas de amor, apoio, surpresa ou motivação — que o destinatário só poderá ler quando chegar a hora.
+> Já pensou em enviar uma carta que só será aberta no momento certo? Com o Whenote, você escreve mensagens com data marcada — cartas de amor, apoio, surpresa ou motivação — que o destinatário só poderá ler quando chegar a hora.
 >
 > **Cartas temporizadas:** Escreva com texto, áudio ou localização e escolha quando será aberta. A carta fica selada até o momento certo.
 >
@@ -280,7 +280,7 @@ Preencher o formulário "Data safety" com base nos dados reais:
 | Device IDs (FCM) | Sim | Não | — | Sim |
 
 **Encriptação em trânsito:** Sim (TLS 1.3, Firebase)
-**Deletion request mechanism:** Sim (in-app + email `privacy@openwhen.live`)
+**Deletion request mechanism:** Sim (in-app + email `privacy@whenote.app`)
 
 ### 7.3 Ads declaration
 
@@ -295,7 +295,7 @@ O app **não contém anúncios** — declarar como tal.
 ### 7.5 App access (se necessário)
 
 Se o revisor do Google precisar de credenciais para testar:
-- Criar conta de teste: `reviewer@openwhen.live` / senha segura
+- Criar conta de teste: `reviewer@whenote.app` / senha segura
 - Ou fornecer instruções de como criar conta no app
 - Preencher no Play Console → **App content → App access**
 
@@ -309,7 +309,7 @@ Não aplicável (billing desativado no lançamento).
 
 ### 7.8 Data deletion policy (obrigatório desde 2024)
 
-URL da página de política: `https://openwhen.live/privacy.html`
+URL da página de política: `https://whenote.app/privacy.html`
 O app já tem funcionalidade de deletar conta (Configurações → Excluir conta) com Cloud Function `deleteUserAccount`. Informar a URL e o mecanismo in-app no formulário.
 
 ---
@@ -336,7 +336,7 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 - [ ] Notificações push (Android 13+ — permissão runtime)
 - [ ] Compartilhar Instagram Stories (com `FB_APP_ID`)
 - [ ] QR Code: gerar e escanear
-- [ ] Deep links: `https://openwhen.live/letter/xxx` abre no app
+- [ ] Deep links: `https://whenote.app/letter/xxx` abre no app
 - [ ] Configurações: trocar tema, trocar idioma, logout
 - [ ] Deletar conta (ambos os modos)
 - [ ] Crash-free: verificar Crashlytics por 24h sem crashes

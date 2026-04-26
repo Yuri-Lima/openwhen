@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/features/feed/presentation/providers/feed_pinned_filters_provider.dart';
+import 'package:whenote/features/feed/presentation/providers/feed_pinned_filters_provider.dart';
 
 void main() {
   group('parsePinnedFilters', () {

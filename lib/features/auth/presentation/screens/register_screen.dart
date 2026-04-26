@@ -552,7 +552,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'OpenWhen',
+                        'Whenote',
                         style: GoogleFonts.dmSerifDisplay(
                           fontSize: 26,
                           color: context.pal.ink,

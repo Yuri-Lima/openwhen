@@ -808,7 +808,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     ]);
   }
 
-  Widget _buildAddPhotoButton(OpenWhenPalette p, AppLocalizations l10n) {
+  Widget _buildAddPhotoButton(WhenotePalette p, AppLocalizations l10n) {
     return GestureDetector(
       onTap: _uploadingPhoto ? null : _pickCapsulePhoto,
       child: Container(
@@ -831,7 +831,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
     );
   }
 
-  Widget _buildPhotoThumbnail(String url, OpenWhenPalette p, AppLocalizations l10n) {
+  Widget _buildPhotoThumbnail(String url, WhenotePalette p, AppLocalizations l10n) {
     return Stack(
       children: [
         Container(

@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "TEAMID.OPENWHEN-APP-2026",
+        "appID": "TEAMID.WHENOTE-APP-2026",
         "paths": ["/letter/*", "/capsule/*"]
       }
     ]

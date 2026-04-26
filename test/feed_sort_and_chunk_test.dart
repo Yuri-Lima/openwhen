@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/features/feed/data/following_feed_merged_stream.dart';
-import 'package:openwhen/features/letters/export/export_url_allowlist.dart';
+import 'package:whenote/features/feed/data/following_feed_merged_stream.dart';
+import 'package:whenote/features/letters/export/export_url_allowlist.dart';
 
 void main() {
   test('chunkList splits at 10', () {

@@ -1,4 +1,4 @@
-# Gastos de Criação — OpenWhen
+# Gastos de Criação — Whenote
 
 > Registo de todos os custos associados ao desenvolvimento do app.
 > Moeda principal: **EUR (€)**

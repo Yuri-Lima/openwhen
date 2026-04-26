@@ -1,4 +1,4 @@
-# Contexto do Projeto — openwhen
+# Contexto do Projeto — whenote
 
 ## Stack
 - **Framework:** Flutter (Dart)
@@ -72,12 +72,12 @@ chore: tarefas de manutenção
 **Todos os comandos de terminal (git, flutter, dart, firebase, etc.) devem ser executados dentro do diretório do projeto:**
 
 ```
-/sessions/gallant-fervent-curie/mnt/openwhen
+/sessions/gallant-fervent-curie/mnt/whenote
 ```
 
 Ou seja, todo comando Bash deve iniciar com:
 ```bash
-cd /sessions/gallant-fervent-curie/mnt/openwhen && <comando>
+cd /sessions/gallant-fervent-curie/mnt/whenote && <comando>
 ```
 
 Este projeto está rodando no **Cursor** (editor externo). Qualquer alteração de arquivo ou comando deve considerar que o ambiente ativo é este diretório.

@@ -1,4 +1,4 @@
-# OpenWhen — Auditoria de UX e Produto
+# Whenote — Auditoria de UX e Produto
 ### Abril 2026 — Análise profissional como usuário experiente de redes sociais
 
 ---
@@ -95,7 +95,7 @@
 
 ## Opinião Final
 
-O OpenWhen tem o ingrediente mais difícil de criar: uma razão emocional para existir.
+O Whenote tem o ingrediente mais difícil de criar: uma razão emocional para existir.
 A coruja, a história de origem, o conceito — tudo genuíno e poderoso.
 
 **O problema é foco.** O app tem 15 funcionalidades quando precisa de 3 que funcionem perfeitamente.
@@ -135,4 +135,4 @@ Precisa de uma primeira carta enviada com sucesso e uma notificação que o faç
 
 ---
 *Auditoria realizada em Abril 2026*
-*Diego Rocha & Yuri Lima — OpenWhen Inc.*
+*Diego Rocha & Yuri Lima — Whenote Inc.*

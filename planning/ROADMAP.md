@@ -1,4 +1,4 @@
-# OpenWhen — Roadmap de produto
+# Whenote — Roadmap de produto
 
 Este documento organiza entregas por fase. Prioridades: **P0** (crítico), **P1** (importante), **P2** (desejável).
 
@@ -33,11 +33,11 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 | Compartilhamento Stories/Reels                                                     | P1         | Concluído | Alto           | Instagram Stories (nativo iOS/Android) + fallback; ver `[ARCHITECTURE.md](ARCHITECTURE.md)` e `lib/shared/social/`                                                                    |
 | Tela “Cartas recebidas” separada                                                   | P1         | Concluído | Médio          | Clareza no cofre                                                                                                                                                                      |
 | Badges / gamificação                                                               | P1         | Concluído | Médio          | Metas leves no cliente; `lib/features/gamification/` (desbloqueio, faixa no perfil); regras Firestore `users/{uid}/badgeUnlocks`                                                      |
-| Temas do app (paletas + automático/sistema)                                        | P1         | Concluído | Baixo          | Evolução do “toggle claro/escuro”; `open_when_palette.dart`, Configurações                                                                                                            |
+| Temas do app (paletas + automático/sistema)                                        | P1         | Concluído | Baixo          | Evolução do “toggle claro/escuro”; `whenote_palette.dart`, Configurações                                                                                                            |
 | Feed em 3 camadas                                                                  | P1         | Concluído | Alto           | Explorar / Destaques / Seguindo; filtros emocionais com até 3 chips fixados; ver `[ARCHITECTURE.md](ARCHITECTURE.md)` secção “Feed”                                                   |
 | Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Pendente  | Médio          | **Nota:** moderação de imagens e áudio já implementada (ver [MODERATION.md](MODERATION.md)); esta linha refere-se à feature de **OCR visível** e **transcrição para texto** como UX do utilizador. Vídeo→carta fica para fase posterior.                                                                                                       |
 | Multilíngue (pt-BR, en, es)                                                        | P1         | Concluído | Alto           | Também no checklist 🟡; expansão para mais locales → Fase 3                                                                                                                           |
-| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **OpenWhen Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
+| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **Whenote Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
 
 
 **Exportar cartas (PDF / ZIP)** está concluído no checklist 🟡 (export no cliente: Configurações). A linha na Fase 3 abaixo referencia **evoluções** opcionais (ex.: processamento server-side, batch grande); a entrega MVP segue o checklist.
@@ -173,19 +173,19 @@ Foco: expansão de produto e mercado.
 | Entrega                                                                                                         | Prioridade | Esforço (est.) | Notas                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------------------------------------------------------------------------------------------------- | ---------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pay-per-feature premium                                                                                         | —          | Alto           | Stripe / IAP conforme loja                                                                                                                                                                                                                                                                                                                                                                                            |
-| **OpenWhen Gift** (Presente Selado / Gift When): valor financeiro selado à carta; liberação na data de abertura | —          | Alto           | **Fase 1 (MVP Gift):** Stripe Connect — retenção do valor até a abertura; Brasil e EUA; sem banco próprio; conta Connect aprovada; termos de uso e política de reembolso; pesquisa legal *money transmission* (EUA). Estimativa ~2–3 meses de desenvolvimento. Modelo de receita e posicionamento: `[BUSINESS.md](BUSINESS.md)`. Checklist de execução: `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)` (Futuro — Gift & Nox). |
+| **Whenote Gift** (Presente Selado / Gift When): valor financeiro selado à carta; liberação na data de abertura | —          | Alto           | **Fase 1 (MVP Gift):** Stripe Connect — retenção do valor até a abertura; Brasil e EUA; sem banco próprio; conta Connect aprovada; termos de uso e política de reembolso; pesquisa legal *money transmission* (EUA). Estimativa ~2–3 meses de desenvolvimento. Modelo de receita e posicionamento: `[BUSINESS.md](BUSINESS.md)`. Checklist de execução: `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)` (Futuro — Gift & Nox). |
 | Analytics de produto                                                                                            | —          | Médio          | Funis, retenção, conversão                                                                                                                                                                                                                                                                                                                                                                                            |
 
 
 **Expansão Gift (após MVP do Gift):** PIX e carteiras digitais (BR); Wise (transferências internacionais); Apple Pay / Google Pay; parcerias bancárias; API bancária própria; licença de *money transmission* nos EUA (fase tardia). Códigos de resgate ou créditos para **premium** podem reutilizar a mesma stack de pagamentos — detalhar na implementação.
 
-### OpenWhen Physical — Carta Física & Produtos Selados
+### Whenote Physical — Carta Física & Produtos Selados
 
-**Conceito:** além das cartas digitais, o utilizador poderá enviar uma **carta física real** (impressa e selada com selo OpenWhen) e/ou **itens/produtos físicos** (presentes, livros, objetos simbólicos) ao destinatário, mantendo a mesma lógica temporal — o pacote só é enviado/entregue na **data de abertura** escolhida.
+**Conceito:** além das cartas digitais, o utilizador poderá enviar uma **carta física real** (impressa e selada com selo Whenote) e/ou **itens/produtos físicos** (presentes, livros, objetos simbólicos) ao destinatário, mantendo a mesma lógica temporal — o pacote só é enviado/entregue na **data de abertura** escolhida.
 
 **Para o utilizador:**
 1. Ao criar uma carta, escolhe "Carta digital" ou "Carta física" (ou ambas)
-2. Se carta física: escreve no app → a carta é impressa em papel premium com design OpenWhen (selo da coruja, papel envelhecido, personalização por emoção)
+2. Se carta física: escreve no app → a carta é impressa em papel premium com design Whenote (selo da coruja, papel envelhecido, personalização por emoção)
 3. Se incluir produto/presente: faz upload de foto do item ou seleciona de um **catálogo de parceiros** (ex.: flores, chocolates, livros, objetos artesanais)
 4. Define a data de abertura → o envio físico é disparado automaticamente na data escolhida (ou X dias antes para garantir entrega a tempo)
 5. Destinatário recebe o pacote físico + notificação no app + carta digital sincronizada
@@ -195,7 +195,7 @@ Foco: expansão de produto e mercado.
 | Modelo | Descrição | Prós | Contras |
 |--------|-----------|------|---------|
 | **Parceiro logístico (fulfillment)** | Integração com serviço de impressão e envio (ex.: Lob, Stannp, parceiro local BR) | Sem stock, escalável, menor investimento | Margem menor, dependência de terceiro |
-| **Marketplace de presentes** | Catálogo curado de parceiros (floristas, livrarias, artesãos) — OpenWhen como intermediário | Variedade, sem stock próprio, comissão | Complexidade de integração, qualidade variável |
+| **Marketplace de presentes** | Catálogo curado de parceiros (floristas, livrarias, artesãos) — Whenote como intermediário | Variedade, sem stock próprio, comissão | Complexidade de integração, qualidade variável |
 | **Print-on-demand (carta)** | Apenas a carta impressa + envelope premium, sem produto físico | Simples, margem alta, foco na emoção | Escopo limitado |
 
 **Receita:**

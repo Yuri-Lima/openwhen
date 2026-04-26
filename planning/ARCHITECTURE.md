@@ -1,4 +1,4 @@
-# OpenWhen — Arquitetura técnica
+# Whenote — Arquitetura técnica
 
 ## Visão geral
 
@@ -27,7 +27,7 @@ Uma migração futura para `go_router` pode declarar rotas com `pageBuilder` e r
 ```
 lib/
 ├── main.dart
-├── firebase_options.dart          # FlutterFire — versionado para openwhen-923f5; regenerar com FlutterFire CLI se mudar de projeto
+├── firebase_options.dart          # FlutterFire — versionado para whenote-923f5; regenerar com FlutterFire CLI se mudar de projeto
 ├── core/
 │   ├── navigation/
 │   │   ├── deferred_screens.dart  # Shells FutureBuilder + import deferred (WriteLetter, CreateCapsule, Search)
@@ -75,7 +75,7 @@ lib/
 │       └── presentation/screens/ (profile, user_profile, search, settings, legal, subscription_plans)
 └── shared/
     ├── icons/
-    │   └── openwhen_icons.dart        # Caminhos `assets/icons/*.svg`; widget `OpenWhenSvgIcon` (flutter_svg)
+    │   └── whenote_icons.dart        # Caminhos `assets/icons/*.svg`; widget `WhenoteSvgIcon` (flutter_svg)
     ├── social/                        # Partilha para Instagram Stories (Meta Sharing to Stories)
     │   ├── story_share_content.dart   # Allowlist de campos para imagem 9:16 (sem mensagem/Q&A)
     │   ├── story_asset_builder.dart   # Overlay off-screen → PNG temporário
@@ -143,7 +143,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 | **Cloud Storage** | Avatares; fotos de carta manuscrita (`handwritten/`); mensagens de voz (`voiceLetters/`, áudio curto); mídia de cápsulas (`capsules/**`) — ver [`storage.rules`](../storage.rules) |
 | **FCM** | Notificações push (Firebase Cloud Messaging; integrado no app — ver `MVP_CHECKLIST.md` 🔴) |
 
-**Projeto Firebase (referência):** `openwhen-923f5`
+**Projeto Firebase (referência):** `whenote-923f5`
 
 ---
 
@@ -330,7 +330,7 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 
 ## Extensões futuras — pagamentos (planejado)
 
-O produto **OpenWhen Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
+O produto **Whenote Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
 
 ### Subscrição (tiers Amanhã / Brisa / Horizonte)
 

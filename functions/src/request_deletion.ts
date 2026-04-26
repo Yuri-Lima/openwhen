@@ -202,8 +202,8 @@ async function sendDeletionConfirmationEmail(params: DeletionEmailParams): Promi
     return;
   }
 
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@openwhen.live";
-  const fromName = process.env.SENDGRID_FROM_NAME || "OpenWhen";
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const isPt = params.locale.startsWith("pt");
   const isEs = params.locale.startsWith("es");
@@ -218,10 +218,10 @@ async function sendDeletionConfirmationEmail(params: DeletionEmailParams): Promi
     : (isPt ? "Anonimizar" : isEs ? "Anonimizar" : "Anonymize");
 
   const subject = isPt
-    ? "Confirmação de exclusão de conta — OpenWhen"
+    ? "Confirmação de exclusão de conta — Whenote"
     : isEs
-      ? "Confirmación de eliminación de cuenta — OpenWhen"
-      : "Account deletion confirmation — OpenWhen";
+      ? "Confirmación de eliminación de cuenta — Whenote"
+      : "Account deletion confirmation — Whenote";
 
   const html = buildDeletionEmailHtml({dateStr, modeLabel, isPt, isEs});
   const plainText = buildDeletionEmailPlainText({dateStr, modeLabel, isPt, isEs});
@@ -325,7 +325,7 @@ function buildDeletionEmailPlainText(p: {
 }): string {
   if (p.isPt) {
     return [
-      "Exclusão de conta agendada — OpenWhen",
+      "Exclusão de conta agendada — Whenote",
       `Sua conta será excluída em ${p.dateStr} (modo: ${p.modeLabel}).`,
       "Para cancelar, abra o app antes desta data.",
       "",
@@ -334,7 +334,7 @@ function buildDeletionEmailPlainText(p: {
   }
   if (p.isEs) {
     return [
-      "Eliminación de cuenta programada — OpenWhen",
+      "Eliminación de cuenta programada — Whenote",
       `Tu cuenta será eliminada el ${p.dateStr} (modo: ${p.modeLabel}).`,
       "Para cancelar, abre la app antes de esa fecha.",
       "",
@@ -342,7 +342,7 @@ function buildDeletionEmailPlainText(p: {
     ].join("\n");
   }
   return [
-    "Account deletion scheduled — OpenWhen",
+    "Account deletion scheduled — Whenote",
     `Your account will be deleted on ${p.dateStr} (mode: ${p.modeLabel}).`,
     "To cancel, open the app before this date.",
     "",

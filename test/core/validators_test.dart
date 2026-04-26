@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/core/utils/validators.dart';
+import 'package:whenote/core/utils/validators.dart';
 
 void main() {
   group('Validators.isValidEmail', () {

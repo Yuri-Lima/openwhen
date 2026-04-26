@@ -79,7 +79,7 @@ Future<File> buildLettersExportZipFile({
 }) async {
   final pdfBytes = await buildLettersPdf(docs: docs, localeName: localeName);
   final archive = Archive();
-  final safeName = 'openwhen_letters_${DateTime.now().millisecondsSinceEpoch}';
+  final safeName = 'whenote_letters_${DateTime.now().millisecondsSinceEpoch}';
   archive.addFile(ArchiveFile('$safeName.pdf', pdfBytes.length, pdfBytes));
 
   var idx = 0;
@@ -129,7 +129,7 @@ Future<void> shareExportPdf({
 }) async {
   final bytes = await buildLettersPdf(docs: docs, localeName: localeName);
   final dir = await getTemporaryDirectory();
-  final name = 'openwhen_letters_${DateTime.now().millisecondsSinceEpoch}.pdf';
+  final name = 'whenote_letters_${DateTime.now().millisecondsSinceEpoch}.pdf';
   final f = File(p.join(dir.path, name));
   await f.writeAsBytes(bytes, flush: true);
   await Share.shareXFiles([XFile(f.path)], text: subject);
@@ -187,7 +187,7 @@ Future<Uint8List> buildLettersZipBytes({
 
 Future<void> shareZipBytes(Uint8List bytes) async {
   final dir = await getTemporaryDirectory();
-  final name = 'openwhen_export_${DateTime.now().millisecondsSinceEpoch}.zip';
+  final name = 'whenote_export_${DateTime.now().millisecondsSinceEpoch}.zip';
   final f = File(p.join(dir.path, name));
   await f.writeAsBytes(bytes, flush: true);
   await Share.shareXFiles([XFile(f.path)]);

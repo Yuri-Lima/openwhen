@@ -7,11 +7,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants/firestore_collections.dart';
 import '../../l10n/app_localizations.dart';
-import '../theme/open_when_palette.dart';
+import '../theme/whenote_palette.dart';
 
 const int kFeedbackMaxMessageLength = 4000;
 
-const String _kSupportEmail = 'suporte@openwhen.live';
+const String _kSupportEmail = 'suporte@whenote.app';
 
 String _feedbackPlatformLabel() {
   if (kIsWeb) return 'web';
@@ -122,7 +122,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
 
   Future<void> _launchMailto(String message, ScaffoldMessengerState messenger) async {
     final l10n = AppLocalizations.of(context)!;
-    final subject = Uri.encodeComponent('OpenWhen feedback');
+    final subject = Uri.encodeComponent('Whenote feedback');
     final body = Uri.encodeComponent(
       '${l10n.feedbackEmailBodyPrefix(_typeLabel(l10n))}\n\n$message',
     );

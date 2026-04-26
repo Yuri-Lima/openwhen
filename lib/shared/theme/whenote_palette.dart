@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Brand colors resolved per theme (ThemeExtension on ThemeData).
-class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
+class WhenotePalette extends ThemeExtension<WhenotePalette> {
   final Brightness brightness;
   final Color bg;
   final Color card;
@@ -27,7 +27,7 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
   final Color bottomNavUnselected;
   final Color shadow;
 
-  const OpenWhenPalette({
+  const WhenotePalette({
     required this.brightness,
     required this.bg,
     required this.card,
@@ -60,8 +60,8 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
     Color(0xFF1A1714),
   ];
 
-  factory OpenWhenPalette.classic() {
-    return const OpenWhenPalette(
+  factory WhenotePalette.classic() {
+    return const WhenotePalette(
       brightness: Brightness.light,
       bg: Color(0xFFF7F4F0),
       card: Color(0xFFFFFFFF),
@@ -89,8 +89,8 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
     );
   }
 
-  factory OpenWhenPalette.dark() {
-    return const OpenWhenPalette(
+  factory WhenotePalette.dark() {
+    return const WhenotePalette(
       brightness: Brightness.dark,
       bg: Color(0xFF1A1714),
       card: Color(0xFF252018),
@@ -122,8 +122,8 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
     );
   }
 
-  factory OpenWhenPalette.midnight() {
-    return const OpenWhenPalette(
+  factory WhenotePalette.midnight() {
+    return const WhenotePalette(
       brightness: Brightness.dark,
       bg: Color(0xFF0F1729),
       card: Color(0xFF1E293B),
@@ -155,8 +155,8 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
     );
   }
 
-  factory OpenWhenPalette.sepia() {
-    return const OpenWhenPalette(
+  factory WhenotePalette.sepia() {
+    return const WhenotePalette(
       brightness: Brightness.light,
       bg: Color(0xFFF5E6D3),
       card: Color(0xFFFFFBF5),
@@ -189,7 +189,7 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
   }
 
   @override
-  OpenWhenPalette copyWith({
+  WhenotePalette copyWith({
     Brightness? brightness,
     Color? bg,
     Color? card,
@@ -215,7 +215,7 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
     Color? bottomNavUnselected,
     Color? shadow,
   }) {
-    return OpenWhenPalette(
+    return WhenotePalette(
       brightness: brightness ?? this.brightness,
       bg: bg ?? this.bg,
       card: card ?? this.card,
@@ -244,13 +244,13 @@ class OpenWhenPalette extends ThemeExtension<OpenWhenPalette> {
   }
 
   @override
-  OpenWhenPalette lerp(ThemeExtension<OpenWhenPalette>? other, double t) {
-    if (other is! OpenWhenPalette) return this;
+  WhenotePalette lerp(ThemeExtension<WhenotePalette>? other, double t) {
+    if (other is! WhenotePalette) return this;
     return t < 0.5 ? this : other;
   }
 }
 
-extension OpenWhenTheme on BuildContext {
-  OpenWhenPalette get pal =>
-      Theme.of(this).extension<OpenWhenPalette>() ?? OpenWhenPalette.classic();
+extension WhenoteTheme on BuildContext {
+  WhenotePalette get pal =>
+      Theme.of(this).extension<WhenotePalette>() ?? WhenotePalette.classic();
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:openwhen/features/feed/domain/feed_letter_filter.dart';
+import 'package:whenote/features/feed/domain/feed_letter_filter.dart';
 
 void main() {
   group('isFeedLetterVisibleForViewer', () {

@@ -1,4 +1,4 @@
-# OpenWhen — Moderação de Conteúdo
+# Whenote — Moderação de Conteúdo
 
 > Documento consolidado — Abril 2026
 > Responsáveis: Diego Rocha (CEO), Yuri Lima (CTO)
@@ -7,11 +7,11 @@
 
 ## 1. Filosofia
 
-O OpenWhen existe para conectar pessoas com amor, superação e conexão genuína. Uma carta temporizada tem um poder único — ela chega num momento específico, quando a pessoa pode estar vulnerável, e o remetente não sabe o estado emocional do destinatário naquele momento.
+O Whenote existe para conectar pessoas com amor, superação e conexão genuína. Uma carta temporizada tem um poder único — ela chega num momento específico, quando a pessoa pode estar vulnerável, e o remetente não sabe o estado emocional do destinatário naquele momento.
 
 Uma carta agressiva ou cruel que abre no aniversário de alguém, ou num momento difícil, pode causar dano real — incluindo consequências graves para pessoas em estado emocional vulnerável.
 
-**Posicionamento:** O OpenWhen é o app que só permite amor, superação e conexão.
+**Posicionamento:** O Whenote é o app que só permite amor, superação e conexão.
 *"O único app onde você só pode enviar amor."*
 
 ### O Que Queremos Proteger
@@ -227,7 +227,7 @@ Utilizador faz upload (cliente)
 |---------|---------|
 | **Transcrição** | `POST https://api.openai.com/v1/audio/transcriptions` |
 | **Modelo** | `whisper-1` |
-| **Formatos** | MP3, MP4, M4A, WAV, WebM (✅ M4A do OpenWhen é suportado) |
+| **Formatos** | MP3, MP4, M4A, WAV, WebM (✅ M4A do Whenote é suportado) |
 | **Limite** | 25 MB (voice letters são ≤5 MB — ok) |
 | **Preço** | ~$0.006/min |
 | **Fluxo** | Transcrever → texto → `v1/moderations` (gratuito) |
@@ -276,7 +276,7 @@ Utilizador faz upload de áudio
 ### Texto — Cartas e Cápsulas
 
 **Aviso em tempo real (palavra detectada):**
-> "O OpenWhen existe para conectar com amor 🦉"
+> "O Whenote existe para conectar com amor 🦉"
 
 **Aviso de revisão (score 0.40–0.70):**
 > "Sua carta tem um tom que pode machucar quem recebe.
@@ -286,14 +286,14 @@ Utilizador faz upload de áudio
 
 **Bloqueio (score ≥ 0.70):**
 > "Esta carta não pode ser enviada.
-> O OpenWhen existe para conectar pessoas com amor,
+> O Whenote existe para conectar pessoas com amor,
 > superação e conexão genuína.
 > Palavras que machucam não têm lugar aqui. 🦉"
 
 ### Media — Imagens e Áudio Removidos
 
 Quando uma imagem ou áudio é removido por moderação:
-> "Uma imagem que você enviou foi removida por não atender às diretrizes do OpenWhen."
+> "Uma imagem que você enviou foi removida por não atender às diretrizes do Whenote."
 > (ou "Um áudio que você enviou foi removido...")
 
 ---

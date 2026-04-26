@@ -431,7 +431,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'OpenWhen',
+                        'Whenote',
                         style: GoogleFonts.dmSerifDisplay(
                           fontSize: 26,
                           color: context.pal.white,

@@ -181,7 +181,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       navigatorObservers: [AnalyticsService.observer],
       navigatorKey: rootNavigatorKey,
-      title: 'OpenWhen',
+      title: 'Whenote',
       debugShowCheckedModeBanner: false,
       locale: appLocale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
