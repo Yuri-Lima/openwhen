@@ -1,4 +1,4 @@
-package com.openwhen.app
+package com.whenote.app
 
 import android.content.Intent
 import androidx.core.content.FileProvider
@@ -8,7 +8,7 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
 class MainActivity : FlutterActivity() {
-    private val channelName = "com.openwhen.app/instagram_stories"
+    private val channelName = "com.whenote.app/instagram_stories"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

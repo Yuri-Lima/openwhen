@@ -112,7 +112,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## Comparação com Instagram — o que aproveitar
 
-| Feature | Status OpenWhen | Prioridade |
+| Feature | Status Whenote | Prioridade |
 |---------|----------------|-----------|
 | Feed de descoberta | ✅ 3 camadas | — |
 | Notificações push de engajamento | ✅ Implementado | — |
@@ -125,7 +125,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 | Aniversário + notificação seguidores | ❌ Não existe | 🟡 Semana 2 |
 | Grupos / cápsulas coletivas | ⚠️ Parcial (sem UX de grupo) | 🟢 Mês 3+ |
 
-### Diferenciais únicos OpenWhen vs Instagram
+### Diferenciais únicos Whenote vs Instagram
 
 - Timer de abertura com data futura — impossível de copiar
 - QR Code físico → bridge digital/físico — único no mercado
@@ -140,7 +140,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
 
-**OpenWhen Gift (Presente Selado)**
+**Whenote Gift (Presente Selado)**
 - [ ] Pesquisa legal concluída (*money transmission* EUA e requisitos locais)
 - [ ] Integração Stripe Connect configurada
 - [ ] MVP Gift desenvolvido e validado
@@ -152,7 +152,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
 
 ---
 
-## Futuro — OpenWhen Physical
+## Futuro — Whenote Physical
 
 Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
@@ -220,7 +220,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Firebase (Auth, Firestore, Storage, FCM)
 - [x] Índices Firestore deployados
 - [x] Regras Firestore e Storage deployadas
-- [x] Domínio `openwhen.live` — Cloudflare + Firebase Hosting
+- [x] Domínio `whenote.app` — Cloudflare + Firebase Hosting
 - [x] Subscrição scaffold (Stripe — `BILLING_ENABLED=false` até 10K users)
 - [x] Busca de usuários com `searchTokens` (escala)
 - [x] `ensureUserFirestoreProfile` + FCM token handling robusto

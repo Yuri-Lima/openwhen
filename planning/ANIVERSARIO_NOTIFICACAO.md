@@ -68,7 +68,7 @@ O usuário escreve para si mesmo. A carta abre no próximo aniversário, junto c
 
 ## Por que é diferente do Facebook
 
-| Facebook "Aniversário hoje" | OpenWhen Aniversário |
+| Facebook "Aniversário hoje" | Whenote Aniversário |
 |---|---|
 | Notificação de engajamento superficial | Convite para criar algo significativo |
 | "Parabéns" publicado no mural (público) | Carta privada e pessoal |

@@ -3,7 +3,7 @@ import Flutter
 import UIKit
 
 private enum InstagramStoriesChannel {
-  static let name = "com.openwhen.app/instagram_stories"
+  static let name = "com.whenote.app/instagram_stories"
 
   static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: name, binaryMessenger: registrar.messenger())

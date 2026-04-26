@@ -1,4 +1,4 @@
-# OpenWhen — Estratégia de Monetização e Custos Firebase
+# Whenote — Estratégia de Monetização e Custos Firebase
 
 > Complementa [`BUSINESS.md`](BUSINESS.md). Foco prático: quanto custa, quando monetizar, como precificar.
 > Última atualização: 13/04/2026
@@ -61,7 +61,7 @@ Emails: ambos os founders
 
 ### Por que pay-per-feature (e não só assinatura mensal)
 
-O OpenWhen não é um app de uso diário como Spotify ou Netflix. É um app de **momentos especiais** — datas marcantes, presentes emocionais, cartas de aniversário. Uma mensalidade cria ansiedade de justificativa ("estou usando o suficiente?"). Uma cobrança pontual no pico emocional (hora de criar a carta mais especial) é psicologicamente mais forte e menos propensa a churn.
+O Whenote não é um app de uso diário como Spotify ou Netflix. É um app de **momentos especiais** — datas marcantes, presentes emocionais, cartas de aniversário. Uma mensalidade cria ansiedade de justificativa ("estou usando o suficiente?"). Uma cobrança pontual no pico emocional (hora de criar a carta mais especial) é psicologicamente mais forte e menos propensa a churn.
 
 ### Estrutura proposta
 
@@ -84,7 +84,7 @@ O OpenWhen não é um app de uso diário como Spotify ou Netflix. É um app de *
 - Fundo/papel personalizado por emoção (amor, saudade, conquista...)
 - QR Code premium com design personalizado
 
-#### OpenWhen+ — R$12,99/mês ou R$79/ano
+#### Whenote+ — R$12,99/mês ou R$79/ano
 
 - Carta Premium em todas as cartas (sem pagar por carta)
 - Cápsulas coletivas ilimitadas
@@ -107,7 +107,7 @@ O upsell acontece no **momento de maior emoção**: escrever a carta mais especi
 
 ## 3. Estratégia de Retenção
 
-O maior risco do OpenWhen não é o custo — é a churn: a pessoa instala, manda 1 carta, desinstala.
+O maior risco do Whenote não é o custo — é a churn: a pessoa instala, manda 1 carta, desinstala.
 
 ### O mecanismo de retenção natural já existe no produto
 
@@ -138,7 +138,7 @@ Monetização não retém — só faz o usuário pensar antes de pagar. O hábit
 | **Agora** (beta < 200 users) | Tudo grátis. Observar uso. Configurar Budget Alerts |
 | **500 users** | Ativar `BILLING_ENABLED=true` em testes internos. Validar fluxo Stripe |
 | **2.000 users** | Considerar early adopter plan: "Carta Premium por R$1,99" para primeiros 500 |
-| **5.000 users** | Lançar Carta Premium R$3,99 e OpenWhen+ R$12,99/mês |
+| **5.000 users** | Lançar Carta Premium R$3,99 e Whenote+ R$12,99/mês |
 | **10.000 users** | Ativar Gift When (Presente Selado) — maior potencial de receita |
 | **50.000 users** | Negociar taxa menor com Stripe. Contratar suporte dedicado |
 
@@ -173,5 +173,5 @@ Cartas já enviadas permanecem. Quem cancelou perde acesso a novos recursos prem
 
 ---
 
-*Documento criado em 13/04/2026 · Diego Rocha & Claude · OpenWhen*
+*Documento criado em 13/04/2026 · Diego Rocha & Claude · Whenote*
 *Relacionado: [`BUSINESS.md`](BUSINESS.md) · [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md) · [`ROADMAP.md`](ROADMAP.md)*

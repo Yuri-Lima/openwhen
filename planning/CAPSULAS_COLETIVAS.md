@@ -89,7 +89,7 @@ O diferencial é o componente social: cápsulas individuais dependem de 2 pessoa
 
 ---
 
-## Por que faz sentido para o OpenWhen
+## Por que faz sentido para o Whenote
 
 - **Aquisição orgânica:** uma turma de 30 alunos = 30 downloads mínimos
 - **Engajamento profundo:** o usuário não pode deletar o app ou vai perder a cápsula do grupo
@@ -103,14 +103,14 @@ O diferencial é o componente social: cápsulas individuais dependem de 2 pessoa
 - **Google Photos — Shared Albums:** compartilhamento em tempo real, sem o componente "cápsula"
 - **WhatsApp Groups:** sem cápsula, sem data de abertura, sem emocionalidade
 - **Capsule.me (descontinuado):** havia tentado cápsulas coletivas, mas falhou por falta de tração inicial
-- **Diferencial OpenWhen:** o bloqueio temporal + a narrativa emocional não existe em nenhum desses
+- **Diferencial Whenote:** o bloqueio temporal + a narrativa emocional não existe em nenhum desses
 
 ---
 
 ## Dependências técnicas
 
 - Sistema de grupos no Firestore (subcoleções: `groups/{id}/members`, `groups/{id}/items`)
-- Deep links para convite (`openwhen.app/join/{groupId}`)
+- Deep links para convite (`whenote.app/join/{groupId}`)
 - Permissões por papel: `admin`, `member`
 - Job agendado (Cloud Function) para abertura automática na data
 - Moderação de mídia em upload (extensão do sistema já existente)

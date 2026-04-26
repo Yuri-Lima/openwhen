@@ -2,17 +2,17 @@
 
 > **Para:** Diego Rocha & Yuri Lima
 > **Data:** 13/04/2026
-> **Objetivo:** Criar uma holding americana que será a empresa-mãe do OpenWhen e de todos os apps futuros.
+> **Objetivo:** Criar uma holding americana que será a empresa-mãe do Whenote e de todos os apps futuros.
 
 ---
 
-## 1. Por Que Uma Holding Acima do OpenWhen
+## 1. Por Que Uma Holding Acima do Whenote
 
-A ideia é correta e estratégica. Em vez de "OpenWhen Inc.", vocês abrem uma **empresa-mãe genérica** que possui todos os produtos:
+A ideia é correta e estratégica. Em vez de "Whenote Inc.", vocês abrem uma **empresa-mãe genérica** que possui todos os produtos:
 
 ```
 When Labs, Inc. (Delaware C-Corp) ← EMPRESA QUE ABRIRÃO
-  ├── OpenWhen (app de cartas temporizadas)
+  ├── Whenote (app de cartas temporizadas)
   ├── Futuro App 2
   └── Futuro App N
 ```
@@ -40,7 +40,7 @@ Para o momento atual (2 founders, sem investidores externos): **uma C-Corp faz t
 
 O nome deve ser:
 - Genérico o suficiente para cobrir múltiplos apps
-- Alinhado com a visão do OpenWhen (tempo, emoção, futuro)
+- Alinhado com a visão do Whenote (tempo, emoção, futuro)
 - Disponível como domínio .com e @handle
 
 **Sugestões (verificar disponibilidade antes de decidir):**
@@ -52,9 +52,9 @@ O nome deve ser:
 | **Tomorrow Labs, Inc.** | Labs do futuro | tomorrowlabs.com |
 | **Deep Time, Inc.** | Tempo profundo, duradouro | deeptime.com |
 | **Temporal Labs, Inc.** | Produtos sobre tempo | temporallabs.com |
-| **Open Time, Inc.** | Derivado do OpenWhen | opentime.com |
+| **Open Time, Inc.** | Derivado do Whenote | opentime.com |
 
-**Recomendação:** `When Labs, Inc.` — curto, memorável, alinhado ao DNA do OpenWhen, genérico o suficiente para qualquer app.
+**Recomendação:** `When Labs, Inc.` — curto, memorável, alinhado ao DNA do Whenote, genérico o suficiente para qualquer app.
 
 ---
 
@@ -238,5 +238,5 @@ Abrir uma empresa americana como cidadão/residente brasileiro tem implicações
 
 ---
 
-*Documento criado em 13/04/2026 · Diego Rocha & Claude · OpenWhen*
+*Documento criado em 13/04/2026 · Diego Rocha & Claude · Whenote*
 *Relacionado: [`BUSINESS.md`](BUSINESS.md) · [`MONETIZACAO.md`](MONETIZACAO.md)*

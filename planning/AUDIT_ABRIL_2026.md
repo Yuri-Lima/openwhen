@@ -1,4 +1,4 @@
-# OpenWhen — Auditoria Completa · Abril 2026
+# Whenote — Auditoria Completa · Abril 2026
 
 > **Para:** Yuri Lima
 > **De:** Diego Rocha + Claude
@@ -110,7 +110,7 @@ E no Dart, corrigir o catch (linha ~134):
 
 ### 🟡 BUG #5 — Aviso de conteúdo ofensivo hardcoded em PT-BR
 
-**Descrição:** Em `write_letter_screen.dart` foi adicionado um aviso de conteúdo ofensivo durante a digitação. A mensagem `'O OpenWhen existe para conectar com amor e superação. Revise sua mensagem. 🦉'` está hardcoded em português. Um usuário com idioma configurado em inglês ou espanhol verá a mensagem em PT-BR.
+**Descrição:** Em `write_letter_screen.dart` foi adicionado um aviso de conteúdo ofensivo durante a digitação. A mensagem `'O Whenote existe para conectar com amor e superação. Revise sua mensagem. 🦉'` está hardcoded em português. Um usuário com idioma configurado em inglês ou espanhol verá a mensagem em PT-BR.
 
 **Solução:** Mover a string para os ARBs (todos os idiomas) e usar `l10n.writeLetterOffensiveWarning`.
 
@@ -162,9 +162,9 @@ O usuário só pode bloquear. Não há opção de silenciar (parar de ver no fee
 
 ## 5. Comparação com Instagram
 
-O objetivo não é copiar o Instagram — é aprender com 15 anos de otimização de retenção e aplicar o que faz sentido para o DNA do OpenWhen.
+O objetivo não é copiar o Instagram — é aprender com 15 anos de otimização de retenção e aplicar o que faz sentido para o DNA do Whenote.
 
-### O que o Instagram tem e o OpenWhen deveria ter
+### O que o Instagram tem e o Whenote deveria ter
 
 | Feature | Por que importa | Esforço |
 |---------|----------------|---------|
@@ -174,7 +174,7 @@ O objetivo não é copiar o Instagram — é aprender com 15 anos de otimizaçã
 | Silenciar contas | Opção social menos agressiva que bloquear | Baixo |
 | Menções @usuario | Engajamento e conexões no feed | Alto |
 
-### O que o Instagram NÃO tem e é diferencial único do OpenWhen
+### O que o Instagram NÃO tem e é diferencial único do Whenote
 
 | Feature | Descrição |
 |---------|-----------|
@@ -185,12 +185,12 @@ O objetivo não é copiar o Instagram — é aprender com 15 anos de otimizaçã
 | Animação emocional | Experiência ritualizada de abrir uma carta |
 | Gift When | Valor financeiro selado à carta (roadmap) |
 
-**O QR Code físico é o maior diferencial e o menos explorado na comunicação.** No Instagram, tudo existe só no digital. O OpenWhen pode existir impresso, colado numa caixa de presente, guardado numa gaveta por anos. Esse posicionamento deveria estar no centro do marketing do lançamento.
+**O QR Code físico é o maior diferencial e o menos explorado na comunicação.** No Instagram, tudo existe só no digital. O Whenote pode existir impresso, colado numa caixa de presente, guardado numa gaveta por anos. Esse posicionamento deveria estar no centro do marketing do lançamento.
 
-### O que o Instagram tem mas NÃO faz sentido para o OpenWhen
+### O que o Instagram tem mas NÃO faz sentido para o Whenote
 
 - Reels curtos de vídeo — contrário à filosofia de profundidade e paciência
-- Algoritmo de relevância instantânea — o OpenWhen é sobre espera, não sobre scroll infinito
+- Algoritmo de relevância instantânea — o Whenote é sobre espera, não sobre scroll infinito
 - Lives — não alinhado com o conceito
 
 ---
@@ -246,14 +246,14 @@ Notificação: email dos dois founders
 
 ## 7. Estratégia de Monetização
 
-### O modelo certo para o OpenWhen
+### O modelo certo para o Whenote
 
 O medo do Diego é legítimo: a pessoa instala, manda 1 carta, desinstala. A solução não está só na monetização — está no **mecanismo de timer**. Cada carta enviada planta uma semente de retorno: a notificação "sua carta foi aberta 🦉" traz o remetente de volta meses depois. Esse é o loop de retenção natural do app.
 
 ### Modelo recomendado: Freemium + Pay-per-feature
 
 **Por que não só assinatura mensal:**
-- O OpenWhen não é um app de uso diário por design. É um app de momentos especiais.
+- O Whenote não é um app de uso diário por design. É um app de momentos especiais.
 - Uma mensalidade cria ansiedade: "estou usando o suficiente para justificar o gasto?"
 - Uma cobrança pontual no momento mais emocional (hora de escrever a carta) é psicologicamente mais forte.
 
@@ -276,7 +276,7 @@ O medo do Diego é legítimo: a pessoa instala, manda 1 carta, desinstala. A sol
 - Abertura por GPS (10m)
 - Fundo/papel personalizado por emoção
 
-**OpenWhen+ — R$12,99/mês ou R$79/ano:**
+**Whenote+ — R$12,99/mês ou R$79/ano:**
 - Carta Premium em todas as cartas
 - Cápsulas coletivas ilimitadas
 - "Lida em" — ver quando destinatário abriu a carta
@@ -332,7 +332,7 @@ O medo do Diego é legítimo: a pessoa instala, manda 1 carta, desinstala. A sol
 
 ## 9. Opinião Final
 
-O OpenWhen tem o ingrediente mais difícil de criar: **uma razão emocional para existir**. A coruja, a história de origem, o conceito — tudo genuíno e poderoso. A proposta de valor resiste ao tempo: escrever hoje para sentir amanhã é um diferencial que nenhuma big tech pode copiar facilmente porque não é técnico — é humano.
+O Whenote tem o ingrediente mais difícil de criar: **uma razão emocional para existir**. A coruja, a história de origem, o conceito — tudo genuíno e poderoso. A proposta de valor resiste ao tempo: escrever hoje para sentir amanhã é um diferencial que nenhuma big tech pode copiar facilmente porque não é técnico — é humano.
 
 A execução técnica está acima da média para uma equipe de 2 pessoas num MVP. A documentação de planejamento é de nível profissional.
 
@@ -345,5 +345,5 @@ A execução técnica está acima da média para uma equipe de 2 pessoas num MVP
 
 ---
 
-*Auditoria realizada por Diego Rocha & Claude · OpenWhen · 13/04/2026*
+*Auditoria realizada por Diego Rocha & Claude · Whenote · 13/04/2026*
 *Próxima revisão recomendada: após primeiros 100 usuários ativos*
