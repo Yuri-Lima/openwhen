@@ -48,6 +48,10 @@
         "destination": "/support.html"
       },
       {
+        "source": "/support/",
+        "destination": "/support.html"
+      },
+      {
         "source": "/letter/**",
         "destination": "/letter/index.html"
       },
