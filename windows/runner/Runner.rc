@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "OpenWhen" "\0"
-            VALUE "FileDescription", "openwhen" "\0"
+            VALUE "CompanyName", "Whenote" "\0"
+            VALUE "FileDescription", "whenote" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "openwhen" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 OpenWhen. All rights reserved." "\0"
-            VALUE "OriginalFilename", "openwhen.exe" "\0"
-            VALUE "ProductName", "openwhen" "\0"
+            VALUE "InternalName", "whenote" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Whenote. All rights reserved." "\0"
+            VALUE "OriginalFilename", "whenote.exe" "\0"
+            VALUE "ProductName", "whenote" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
