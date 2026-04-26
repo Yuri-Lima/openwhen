@@ -126,7 +126,15 @@ class NotificationService {
         }
         return;
       }
-      final token = await _messaging.getToken();
+      // Timeout guards against Firebase iOS SDK Swift Concurrency deadlock
+      // (firebase-ios-sdk#15974) where getToken() may never complete.
+      final token = await _messaging.getToken().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          if (kDebugMode) debugPrint('FCM getToken timed out (iOS SDK hang)');
+          return null;
+        },
+      );
       if (token != null) await FcmTokenManager.saveToken(token);
     } catch (e) {
       if (kDebugMode) debugPrint('FCM getToken: $e');

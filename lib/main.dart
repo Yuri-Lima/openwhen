@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:audio_session/audio_session.dart';
@@ -56,13 +57,18 @@ Future<void> _configureAudioSession() async {
 
 Future<void> _activateAppCheckIfNeeded() async {
   if (kIsWeb) return;
+  // Skip App Check on iOS: Firebase iOS SDK 12.9.0 has a Swift Concurrency
+  // deadlock bug (firebase-ios-sdk#15974) that can hang the entire app at
+  // startup when DeviceCheck/AppAttest tokens are fetched asynchronously.
+  // Re-enable once FlutterFire ships Firebase iOS SDK >= 12.12.0.
+  if (!kIsWeb && Platform.isIOS) {
+    debugPrint('[AppCheck] Skipped on iOS (SDK deadlock workaround)');
+    return;
+  }
   try {
     await FirebaseAppCheck.instance.activate(
       androidProvider:
           kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,
-      // DeviceCheck is more reliable than AppAttest for TestFlight/early
-      // production builds. AppAttest requires full attestation setup and can
-      // silently fail, blocking all subsequent Firebase calls.
       appleProvider:
           kReleaseMode ? AppleProvider.deviceCheck : AppleProvider.debug,
     );
@@ -225,6 +231,7 @@ class AuthWrapper extends ConsumerStatefulWidget {
 
 class _AuthWrapperState extends ConsumerState<AuthWrapper> {
   bool _showSplash = true;
+  bool _authTimedOut = false;
 
   @override
   void initState() {
@@ -232,11 +239,33 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) setState(() => _showSplash = false);
     });
+    // Safety net: if auth stream never emits (native SDK deadlock on iOS),
+    // force past the splash after 8 seconds so the user isn't stuck forever.
+    Future.delayed(const Duration(seconds: 8), () {
+      if (!mounted) return;
+      final isStillLoading = ref.read(authStateProvider).isLoading;
+      if (isStillLoading) {
+        debugPrint('[AuthWrapper] Auth stream timed out — forcing login screen');
+        setState(() => _authTimedOut = true);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (_showSplash) return const SplashScreen();
+
+    // If auth stream deadlocked (iOS SDK bug), show login instead of infinite splash.
+    if (_authTimedOut) {
+      if (!_onboardingShown) {
+        return OnboardingScreen(onFinish: () {
+          _onboardingShown = true;
+          if (mounted) setState(() {});
+        });
+      }
+      return const LoginScreen();
+    }
+
     final authState = ref.watch(authStateProvider);
     return authState.when(
       data: (user) {
