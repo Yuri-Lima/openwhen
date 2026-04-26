@@ -110,6 +110,23 @@ flutter build apk --release --dart-define-from-file=config/dart_defines.json
 | `flutter pub outdated` | Mostra pacotes desatualizados. |
 | `flutter pub upgrade` | Atualiza pacotes dentro dos limites do `pubspec`. |
 
+## iOS / CocoaPods
+
+Quando os pods do iOS ficam desatualizados, o build falha com erros de linking ou versões incompatíveis (frequente após atualizar o `pubspec.yaml` com novos plugins Firebase ou mudar de versão do SDK). Corre isto na raiz do projeto:
+
+```bash
+cd ios && pod repo update && pod update Firebase && cd ..
+```
+
+| Passo | O que faz |
+|-------|-----------|
+| `cd ios` | Entra na pasta `ios/` onde está o `Podfile` e o workspace Xcode. |
+| `pod repo update` | Atualiza o **spec repo** local do CocoaPods (índice de todos os pods disponíveis e suas versões). Sem isto, o `pod update` pode não encontrar versões recentes. |
+| `pod update Firebase` | Re-resolve e atualiza **apenas** os pods do grupo Firebase (`FirebaseAuth`, `FirebaseFirestore`, `FirebaseStorage`, etc.) para as últimas versões compatíveis com o `Podfile.lock`. |
+| `cd ..` | Volta à raiz do projeto para continuares com `flutter run` / `flutter build`. |
+
+> **Dica:** se quiseres atualizar **todos** os pods (não só Firebase), troca `pod update Firebase` por `pod update` (sem argumento).
+
 ## Durante o `flutter run`
 
 No terminal onde o app está em execução:
