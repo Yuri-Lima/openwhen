@@ -272,3 +272,28 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - Núcleo técnico: **totalmente concluído** ✅
 - Legal: **concluído** (revisão com advogado pendente)
 - Monetização: **planejada** (ativar após 10K users)
+
+---
+
+## 🔴 Itens críticos identificados — análise externa abril 2026
+
+**1. Aviso emocional antes de abrir carta — Yuri**
+- Mostrar mensagem antes de abrir: "Essa carta pode ser emocional. Abra quando estiver pronto."
+- Botão: "Abrir agora" ou "Lembrar depois"
+- Arquivo: letter_opening_screen.dart
+
+**2. Testar abertura de cartas com datas próximas — Diego + Yuri**
+- Criar carta para abrir em 1 minuto
+- Criar carta para abrir em 5 minutos
+- Criar carta para abrir em 1 hora
+- Verificar se notificação chega e animação funciona perfeitamente
+
+**3. Testar com 5 usuários reais — Diego**
+- Antes de lançar publicamente
+- Pessoas de confiança: família, amigos próximos
+- Coletar feedback honesto
+
+**4. Simplificar onboarding — Yuri**
+- Primeira experiência: só escrever carta, escolher data, selar
+- Esconder GPS, cápsula, feed, QR Code na primeira vez
+- Mostrar funcionalidades avançadas depois
