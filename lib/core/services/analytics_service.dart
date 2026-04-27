@@ -7,8 +7,8 @@ class AnalyticsService {
       FirebaseAnalyticsObserver(analytics: _analytics);
 
   // Autenticação
-  static Future<void> logLogin() =>
-      _analytics.logLogin(loginMethod: 'email');
+  static Future<void> logLogin({String method = 'email'}) =>
+      _analytics.logLogin(loginMethod: method);
 
   static Future<void> logSignUp() =>
       _analytics.logSignUp(signUpMethod: 'email');

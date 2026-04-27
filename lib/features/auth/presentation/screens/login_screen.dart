@@ -1,16 +1,19 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
 import '../providers/auth_provider.dart';
 
-/// Quando `true`, mostra Apple/Google no login. Desligado até OAuth estar configurado.
-const bool kSocialSignInEnabled = false;
+/// Quando `true`, mostra botões de social sign-in (Apple) no login.
+const bool kSocialSignInEnabled = true;
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -71,6 +74,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         );
       } else {
         await AnalyticsService.logLogin();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+        );
+      }
+    }
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  Future<void> _signInWithApple() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(authNotifierProvider.notifier).signInWithApple();
+      if (!mounted) return;
+      final authAsync = ref.read(authNotifierProvider);
+      if (authAsync.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
+        );
+      } else {
+        await AnalyticsService.logLogin(method: 'apple');
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      // User cancelled — do nothing.
+      if (e.code == AuthorizationErrorCode.canceled) {
+        // silently ignore
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.message))),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -676,62 +712,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   Widget _buildSocialButtons() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: context.pal.card,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: context.pal.border, width: 1.5),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('🍎', style: const TextStyle(fontSize: 18)),
-                const SizedBox(width: 8),
-                Text(
-                  'Apple',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    color: context.pal.ink,
-                  ),
-                ),
-              ],
-            ),
-          ),
+    // Only show Apple sign-in on iOS (Apple requires it for apps that offer
+    // third-party social login on their platform).
+    if (!Platform.isIOS) return const SizedBox.shrink();
+
+    return GestureDetector(
+      onTap: _isLoading ? null : _signInWithApple,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: context.pal.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: context.pal.border, width: 1.5),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: context.pal.card,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: context.pal.border, width: 1.5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.apple, size: 22, color: context.pal.ink),
+            const SizedBox(width: 8),
+            Text(
+              'Continuar com Apple',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: context.pal.ink,
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('G', style: GoogleFonts.dmSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF4285F4),
-                )),
-                const SizedBox(width: 8),
-                Text(
-                  'Google',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    color: context.pal.ink,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
