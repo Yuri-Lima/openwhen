@@ -19,7 +19,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 | # | Problema | Responsável | Como resolver |
 |---|----------|-------------|---------------|
 | B1 | **`checkUsernameAvailable` não deployada** — todo cadastro retorna "username em uso", impossível criar conta | Yuri | `firebase deploy --only functions:checkUsernameAvailable` |
-| B2 | **Cursor preso no campo de texto da carta** — não reposiciona ao tocar no meio do texto | Yuri | Investigar `GestureDetector` sobreposto em `write_letter_screen.dart` |
+| ~~B2~~ | ~~**Cursor preso no campo de texto da carta**~~ — ✅ **Resolvido 2026-04-27** | Yuri | — |
 | B3 | **Botão Apple Sign-in sem `onTap`** — decoração pura; App Store rejeita app se login social existir sem Apple | Yuri | Implementar `OAuthProvider` + nonce em `login_screen.dart` |
 | B4 | **Budget Alerts Firebase não configurados** — bug em loop pode gerar fatura inesperada | Diego + Yuri | Google Cloud Console → Billing → Budgets & Alerts → $20/mês, alertas 50/80/100% |
 
@@ -261,11 +261,12 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Sino do feed → tela de notificações
 - [x] Busca de usuários — catch silencioso corrigido
 - [x] Registro de tela de cadastro — header cor corrigida (dark theme)
+- [x] **Cursor preso + menu copiar/colar ausente no campo de mensagem da carta** — `GestureDetector` global no scroll competia com gestos do `TextField`; estado colapsado usava `Text` estático (sem cursor real). Unificado num único `TextField` (`minLines:1` / `maxLines:8`), `FocusNode` listener para auto-expandir ao foco, `TapRegion` isolado na busca de destinatário para fechar dropdown sem interferir com long-press. `write_letter_screen.dart` — **2026-04-27**
 
 ---
 
-**Progresso geral (14/04/2026):**
-- 🔴 Bloqueadores pré-lançamento: **4 pendentes** (B1-B4 acima)
+**Progresso geral (27/04/2026):**
+- 🔴 Bloqueadores pré-lançamento: **3 pendentes** (B1, B3, B4 — B2 ✅ resolvido)
 - 🟡 Semana 1: **5 pendentes**
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)

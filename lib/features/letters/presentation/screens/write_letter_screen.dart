@@ -261,6 +261,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   void initState() {
     super.initState();
     _messageController.addListener(_onMessageChanged);
+    _messageFocusNode.addListener(_onMessageFocusChanged);
 
     // Pré-popular destinatário quando vindo de ação rápida do perfil
     if (widget.recipientUid != null && widget.recipientName != null) {
@@ -272,6 +273,18 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
     if (widget.recipientUid == null) {
       unawaited(_loadDraft());
+    }
+  }
+
+  void _onMessageFocusChanged() {
+    if (_messageFocusNode.hasFocus && !_messageExpanded) {
+      setState(() => _messageExpanded = true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ctx = _messageFocusNode.context;
+        if (ctx != null && ctx.mounted) {
+          Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 250), alignment: 0.2);
+        }
+      });
     }
   }
 
@@ -288,6 +301,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     unawaited(_audioRecorder.dispose());
     _previewPlayer?.dispose();
     _messageController.removeListener(_onMessageChanged);
+    _messageFocusNode.removeListener(_onMessageFocusChanged);
     _messageFocusNode.dispose();
     _titleController.dispose();
     _messageController.dispose();
@@ -875,11 +889,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             ]),
           ),
           Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _showResults = false),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
 
                   // Estado emocional
                   Text(l10n.writeLetterFeeling, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
@@ -962,118 +974,84 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     AnimatedSize(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
-                      child: _messageExpanded
-                          ? Container(
-                              decoration: BoxDecoration(
-                                color: context.pal.card,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: context.pal.border),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisSize: MainAxisSize.min,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: context.pal.card,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 4, 4, 0),
+                              child: Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(12, 4, 4, 0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            l10n.writeLetterFieldMessage,
-                                            style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.expand_less, color: context.pal.inkFaint),
-                                          onPressed: () {
-                                            _messageFocusNode.unfocus();
-                                            setState(() => _messageExpanded = false);
-                                          },
-                                          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                                        ),
-                                      ],
+                                  Expanded(
+                                    child: Text(
+                                      l10n.writeLetterFieldMessage,
+                                      style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
                                     ),
                                   ),
-                                  TextField(
-                                    controller: _messageController,
-                                    focusNode: _messageFocusNode,
-                                    maxLines: 8,
-                                    style: GoogleFonts.dmSerifDisplay(
-                                      color: context.pal.ink,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 15,
-                                      height: 1.8,
+                                  IconButton(
+                                    icon: Icon(
+                                      _messageExpanded ? Icons.expand_less : Icons.expand_more,
+                                      color: context.pal.inkFaint,
                                     ),
-                                    decoration: InputDecoration(
-                                      hintText: l10n.writeLetterFieldMessage,
-                                      hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                                      border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                                      alignLabelWithHint: true,
-                                    ),
+                                    onPressed: () {
+                                      if (_messageExpanded) {
+                                        _messageFocusNode.unfocus();
+                                        setState(() => _messageExpanded = false);
+                                      } else {
+                                        setState(() => _messageExpanded = true);
+                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                          _messageFocusNode.requestFocus();
+                                          final ctx = _messageFocusNode.context;
+                                          if (ctx != null && ctx.mounted) {
+                                            Scrollable.ensureVisible(
+                                              ctx,
+                                              duration: const Duration(milliseconds: 250),
+                                              alignment: 0.2,
+                                            );
+                                          }
+                                        });
+                                      }
+                                    },
+                                    tooltip: _messageExpanded
+                                        ? MaterialLocalizations.of(context).closeButtonTooltip
+                                        : l10n.writeLetterMessageTapToExpand,
                                   ),
                                 ],
                               ),
-                            )
-                          : Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(14),
-                                onTap: () {
-                                  setState(() => _messageExpanded = true);
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    _messageFocusNode.requestFocus();
-                                    final ctx = _messageFocusNode.context;
-                                    if (ctx != null && ctx.mounted) {
-                                      Scrollable.ensureVisible(
-                                        ctx,
-                                        duration: const Duration(milliseconds: 250),
-                                        alignment: 0.2,
-                                      );
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                                  decoration: BoxDecoration(
-                                    color: context.pal.card,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(color: context.pal.border),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              l10n.writeLetterFieldMessage,
-                                              style: GoogleFonts.dmSans(color: context.pal.inkSoft, fontSize: 12),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              _messageController.text.isEmpty
-                                                  ? l10n.writeLetterMessageTapToExpand
-                                                  : _messageController.text,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.dmSerifDisplay(
-                                                color: context.pal.ink,
-                                                fontStyle: FontStyle.italic,
-                                                fontSize: 15,
-                                                height: 1.4,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Icon(Icons.expand_more, color: context.pal.inkFaint),
-                                    ],
-                                  ),
-                                ),
+                            ),
+                            TextField(
+                              controller: _messageController,
+                              focusNode: _messageFocusNode,
+                              minLines: 1,
+                              maxLines: _messageExpanded ? 8 : 1,
+                              keyboardType: TextInputType.multiline,
+                              textInputAction: TextInputAction.newline,
+                              textCapitalization: TextCapitalization.sentences,
+                              enableInteractiveSelection: true,
+                              style: GoogleFonts.dmSerifDisplay(
+                                color: context.pal.ink,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 15,
+                                height: 1.8,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: l10n.writeLetterFieldMessage,
+                                hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                                border: InputBorder.none,
+                                contentPadding: _messageExpanded
+                                    ? const EdgeInsets.fromLTRB(16, 0, 16, 16)
+                                    : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
                     ),
                     if (!kIsWeb) ...[
                       const SizedBox(height: 16),
@@ -1265,83 +1243,99 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       ]),
                     )
                   else
-                    Column(children: [
-                      // Busca por usuario
-                      Container(
-                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: Row(children: [
-                          Icon(Icons.search, color: context.pal.inkFaint, size: 20),
-                          const SizedBox(width: 8),
-                          Expanded(child: TextField(
-                            controller: _searchController,
-                            onChanged: _onSearchUsersChanged,
+                    Column(
+                      children: [
+                        TapRegion(
+                          onTapOutside: (_) {
+                            if (!_showResults) return;
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted) setState(() => _showResults = false);
+                            });
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Busca por usuario
+                              Container(
+                                decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                child: Row(children: [
+                                  Icon(Icons.search, color: context.pal.inkFaint, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(child: TextField(
+                                    controller: _searchController,
+                                    onChanged: _onSearchUsersChanged,
+                                    style: GoogleFonts.dmSans(color: context.pal.ink),
+                                    decoration: InputDecoration(
+                                      hintText: l10n.writeLetterSearchHint,
+                                      hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                                    ),
+                                  )),
+                                  if (_searching) SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: context.pal.accent)),
+                                ]),
+                              ),
+
+                              // Resultados da busca
+                              if (_showResults && _searchResults.isNotEmpty)
+                                Container(
+                                  margin: const EdgeInsets.only(top: 4),
+                                  decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
+                                  child: Column(children: _searchResults.map((u) {
+                                    final nome = u.publicName;
+                                    final foto = u.photoUrl;
+                                    final username = u.username;
+                                    return ListTile(
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                      leading: CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: context.pal.accentWarm,
+                                        backgroundImage: foto != null ? NetworkImage(foto) : null,
+                                        child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold)) : null,
+                                      ),
+                                      title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
+                                      subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft)),
+                                      onTap: () => _selectUser(u),
+                                    );
+                                  }).toList()),
+                                ),
+                            ],
+                          ),
+                        ),
+
+                        // Divisor OU
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(children: [
+                            Expanded(child: Divider(color: context.pal.border)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(l10n.writeLetterOrSendExternal, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
+                            ),
+                            Expanded(child: Divider(color: context.pal.border)),
+                          ]),
+                        ),
+
+                        // Email para quem nao tem conta
+                        Container(
+                          decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          child: TextField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
                             style: GoogleFonts.dmSans(color: context.pal.ink),
                             decoration: InputDecoration(
-                              hintText: l10n.writeLetterSearchHint,
+                              hintText: l10n.writeLetterEmailHint,
                               hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                          )),
-                          if (_searching) SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: context.pal.accent)),
-                        ]),
-                      ),
-
-                      // Resultados da busca
-                      if (_showResults && _searchResults.isNotEmpty)
-                        Container(
-                          margin: const EdgeInsets.only(top: 4),
-                          decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
-                          child: Column(children: _searchResults.map((u) {
-                            final nome = u.publicName;
-                            final foto = u.photoUrl;
-                            final username = u.username;
-                            return ListTile(
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                              leading: CircleAvatar(
-                                radius: 20,
-                                backgroundColor: context.pal.accentWarm,
-                                backgroundImage: foto != null ? NetworkImage(foto) : null,
-                                child: foto == null ? Text(nome.isNotEmpty ? nome.substring(0, 1).toUpperCase() : 'U', style: GoogleFonts.dmSans(color: context.pal.accent, fontWeight: FontWeight.bold)) : null,
-                              ),
-                              title: Text(nome, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
-                              subtitle: Text('@$username', style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft)),
-                              onTap: () => _selectUser(u),
-                            );
-                          }).toList()),
-                        ),
-
-                      // Divisor OU
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(children: [
-                          Expanded(child: Divider(color: context.pal.border)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(l10n.writeLetterOrSendExternal, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
-                          ),
-                          Expanded(child: Divider(color: context.pal.border)),
-                        ]),
-                      ),
-
-                      // Email para quem nao tem conta
-                      Container(
-                        decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border)),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        child: TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: GoogleFonts.dmSans(color: context.pal.ink),
-                          decoration: InputDecoration(
-                            hintText: l10n.writeLetterEmailHint,
-                            hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                         ),
-                      ),
-                    ]),
+                      ],
+                    ),
                   const SizedBox(height: 20),
 
                   // Data de abertura
@@ -1434,7 +1428,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   ),
                   const SizedBox(height: 24),
                 ]),
-              ),
             ),
           ),
         ]),
