@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/utils/firebase_locale_helper.dart';
 import '../providers/auth_provider.dart';
 
 /// Quando `true`, mostra Apple/Google no login. Desligado até OAuth estar configurado.
@@ -193,6 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           }
                           setSheetState(() => isSending = true);
                           try {
+                            await applyFirebaseLocale();
                             await FirebaseAuth.instance
                                 .sendPasswordResetEmail(email: email);
                             if (sheetCtx.mounted) Navigator.pop(sheetCtx);

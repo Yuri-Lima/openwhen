@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/username_generator.dart';
+import '../../../../core/utils/firebase_locale_helper.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -192,6 +193,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         );
       } else {
         try {
+          await applyFirebaseLocale();
           await FirebaseAuth.instance.currentUser?.sendEmailVerification();
         } catch (_) {}
         if (!mounted) return;

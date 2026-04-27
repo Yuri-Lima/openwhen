@@ -7,6 +7,7 @@ import '../../../core/constants/firestore_collections.dart';
 import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
 import '../../../core/user_search/user_search_tokens.dart';
+import '../../../core/utils/firebase_locale_helper.dart';
 
 class AuthRepository {
   final AuthService _authService = AuthService();
@@ -60,6 +61,7 @@ class AuthRepository {
     });
 
     // Send email verification — required before first login.
+    await applyFirebaseLocale();
     await user.sendEmailVerification();
   }
 
@@ -80,6 +82,7 @@ class AuthRepository {
   }
 
   Future<void> sendVerificationEmail() async {
+    await applyFirebaseLocale();
     await _authService.currentUser?.sendEmailVerification();
   }
 

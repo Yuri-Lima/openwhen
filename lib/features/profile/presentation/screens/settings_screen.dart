@@ -28,6 +28,7 @@ import 'subscription_plans_screen.dart';
 import '../../../../core/services/account_deletion_service.dart';
 import '../../../../core/services/deletion_request_service.dart';
 import '../../../../core/services/privacy_log_service.dart';
+import '../../../../core/utils/firebase_locale_helper.dart';
 import '../widgets/pending_deletion_banner.dart';
 import 'privacy_center_screen.dart';
 
@@ -846,6 +847,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
+                      await applyFirebaseLocale();
                       await FirebaseAuth.instance.sendPasswordResetEmail(email: _user?.email ?? '');
                       if (context.mounted) {
                         Navigator.pop(context);
