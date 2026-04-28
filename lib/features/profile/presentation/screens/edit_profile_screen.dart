@@ -224,23 +224,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         const SizedBox(width: 10),
         if (prefix != null)
           Text(prefix, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft, fontWeight: FontWeight.w500)),
-        Expanded(child: AbsorbPointer(
-          absorbing: readOnly,
-          child: TextField(
-            controller: controller,
-            readOnly: readOnly,
-            enableInteractiveSelection: !readOnly,
-            canRequestFocus: !readOnly,
-            style: GoogleFonts.dmSans(
-              fontSize: 14,
-              color: readOnly ? context.pal.inkFaint : context.pal.ink,
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(vertical: 14),
-            ),
+        Expanded(child: TextField(
+          controller: controller,
+          readOnly: readOnly,
+          enableInteractiveSelection: !readOnly,
+          canRequestFocus: !readOnly,
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            color: readOnly ? context.pal.inkFaint : context.pal.ink,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
         )),
       ]),

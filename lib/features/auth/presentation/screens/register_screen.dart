@@ -293,7 +293,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               Expanded(
                 child: TextField(
                   controller: controller,
-                  enableInteractiveSelection: false,
                   obscureText: obscure && !_showPassword,
                   keyboardType: keyboard,
                   style: GoogleFonts.dmSans(
