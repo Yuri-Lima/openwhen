@@ -1006,6 +1006,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get letterOpeningTapToOpen => 'TOCA PARA ABRIR';
 
   @override
+  String get letterEmotionalPrimerTitle => 'Esta carta puede ser emotiva.';
+
+  @override
+  String get letterEmotionalPrimerBody => 'Ábrela cuando te sientas listo.';
+
+  @override
+  String get letterEmotionalPrimerOpenNow => 'Abrir ahora';
+
+  @override
+  String get letterEmotionalPrimerViewLater => 'Ver después';
+
+  @override
   String get requestsTitle => 'Solicitudes de carta';
 
   @override

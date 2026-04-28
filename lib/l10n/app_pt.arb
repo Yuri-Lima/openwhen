@@ -344,6 +344,11 @@
   "letterOpeningKeepPrivate": "Guardar só para mim",
   "letterOpeningTapToOpen": "TOQUE PARA ABRIR",
 
+  "letterEmotionalPrimerTitle": "Esta carta pode ser emocional.",
+  "letterEmotionalPrimerBody": "Abre quando estiveres pronto.",
+  "letterEmotionalPrimerOpenNow": "Abrir agora",
+  "letterEmotionalPrimerViewLater": "Ver depois",
+
   "requestsTitle": "Pedidos de carta",
   "requestsSubtitle": "De pessoas que você não segue",
   "requestsEmptyTitle": "Nenhum pedido pendente",

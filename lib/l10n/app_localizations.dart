@@ -1913,6 +1913,30 @@ abstract class AppLocalizations {
   /// **'TOQUE PARA ABRIR'**
   String get letterOpeningTapToOpen;
 
+  /// No description provided for @letterEmotionalPrimerTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Essa carta pode ser emocional.'**
+  String get letterEmotionalPrimerTitle;
+
+  /// No description provided for @letterEmotionalPrimerBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abra quando estiver pronto.'**
+  String get letterEmotionalPrimerBody;
+
+  /// No description provided for @letterEmotionalPrimerOpenNow.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir agora'**
+  String get letterEmotionalPrimerOpenNow;
+
+  /// No description provided for @letterEmotionalPrimerViewLater.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ver depois'**
+  String get letterEmotionalPrimerViewLater;
+
   /// No description provided for @requestsTitle.
   ///
   /// In pt_BR, this message translates to:

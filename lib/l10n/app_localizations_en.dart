@@ -1006,6 +1006,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get letterOpeningTapToOpen => 'TAP TO OPEN';
 
   @override
+  String get letterEmotionalPrimerTitle => 'This letter may be emotional.';
+
+  @override
+  String get letterEmotionalPrimerBody => 'Open it when you feel ready.';
+
+  @override
+  String get letterEmotionalPrimerOpenNow => 'Open now';
+
+  @override
+  String get letterEmotionalPrimerViewLater => 'View later';
+
+  @override
   String get requestsTitle => 'Letter requests';
 
   @override

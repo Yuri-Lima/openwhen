@@ -1008,6 +1008,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get letterOpeningTapToOpen => 'TOQUE PARA ABRIR';
 
   @override
+  String get letterEmotionalPrimerTitle => 'Esta carta pode ser emocional.';
+
+  @override
+  String get letterEmotionalPrimerBody => 'Abre quando estiveres pronto.';
+
+  @override
+  String get letterEmotionalPrimerOpenNow => 'Abrir agora';
+
+  @override
+  String get letterEmotionalPrimerViewLater => 'Ver depois';
+
+  @override
   String get requestsTitle => 'Pedidos de carta';
 
   @override
@@ -3780,6 +3792,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get letterOpeningTapToOpen => 'TOQUE PARA ABRIR';
+
+  @override
+  String get letterEmotionalPrimerTitle => 'Essa carta pode ser emocional.';
+
+  @override
+  String get letterEmotionalPrimerBody => 'Abra quando estiver pronto.';
+
+  @override
+  String get letterEmotionalPrimerOpenNow => 'Abrir agora';
+
+  @override
+  String get letterEmotionalPrimerViewLater => 'Ver depois';
 
   @override
   String get requestsTitle => 'Pedidos de carta';

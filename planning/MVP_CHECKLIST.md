@@ -270,7 +270,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 **Progresso geral (28/04/2026):**
 - 🔴 Bloqueadores pré-lançamento: **2 pendentes** (B1, B4 — B2 ✅ resolvido, B3 ✅ resolvido)
-- 🟡 Semana 1: **2 pendentes** (Sign-in Apple ✅, Google ✅, botão Google ✅ — restam: onboarding, aviso conteúdo)
+- 🟡 Semana 1: **1 pendente** (Sign-in Apple ✅, Google ✅, botão Google ✅, aviso emocional ✅ — resta: onboarding)
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
@@ -281,10 +281,11 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 ## 🔴 Itens críticos identificados — análise externa abril 2026
 
-**1. Aviso emocional antes de abrir carta — Yuri**
-- Mostrar mensagem antes de abrir: "Essa carta pode ser emocional. Abra quando estiver pronto."
-- Botão: "Abrir agora" ou "Lembrar depois"
-- Arquivo: letter_opening_screen.dart
+**1. ✅ Aviso emocional antes de abrir carta — Yuri**
+- Tela antes da abertura: "Essa carta pode ser emocional. Abra quando estiver pronto."
+- Botões: "Abrir agora" / "Ver depois"
+- Mostrado uma vez por dispositivo (SharedPreferences); ambos os botões gravam o flag.
+- Arquivos: `letter_emotional_primer_screen.dart`, `letter_primer_prefs.dart`, `open_with_proximity.dart`
 
 **2. Testar abertura de cartas com datas próximas — Diego + Yuri**
 - Criar carta para abrir em 1 minuto

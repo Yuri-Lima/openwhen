@@ -328,6 +328,11 @@
   "letterOpeningKeepPrivate": "Keep it just for me",
   "letterOpeningTapToOpen": "TAP TO OPEN",
 
+  "letterEmotionalPrimerTitle": "This letter may be emotional.",
+  "letterEmotionalPrimerBody": "Open it when you feel ready.",
+  "letterEmotionalPrimerOpenNow": "Open now",
+  "letterEmotionalPrimerViewLater": "View later",
+
   "requestsTitle": "Letter requests",
   "requestsSubtitle": "From people you don't follow",
   "requestsEmptyTitle": "No pending requests",

@@ -328,6 +328,11 @@
   "letterOpeningKeepPrivate": "Guardar solo para mí",
   "letterOpeningTapToOpen": "TOCA PARA ABRIR",
 
+  "letterEmotionalPrimerTitle": "Esta carta puede ser emotiva.",
+  "letterEmotionalPrimerBody": "Ábrela cuando te sientas listo.",
+  "letterEmotionalPrimerOpenNow": "Abrir ahora",
+  "letterEmotionalPrimerViewLater": "Ver después",
+
   "requestsTitle": "Solicitudes de carta",
   "requestsSubtitle": "De personas que no sigues",
   "requestsEmptyTitle": "No hay solicitudes pendientes",
