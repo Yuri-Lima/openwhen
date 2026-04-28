@@ -31,7 +31,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 - [x] **Google Sign-in** — `GoogleAuthProvider`, ligar botão em `login_screen.dart` · **Yuri** · ✅ 2026-04-28
 - [ ] **Simplificação do onboarding** — reduzir fricção na primeira experiência; mostrar só UMA ação antes de qualquer outra coisa · **Yuri**
 - [x] ~~**Botão Google (login) sem `onTap`**~~ — implementado com Google Sign-In completo · **Yuri** · ✅ 2026-04-28
-- [ ] **Aviso de conteúdo ofensivo localizado** — mover string hardcoded PT-BR para ARB em 4 idiomas · **Diego** · `write_letter_screen.dart` + ARBs
+- [x] **Aviso de conteúdo ofensivo localizado** — filtro lexical (Camada 1) em cartas e cápsulas com `commentsModerationWarning` (ARB en/pt/pt-BR/es) + helper `banned_lexical_words.dart` · ✅ 2026-04-28
 
 ---
 

@@ -29,6 +29,7 @@ import '../../../../shared/utils/location_prompt_flow.dart';
 import '../../../../core/utils/email_normalization.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/auth/email_verification_guard.dart';
+import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
@@ -683,6 +684,20 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       ].where((s) => s.isNotEmpty).join('\n');
 
       if (moderationText.isNotEmpty) {
+        // Camada 1 lexical (antes da IA) — mesmas palavras e string l10n que comentários
+        if (textContainsBannedLexicalWord(moderationText, Localizations.localeOf(context))) {
+          if (mounted) {
+            setState(() => _isLoading = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.commentsModerationWarning, style: GoogleFonts.dmSans(fontSize: 13)),
+                backgroundColor: context.pal.accent,
+              ),
+            );
+          }
+          return;
+        }
+
         final modResult = await SendModerationHelper.moderate(
           ref: ref,
           text: moderationText,

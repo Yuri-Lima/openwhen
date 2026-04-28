@@ -19,6 +19,7 @@ import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/auth/email_verification_guard.dart';
+import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import '../../../../shared/utils/music_url.dart';
@@ -263,6 +264,19 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
       ].where((s) => s.isNotEmpty).join('\n');
 
       if (moderationText.isNotEmpty) {
+        if (textContainsBannedLexicalWord(moderationText, Localizations.localeOf(context))) {
+          if (mounted) {
+            setState(() => _saving = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.commentsModerationWarning, style: GoogleFonts.dmSans(fontSize: 13)),
+                backgroundColor: context.pal.accent,
+              ),
+            );
+          }
+          return;
+        }
+
         final modResult = await SendModerationHelper.moderate(
           ref: ref,
           text: moderationText,

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
+import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/moderation_functions_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/auth/email_verification_guard.dart';
@@ -18,41 +19,6 @@ import '../../../../shared/utils/date_formatter.dart';
 /// Supplied via `--dart-define-from-file=config/dart_defines_dev.json`
 const bool _kSkipAiModeration =
     bool.fromEnvironment('SKIP_AI_MODERATION');
-
-const Map<String, List<String>> _bannedWordsByLocale = {
-  'pt': [
-    'idiota', 'imbecil', 'burro', 'estupido', 'estúpido',
-    'lixo', 'merda', 'puta', 'viado', 'fdp',
-    'canalha', 'vagabundo', 'prostituta', 'desgraça',
-    'maldito', 'inferno', 'otario', 'otário',
-    'odeio', 'morra', 'morte',
-  ],
-  'en': [
-    'idiot', 'moron', 'stupid', 'dumb', 'trash',
-    'shit', 'fuck', 'bitch', 'asshole', 'bastard',
-    'slut', 'whore', 'damn', 'crap', 'hate',
-    'die', 'kill',
-  ],
-  'es': [
-    'idiota', 'imbécil', 'estúpido', 'tonto', 'basura',
-    'mierda', 'puta', 'cabrón', 'pendejo', 'maricón',
-    'maldito', 'infierno', 'odio', 'muere', 'muerte',
-    'desgraciado', 'prostituta',
-  ],
-};
-
-bool _containsBannedWord(String text, Locale locale) {
-  final textLower = text.toLowerCase();
-  final lang = locale.languageCode;
-  final allWords = <String>{
-    ..._bannedWordsByLocale['pt'] ?? [],
-    ..._bannedWordsByLocale[lang] ?? [],
-  };
-  for (final word in allWords) {
-    if (textLower.contains(word)) return true;
-  }
-  return false;
-}
 
 class CommentsScreen extends ConsumerStatefulWidget {
   final String letterId;
@@ -86,7 +52,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     // Filtro de palavras ofensivas
-    if (_containsBannedWord(text, Localizations.localeOf(context))) {
+    if (textContainsBannedLexicalWord(text, Localizations.localeOf(context))) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

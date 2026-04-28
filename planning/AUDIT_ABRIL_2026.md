@@ -108,13 +108,13 @@ E no Dart, corrigir o catch (linha ~134):
 
 ---
 
-### 🟡 BUG #5 — Aviso de conteúdo ofensivo hardcoded em PT-BR
+### ✅ BUG #5 — Aviso Camada 1 (resolvido abril/2026)
 
-**Descrição:** Em `write_letter_screen.dart` foi adicionado um aviso de conteúdo ofensivo durante a digitação. A mensagem `'O Whenote existe para conectar com amor e superação. Revise sua mensagem. 🦉'` está hardcoded em português. Um usuário com idioma configurado em inglês ou espanhol verá a mensagem em PT-BR.
+**Era:** risco de texto PT hardcoded no fluxo de carta; diálogos de moderação IA já usavam `letterModeration*` nos ARBs.
 
-**Solução:** Mover a string para os ARBs (todos os idiomas) e usar `l10n.writeLetterOffensiveWarning`.
+**Agora:** filtro lexical antes da IA em **escrever carta** e **criar cápsula** com `l10n.commentsModerationWarning` (4 ARBs). Lista partilhada: `lib/core/moderation/banned_lexical_words.dart`; comentários refactorados para o mesmo helper.
 
-**Arquivo:** `lib/features/letters/presentation/screens/write_letter_screen.dart` + `lib/l10n/app_pt_BR.arb`, `app_en.arb`, `app_es.arb`
+**Ver:** [`MODERATION.md`](MODERATION.md) §2 e [`CHANGELOG.md`](CHANGELOG.md) \[Unreleased].
 
 ---
 
@@ -316,7 +316,7 @@ O medo do Diego é legítimo: a pessoa instala, manda 1 carta, desinstala. A sol
 
 ### Diego — Pode fazer sem conflito com Yuri
 
-- [ ] Localizar aviso de conteúdo ofensivo nos ARBs (mover string hardcoded PT-BR)
+- [x] Localizar aviso de conteúdo ofensivo nos ARBs (`commentsModerationWarning` + lexical em carta/cápsula) — 2026-04-28
 - [ ] Data mínima 30 dias no DatePicker da cápsula (`create_capsule_screen.dart`)
 - [ ] Preview antes de enviar carta (dialog de confirmação)
 - [ ] Rascunho automático ao sair da escrita (`shared_preferences`)
