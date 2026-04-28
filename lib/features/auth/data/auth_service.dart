@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
@@ -92,7 +93,27 @@ class AuthService {
     return userCredential;
   }
 
+  /// Sign in with Google.
+  Future<UserCredential> signInWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      // User cancelled the sign-in flow.
+      throw Exception('google-sign-in-cancelled');
+    }
+
+    final googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return await _auth.signInWithCredential(credential);
+  }
+
   Future<void> signOut() async {
+    // Also sign out of Google to allow account switching.
+    await GoogleSignIn().signOut();
     await _auth.signOut();
   }
 

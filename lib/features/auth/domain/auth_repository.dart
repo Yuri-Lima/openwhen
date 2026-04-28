@@ -124,6 +124,57 @@ class AuthRepository {
     }
   }
 
+  /// Sign in (or sign up) with Google.
+  /// Creates a Firestore user document on first login.
+  Future<void> signInWithGoogle() async {
+    final credential = await _authService.signInWithGoogle();
+    final user = credential.user!;
+    final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+
+    if (isNewUser) {
+      final name = user.displayName ?? '';
+      final email = user.email ?? '';
+      final username = name.isNotEmpty
+          ? name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '') +
+              user.uid.substring(0, 4)
+          : 'user${user.uid.substring(0, 8)}';
+
+      final searchTokens = buildUserSearchTokens(
+        username: username,
+        displayName: name,
+        name: name,
+      );
+
+      await _firestore
+          .collection(FirestoreCollections.users)
+          .doc(user.uid)
+          .set({
+        'uid': user.uid,
+        'name': name,
+        'displayName': name,
+        'username': username,
+        'searchTokens': searchTokens,
+        'email': email,
+        'photoUrl': user.photoURL,
+        'bio': null,
+        'isPrivate': false,
+        'createdAt': Timestamp.now(),
+        'lettersSentCount': 0,
+        'lettersReceivedCount': 0,
+        'lockedLettersCount': 0,
+        'openedLettersCount': 0,
+        'followersCount': 0,
+        'followingCount': 0,
+        'lettersCount': 0,
+        'language': 'pt-BR',
+        'preferredLanguage': 'pt',
+        'country': null,
+        'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
+        'hasCompletedFirstAction': false,
+      });
+    }
+  }
+
   Future<void> signOut() async {
     try {
       await FcmTokenManager.clearToken();

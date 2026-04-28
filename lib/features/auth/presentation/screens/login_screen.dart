@@ -118,6 +118,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     if (mounted) setState(() => _isLoading = false);
   }
 
+  Future<void> _signInWithGoogle() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(authNotifierProvider.notifier).signInWithGoogle();
+      if (!mounted) return;
+      final authAsync = ref.read(authNotifierProvider);
+      if (authAsync.hasError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
+        );
+      } else {
+        await AnalyticsService.logLogin(method: 'google');
+      }
+    } catch (e) {
+      // User cancelled — the google_sign_in plugin throws when user cancels.
+      if (e.toString().contains('google-sign-in-cancelled')) {
+        // silently ignore
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
+        );
+      }
+    }
+    if (mounted) setState(() => _isLoading = false);
+  }
+
   void _showForgotPassword(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final resetEmailController = TextEditingController(
@@ -712,35 +739,72 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   Widget _buildSocialButtons() {
-    // Only show Apple sign-in on iOS (Apple requires it for apps that offer
-    // third-party social login on their platform).
-    if (!Platform.isIOS) return const SizedBox.shrink();
-
-    return GestureDetector(
-      onTap: _isLoading ? null : _signInWithApple,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: context.pal.card,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: context.pal.border, width: 1.5),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.apple, size: 22, color: context.pal.ink),
-            const SizedBox(width: 8),
-            Text(
-              'Continuar com Apple',
-              style: GoogleFonts.dmSans(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: context.pal.ink,
+    return Column(
+      children: [
+        // Apple — only on iOS
+        if (Platform.isIOS)
+          GestureDetector(
+            onTap: _isLoading ? null : _signInWithApple,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                color: context.pal.card,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: context.pal.border, width: 1.5),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.apple, size: 22, color: context.pal.ink),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Continuar com Apple',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: context.pal.ink,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
+        if (Platform.isIOS) const SizedBox(height: 12),
+        // Google — all platforms
+        GestureDetector(
+          onTap: _isLoading ? null : _signInWithGoogle,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            decoration: BoxDecoration(
+              color: context.pal.card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: context.pal.border, width: 1.5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'G',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF4285F4),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Continuar com Google',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: context.pal.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

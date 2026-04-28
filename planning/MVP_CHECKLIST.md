@@ -20,17 +20,17 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 |---|----------|-------------|---------------|
 | B1 | **`checkUsernameAvailable` não deployada** — todo cadastro retorna "username em uso", impossível criar conta | Yuri | `firebase deploy --only functions:checkUsernameAvailable` |
 | ~~B2~~ | ~~**Cursor preso no campo de texto da carta**~~ — ✅ **Resolvido 2026-04-27** | Yuri | — |
-| B3 | **Botão Apple Sign-in sem `onTap`** — decoração pura; App Store rejeita app se login social existir sem Apple | Yuri | Implementar `OAuthProvider` + nonce em `login_screen.dart` |
+| ~~B3~~ | ~~**Botão Apple Sign-in sem `onTap`**~~ — ✅ **Resolvido 2026-04-28** (Apple + Google Sign-In implementados) | Yuri | — |
 | B4 | **Budget Alerts Firebase não configurados** — bug em loop pode gerar fatura inesperada | Diego + Yuri | Google Cloud Console → Billing → Budgets & Alerts → $20/mês, alertas 50/80/100% |
 
 ---
 
 ## 🔴 SEMANA 1 — antes do soft launch com amigos
 
-- [ ] **Sign in with Apple** — `OAuthProvider` + nonce, capability no App ID, provedor no Firebase Console, ligar botão `login_screen.dart` · **Yuri**
-- [ ] **Google Sign-in** — `GoogleAuthProvider`, ligar botão em `login_screen.dart` · **Yuri**
+- [x] **Sign in with Apple** — `OAuthProvider` + nonce, capability no App ID, provedor no Firebase Console, ligar botão `login_screen.dart` · **Yuri** · ✅ 2026-04-28
+- [x] **Google Sign-in** — `GoogleAuthProvider`, ligar botão em `login_screen.dart` · **Yuri** · ✅ 2026-04-28
 - [ ] **Simplificação do onboarding** — reduzir fricção na primeira experiência; mostrar só UMA ação antes de qualquer outra coisa · **Yuri**
-- [ ] **Botão Google (login) sem `onTap`** — enquanto não implementado, esconder ou mostrar "Em breve" · **Yuri**
+- [x] ~~**Botão Google (login) sem `onTap`**~~ — implementado com Google Sign-In completo · **Yuri** · ✅ 2026-04-28
 - [ ] **Aviso de conteúdo ofensivo localizado** — mover string hardcoded PT-BR para ARB em 4 idiomas · **Diego** · `write_letter_screen.dart` + ARBs
 
 ---
@@ -196,6 +196,9 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Email de recuperação de senha funcionando (domínio personalizado)
 - [x] Termos + confirmação de idade obrigatórios no cadastro
 - [x] Guard `requireVerifiedEmail()` em ações-chave (enviar carta, comentar, criar cápsula)
+- [x] **Sign in with Apple** — `OAuthProvider` + SHA-256 nonce, entitlements iOS, Firestore user doc on first login
+- [x] **Google Sign-In** — `GoogleSignIn` + `GoogleAuthProvider.credential`, `REVERSED_CLIENT_ID` no Info.plist, Firestore user doc on first login
+- [x] `kSocialSignInEnabled = true` — Apple (iOS only) + Google (all platforms) visíveis no login
 
 ### Cartas e cofre
 - [x] Escrever carta (texto recolhível + voz até 1 min + `voiceUrl`)
@@ -265,9 +268,9 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 ---
 
-**Progresso geral (27/04/2026):**
-- 🔴 Bloqueadores pré-lançamento: **3 pendentes** (B1, B3, B4 — B2 ✅ resolvido)
-- 🟡 Semana 1: **5 pendentes**
+**Progresso geral (28/04/2026):**
+- 🔴 Bloqueadores pré-lançamento: **2 pendentes** (B1, B4 — B2 ✅ resolvido, B3 ✅ resolvido)
+- 🟡 Semana 1: **2 pendentes** (Sign-in Apple ✅, Google ✅, botão Google ✅ — restam: onboarding, aviso conteúdo)
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
