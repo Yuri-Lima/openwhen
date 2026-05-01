@@ -23,6 +23,36 @@ class AppLocalizationsPt extends AppLocalizations {
   String get snackFillAllFields => 'Preencha todos os campos!';
 
   @override
+  String get authErrorInvalidCredentials => 'E-mail ou senha incorretos.';
+
+  @override
+  String get authErrorInvalidEmail => 'E-mail inválido.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'A senha deve ter pelo menos 6 caracteres.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'Este e-mail já está em uso.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Muitas tentativas. Aguarde alguns minutos ou redefina sua senha.';
+
+  @override
+  String get authErrorNetwork =>
+      'Sem conexão. Verifique sua internet e tente novamente.';
+
+  @override
+  String get authErrorUserDisabled => 'Esta conta foi desativada.';
+
+  @override
+  String get authErrorGeneric => 'Não foi possível entrar. Tente novamente.';
+
+  @override
+  String get loginForgotPasswordInline => 'Esqueci minha senha';
+
+  @override
   String get actionSave => 'Salvar';
 
   @override
@@ -2807,6 +2837,36 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get snackFillAllFields => 'Preencha todos os campos!';
+
+  @override
+  String get authErrorInvalidCredentials => 'E-mail ou senha incorretos.';
+
+  @override
+  String get authErrorInvalidEmail => 'E-mail inválido.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'A senha deve ter pelo menos 6 caracteres.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'Este e-mail já está em uso.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Muitas tentativas. Aguarde alguns minutos ou redefina sua senha.';
+
+  @override
+  String get authErrorNetwork =>
+      'Sem conexão. Verifique sua internet e tente novamente.';
+
+  @override
+  String get authErrorUserDisabled => 'Esta conta foi desativada.';
+
+  @override
+  String get authErrorGeneric => 'Não foi possível entrar. Tente novamente.';
+
+  @override
+  String get loginForgotPasswordInline => 'Esqueci minha senha';
 
   @override
   String get actionSave => 'Salvar';

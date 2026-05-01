@@ -6,6 +6,17 @@
   "errorGeneric": "Erro: {error}",
   "@errorGeneric": { "placeholders": { "error": { "type": "String" } } },
   "snackFillAllFields": "Preencha todos os campos!",
+
+  "authErrorInvalidCredentials": "E-mail ou senha incorretos.",
+  "authErrorInvalidEmail": "E-mail inválido.",
+  "authErrorWeakPassword": "A senha deve ter pelo menos 6 caracteres.",
+  "authErrorEmailAlreadyInUse": "Este e-mail já está em uso.",
+  "authErrorTooManyRequests": "Muitas tentativas. Aguarde alguns minutos ou redefina sua senha.",
+  "authErrorNetwork": "Sem conexão. Verifique sua internet e tente novamente.",
+  "authErrorUserDisabled": "Esta conta foi desativada.",
+  "authErrorGeneric": "Não foi possível entrar. Tente novamente.",
+  "loginForgotPasswordInline": "Esqueci minha senha",
+
   "actionSave": "Salvar",
   "actionCancel": "Cancelar",
   "actionDelete": "Excluir",

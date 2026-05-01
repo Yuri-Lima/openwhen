@@ -6,6 +6,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+enum AuthErrorCode {
+  invalidCredentials,
+  invalidEmail,
+  weakPassword,
+  emailAlreadyInUse,
+  tooManyRequests,
+  networkError,
+  userDisabled,
+  unknown,
+}
+
+class AuthException implements Exception {
+  final AuthErrorCode code;
+  final String? raw;
+  const AuthException(this.code, {this.raw});
+
+  @override
+  String toString() => 'AuthException(${code.name}${raw == null ? '' : ': $raw'})';
+}
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -23,7 +43,7 @@ class AuthService {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw AuthException(_mapFirebaseCode(e.code), raw: e.message);
     }
   }
 
@@ -37,7 +57,7 @@ class AuthService {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthException(e);
+      throw AuthException(_mapFirebaseCode(e.code), raw: e.message);
     }
   }
 
@@ -117,20 +137,27 @@ class AuthService {
     await _auth.signOut();
   }
 
-  String _handleAuthException(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'user-not-found':
-        return 'Usuário não encontrado.';
+  AuthErrorCode _mapFirebaseCode(String code) {
+    switch (code) {
       case 'wrong-password':
-        return 'Senha incorreta.';
-      case 'email-already-in-use':
-        return 'Este email já está em uso.';
-      case 'weak-password':
-        return 'A senha deve ter pelo menos 6 caracteres.';
+      case 'user-not-found':
+      case 'invalid-credential':
+      case 'invalid-login-credentials':
+        return AuthErrorCode.invalidCredentials;
       case 'invalid-email':
-        return 'Email inválido.';
+        return AuthErrorCode.invalidEmail;
+      case 'weak-password':
+        return AuthErrorCode.weakPassword;
+      case 'email-already-in-use':
+        return AuthErrorCode.emailAlreadyInUse;
+      case 'too-many-requests':
+        return AuthErrorCode.tooManyRequests;
+      case 'network-request-failed':
+        return AuthErrorCode.networkError;
+      case 'user-disabled':
+        return AuthErrorCode.userDisabled;
       default:
-        return 'Erro ao autenticar. Tente novamente.';
+        return AuthErrorCode.unknown;
     }
   }
 }

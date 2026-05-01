@@ -5,6 +5,17 @@
   "splashTagline": "Letters for the future",
   "errorGeneric": "Error: {error}",
   "snackFillAllFields": "Please fill in all fields!",
+
+  "authErrorInvalidCredentials": "Incorrect email or password.",
+  "authErrorInvalidEmail": "Invalid email address.",
+  "authErrorWeakPassword": "Password must be at least 6 characters.",
+  "authErrorEmailAlreadyInUse": "This email is already in use.",
+  "authErrorTooManyRequests": "Too many attempts. Wait a few minutes or reset your password.",
+  "authErrorNetwork": "No connection. Check your internet and try again.",
+  "authErrorUserDisabled": "This account has been disabled.",
+  "authErrorGeneric": "Couldn't sign in. Please try again.",
+  "loginForgotPasswordInline": "Forgot my password",
+
   "actionSave": "Save",
   "actionCancel": "Cancel",
   "actionDelete": "Delete",

@@ -23,6 +23,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get snackFillAllFields => 'Please fill in all fields!';
 
   @override
+  String get authErrorInvalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get authErrorInvalidEmail => 'Invalid email address.';
+
+  @override
+  String get authErrorWeakPassword => 'Password must be at least 6 characters.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'This email is already in use.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Too many attempts. Wait a few minutes or reset your password.';
+
+  @override
+  String get authErrorNetwork =>
+      'No connection. Check your internet and try again.';
+
+  @override
+  String get authErrorUserDisabled => 'This account has been disabled.';
+
+  @override
+  String get authErrorGeneric => 'Couldn\'t sign in. Please try again.';
+
+  @override
+  String get loginForgotPasswordInline => 'Forgot my password';
+
+  @override
   String get actionSave => 'Save';
 
   @override

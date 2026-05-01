@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
+import '../auth_error_messages.dart';
 import '../providers/auth_provider.dart';
 
 /// Quando `true`, mostra botões de social sign-in (Apple) no login.
@@ -23,12 +25,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _showPassword = false;
   int _selectedTab = 0;
+  String? _passwordError;
 
   /// Inicialização lazy: após hot reload `initState` não corre outra vez, mas o primeiro
   /// acesso em `build` inicializa o controller.
@@ -37,9 +40,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     duration: const Duration(milliseconds: 5500),
   );
 
+  late final AnimationController _shakeCtrl = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
+
+  late final Animation<double> _shakeAnim = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 0.0, end: 8.0), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 8.0, end: -8.0), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: -8.0, end: 6.0), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: 6.0, end: -6.0), weight: 2),
+    TweenSequenceItem(tween: Tween(begin: -6.0, end: 0.0), weight: 1),
+  ]).animate(CurvedAnimation(parent: _shakeCtrl, curve: Curves.easeOut));
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_clearPasswordErrorOnEdit);
+    _passwordController.addListener(_clearPasswordErrorOnEdit);
+  }
+
+  void _clearPasswordErrorOnEdit() {
+    if (_passwordError != null) {
+      setState(() => _passwordError = null);
+    }
+  }
+
   @override
   void dispose() {
     _sealCtrl.dispose();
+    _shakeCtrl.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -60,7 +90,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       );
       return;
     }
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _passwordError = null;
+    });
     try {
       await ref.read(authNotifierProvider.notifier).login(
             email: _emailController.text.trim(),
@@ -69,20 +102,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       if (!mounted) return;
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
-        );
+        _showInlineLoginError(authErrorMessage(l10n, authAsync.error));
       } else {
         await AnalyticsService.logLogin();
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
-        );
-      }
+      if (mounted) _showInlineLoginError(authErrorMessage(l10n, e));
     }
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  void _showInlineLoginError(String message) {
+    setState(() => _passwordError = message);
+    HapticFeedback.mediumImpact();
+    _shakeCtrl.forward(from: 0);
   }
 
   Future<void> _signInWithApple() async {
@@ -338,7 +371,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     bool obscure = false,
     bool hasToggle = false,
     TextInputType keyboard = TextInputType.text,
+    String? errorText,
   }) {
+    final hasError = errorText != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -346,7 +381,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           label.toUpperCase(),
           style: GoogleFonts.dmSans(
             fontSize: 10,
-            color: context.pal.inkFaint,
+            color: hasError ? context.pal.accent : context.pal.inkFaint,
             fontWeight: FontWeight.w500,
             letterSpacing: 1.5,
           ),
@@ -356,7 +391,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           decoration: BoxDecoration(
             color: context.pal.bg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: context.pal.border, width: 1.5),
+            border: Border.all(
+              color: hasError ? context.pal.accent : context.pal.border,
+              width: 1.5,
+            ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
           child: Row(
@@ -584,27 +622,73 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           keyboard: TextInputType.emailAddress,
         ),
         const SizedBox(height: 16),
-        _buildField(
-          controller: _passwordController,
-          icon: Icons.lock_outline,
-          hint: l10n.hintPassword,
-          label: l10n.labelPassword,
-          obscure: true,
-          hasToggle: true,
+        AnimatedBuilder(
+          animation: _shakeAnim,
+          builder: (context, child) => Transform.translate(
+            offset: Offset(_shakeAnim.value, 0),
+            child: child,
+          ),
+          child: _buildField(
+            controller: _passwordController,
+            icon: Icons.lock_outline,
+            hint: l10n.hintPassword,
+            label: l10n.labelPassword,
+            obscure: true,
+            hasToggle: true,
+            errorText: _passwordError,
+          ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () => _showForgotPassword(context),
-            child: Text(
-              l10n.loginForgotPassword,
-              style: GoogleFonts.dmSans(
-                fontSize: 12,
-                color: context.pal.accent,
+        if (_passwordError != null) ...[
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              children: [
+                Icon(Icons.error_outline,
+                    size: 14, color: context.pal.accent),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    _passwordError!,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: context.pal.accent,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => _showForgotPassword(context),
+              child: Text(
+                l10n.loginForgotPasswordInline,
+                style: GoogleFonts.dmSans(
+                  fontSize: 12,
+                  color: context.pal.accent,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
           ),
-        ),
+        ] else
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => _showForgotPassword(context),
+              child: Text(
+                l10n.loginForgotPassword,
+                style: GoogleFonts.dmSans(
+                  fontSize: 12,
+                  color: context.pal.accent,
+                ),
+              ),
+            ),
+          ),
         const SizedBox(height: 8),
         ElevatedButton(
           onPressed: _isLoading ? null : _login,

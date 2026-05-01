@@ -125,6 +125,60 @@ abstract class AppLocalizations {
   /// **'Preencha todos os campos!'**
   String get snackFillAllFields;
 
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'E-mail ou senha incorretos.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'E-mail inválido.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'A senha deve ter pelo menos 6 caracteres.'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorEmailAlreadyInUse.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este e-mail já está em uso.'**
+  String get authErrorEmailAlreadyInUse;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Muitas tentativas. Aguarde alguns minutos ou redefina sua senha.'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sem conexão. Verifique sua internet e tente novamente.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta conta foi desativada.'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível entrar. Tente novamente.'**
+  String get authErrorGeneric;
+
+  /// No description provided for @loginForgotPasswordInline.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esqueci minha senha'**
+  String get loginForgotPasswordInline;
+
   /// No description provided for @actionSave.
   ///
   /// In pt_BR, this message translates to:

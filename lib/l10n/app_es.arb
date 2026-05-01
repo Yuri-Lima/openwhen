@@ -5,6 +5,17 @@
   "splashTagline": "Cartas para el futuro",
   "errorGeneric": "Error: {error}",
   "snackFillAllFields": "¡Completa todos los campos!",
+
+  "authErrorInvalidCredentials": "Correo o contraseña incorrectos.",
+  "authErrorInvalidEmail": "Correo electrónico inválido.",
+  "authErrorWeakPassword": "La contraseña debe tener al menos 6 caracteres.",
+  "authErrorEmailAlreadyInUse": "Este correo ya está en uso.",
+  "authErrorTooManyRequests": "Demasiados intentos. Espera unos minutos o restablece tu contraseña.",
+  "authErrorNetwork": "Sin conexión. Comprueba tu internet e intenta de nuevo.",
+  "authErrorUserDisabled": "Esta cuenta ha sido deshabilitada.",
+  "authErrorGeneric": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+  "loginForgotPasswordInline": "Olvidé mi contraseña",
+
   "actionSave": "Guardar",
   "actionCancel": "Cancelar",
   "actionDelete": "Eliminar",

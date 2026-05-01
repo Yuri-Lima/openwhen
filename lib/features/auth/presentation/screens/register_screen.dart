@@ -10,6 +10,7 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/username_generator.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
+import '../auth_error_messages.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -189,7 +190,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content:
-                  Text(l10n.errorGeneric(registerState.error.toString()))),
+                  Text(authErrorMessage(l10n, registerState.error))),
         );
       } else {
         try {

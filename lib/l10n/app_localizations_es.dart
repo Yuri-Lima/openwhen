@@ -23,6 +23,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get snackFillAllFields => '¡Completa todos los campos!';
 
   @override
+  String get authErrorInvalidCredentials => 'Correo o contraseña incorrectos.';
+
+  @override
+  String get authErrorInvalidEmail => 'Correo electrónico inválido.';
+
+  @override
+  String get authErrorWeakPassword =>
+      'La contraseña debe tener al menos 6 caracteres.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'Este correo ya está en uso.';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Demasiados intentos. Espera unos minutos o restablece tu contraseña.';
+
+  @override
+  String get authErrorNetwork =>
+      'Sin conexión. Comprueba tu internet e intenta de nuevo.';
+
+  @override
+  String get authErrorUserDisabled => 'Esta cuenta ha sido deshabilitada.';
+
+  @override
+  String get authErrorGeneric =>
+      'No se pudo iniciar sesión. Inténtalo de nuevo.';
+
+  @override
+  String get loginForgotPasswordInline => 'Olvidé mi contraseña';
+
+  @override
   String get actionSave => 'Guardar';
 
   @override
