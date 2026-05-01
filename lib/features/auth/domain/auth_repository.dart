@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +8,10 @@ import '../models/app_user.dart';
 import '../../../core/constants/firestore_collections.dart';
 import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
+import '../../../core/services/safe_callable.dart';
 import '../../../core/user_search/user_search_tokens.dart';
 import '../../../core/utils/firebase_locale_helper.dart';
+import '../../../core/utils/username_generator.dart';
 
 class AuthRepository {
   final AuthService _authService = AuthService();
@@ -82,11 +86,7 @@ class AuthRepository {
     if (isNewUser) {
       final name = user.displayName ?? '';
       final email = user.email ?? '';
-      // Generate a username from the Apple-provided name or uid.
-      final username = name.isNotEmpty
-          ? name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '') +
-              user.uid.substring(0, 4)
-          : 'user${user.uid.substring(0, 8)}';
+      final username = await _resolveUsername(name, user.uid);
 
       final searchTokens = buildUserSearchTokens(
         username: username,
@@ -134,10 +134,7 @@ class AuthRepository {
     if (isNewUser) {
       final name = user.displayName ?? '';
       final email = user.email ?? '';
-      final username = name.isNotEmpty
-          ? name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '') +
-              user.uid.substring(0, 4)
-          : 'user${user.uid.substring(0, 8)}';
+      final username = await _resolveUsername(name, user.uid);
 
       final searchTokens = buildUserSearchTokens(
         username: username,
@@ -193,5 +190,48 @@ class AuthRepository {
     final doc = await _firestore.collection(FirestoreCollections.users).doc(uid).get();
     if (!doc.exists) return null;
     return AppUser.fromFirestore(doc);
+  }
+
+  /// Picks a unique, human-readable username for a new OAuth user.
+  ///
+  /// Tries pretty variants of [displayName] first (accent-stripped, with dot
+  /// or underscore separators), then a numeric-suffix retry, then a uid-based
+  /// fallback. Sign-up never fails on this step.
+  Future<String> _resolveUsername(String displayName, String uid) async {
+    final suggestions = displayName.trim().isNotEmpty
+        ? generateUsernameSuggestions(displayName)
+        : <String>[];
+
+    for (final candidate in suggestions) {
+      if (await _isUsernameAvailable(candidate)) return candidate;
+    }
+
+    final rawBase = suggestions.isNotEmpty
+        ? suggestions.first.replaceAll(RegExp(r'[^a-z0-9]'), '')
+        : 'user';
+    // Cap base at 16 chars so base + 4-digit suffix stays within the 20-char limit.
+    final base = rawBase.length > 16 ? rawBase.substring(0, 16) : rawBase;
+    final rand = Random();
+    for (var i = 0; i < 5; i++) {
+      final candidate = '$base${1000 + rand.nextInt(9000)}';
+      if (validateUsername(candidate) != null) continue;
+      if (await _isUsernameAvailable(candidate)) return candidate;
+    }
+
+    return 'user${uid.substring(0, 8).toLowerCase()}';
+  }
+
+  Future<bool> _isUsernameAvailable(String username) async {
+    try {
+      final result = await SafeCallable.call(
+        'checkUsernameAvailable',
+        data: {'username': username},
+        label: 'checkUsernameAvailable',
+      );
+      final data = result.data;
+      return data is Map && data['available'] == true;
+    } catch (_) {
+      return false;
+    }
   }
 }

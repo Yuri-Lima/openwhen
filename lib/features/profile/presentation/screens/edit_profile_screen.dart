@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
-import '../../../../shared/theme/app_theme.dart';
-import '../../../../l10n/app_localizations.dart';
+import '../../../../core/services/safe_callable.dart';
 import '../../../../core/user_search/user_search_tokens.dart';
+import '../../../../core/utils/username_generator.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../shared/theme/app_theme.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -21,9 +25,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _loading = false;
   bool _saving = false;
 
+  String _originalUsername = '';
+  bool _checkingUsername = false;
+  bool _usernameAvailable = true;
+  String? _usernameError;
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
+    _usernameCtrl.addListener(_onUsernameChanged);
     _loadProfile();
   }
 
@@ -38,16 +49,96 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final data = doc.data();
     if (data != null) {
       _nameCtrl.text = data['displayName'] ?? data['name'] ?? '';
-      _usernameCtrl.text = data['username'] ?? '';
+      _originalUsername = (data['username'] ?? '') as String;
+      _usernameCtrl.text = _originalUsername;
       _bioCtrl.text = data['bio'] ?? '';
     }
     setState(() => _loading = false);
+  }
+
+  void _onUsernameChanged() {
+    final raw = sanitizeUsername(_usernameCtrl.text);
+    _debounce?.cancel();
+
+    // No-op when the user hasn't actually changed their own username.
+    if (raw == _originalUsername) {
+      setState(() {
+        _usernameError = null;
+        _usernameAvailable = true;
+        _checkingUsername = false;
+      });
+      return;
+    }
+
+    final error = validateUsername(raw);
+    if (error != null) {
+      setState(() {
+        _usernameError = _localizedError(error);
+        _usernameAvailable = false;
+        _checkingUsername = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _usernameError = null;
+      _checkingUsername = true;
+      _usernameAvailable = false;
+    });
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      final available = await _isUsernameAvailable(raw);
+      if (!mounted) return;
+      setState(() {
+        _checkingUsername = false;
+        if (available) {
+          _usernameAvailable = true;
+          _usernameError = null;
+        } else {
+          _usernameAvailable = false;
+          _usernameError =
+              AppLocalizations.of(context)!.editProfileErrorUsernameTaken;
+        }
+      });
+    });
+  }
+
+  String? _localizedError(String key) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (key) {
+      case 'empty':
+        return l10n.editProfileErrorUsernameEmpty;
+      case 'short':
+        return l10n.editProfileErrorUsernameShort;
+      case 'long':
+        return l10n.registerErrorUsernameLong;
+      case 'invalid':
+        return l10n.registerErrorUsernameInvalid;
+      default:
+        return null;
+    }
+  }
+
+  Future<bool> _isUsernameAvailable(String username) async {
+    try {
+      final result = await SafeCallable.call(
+        'checkUsernameAvailable',
+        data: {'username': username},
+        label: 'checkUsernameAvailable',
+      );
+      final data = result.data;
+      return data is Map && data['available'] == true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context)!;
     final name = _nameCtrl.text.trim();
     final bio = _bioCtrl.text.trim();
+    final username = sanitizeUsername(_usernameCtrl.text);
+    final usernameChanged = username != _originalUsername;
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,25 +147,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
+    if (usernameChanged) {
+      final usernameError = validateUsername(username);
+      if (usernameError != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_localizedError(usernameError) ?? '')),
+        );
+        return;
+      }
+      if (!_usernameAvailable || _checkingUsername) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.editProfileErrorUsernameTaken)),
+        );
+        return;
+      }
+    }
+
     setState(() => _saving = true);
 
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    final username = _usernameCtrl.text.trim().toLowerCase();
     final searchTokens = buildUserSearchTokens(
       username: username,
       displayName: name,
       name: name,
     );
 
-    await FirebaseFirestore.instance
-        .collection(FirestoreCollections.users)
-        .doc(uid)
-        .update({
+    final update = <String, dynamic>{
       'displayName': name,
       'name': name,
       'searchTokens': searchTokens,
       'bio': bio,
-    });
+    };
+    if (usernameChanged) {
+      update['username'] = username;
+    }
+
+    await FirebaseFirestore.instance
+        .collection(FirestoreCollections.users)
+        .doc(uid)
+        .update(update);
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,6 +201,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
+    _usernameCtrl.removeListener(_onUsernameChanged);
     _nameCtrl.dispose();
     _usernameCtrl.dispose();
     _bioCtrl.dispose();
@@ -155,8 +268,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     hint: l10n.editProfileHintUsername,
                     icon: Icons.alternate_email_rounded,
                     prefix: '@',
-                    readOnly: true,
+                    suffix: _buildUsernameStatus(),
                   ),
+                  if (_usernameError != null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      _usernameError!,
+                      style: GoogleFonts.dmSans(fontSize: 12, color: Colors.redAccent),
+                    ),
+                  ],
                   const SizedBox(height: 20),
 
                   Text(l10n.editProfileSectionBio, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
@@ -211,6 +331,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     required IconData icon,
     String? prefix,
     bool readOnly = false,
+    Widget? suffix,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -240,7 +361,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
         )),
+        ?suffix,
       ]),
     );
+  }
+
+  Widget? _buildUsernameStatus() {
+    if (_checkingUsername) {
+      return const SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    final raw = sanitizeUsername(_usernameCtrl.text);
+    if (raw == _originalUsername) return null;
+    if (_usernameAvailable) {
+      return const Icon(Icons.check_circle, size: 18, color: Colors.green);
+    }
+    if (_usernameError != null) {
+      return const Icon(Icons.error_outline, size: 18, color: Colors.redAccent);
+    }
+    return null;
   }
 }
