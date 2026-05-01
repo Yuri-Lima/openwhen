@@ -768,7 +768,6 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
 
   Widget _buildOpenedCard({required BuildContext context, required Map<String, dynamic> data, required String docId}) {
     final l10n = AppLocalizations.of(context)!;
-    final isPublic = data['isPublic'] == true;
 
     void openDetail() {
       Navigator.push(context, MaterialPageRoute(builder: (_) => LetterDetailScreen(data: data, docId: docId)));
@@ -799,34 +798,6 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                 child: Text(l10n.vaultLetterOpened, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.accent, fontWeight: FontWeight.w500, letterSpacing: 0.5)),
               ),
               const Spacer(),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 4),
-                  child: GestureDetector(
-                    onTap: () => _setLetterPublicFromVault(docId, !isPublic),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isPublic ? const Color(0xFF10B981).withOpacity(0.1) : Colors.white.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: isPublic ? const Color(0xFF10B981).withOpacity(0.35) : context.pal.border,
-                        ),
-                      ),
-                      child: Text(
-                        isPublic ? l10n.vaultLetterChipPublic : l10n.vaultLetterChipPrivate,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 11,
-                          color: isPublic ? const Color(0xFF10B981) : context.pal.inkSoft,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
