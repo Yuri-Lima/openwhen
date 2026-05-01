@@ -1875,7 +1875,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutCompanyBody =>
-      'Whenote Tecnologia Ltda. — Brazilian company, headquartered in Brazil. Jurisdiction: São Paulo/SP.';
+      'Developed and operated by Yuri Matos de Lima (Oviedo, Spain) and Diego Ricardo Martins Rocha (Miami, FL, USA). Jurisdiction: Miami-Dade County, FL, USA.';
 
   @override
   String get aboutContacts => 'Contacts';
@@ -1893,8 +1893,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutContactDpo => 'DPO';
 
   @override
-  String get aboutCopyright =>
-      '© 2026 Whenote Tecnologia Ltda. All rights reserved.';
+  String get aboutCopyright => '© 2026 Whenote. All rights reserved.';
 
   @override
   String get helpCenter => 'Help Center';
@@ -2230,7 +2229,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsIntro =>
-      'These Terms of Use (\"Terms\") govern access to and use of the Whenote application (\"Platform\"), developed and operated by Whenote Tecnologia Ltda. (\"Company\"), registered under CNPJ No. [XX.XXX.XXX/0001-XX], headquartered in Brazil. Use of the Platform implies full and unconditional acceptance of these Terms, pursuant to Article 8 of Law No. 12,965/2014 (Internet Civil Framework) and Law No. 13,709/2018 (General Data Protection Law — LGPD).';
+      'These Terms of Use (\"Terms\") govern access to and use of the Whenote application (\"Platform\"), developed and operated by Yuri Matos de Lima (NIE: Z2387345L, Oviedo, Spain) and Diego Ricardo Martins Rocha (Miami, FL, USA), individuals (\"Operators\"). Use of the Platform implies full and unconditional acceptance of these Terms, in compliance with applicable laws including the General Data Protection Regulation — GDPR (EU), the Lei Geral de Proteção de Dados — LGPD (Brazil), and the California Consumer Privacy Act — CCPA (USA).';
 
   @override
   String get termsSection1Title => '1. PURPOSE AND NATURE OF THE SERVICE';
@@ -2287,11 +2286,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get termsSection8Body =>
-      'These Terms are governed by the laws of the Federative Republic of Brazil. The courts of São Paulo/SP are hereby elected to resolve any disputes arising from this instrument, with express waiver of any other jurisdiction, however privileged. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@whenote.app. Last updated: April 10, 2026.';
+      'These Terms are governed by the laws of the State of Florida, United States. The courts of Miami-Dade County, FL, USA are hereby elected to resolve any disputes arising from this instrument. The invalidity of any clause does not affect the validity of the remaining clauses. Questions and notices should be sent to: juridico@whenote.app. Last updated: May 1, 2026.';
 
   @override
   String get privacyIntro =>
-      'This Privacy Policy (\"Policy\") describes how Whenote Tecnologia Ltda. (\"Company\", \"we\", \"us\", \"our\") collects, processes, stores, and shares the personal data of users of the Whenote platform and mobile application (\"Platform\"). This Policy applies globally and complies with: (a) the Brazilian General Data Protection Law — LGPD (Law No. 13,709/2018); (b) the General Data Protection Regulation of the European Union — GDPR (Regulation EU 2016/679); (c) the California Consumer Privacy Act and California Privacy Rights Act — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) the Brazilian Internet Civil Framework (Law No. 12,965/2014); and (e) the U.S. Children\'s Online Privacy Protection Act — COPPA (16 CFR Part 312). The Company acts as Data Controller (LGPD Art. 5 VI / GDPR Art. 4(7)) and as a \"Business\" under CCPA. Effective date: April 10, 2026.';
+      'This Privacy Policy (\"Policy\") describes how Yuri Matos de Lima and Diego Ricardo Martins Rocha (\"Operators\", \"we\", \"us\", \"our\") collect, processes, stores, and shares the personal data of users of the Whenote platform and mobile application (\"Platform\"). This Policy applies globally and complies with: (a) the Brazilian General Data Protection Law — LGPD (Law No. 13,709/2018); (b) the General Data Protection Regulation of the European Union — GDPR (Regulation EU 2016/679); (c) the California Consumer Privacy Act and California Privacy Rights Act — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) the Brazilian Internet Civil Framework (Law No. 12,965/2014); and (e) the U.S. Children\'s Online Privacy Protection Act — COPPA (16 CFR Part 312). The Company acts as Data Controller (LGPD Art. 5 VI / GDPR Art. 4(7)) and as a \"Business\" under CCPA. Effective date: April 10, 2026.';
 
   @override
   String get privacySection1Title => '1. DEFINITIONS';
@@ -2412,7 +2411,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection17Body =>
-      'If you have questions about this Policy, wish to exercise your rights, or need to report a privacy concern, please contact us:\n\n• Data Protection Officer (DPO): dpo@whenote.app\n• Privacy requests (Portuguese): privacidade@whenote.app\n• Privacy requests (English): privacy@whenote.app\n• Legal department: juridico@whenote.app\n• General support: suporte@whenote.app\n\nBrazil — You may file a complaint with the ANPD: https://www.gov.br/anpd\nEU/EEA — You may lodge a complaint with your local data protection supervisory authority.\nCalifornia — You may contact the California Attorney General: https://oag.ca.gov/privacy\n\nWhenote Tecnologia Ltda.\nLast updated: April 10, 2026.';
+      'If you have questions about this Policy, wish to exercise your rights, or need to report a privacy concern, please contact us:\n\n• Data Protection Officer (DPO): dpo@whenote.app\n• Privacy requests (Portuguese): privacidade@whenote.app\n• Privacy requests (English): privacy@whenote.app\n• Legal department: juridico@whenote.app\n• General support: suporte@whenote.app\n\nBrazil — You may file a complaint with the ANPD: https://www.gov.br/anpd\nEU/EEA — You may lodge a complaint with your local data protection supervisory authority.\nCalifornia — You may contact the California Attorney General: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nLast updated: May 1, 2026.';
 
   @override
   String get letterPrivacyPublicLabel => 'Public';

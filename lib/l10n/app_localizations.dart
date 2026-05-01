@@ -3524,7 +3524,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutCompanyBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Whenote Tecnologia Ltda. — Empresa brasileira, com sede no Brasil. Foro de eleição: comarca de São Paulo/SP.'**
+  /// **'Desenvolvido e operado por Yuri Matos de Lima (Oviedo, Espanha) e Diego Ricardo Martins Rocha (Miami, FL, EUA). Foro de eleição: Miami-Dade County, FL, EUA.'**
   String get aboutCompanyBody;
 
   /// No description provided for @aboutContacts.
@@ -3560,7 +3560,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutCopyright.
   ///
   /// In pt_BR, this message translates to:
-  /// **'© 2026 Whenote Tecnologia Ltda. Todos os direitos reservados.'**
+  /// **'© 2026 Whenote. Todos os direitos reservados.'**
   String get aboutCopyright;
 
   /// No description provided for @helpCenter.
@@ -4166,7 +4166,7 @@ abstract class AppLocalizations {
   /// No description provided for @termsIntro.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo Whenote (\"Plataforma\"), desenvolvido e operado pela Whenote Tecnologia Ltda. (\"Empresa\"), inscrita no CNPJ sob o nº [XX.XXX.XXX/0001-XX], com sede no Brasil. A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, nos termos do art. 8º da Lei nº 12.965/2014 (Marco Civil da Internet) e da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).'**
+  /// **'Estes Termos de Uso (\"Termos\") regulam o acesso e a utilização do aplicativo Whenote (\"Plataforma\"), desenvolvido e operado por Yuri Matos de Lima (NIE: Z2387345L, Oviedo, Espanha) e Diego Ricardo Martins Rocha (Miami, FL, EUA), pessoas físicas (\"Operadores\"). A utilização da Plataforma implica a aceitação integral e irrestrita destes Termos, em conformidade com a legislação aplicável, incluindo o Regulamento Geral sobre a Proteção de Dados — RGPD (UE), a Lei Geral de Proteção de Dados — LGPD (Brasil) e o California Consumer Privacy Act — CCPA (EUA).'**
   String get termsIntro;
 
   /// No description provided for @termsSection1Title.
@@ -4262,13 +4262,13 @@ abstract class AppLocalizations {
   /// No description provided for @termsSection8Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias decorrentes deste instrumento, com renúncia expressa a qualquer outro foro, por mais privilegiado que seja. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 10 de abril de 2026.'**
+  /// **'Estes Termos são regidos pelas leis do Estado da Flórida, Estados Unidos. Fica eleito o foro de Miami-Dade County, FL, EUA para dirimir quaisquer controvérsias decorrentes deste instrumento. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 1 de maio de 2026.'**
   String get termsSection8Body;
 
   /// No description provided for @privacyIntro.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Esta Política de Privacidade (\"Política\") descreve como a Whenote Tecnologia Ltda. (\"Empresa\", \"nós\", \"nos\", \"nosso\") coleta, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.'**
+  /// **'Esta Política de Privacidade (\"Política\") descreve como a Yuri Matos de Lima e Diego Ricardo Martins Rocha (\"Operadores\", \"nós\", \"nos\", \"nosso\") coletam, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.'**
   String get privacyIntro;
 
   /// No description provided for @privacySection1Title.
@@ -4472,7 +4472,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection17Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nWhenote Tecnologia Ltda.\nÚltima atualização: 10 de abril de 2026.'**
+  /// **'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nÚltima atualização: 1 de maio de 2026.'**
   String get privacySection17Body;
 
   /// No description provided for @letterPrivacyPublicLabel.
