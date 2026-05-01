@@ -84,7 +84,7 @@ class LegalScreen extends StatelessWidget {
 
   Widget _buildTerms(BuildContext context, AppLocalizations l10n) {
     return _buildLegalContent(context,
-      lastUpdate: l10n.legalLastUpdate('10/04/2026'),
+      lastUpdate: l10n.legalLastUpdate('01/05/2026'),
       intro: l10n.termsIntro,
       sections: [
         _Section(l10n.termsSection1Title, l10n.termsSection1Body),
@@ -101,7 +101,7 @@ class LegalScreen extends StatelessWidget {
 
   Widget _buildPrivacy(BuildContext context, AppLocalizations l10n) {
     return _buildLegalContent(context,
-      lastUpdate: l10n.legalLastUpdate('10/04/2026'),
+      lastUpdate: l10n.legalLastUpdate('01/05/2026'),
       intro: l10n.privacyIntro,
       sections: [
         _Section(l10n.privacySection1Title, l10n.privacySection1Body),
@@ -170,7 +170,7 @@ class LegalScreen extends StatelessWidget {
         const SizedBox(height: 12),
         _buildInfoCard(context, '⚖️', l10n.aboutComplianceTitle, l10n.aboutComplianceBody),
         const SizedBox(height: 12),
-        _buildInfoCard(context, '🇧🇷', l10n.aboutCompanyTitle, l10n.aboutCompanyBody),
+        _buildInfoCard(context, '🌎', l10n.aboutCompanyTitle, l10n.aboutCompanyBody),
         const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(16),
