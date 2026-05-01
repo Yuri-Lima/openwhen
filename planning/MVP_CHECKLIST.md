@@ -18,10 +18,10 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 | # | Problema | Responsável | Como resolver |
 |---|----------|-------------|---------------|
-| B1 | **`checkUsernameAvailable` não deployada** — todo cadastro retorna "username em uso", impossível criar conta | Yuri | `firebase deploy --only functions:checkUsernameAvailable` |
+| ~~B1~~ | ~~**`checkUsernameAvailable` não deployada** — todo cadastro retorna "username em uso"~~ — ✅ **Resolvido 2026-05-01** (callable `checkUsernameAvailable` v2 deployada — verificado com `firebase functions:list`) | Yuri | — |
 | ~~B2~~ | ~~**Cursor preso no campo de texto da carta**~~ — ✅ **Resolvido 2026-04-27** | Yuri | — |
 | ~~B3~~ | ~~**Botão Apple Sign-in sem `onTap`**~~ — ✅ **Resolvido 2026-04-28** (Apple + Google Sign-In implementados) | Yuri | — |
-| B4 | **Budget Alerts Firebase não configurados** — bug em loop pode gerar fatura inesperada | Diego + Yuri | Google Cloud Console → Billing → Budgets & Alerts → $20/mês, alertas 50/80/100% |
+| ~~B4~~ | ~~**Budget Alerts Firebase não configurados**~~ — ✅ **Resolvido 2026-05-01** (€20/mês, alertas 50/80/100%, email admins + project owners) | Diego + Yuri | — |
 
 ---
 
@@ -81,8 +81,8 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🔴 Custos Firebase — ANTES DO LANÇAMENTO
 
-- [ ] **Budget Alerts configurados** na Google Cloud Console (alertas a 50%, 80% e 100% de $20/mês)
-- [ ] **Firebase Usage dashboard** ativado e monitorização planejada para os primeiros dias
+- [x] **Budget Alerts configurados** na Google Cloud Console (€20/mês, alertas a 50%, 80% e 100% — 2026-05-01)
+- [x] **Firebase Usage dashboard** ativado (plano Blaze, dashboard acessível em Firebase Console → Usage and billing — verificado 2026-05-01: $0.00, Firestore reads/writes <1% do quota gratuito)
 - [ ] Estimativas documentadas em [`MONETIZACAO.md`](MONETIZACAO.md) ✅
 
 > ⚠️ **Sem Budget Alerts, NÃO lançar em produção.** Ver [`PRODUCTION.md`](PRODUCTION.md) e [`MONETIZACAO.md`](MONETIZACAO.md).
@@ -265,11 +265,12 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Busca de usuários — catch silencioso corrigido
 - [x] Registro de tela de cadastro — header cor corrigida (dark theme)
 - [x] **Cursor preso + menu copiar/colar ausente no campo de mensagem da carta** — `GestureDetector` global no scroll competia com gestos do `TextField`; estado colapsado usava `Text` estático (sem cursor real). Unificado num único `TextField` (`minLines:1` / `maxLines:8`), `FocusNode` listener para auto-expandir ao foco, `TapRegion` isolado na busca de destinatário para fechar dropdown sem interferir com long-press. `write_letter_screen.dart` — **2026-04-27**
+- [x] **`checkUsernameAvailable` callable** — antes falhava se a função não existisse em produção (`register_screen.dart` trata erro como username indisponível). Deploy v2 callable em `us-central1` verificado — **2026-05-01**
 
 ---
 
-**Progresso geral (28/04/2026):**
-- 🔴 Bloqueadores pré-lançamento: **2 pendentes** (B1, B4 — B2 ✅ resolvido, B3 ✅ resolvido)
+**Progresso geral (01/05/2026):**
+- 🔴 Bloqueadores pré-lançamento: **1 pendente** (B4 — B1 ✅ resolvido 2026-05-01, B2 ✅, B3 ✅)
 - 🟡 Semana 1: **1 pendente** (Sign-in Apple ✅, Google ✅, botão Google ✅, aviso emocional ✅ — resta: onboarding)
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)

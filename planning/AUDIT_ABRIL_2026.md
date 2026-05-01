@@ -312,7 +312,7 @@ O medo do Diego é legítimo: a pessoa instala, manda 1 carta, desinstala. A sol
 - [ ] Corrigir catch silencioso em `register_screen.dart` `_isUsernameAvailable()`
 - [ ] Corrigir cursor preso em `write_letter_screen.dart`
 - [ ] Esconder ou implementar botões Apple/Google no login
-- [ ] Configurar Budget Alerts no Google Cloud Console ($20/mês, 50/80/100%)
+- [x] Configurar Budget Alerts no Google Cloud Console ($20/mês, 50/80/100%) — ✅ 2026-05-01
 
 ### Diego — Pode fazer sem conflito com Yuri
 

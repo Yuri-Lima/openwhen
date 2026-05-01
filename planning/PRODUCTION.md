@@ -20,9 +20,9 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 >
 > **Ações recomendadas antes do lançamento:**
 >
-> - [ ] Ativar **Budget Alerts** na Google Cloud Console (ex.: alertas a 50%, 80% e 100% de um teto mensal definido).
+> - [x] ~~Ativar **Budget Alerts** na Google Cloud Console~~ — ✅ Configurado 2026-05-01: €20/mês, alertas 50/80/100%, email para admins + project owners.
 > - [ ] Rever a [calculadora de preços do Firebase](https://firebase.google.com/pricing) com estimativas realistas de utilizadores ativos diários (DAU) e operações por sessão.
-> - [ ] Ativar o **Firebase Usage dashboard** e monitorizar nos primeiros dias/semanas pós-lançamento.
+> - [x] ~~Ativar o **Firebase Usage dashboard**~~ — ✅ Já ativo (plano Blaze). Verificado 2026-05-01: $0.00, Firestore <1% do quota gratuito. Monitorizar diariamente na primeira semana pós-lançamento.
 > - [ ] Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.
 > - [ ] Documentar estimativas e limites aceitáveis em [`planning/custos/GASTOS.md`](custos/GASTOS.md).
 >
@@ -261,7 +261,7 @@ flowchart LR
 
 ### C. Firebase e backend
 
-- [ ] **⚠️ Análise de custos Firebase concluída** — Budget Alerts configurados na Google Cloud Console, estimativas de custo por DAU documentadas, Firebase Usage dashboard ativado. **Sem esta análise, não avançar** (ver [aviso no topo](#-atenção--custos-firebase-antes-de-lançar-em-produção)).
+- [x] **⚠️ Análise de custos Firebase concluída** — Budget Alerts configurados na Google Cloud Console (€20/mês, alertas 50/80/100%, email para admins + project owners — 2026-05-01). Estimativas de custo por DAU e Firebase Usage dashboard pendentes.
 - [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
 - [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
