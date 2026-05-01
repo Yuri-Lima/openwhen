@@ -183,8 +183,8 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 ### Pendente
 - [ ] **Screenshots** — mínimo 3 para iPhone 6.5" (bloqueador de submissão)
 - [x] **Build IPA** — build 17 enviado via Transporter e visível no TestFlight
-- [ ] **Test account** — credenciais de login de teste para App Review (Sign-in required marcado)
-- [ ] **Deploy hosting** — `firebase deploy --only hosting` para publicar `support.html`
+- [x] **Test account** — credenciais de login de teste para App Review (Sign-in required marcado)
+- [x] **Deploy hosting** — `firebase deploy --only hosting` para publicar `support.html`
 
 ---
 

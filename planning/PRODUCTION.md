@@ -224,7 +224,7 @@ Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, *
 | Plataforma | O que verificar |
 |------------|-----------------|
 | **Android** | Keystore de release, `applicationId` / `namespace` em `build.gradle.kts`, Play Console (ficheiros de política, screenshots). |
-| **iOS** | Certificados e perfis no Apple Developer, **Signing & Capabilities** no Xcode, App Store Connect. **Metadata configurado (2026-04-26):** descrição, keywords, texto promocional, subtítulo, URLs (suporte + marketing), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free em 175 países, contacto de revisão. **Pendente:** screenshots (mín. 3 iPhone 6.5"), build IPA, credenciais de test account para App Review, deploy hosting (`firebase deploy --only hosting`). |
+| **iOS** | Certificados e perfis no Apple Developer, **Signing & Capabilities** no Xcode, App Store Connect. **Metadata configurado (2026-04-26):** descrição, keywords, texto promocional, subtítulo, URLs (suporte + marketing), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free em 175 países, contacto de revisão. **Pendente:** screenshots (mín. 3 iPhone 6.5"). *(Build IPA, test account App Review e deploy hosting com `support.html` tratados.)* |
 
 Comandos específicos de build seguem a documentação oficial do Flutter; as variáveis `dart-define` da secção 2 aplicam-se a **todos** os `flutter build` de release.
 
@@ -284,8 +284,8 @@ flowchart LR
 - [x] **App Store Connect — metadata iOS 1.0:** descrição, keywords, texto promocional, subtítulo, URLs (suporte `whenote.app/support` + marketing `whenote.app`), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free 175 países, contacto de revisão preenchido.
 - [ ] **App Store — screenshots:** mínimo 3 para iPhone 6.5" (obrigatório para submissão).
 - [x] **App Store — build IPA:** build 17 enviado via Transporter e visível no TestFlight.
-- [ ] **App Store — test account:** credenciais de login de teste para a equipa de revisão Apple (Sign-in required marcado).
-- [ ] **Firebase Hosting deploy:** `firebase deploy --only hosting` para publicar `support.html` (URL de suporte na ficha da App Store).
+- [x] **App Store — test account:** credenciais de login de teste para a equipa de revisão Apple (Sign-in required marcado).
+- [x] **Firebase Hosting deploy:** `firebase deploy --only hosting` para publicar `support.html` (URL de suporte na ficha da App Store).
 - [ ] **App Store:** questionário de privacidade da app; rever **`Info.plist`**: textos de uso (câmera, localização, microfone, etc.) coerentes com o comportamento real; **`UIBackgroundModes`** apenas com modos efetivamente necessários (evita perguntas extra na revisão).
 
 ### G. QA antes do release
@@ -347,6 +347,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 ## 10. Histórico de alterações deste guia
 
+- **2026-05-01:** Firebase Hosting — `firebase deploy --only hosting` concluído; `support.html` e rota `/support` em produção (`whenote.app/support`).
 - **2026-04:** Página de suporte (`support.html`) adicionada ao Firebase Hosting; App Store Connect iOS 1.0 configurado (metadata, pricing, age ratings); checklist F expandida com itens pendentes (screenshots, build, test account, deploy hosting).
 - **2026-04:** DEVICE_TESTING.md absorvido na secção [9](#9-testes-em-dispositivo-real-qa); referências cruzadas atualizadas; secção "Histórico" renumerada para §10.
 - **2026-03:** secção [8](#8-checklist-de-produção-completa) expandida em checklist A–G (identidade/keystore, segredos, Firebase, flags, push, lojas, QA); diagrama de ordem sugerida; referências cruzadas a DEVICE_TESTING e MVP_CHECKLIST.
