@@ -210,11 +210,25 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 - Lista de seguidores/seguindo (JSON)
 - Badges (JSON)
 
-### Formato:
-- Arquivo ZIP contendo JSONs + media files
-- Gerado via Cloud Function
-- Download disponível por 7 dias após geração
-- **Tela:** botão "Exportar meus dados" em Settings (já existe estrutura de export)
+### Formato e canais de export:
+
+**1. Export completo (client-side) — `complete_export_service.dart`:**
+- Formato: **ZIP** contendo JSONs (formato `whenote-sar-v1`) + media (voz .m4a, manuscrito .jpg, fotos .jpg)
+- Inclui: perfil, cartas (enviadas + recebidas), cápsulas (enviadas + participadas), comentários, likes, follows, blocks, badges
+- Coordenadas GPS incluídas (latitude/longitude reais)
+- Acionado pelo utilizador em Settings → "Exportar meus dados"
+- Partilha via `share_plus` (sem upload para Storage)
+- **Este é o export prometido na Política de Privacidade (Seção 12)**
+
+**2. Export pré-deleção (server-side) — `export_user_data.ts`:**
+- Formato: **JSON** (ficheiro único, sem media bundled)
+- Media referenciada via signed URLs (válidos por 7 dias)
+- Upload para Storage (`exports/{uidHash}_{timestamp}.json`)
+- Link enviado por email ao utilizador
+- Acionado automaticamente antes da deleção de conta
+- **Fallback/complemento:** garante que o utilizador recebe uma cópia mesmo que não tenha feito export manual
+
+> **Nota:** O export server-side em JSON (sem ZIP) é um fallback automático pré-deleção. O export completo em ZIP conforme prometido na Política de Privacidade é o client-side, acessível a qualquer momento via Settings.
 
 ---
 
@@ -287,12 +301,14 @@ Referências: `settings_screen.dart`, `account_deletion_service.dart`, `deletion
 | `anonymizeResolvedReports` | onSchedule | `anonymize_resolved_reports.ts` | 04:00 UTC |
 | `purgeOldModerationLogs` | onSchedule | `purge_old_moderation_logs.ts` | 04:30 UTC |
 | `anonymizeOldFeedback` | onSchedule | `anonymize_old_feedback.ts` | 05:00 UTC |
+| `logAccess` | onCall | `log_access.ts` (Marco Civil Art. 15 — regista IP server-side) | — |
+| `purgeOldAccessLogs` | onSchedule | `purge_old_access_logs.ts` (purga > 180 dias) | 05:30 UTC |
 
 Lógica core extraída em `executeAccountDeletion()` (reutilizada pelo callable e scheduler).
 
 ### 9.1 Scheduled Functions — Custos e Optimizações
 
-As três scheduled functions executam em off-peak (03:00–04:30 UTC) para minimizar conflitos com tráfego de utilizadores.
+As scheduled functions executam em off-peak (03:00–05:30 UTC) para minimizar conflitos com tráfego de utilizadores.
 
 **`anonymizeResolvedReports`** — Anonimiza reports resolvidos há >90 dias (remove `reporterUid`, `detail`, `resolvedByUid`; mantém metadata estatística).
 
