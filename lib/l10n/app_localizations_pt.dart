@@ -2610,6 +2610,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDeletePasswordHint => 'Digite sua senha atual';
 
   @override
+  String get settingsDeleteReauthLabel => 'VERIFIQUE SUA IDENTIDADE';
+
+  @override
+  String get settingsDeleteReauthApple => 'Verificar com a Apple';
+
+  @override
+  String get settingsDeleteReauthGoogle => 'Verificar com o Google';
+
+  @override
+  String get settingsDeleteReauthSuccess => 'Identidade verificada';
+
+  @override
   String get settingsDeleteIrreversibleConfirm =>
       'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
 
@@ -5514,6 +5526,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsDeletePasswordHint => 'Digite sua senha atual';
+
+  @override
+  String get settingsDeleteReauthLabel => 'VERIFIQUE SUA IDENTIDADE';
+
+  @override
+  String get settingsDeleteReauthApple => 'Verificar com a Apple';
+
+  @override
+  String get settingsDeleteReauthGoogle => 'Verificar com o Google';
+
+  @override
+  String get settingsDeleteReauthSuccess => 'Identidade verificada';
 
   @override
   String get settingsDeleteIrreversibleConfirm =>

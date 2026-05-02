@@ -951,9 +951,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _DeleteAccountSheet(
         l10n: l10n,
-        onConfirm: (DeletionMode mode, String password) async {
+        authProvider: AccountDeletionService.currentAuthProvider(),
+        onConfirm: (DeletionMode mode) async {
           Navigator.pop(context);
-          await _executeAccountDeletion(context, mode, password);
+          await _executeAccountDeletion(context, mode);
         },
       ),
     );
@@ -962,7 +963,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _executeAccountDeletion(
     BuildContext context,
     DeletionMode mode,
-    String password,
   ) async {
     final l10n = AppLocalizations.of(context)!;
 
@@ -994,23 +994,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     try {
-      // Step 1: Re-authenticate
-      final reauthError =
-          await AccountDeletionService.reauthenticateWithPassword(password);
-      if (reauthError != null) {
-        if (!context.mounted) return;
-        Navigator.pop(context); // dismiss loading
-        final msg = reauthError == 'wrong-password' || reauthError == 'invalid-credential'
-            ? l10n.settingsDeleteWrongPassword
-            : l10n.settingsDeleteReauthFailed;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        return;
-      }
-
-      // Step 2: Request soft deletion (export + 15-day grace period)
+      // Request soft deletion (export + 15-day grace period)
+      // Re-auth was already done in the bottom sheet before calling onConfirm.
       final scheduledFor = await AccountDeletionService.requestSoftDeletion(mode);
 
-      // Step 3: Sign out locally
+      // Sign out locally
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
 
@@ -1142,10 +1130,12 @@ class _DeleteAccountSheet extends StatefulWidget {
   const _DeleteAccountSheet({
     required this.l10n,
     required this.onConfirm,
+    required this.authProvider,
   });
 
   final AppLocalizations l10n;
-  final Future<void> Function(DeletionMode mode, String password) onConfirm;
+  final AuthProvider authProvider;
+  final Future<void> Function(DeletionMode mode) onConfirm;
 
   @override
   State<_DeleteAccountSheet> createState() => _DeleteAccountSheetState();
@@ -1156,6 +1146,12 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
   DeletionMode _mode = DeletionMode.deleteAll;
   bool _confirmed = false;
   bool _showPassword = false;
+  bool _reauthenticated = false;
+  bool _reauthenticating = false;
+  String? _reauthError;
+
+  bool get _isPasswordProvider =>
+      widget.authProvider == AuthProvider.password;
 
   @override
   void dispose() {
@@ -1163,8 +1159,57 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
     super.dispose();
   }
 
-  bool get _canProceed =>
-      _confirmed && _passwordCtrl.text.isNotEmpty;
+  bool get _canProceed {
+    if (!_confirmed) return false;
+    if (_isPasswordProvider) return _passwordCtrl.text.isNotEmpty;
+    return _reauthenticated;
+  }
+
+  Future<void> _handleSocialReauth() async {
+    setState(() {
+      _reauthenticating = true;
+      _reauthError = null;
+    });
+
+    final error = await AccountDeletionService.reauthenticate();
+
+    if (!mounted) return;
+    if (error == null) {
+      setState(() {
+        _reauthenticated = true;
+        _reauthenticating = false;
+      });
+    } else if (error == 'cancelled') {
+      setState(() => _reauthenticating = false);
+    } else {
+      setState(() {
+        _reauthenticating = false;
+        _reauthError = error;
+      });
+    }
+  }
+
+  Future<void> _handleConfirm() async {
+    if (_isPasswordProvider) {
+      // Re-auth with password first
+      final error = await AccountDeletionService.reauthenticateWithPassword(
+        _passwordCtrl.text,
+      );
+      if (!mounted) return;
+      if (error != null) {
+        final l10n = widget.l10n;
+        final msg = error == 'wrong-password' || error == 'invalid-credential'
+            ? l10n.settingsDeleteWrongPassword
+            : l10n.settingsDeleteReauthFailed;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg)),
+        );
+        return;
+      }
+    }
+    // Social re-auth was already done via _handleSocialReauth
+    await widget.onConfirm(_mode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1270,60 +1315,138 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
             ),
             const SizedBox(height: 20),
 
-            // Password field for re-authentication
-            Text(
-              l10n.settingsDeletePasswordLabel,
-              style: GoogleFonts.dmSans(
-                fontSize: 10,
-                color: context.pal.inkFaint,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 1.5,
+            // Re-authentication section
+            if (_isPasswordProvider) ...[
+              // Password field for email/password users
+              Text(
+                l10n.settingsDeletePasswordLabel,
+                style: GoogleFonts.dmSans(
+                  fontSize: 10,
+                  color: context.pal.inkFaint,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.5,
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              decoration: BoxDecoration(
-                color: context.pal.bg,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: context.pal.border, width: 1.5),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-              child: Row(
-                children: [
-                  Icon(Icons.lock_outline, size: 18,
-                      color: context.pal.inkFaint.withOpacity(0.6)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _passwordCtrl,
-                      obscureText: !_showPassword,
-                      onChanged: (_) => setState(() {}),
-                      style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        color: context.pal.ink,
-                      ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: l10n.settingsDeletePasswordHint,
-                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 14),
+              const SizedBox(height: 6),
+              Container(
+                decoration: BoxDecoration(
+                  color: context.pal.bg,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: context.pal.border, width: 1.5),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                child: Row(
+                  children: [
+                    Icon(Icons.lock_outline, size: 18,
+                        color: context.pal.inkFaint.withOpacity(0.6)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: _passwordCtrl,
+                        obscureText: !_showPassword,
+                        onChanged: (_) => setState(() {}),
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          color: context.pal.ink,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: l10n.settingsDeletePasswordHint,
+                          hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                        ),
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () => setState(() => _showPassword = !_showPassword),
+                      child: Icon(
+                        _showPassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 18,
+                        color: context.pal.inkFaint.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              // Social re-auth button for Google/Apple users
+              Text(
+                l10n.settingsDeleteReauthLabel,
+                style: GoogleFonts.dmSans(
+                  fontSize: 10,
+                  color: context.pal.inkFaint,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              if (_reauthenticated)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
                   ),
-                  GestureDetector(
-                    onTap: () => setState(() => _showPassword = !_showPassword),
-                    child: Icon(
-                      _showPassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 18,
-                      color: context.pal.inkFaint.withOpacity(0.6),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, size: 18, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Text(
+                        l10n.settingsDeleteReauthSuccess,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: _reauthenticating ? null : _handleSocialReauth,
+                  icon: _reauthenticating
+                      ? SizedBox(
+                          width: 16, height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.pal.inkSoft,
+                          ),
+                        )
+                      : Icon(
+                          widget.authProvider == AuthProvider.apple
+                              ? Icons.apple
+                              : Icons.g_mobiledata,
+                          size: 20,
+                        ),
+                  label: Text(
+                    widget.authProvider == AuthProvider.apple
+                        ? l10n.settingsDeleteReauthApple
+                        : l10n.settingsDeleteReauthGoogle,
+                    style: GoogleFonts.dmSans(fontSize: 14),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 48),
+                    side: BorderSide(color: context.pal.border, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+              if (_reauthError != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  l10n.settingsDeleteReauthFailed,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: const Color(0xFFEF4444),
+                  ),
+                ),
+              ],
+            ],
             const SizedBox(height: 16),
 
             // Confirmation checkbox
@@ -1359,9 +1482,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
 
             // Confirm button
             ElevatedButton(
-              onPressed: _canProceed
-                  ? () => widget.onConfirm(_mode, _passwordCtrl.text)
-                  : null,
+              onPressed: _canProceed ? _handleConfirm : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFEF4444),
                 disabledBackgroundColor:

@@ -2620,6 +2620,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsDeletePasswordHint => 'Ingresa tu contraseña actual';
 
   @override
+  String get settingsDeleteReauthLabel => 'VERIFICA TU IDENTIDAD';
+
+  @override
+  String get settingsDeleteReauthApple => 'Verificar con Apple';
+
+  @override
+  String get settingsDeleteReauthGoogle => 'Verificar con Google';
+
+  @override
+  String get settingsDeleteReauthSuccess => 'Identidad verificada';
+
+  @override
   String get settingsDeleteIrreversibleConfirm =>
       'Entiendo que esta acción es irreversible y todos mis datos serán procesados según mi elección anterior.';
 

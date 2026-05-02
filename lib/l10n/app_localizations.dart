@@ -4829,6 +4829,30 @@ abstract class AppLocalizations {
   /// **'Digite sua senha atual'**
   String get settingsDeletePasswordHint;
 
+  /// No description provided for @settingsDeleteReauthLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'VERIFIQUE SUA IDENTIDADE'**
+  String get settingsDeleteReauthLabel;
+
+  /// No description provided for @settingsDeleteReauthApple.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Verificar com a Apple'**
+  String get settingsDeleteReauthApple;
+
+  /// No description provided for @settingsDeleteReauthGoogle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Verificar com o Google'**
+  String get settingsDeleteReauthGoogle;
+
+  /// No description provided for @settingsDeleteReauthSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Identidade verificada'**
+  String get settingsDeleteReauthSuccess;
+
   /// No description provided for @settingsDeleteIrreversibleConfirm.
   ///
   /// In pt_BR, this message translates to:

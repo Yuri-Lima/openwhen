@@ -25,6 +25,7 @@
 | Anonimização de reports (90 dias) | ✅ Implementado | `anonymize_resolved_reports.ts` — scheduled daily 04:00 UTC; remove PII, mantém stats |
 | Purge de logs de moderação (2 anos) | ✅ Implementado | `purge_old_moderation_logs.ts` — scheduled daily 04:30 UTC; deleta incidents + reviews |
 | Anonimização de feedback (1 ano) | ✅ Implementado | `anonymize_old_feedback.ts` — scheduled daily 05:00 UTC; remove uid + message, mantém stats |
+| Re-auth social (Apple/Google) na eliminação | ✅ Implementado | `account_deletion_service.dart` — deteta provider, re-auth via OAuth antes de eliminar |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |
