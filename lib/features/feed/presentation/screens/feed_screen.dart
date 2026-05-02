@@ -24,6 +24,8 @@ import '../../../profile/presentation/screens/user_profile_screen.dart';
 import '../../../letters/presentation/screens/letter_detail_screen.dart';
 import '../../../letters/data/letter_repository_actions.dart';
 import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
+import '../../../../shared/social/instagram_stories_share_service.dart';
+import '../../../../shared/social/story_share_content.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -702,6 +704,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
   bool _showAllComments = false;
   final Set<String> _expandedCommentPreviewIds = <String>{};
   bool _expanded = false;
+  bool _sharingStory = false;
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
 
@@ -1067,10 +1070,14 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
             // ── Carta expandida com layout de papel ──────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              child: _FeedPaperLetter(
-                data: data,
-                accentColor: context.pal.accent,
-                onClose: () => setState(() => _expanded = false),
+              child: Builder(
+                builder: (ctx) => _FeedPaperLetter(
+                  data: data,
+                  accentColor: context.pal.accent,
+                  onClose: () => setState(() => _expanded = false),
+                  onShare: () => _sharePaperLetter(ctx),
+                  isSharing: _sharingStory,
+                ),
               ),
             ),
           ],
@@ -1145,6 +1152,26 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                     ),
                   ),
                 ),
+                const Spacer(),
+                // Share
+                Builder(
+                  builder: (ctx) => GestureDetector(
+                    onTap: _sharingStory ? null : () => _sharePaperLetter(ctx),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _sharingStory
+                          ? SizedBox(
+                              width: 20, height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: _iconFaint(context),
+                              ),
+                            )
+                          : Icon(Icons.share_outlined, size: 20,
+                              color: _iconFaint(context)),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -1157,6 +1184,47 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
         ],
       ),
     );
+  }
+
+  Future<void> _sharePaperLetter(BuildContext triggerContext) async {
+    if (_sharingStory) return;
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final data = widget.data;
+    final deepLink = 'https://whenote.app/letter/${widget.docId}';
+    final openedAt = data['openedAt'] != null
+        ? (data['openedAt'] as Timestamp).toDate()
+        : DateTime.now();
+
+    final hideSender = (data['hideSenderName'] ?? false) == true;
+    final senderName = hideSender
+        ? l10n.feedSenderAnonymous
+        : (data['senderName'] as String? ?? '');
+
+    final content = StoryShareContent.paperLetter(
+      docId: widget.docId,
+      title: data['title'] ?? '',
+      message: data['message'] ?? '',
+      senderName: senderName,
+      receiverName: data['receiverName'] ?? '',
+      dateSubtitle: l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
+    );
+
+    final box = triggerContext.findRenderObject() as RenderBox?;
+    final origin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+    setState(() => _sharingStory = true);
+    try {
+      await InstagramStoriesShareService.share(
+        context: context,
+        content: content,
+        shareText: l10n.qrShareText(data['title'] ?? '', deepLink),
+        shareSubject: l10n.qrShareSubject,
+        sharePositionOrigin: origin,
+      );
+    } finally {
+      if (mounted) setState(() => _sharingStory = false);
+    }
   }
 
   Widget _buildCommentsPreview(String? uid) {
@@ -1247,11 +1315,15 @@ class _FeedPaperLetter extends StatelessWidget {
   final Map<String, dynamic> data;
   final Color accentColor;
   final VoidCallback onClose;
+  final VoidCallback onShare;
+  final bool isSharing;
 
   const _FeedPaperLetter({
     required this.data,
     required this.accentColor,
     required this.onClose,
+    required this.onShare,
+    this.isSharing = false,
   });
 
   @override
@@ -1371,24 +1443,60 @@ class _FeedPaperLetter extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Botão fechar
-                    Center(
-                      child: GestureDetector(
-                        onTap: onClose,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFD4C5B0)),
-                            borderRadius: BorderRadius.circular(20),
+                    // Botões: fechar e compartilhar
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: onClose,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0xFFD4C5B0)),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(l10n.feedCloseLetter,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: const Color(0xFF7A5C3A),
+                                fontWeight: FontWeight.w500,
+                              )),
                           ),
-                          child: Text(l10n.feedCloseLetter,
-                            style: GoogleFonts.dmSans(
-                              fontSize: 12,
-                              color: const Color(0xFF7A5C3A),
-                              fontWeight: FontWeight.w500,
-                            )),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: isSharing ? null : onShare,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: accentColor.withOpacity(0.12),
+                              border: Border.all(color: accentColor.withOpacity(0.4)),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: isSharing
+                                ? SizedBox(
+                                    width: 16, height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: accentColor,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.share_outlined, size: 14, color: accentColor),
+                                      const SizedBox(width: 6),
+                                      Text(l10n.letterDetailShareTitle,
+                                        style: GoogleFonts.dmSans(
+                                          fontSize: 12,
+                                          color: accentColor,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
