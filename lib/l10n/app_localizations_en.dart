@@ -2404,7 +2404,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection11Body =>
-      'You may delete your account at any time via Settings > Data and Privacy > Delete Account. Before deletion, you must re-authenticate for security. You will be offered two modes:\n\n(a) Delete All: permanently removes your profile, all letters (sent and received), capsules, comments, likes, follows, blocks, reports, feedback, badges, notifications, and all uploaded files (photos, voice messages, handwritten images). Your Firebase authentication record is also deleted.\n\n(b) Anonymize: preserves letters and capsules for their recipients, but replaces your name with \"Deleted user\" and removes your identifying information (user ID, location data, personal media). Your profile, social connections, comments, and likes are deleted.\n\nIn both modes: (i) active Stripe subscriptions are cancelled; (ii) a non-reversible audit log is recorded (hashed identifier + timestamp, no PII) for compliance purposes; (iii) the deletion is irreversible. Locked letters you have already sent may continue to be delivered to their recipients per our Terms of Use — a letter sent is a gift entrusted to the recipient.';
+      'You may delete your account at any time via Settings > Data and Privacy > Delete Account. Before deletion, you must re-authenticate for security. You will be offered two modes:\n\n(a) Delete All: permanently removes your profile, all letters (sent and received), capsules, comments, likes, follows, blocks, reports, feedback, badges, notifications, and all uploaded files (photos, voice messages, handwritten images). Your Firebase authentication record is also deleted.\n\n(b) Anonymize: preserves letters and capsules for their recipients, but replaces your name with \"Deleted user\" and removes your identifying information (user ID, location data, personal media). Your profile, social connections, comments, and likes are deleted.\n\nIn both modes: (i) active Stripe subscriptions are cancelled; (ii) a non-reversible audit log is recorded (hashed identifier + timestamp, no PII) for compliance purposes; (iii) after confirmation, your account enters a 15-day grace period during which you may cancel the deletion request via Settings; once this period expires, the deletion is executed permanently and irreversibly. Locked letters you have already sent may continue to be delivered to their recipients per our Terms of Use — a letter sent is a gift entrusted to the recipient.';
 
   @override
   String get privacySection12Title => '12. DATA PORTABILITY AND EXPORT';
@@ -2509,11 +2509,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerAcceptTermsAnd => ' and the ';
 
   @override
-  String get registerConfirmAge => 'I confirm that I am 13 years old or older';
-
-  @override
   String get registerMustAcceptTerms =>
       'You must accept the terms and confirm your age to continue';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Before continuing';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'To create your account, please confirm the following:';
+
+  @override
+  String get socialSignInContinue => 'Continue';
+
+  @override
+  String get registerDateOfBirthLabel => 'DATE OF BIRTH';
+
+  @override
+  String get registerDateOfBirthHint => 'Select your date of birth';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'You must be at least $minAge years old to use this app.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';

@@ -41,7 +41,8 @@ lib/
 │   │   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 │   ├── utils/
 │   │   ├── email_normalization.dart   # normalizeReceiverEmailForMatching (must match server)
-│   │   └── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
+│   │   ├── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
+│   │   └── age_verification.dart     # validateAge — idade mínima por jurisdição (GDPR Art. 8 / COPPA)
 │   └── moderation/
 │       └── moderation_functions_service.dart  # Callable `moderateContent` (região igual a billing)
 ├── features/
@@ -321,10 +322,12 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 - `lib/features/profile/presentation/screens/settings_screen.dart` — UI (`_DeleteAccountSheet`)
 - `planning/DATA_RETENTION_POLICY.md` — política completa
 
-### COPPA / GDPR / LGPD
-- Registro: checkboxes obrigatórios para idade 13+ e aceite de Termos/Privacidade
-- Deleção: escolha do usuário entre remover tudo ou anonimizar cartas
-- Audit log: `deletionAuditLogs` com hash do UID (sem PII)
+### COPPA / GDPR Art. 8 / LGPD
+- **Verificação de idade:** date picker de data de nascimento no registro (email/password) e age gate modal no login social (Google/Apple). A idade mínima é determinada automaticamente pela jurisdição do dispositivo (`Platform.localeName`) via `age_verification.dart`, que mapeia 27 países EU/EEA/UK com idades entre 13–16 (GDPR Art. 8); restantes defaultam a 16 (EU) ou 13 (COPPA).
+- **Campo `dateOfBirth`:** gravado no Firestore (`users/{uid}`) como `Timestamp`; campo nullable para retrocompatibilidade com contas existentes.
+- Aceite obrigatório de Termos de Uso e Política de Privacidade no registro.
+- Deleção: escolha do usuário entre remover tudo ou anonimizar cartas.
+- Audit log: `deletionAuditLogs` com hash do UID (sem PII).
 
 ---
 

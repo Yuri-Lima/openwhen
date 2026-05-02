@@ -26,6 +26,7 @@ class AuthRepository {
     required String email,
     required String password,
     required String username,
+    required DateTime dateOfBirth,
   }) async {
     final credential = await _authService.registerWithEmail(
       email: email,
@@ -62,6 +63,7 @@ class AuthRepository {
       'country': null,
       'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
       'hasCompletedFirstAction': false,
+      'dateOfBirth': Timestamp.fromDate(dateOfBirth),
     });
 
     // Send email verification — required before first login.
@@ -78,7 +80,8 @@ class AuthRepository {
 
   /// Sign in (or sign up) with Apple.
   /// Creates a Firestore user document on first login.
-  Future<void> signInWithApple() async {
+  /// [dateOfBirth] is collected from the age-gate dialog for new users.
+  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
     final credential = await _authService.signInWithApple();
     final user = credential.user!;
     final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
@@ -120,13 +123,15 @@ class AuthRepository {
         'country': null,
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
   }
 
   /// Sign in (or sign up) with Google.
   /// Creates a Firestore user document on first login.
-  Future<void> signInWithGoogle() async {
+  /// [dateOfBirth] is collected from the age-gate dialog for new users.
+  Future<void> signInWithGoogle({required DateTime dateOfBirth}) async {
     final credential = await _authService.signInWithGoogle();
     final user = credential.user!;
     final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
@@ -168,6 +173,7 @@ class AuthRepository {
         'country': null,
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
   }

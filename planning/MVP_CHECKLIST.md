@@ -110,6 +110,51 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ---
 
+## 🔴 Auditoria de Compliance Legal — 02/05/2026
+
+> Cruzamento entre o que os Termos de Uso e Política de Privacidade prometem vs. o que o código realmente implementa.
+> **Resultado: 9 conformes · 4 parciais · 5 ausentes (2 resolvidos em 02/05/2026)**
+
+### ✅ Conforme (9)
+
+- [x] **Consentimento no registro (email)** — dois checkboxes obrigatórios: Termos + Política de Privacidade, e confirmação de idade 13+. Botão de criar conta desabilitado sem ambos. `register_screen.dart` linhas 617-669.
+- [x] **Eliminação de conta (2 modos)** — Delete All e Anonymize implementados no client (`account_deletion_service.dart`) e Cloud Functions (`delete_account.ts`, `scheduled_deletion.ts`). Cobre perfil, cartas, cápsulas, comentários, likes, follows, bloqueos, denúncias, feedback, badges, notificações, ficheiros e registo Firebase Auth.
+- [x] **Re-autenticação antes de eliminar** — `reauthenticateWithPassword()` exigido antes de qualquer ação de eliminação. UI bloqueia confirmação até sucesso.
+- [x] **Stripe: dados de cartão nunca no servidor** — checkout via Cloud Functions (`createCheckoutSession`), cartão processado diretamente pelo Stripe. Campos billing (`stripeCustomerId`, `subscriptionTier`, etc.) protegidos nas Firestore Rules como server-only write.
+- [x] **Moderação IA (3 tiers)** — OpenAI Moderation API integrada. `ModerationDecision` com `allowed`/`warning`/`blocked`. Thresholds configuráveis (0.40 warning, 0.70 block). `send_moderation_helper.dart`.
+- [x] **Fila de moderação humana** — Admin panel com 4 abas (Reports, Feedback, Human Reviews, Incidents). `admin_moderation_screen.dart`. `humanModerationQueueEnabled` no SystemConfig.
+- [x] **Denúncia de conteúdo** — bottom sheet com 5 categorias (spam, assédio, ódio, ilegal, outro) + detalhe opcional (2000 chars). Reports escritos no Firestore com metadados completos. `report_flow.dart`.
+- [x] **Limite de voz (1 minuto)** — `_voiceMaxSeconds = 60` em `write_letter_screen.dart` linha 124. Gravação para automaticamente ao atingir 60s.
+- [x] **Firestore Security Rules** — 260 linhas cobrindo users, letters, capsules, comments, likes, follows, blocks, reports, moderação. Campos billing protegidos. Collections de moderação write-locked para Admin SDK. `firestore.rules`.
+- [x] **Localização opt-in por carta** — dialog por carta/cápsula (`location_prompt_flow.dart`), sem background tracking. Feature atualmente desabilitada por flag (`kEnableSenderLocationPromptOnSend = false`).
+
+### ⚠️ Parcialmente implementado (4)
+
+- [x] **Verificação de idade em login social** — ~~Sign in with Apple e Google pulavam a tela de registro completamente sem age gate.~~ ✅ **Resolvido 2026-05-02** — dialog com checkboxes de Termos + Idade 13+ adicionado antes de qualquer social sign-in em `login_screen.dart`. Chaves i18n adicionadas nos 4 idiomas.
+- [ ] **App Check iOS desativado** — App Check funciona em Android (Play Integrity), mas está comentado no iOS por bug do SDK Firebase (`firebase-ios-sdk#15974`). A política promete proteção em ambas as plataformas. `main.dart` linhas 58-77. **Corrigir:** reativar quando FlutterFire publicar SDK >= 12.12.0.
+- [x] **Eliminação "irreversível" vs. grace period** — ~~A política dizia "irreversible" mas o código implementa 15 dias de carência.~~ ✅ **Resolvido 2026-05-02** — texto de `privacySection11Body` atualizado nos 4 idiomas (EN/PT/PT_BR/ES) para explicar o período de carência de 15 dias com opção de cancelamento.
+- [x] **Info.plist: NSLocationAlwaysAndWhenInUseUsageDescription** — ~~O código só usa location `whenInUse`, mas o Info.plist declarava permissão "Always", contradizendo a política.~~ ✅ **Resolvido 2026-05-02** — chave removida do Info.plist.
+
+### ❌ Ausente no código (5 restantes, 2 resolvidos)
+
+- [x] **Data de nascimento no registro** — ✅ Implementado (02/05/2026): campo `dateOfBirth` adicionado ao modelo `AppUser`, date picker no registro e login social, salvo no Firestore via `Timestamp`. Utilitário `age_verification.dart` criado com validação por jurisdição.
+- [x] **Idade mínima 16 para EU/UK** — ✅ Implementado (02/05/2026): `age_verification.dart` contém mapa completo de idades mínimas por país EU/EEA/UK (GDPR Art. 8), usa `Platform.localeName` para inferir jurisdição. Threshold varia de 13–16 conforme legislação nacional de cada Estado-membro.
+- [ ] **Consentimento de analytics (EU/UK)** — `FirebaseAnalytics.instance` inicializa incondicionalmente em `analytics_service.dart`. Não há gate de consentimento, opt-out, nem detecção de região. A Directiva ePrivacy (2002/58/CE) e o UK PECR exigem consentimento prévio. **Ação:** implementar consent banner para EU/UK; chamar `setAnalyticsCollectionEnabled(false)` por defeito e ativar só após consentimento.
+- [ ] **Global Privacy Control (GPC)** — A política diz "We honor the GPC signal as a valid opt-out request under CCPA", mas não existe nenhuma detecção ou tratamento do sinal GPC no código. **Nota:** GPC é tipicamente um header HTTP (`Sec-GPC: 1`) — relevante principalmente para web. Para mobile apps, considerar verificar via User-Agent ou remover a menção do GPC da política se o app for mobile-only.
+- [ ] **Exportação completa de dados (GDPR Art. 20)** — O export atual (`letter_export_service.dart`) gera apenas cartas em PDF + media. A política promete export de: perfil (JSON), cápsulas (JSON + fotos), comentários (JSON), likes (JSON), follows (JSON) e badges (JSON) — nenhum destes está implementado. O caminho no app é "Privacy Center", não "Settings > Data and Privacy > Export My Data" como na política. **Ação:** expandir export para cobrir todas as categorias de dados em JSON; gerar ZIP completo.
+- [ ] **Anonimização de denúncias (90 dias)** — A política promete "Content reports anonymized 90 days after resolution", mas não existe Cloud Function, TTL rule ou lógica que execute isso. **Ação:** criar Cloud Function scheduled que anonimize reports com `status == resolved` há mais de 90 dias.
+- [ ] **Retenção de logs de moderação (2 anos)** — A política diz que logs de moderação são "retained for 2 years without direct PII", mas não há enforcement automático de purge após 2 anos. **Ação:** criar Cloud Function scheduled que elimine `moderationIncidents` e `moderationReviews` com mais de 2 anos.
+
+### Notas adicionais da auditoria
+
+- **Hash do audit log não é criptográfico** — `simpleHash` no `account_deletion_service.dart` usa djb2 (32-bit int), que é trivialmente reversível. A política implica hash seguro ("hashed, non-reversible identifiers"). **Recomendação:** substituir por SHA-256 com salt.
+- **Re-auth social missing** — `reauthenticateWithPassword()` só funciona para email/password. Utilizadores autenticados via Apple/Google OAuth não conseguem re-autenticar para eliminar a conta. **Ação:** implementar `reauthenticateWithCredential` para providers OAuth.
+- **TLS 1.3** — delegado à infraestrutura Firebase/Google Cloud. Não verificável no código, mas a claim é válida.
+- **Notificação de breach (72h)** — compromisso da política sem mecanismo no código. Aceitável como procedimento operacional, mas recomenda-se documentar um playbook de incidentes em `planning/`.
+- **Fundo de Continuidade** — documentado em `planning/LEGAL.md` como aspiracional (projetado para Q3 2026). Os Termos corretamente usam "may establish", então está conforme.
+
+---
+
 ## Comparação com Instagram — o que aproveitar
 
 | Feature | Status Whenote | Prioridade |
@@ -269,13 +314,13 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 
 ---
 
-**Progresso geral (01/05/2026):**
-- 🔴 Bloqueadores pré-lançamento: **1 pendente** (B4 — B1 ✅ resolvido 2026-05-01, B2 ✅, B3 ✅)
+**Progresso geral (02/05/2026):**
+- 🔴 Bloqueadores pré-lançamento: **todos resolvidos** ✅ (B1 ✅ 2026-05-01, B2 ✅, B3 ✅, B4 ✅ 2026-05-01)
 - 🟡 Semana 1: **1 pendente** (Sign-in Apple ✅, Google ✅, botão Google ✅, aviso emocional ✅ — resta: onboarding)
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
-- Legal: **concluído** (revisão com advogado pendente)
+- Legal: **textos atualizados** (EN/PT/PT_BR/ES — 13 gaps corrigidos nos .arb 2026-05-02); **auditoria de compliance** feita (9 conformes, 4 parciais, 5 ausentes — ver secção acima); **dateOfBirth + age verification por jurisdição** implementados (02/05/2026); revisão com advogado pendente
 - Monetização: **planejada** (ativar após 10K users)
 
 ---

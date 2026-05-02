@@ -2408,7 +2408,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection11Body =>
-      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) a exclusão é irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
+      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) após a confirmação, sua conta entra em um período de carência de 15 dias durante o qual você pode cancelar a solicitação de exclusão em Configurações; expirado esse período, a exclusão é executada de forma permanente e irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
 
   @override
   String get privacySection12Title => '12. PORTABILIDADE E EXPORTAÇÃO DE DADOS';
@@ -2513,11 +2513,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String get registerAcceptTermsAnd => ' e a ';
 
   @override
-  String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
-
-  @override
   String get registerMustAcceptTerms =>
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Antes de continuar';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'Para criar sua conta, confirme o seguinte:';
+
+  @override
+  String get socialSignInContinue => 'Continuar';
+
+  @override
+  String get registerDateOfBirthLabel => 'DATA DE NASCIMENTO';
+
+  @override
+  String get registerDateOfBirthHint => 'Selecione a sua data de nascimento';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'Deve ter pelo menos $minAge anos para utilizar esta aplicação.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';
@@ -5264,7 +5282,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection11Body =>
-      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) a exclusão é irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
+      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) após a confirmação, sua conta entra em um período de carência de 15 dias durante o qual você pode cancelar a solicitação de exclusão em Configurações; expirado esse período, a exclusão é executada de forma permanente e irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
 
   @override
   String get privacySection12Title => '12. PORTABILIDADE E EXPORTAÇÃO DE DADOS';
@@ -5369,11 +5387,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get registerAcceptTermsAnd => ' e a ';
 
   @override
-  String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
-
-  @override
   String get registerMustAcceptTerms =>
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Antes de continuar';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'Para criar sua conta, confirme o seguinte:';
+
+  @override
+  String get socialSignInContinue => 'Continuar';
+
+  @override
+  String get registerDateOfBirthLabel => 'DATA DE NASCIMENTO';
+
+  @override
+  String get registerDateOfBirthHint => 'Selecione sua data de nascimento';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'Você precisa ter pelo menos $minAge anos para usar este aplicativo.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';

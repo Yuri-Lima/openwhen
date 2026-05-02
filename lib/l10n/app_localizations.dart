@@ -4466,7 +4466,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySection11Body.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) a exclusão é irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.'**
+  /// **'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) após a confirmação, sua conta entra em um período de carência de 15 dias durante o qual você pode cancelar a solicitação de exclusão em Configurações; expirado esse período, a exclusão é executada de forma permanente e irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.'**
   String get privacySection11Body;
 
   /// No description provided for @privacySection12Title.
@@ -4661,17 +4661,47 @@ abstract class AppLocalizations {
   /// **' e a '**
   String get registerAcceptTermsAnd;
 
-  /// No description provided for @registerConfirmAge.
-  ///
-  /// In pt_BR, this message translates to:
-  /// **'Confirmo que tenho 13 anos ou mais'**
-  String get registerConfirmAge;
-
   /// No description provided for @registerMustAcceptTerms.
   ///
   /// In pt_BR, this message translates to:
   /// **'Você precisa aceitar os termos e confirmar sua idade para continuar'**
   String get registerMustAcceptTerms;
+
+  /// No description provided for @socialSignInAgeGateTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Antes de continuar'**
+  String get socialSignInAgeGateTitle;
+
+  /// No description provided for @socialSignInAgeGateBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Para criar sua conta, confirme o seguinte:'**
+  String get socialSignInAgeGateBody;
+
+  /// No description provided for @socialSignInContinue.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Continuar'**
+  String get socialSignInContinue;
+
+  /// No description provided for @registerDateOfBirthLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'DATA DE NASCIMENTO'**
+  String get registerDateOfBirthLabel;
+
+  /// No description provided for @registerDateOfBirthHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Selecione sua data de nascimento'**
+  String get registerDateOfBirthHint;
+
+  /// No description provided for @registerAgeUnder.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você precisa ter pelo menos {minAge} anos para usar este aplicativo.'**
+  String registerAgeUnder(int minAge);
 
   /// No description provided for @registerSectionUsername.
   ///

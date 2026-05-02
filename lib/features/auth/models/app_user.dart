@@ -32,6 +32,10 @@ class AppUser {
   /// Defaults to `true` for existing users (no field in Firestore → skip guide).
   final bool hasCompletedFirstAction;
 
+  /// Date of birth — required at registration for COPPA / GDPR Art. 8 compliance.
+  /// Nullable for backwards compatibility with existing users.
+  final DateTime? dateOfBirth;
+
   /// Account lifecycle: `active` | `pending_deletion`.
   /// When `pending_deletion`, the user can still log in but cannot send
   /// new letters/capsules. A scheduled Cloud Function will execute the
@@ -65,6 +69,7 @@ class AppUser {
     this.stripeCustomerId,
     this.stripeSubscriptionId,
     this.subscriptionStatus,
+    this.dateOfBirth,
     this.hasCompletedFirstAction = true,
     this.accountStatus = 'active',
     this.deletionRequestedAt,
@@ -92,6 +97,9 @@ class AppUser {
       stripeCustomerId: data['stripeCustomerId'] as String?,
       stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
       subscriptionStatus: data['subscriptionStatus'] as String?,
+      dateOfBirth: data['dateOfBirth'] != null
+          ? (data['dateOfBirth'] as Timestamp).toDate()
+          : null,
       hasCompletedFirstAction: data['hasCompletedFirstAction'] as bool? ?? true,
       accountStatus: data['accountStatus'] as String? ?? 'active',
       deletionRequestedAt: data['deletionRequestedAt'] != null
@@ -138,6 +146,8 @@ class AppUser {
       if (stripeCustomerId != null) 'stripeCustomerId': stripeCustomerId,
       if (stripeSubscriptionId != null) 'stripeSubscriptionId': stripeSubscriptionId,
       if (subscriptionStatus != null) 'subscriptionStatus': subscriptionStatus,
+      if (dateOfBirth != null)
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth!),
       'hasCompletedFirstAction': hasCompletedFirstAction,
       'accountStatus': accountStatus,
       if (deletionRequestedAt != null)

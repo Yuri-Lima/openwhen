@@ -2419,7 +2419,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get privacySection11Body =>
-      'Puedes eliminar tu cuenta en cualquier momento en Configuración > Datos y Privacidad > Eliminar Cuenta. Antes de la eliminación, deberás reautenticarte por seguridad. Se te ofrecerán dos modos:\n\n(a) Eliminar Todo: elimina permanentemente tu perfil, todas las cartas (enviadas y recibidas), cápsulas, comentarios, me gusta, follows, bloqueos, denuncias, retroalimentación, insignias, notificaciones y todos los archivos subidos (fotos, mensajes de voz, imágenes manuscritas). Tu registro de autenticación en Firebase también se elimina.\n\n(b) Anonimizar: preserva cartas y cápsulas para sus destinatarios, pero reemplaza tu nombre por \"Usuario eliminado\" y elimina tu información identificable (ID de usuario, datos de ubicación, medios personales). Tu perfil, conexiones sociales, comentarios y me gusta se eliminan.\n\nEn ambos modos: (i) las suscripciones Stripe activas se cancelan; (ii) se registra un registro de auditoría no reversible (identificador hasheado + marca de tiempo, sin PII) para fines de cumplimiento; (iii) la eliminación es irreversible. Las cartas bloqueadas que ya enviaste pueden continuar siendo entregadas a sus destinatarios según nuestros Términos de Uso — una carta enviada es un regalo confiado al destinatario.';
+      'Puedes eliminar tu cuenta en cualquier momento en Configuración > Datos y Privacidad > Eliminar Cuenta. Antes de la eliminación, deberás reautenticarte por seguridad. Se te ofrecerán dos modos:\n\n(a) Eliminar Todo: elimina permanentemente tu perfil, todas las cartas (enviadas y recibidas), cápsulas, comentarios, me gusta, follows, bloqueos, denuncias, retroalimentación, insignias, notificaciones y todos los archivos subidos (fotos, mensajes de voz, imágenes manuscritas). Tu registro de autenticación en Firebase también se elimina.\n\n(b) Anonimizar: preserva cartas y cápsulas para sus destinatarios, pero reemplaza tu nombre por \"Usuario eliminado\" y elimina tu información identificable (ID de usuario, datos de ubicación, medios personales). Tu perfil, conexiones sociales, comentarios y me gusta se eliminan.\n\nEn ambos modos: (i) las suscripciones Stripe activas se cancelan; (ii) se registra un registro de auditoría no reversible (identificador hasheado + marca de tiempo, sin PII) para fines de cumplimiento; (iii) tras la confirmación, tu cuenta entra en un período de gracia de 15 días durante el cual puedes cancelar la solicitud de eliminación en Configuración; expirado este período, la eliminación se ejecuta de forma permanente e irreversible. Las cartas bloqueadas que ya enviaste pueden continuar siendo entregadas a sus destinatarios según nuestros Términos de Uso — una carta enviada es un regalo confiado al destinatario.';
 
   @override
   String get privacySection12Title => '12. PORTABILIDAD Y EXPORTACIÓN DE DATOS';
@@ -2524,11 +2524,29 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registerAcceptTermsAnd => ' y la ';
 
   @override
-  String get registerConfirmAge => 'Confirmo que tengo 13 años o más';
-
-  @override
   String get registerMustAcceptTerms =>
       'Debes aceptar los términos y confirmar tu edad para continuar';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Antes de continuar';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'Para crear tu cuenta, confirma lo siguiente:';
+
+  @override
+  String get socialSignInContinue => 'Continuar';
+
+  @override
+  String get registerDateOfBirthLabel => 'FECHA DE NACIMIENTO';
+
+  @override
+  String get registerDateOfBirthHint => 'Selecciona tu fecha de nacimiento';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'Debes tener al menos $minAge años para usar esta aplicación.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';

@@ -21,6 +21,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
     required String email,
     required String password,
     required String username,
+    required DateTime dateOfBirth,
   }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _repository.register(
@@ -28,6 +29,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
           email: email,
           password: password,
           username: username,
+          dateOfBirth: dateOfBirth,
         ));
   }
 
@@ -42,14 +44,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
         ));
   }
 
-  Future<void> signInWithApple() async {
+  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _repository.signInWithApple());
+    state = await AsyncValue.guard(() => _repository.signInWithApple(dateOfBirth: dateOfBirth));
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle({required DateTime dateOfBirth}) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _repository.signInWithGoogle());
+    state = await AsyncValue.guard(() => _repository.signInWithGoogle(dateOfBirth: dateOfBirth));
   }
 
   Future<void> signOut() async {
