@@ -27,6 +27,7 @@
 | Anonimização de feedback (1 ano) | ✅ Implementado | `anonymize_old_feedback.ts` — scheduled daily 05:00 UTC; remove uid + message, mantém stats |
 | Re-auth social (Apple/Google) na eliminação | ✅ Implementado | `account_deletion_service.dart` — deteta provider, re-auth via OAuth antes de eliminar |
 | Export cápsulas recebidas + GPS | ✅ Corrigido | `complete_export_service.dart` — `participantUids array-contains` + coordenadas reais |
+| Audit trail de privacidade completo | ✅ Implementado | `privacy_log_service.dart` — 5 tipos de evento (export, complete_export, deletion_request, deletion_cancellation, reauthentication); `firestore.rules` whitelist atualizada |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |

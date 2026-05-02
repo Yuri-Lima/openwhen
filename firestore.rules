@@ -231,7 +231,7 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.resource.data.keys().hasOnly(['uid', 'type', 'status', 'metadata', 'createdAt', 'source'])
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.type in ['export']
+        && request.resource.data.type in ['export', 'complete_export', 'deletion_request', 'deletion_cancellation', 'reauthentication']
         && request.resource.data.status in ['completed', 'failed']
         && request.resource.data.metadata is map
         && request.resource.data.createdAt == request.time

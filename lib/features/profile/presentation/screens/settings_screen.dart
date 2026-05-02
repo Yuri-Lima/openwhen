@@ -993,10 +993,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
 
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final provider = AccountDeletionService.currentAuthProvider();
+    final modeStr = mode == DeletionMode.deleteAll ? 'delete_all' : 'anonymize';
+
     try {
       // Request soft deletion (export + 15-day grace period)
       // Re-auth was already done in the bottom sheet before calling onConfirm.
       final scheduledFor = await AccountDeletionService.requestSoftDeletion(mode);
+
+      // Audit log (best-effort)
+      PrivacyLogService.logDeletionRequest(
+        uid: uid,
+        mode: modeStr,
+        authProvider: provider.name,
+        success: true,
+      );
 
       // Sign out locally
       if (!context.mounted) return;
@@ -1018,6 +1030,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
     } catch (e, st) {
       debugPrint('Account deletion request failed: $e\n$st');
+      PrivacyLogService.logDeletionRequest(
+        uid: uid,
+        mode: modeStr,
+        authProvider: provider.name,
+        success: false,
+      );
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1029,9 +1047,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _cancelDeletion(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     try {
       await DeletionRequestService.cancelDeletion();
+      PrivacyLogService.logDeletionCancellation(uid: uid, success: true);
       if (context.mounted) {
         messenger.showSnackBar(
           SnackBar(
@@ -1042,6 +1062,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
     } catch (e) {
       debugPrint('Cancel deletion failed: $e');
+      PrivacyLogService.logDeletionCancellation(uid: uid, success: false);
       if (context.mounted) {
         messenger.showSnackBar(
           SnackBar(
@@ -1171,10 +1192,15 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
       _reauthError = null;
     });
 
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final providerName = widget.authProvider.name;
     final error = await AccountDeletionService.reauthenticate();
 
     if (!mounted) return;
     if (error == null) {
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: providerName, success: true,
+      );
       setState(() {
         _reauthenticated = true;
         _reauthenticating = false;
@@ -1182,6 +1208,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
     } else if (error == 'cancelled') {
       setState(() => _reauthenticating = false);
     } else {
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: providerName, success: false,
+      );
       setState(() {
         _reauthenticating = false;
         _reauthError = error;
@@ -1190,6 +1219,8 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
   }
 
   Future<void> _handleConfirm() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     if (_isPasswordProvider) {
       // Re-auth with password first
       final error = await AccountDeletionService.reauthenticateWithPassword(
@@ -1197,6 +1228,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
       );
       if (!mounted) return;
       if (error != null) {
+        PrivacyLogService.logReauthentication(
+          uid: uid, provider: 'password', success: false,
+        );
         final l10n = widget.l10n;
         final msg = error == 'wrong-password' || error == 'invalid-credential'
             ? l10n.settingsDeleteWrongPassword
@@ -1206,6 +1240,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
         );
         return;
       }
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: 'password', success: true,
+      );
     }
     // Social re-auth was already done via _handleSocialReauth
     await widget.onConfirm(_mode);
