@@ -135,11 +135,9 @@ Future<({File zipFile, ExportResult result})> buildCompleteExportZip({
     }
   }
 
-  // --- 4. Capsules ---
+  // --- 4. Capsules (sent + received/participated) ---
   onProgress?.call('capsules', 0.45);
-  final capsuleDocs = await _fetchCollection(
-    firestore.collection(FirestoreCollections.capsules).where('senderUid', isEqualTo: uid),
-  );
+  final capsuleDocs = await _fetchCapsules(firestore, uid);
   final capsulesJson = capsuleDocs.map((d) => _sanitizeCapsule(d.id, d.data()!)).toList();
   _addJsonFile(archive, '$prefix/capsules.json', {
     'count': capsulesJson.length,
@@ -294,6 +292,34 @@ Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _fetchLetters(
   return byId.values.toList();
 }
 
+/// Fetches all capsules the user created OR participates in, deduplicated.
+Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _fetchCapsules(
+  FirebaseFirestore firestore,
+  String uid,
+) async {
+  final byId = <String, QueryDocumentSnapshot<Map<String, dynamic>>>{};
+
+  // Capsules the user created
+  await _fetchAllBatched(
+    query: firestore
+        .collection(FirestoreCollections.capsules)
+        .where('senderUid', isEqualTo: uid)
+        .orderBy(FieldPath.documentId),
+    into: byId,
+  );
+
+  // Capsules the user participates in (received / collective)
+  await _fetchAllBatched(
+    query: firestore
+        .collection(FirestoreCollections.capsules)
+        .where('participantUids', arrayContains: uid)
+        .orderBy(FieldPath.documentId),
+    into: byId,
+  );
+
+  return byId.values.toList();
+}
+
 Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _fetchCollection(
   Query<Map<String, dynamic>> baseQuery,
 ) async {
@@ -362,7 +388,10 @@ Map<String, dynamic> _sanitizeLetter(String id, Map<String, dynamic> raw) {
     'musicUrl': raw['musicUrl'],
     'likeCount': raw['likeCount'],
     'commentCount': raw['commentCount'],
-    if (raw['senderLocation'] != null) 'hasLocation': true,
+    if (raw['senderLocation'] != null) ...{
+      'hasLocation': true,
+      'senderLocation': _geoPointToMap(raw['senderLocation']),
+    },
   };
 }
 
@@ -428,6 +457,21 @@ String? _tsToIso(dynamic value) {
   if (value is Timestamp) return value.toDate().toIso8601String();
   if (value is DateTime) return value.toIso8601String();
   return value.toString();
+}
+
+Map<String, double>? _geoPointToMap(dynamic value) {
+  if (value == null) return null;
+  if (value is GeoPoint) {
+    return {'latitude': value.latitude, 'longitude': value.longitude};
+  }
+  if (value is Map) {
+    final lat = value['latitude'] ?? value['lat'];
+    final lng = value['longitude'] ?? value['lng'];
+    if (lat is num && lng is num) {
+      return {'latitude': lat.toDouble(), 'longitude': lng.toDouble()};
+    }
+  }
+  return null;
 }
 
 String _safeId(String id) {
