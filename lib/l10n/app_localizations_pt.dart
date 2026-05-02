@@ -2445,6 +2445,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get feedReadFullLetter => 'Ler carta completa';
 
   @override
+  String get feedOpenLetter => 'Abrir carta';
+
+  @override
+  String get feedCloseLetter => 'Fechar';
+
+  @override
   String get feedCardToAnonymous => 'Para: alguém especial';
 
   @override
@@ -5258,6 +5264,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get feedReadFullLetter => 'Ler carta completa';
+
+  @override
+  String get feedOpenLetter => 'Abrir carta';
+
+  @override
+  String get feedCloseLetter => 'Fechar';
 
   @override
   String get feedCardToAnonymous => 'Para: alguém especial';

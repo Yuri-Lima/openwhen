@@ -2441,6 +2441,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedReadFullLetter => 'Read full letter';
 
   @override
+  String get feedOpenLetter => 'Open letter';
+
+  @override
+  String get feedCloseLetter => 'Close';
+
+  @override
   String get feedCardToAnonymous => 'To: someone special';
 
   @override

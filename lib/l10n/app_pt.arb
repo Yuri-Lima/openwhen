@@ -847,6 +847,8 @@
 ,
   "feedReadMore": "Ler mais",
   "feedReadFullLetter": "Ler carta completa",
+  "feedOpenLetter": "Abrir carta",
+  "feedCloseLetter": "Fechar",
   "feedCardToAnonymous": "Para: alguém especial",
   "vaultLetterSheetHideReceiver": "Ocultar nome do destinatário",
   "vaultLetterSheetShowReceiver": "Mostrar nome do destinatário"

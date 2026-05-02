@@ -4529,6 +4529,18 @@ abstract class AppLocalizations {
   /// **'Ler carta completa'**
   String get feedReadFullLetter;
 
+  /// No description provided for @feedOpenLetter.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abrir carta'**
+  String get feedOpenLetter;
+
+  /// No description provided for @feedCloseLetter.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fechar'**
+  String get feedCloseLetter;
+
   /// No description provided for @feedCardToAnonymous.
   ///
   /// In pt_BR, this message translates to:

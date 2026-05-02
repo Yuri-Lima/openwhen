@@ -2456,6 +2456,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feedReadFullLetter => 'Leer carta completa';
 
   @override
+  String get feedOpenLetter => 'Abrir carta';
+
+  @override
+  String get feedCloseLetter => 'Cerrar';
+
+  @override
   String get feedCardToAnonymous => 'Para: alguien especial';
 
   @override
