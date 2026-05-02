@@ -1531,6 +1531,34 @@ class AppLocalizationsPt extends AppLocalizations {
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';
 
   @override
+  String get profileTabOpened => 'Abertas';
+
+  @override
+  String get profileTabSealed => 'Seladas';
+
+  @override
+  String get profileSealedLabel => 'Selada';
+
+  @override
+  String get profileSealedStill => 'Esta carta ainda está selada ⏳';
+
+  @override
+  String get profileSealedReady => 'Esta carta está pronta para ser aberta! ✨';
+
+  @override
+  String get profileSealedAvailable => 'Disponível para abrir!';
+
+  @override
+  String get profileSealedEmptyTitle => 'Nenhuma carta selada';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Cartas seladas recebidas\naparecerão aqui';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'Nenhuma carta selada ainda';
+
+  @override
   String get searchTitle => 'Buscar pessoas';
 
   @override
@@ -4350,6 +4378,34 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';
+
+  @override
+  String get profileTabOpened => 'Abertas';
+
+  @override
+  String get profileTabSealed => 'Seladas';
+
+  @override
+  String get profileSealedLabel => 'Selada';
+
+  @override
+  String get profileSealedStill => 'Esta carta ainda está selada ⏳';
+
+  @override
+  String get profileSealedReady => 'Esta carta está pronta para ser aberta! ✨';
+
+  @override
+  String get profileSealedAvailable => 'Disponível para abrir!';
+
+  @override
+  String get profileSealedEmptyTitle => 'Nenhuma carta selada';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Cartas seladas recebidas\naparecerão aqui';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'Nenhuma carta selada ainda';
 
   @override
   String get searchTitle => 'Buscar pessoas';

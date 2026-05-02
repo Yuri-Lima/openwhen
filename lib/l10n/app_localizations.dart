@@ -2879,6 +2879,60 @@ abstract class AppLocalizations {
   /// **'Nenhuma carta pública ainda'**
   String get userProfileEmptyLetters;
 
+  /// No description provided for @profileTabOpened.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abertas'**
+  String get profileTabOpened;
+
+  /// No description provided for @profileTabSealed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seladas'**
+  String get profileTabSealed;
+
+  /// No description provided for @profileSealedLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Selada'**
+  String get profileSealedLabel;
+
+  /// No description provided for @profileSealedStill.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta carta ainda está selada ⏳'**
+  String get profileSealedStill;
+
+  /// No description provided for @profileSealedReady.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Esta carta está pronta para ser aberta! ✨'**
+  String get profileSealedReady;
+
+  /// No description provided for @profileSealedAvailable.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Disponível para abrir!'**
+  String get profileSealedAvailable;
+
+  /// No description provided for @profileSealedEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma carta selada'**
+  String get profileSealedEmptyTitle;
+
+  /// No description provided for @profileSealedEmptySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Cartas seladas recebidas\naparecerão aqui'**
+  String get profileSealedEmptySubtitle;
+
+  /// No description provided for @userProfileSealedEmptyTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nenhuma carta selada ainda'**
+  String get userProfileSealedEmptyTitle;
+
   /// No description provided for @searchTitle.
   ///
   /// In pt_BR, this message translates to:

@@ -501,6 +501,16 @@
   "userProfileActionSendLetter": "Carta",
   "userProfileEmptyLetters": "Aún no hay cartas públicas",
 
+  "profileTabOpened": "Abiertas",
+  "profileTabSealed": "Selladas",
+  "profileSealedLabel": "Sellada",
+  "profileSealedStill": "Esta carta aún está sellada ⏳",
+  "profileSealedReady": "¡Esta carta está lista para abrirse! ✨",
+  "profileSealedAvailable": "¡Disponible para abrir!",
+  "profileSealedEmptyTitle": "Sin cartas selladas",
+  "profileSealedEmptySubtitle": "Las cartas selladas recibidas\naparecerán aquí",
+  "userProfileSealedEmptyTitle": "Aún no hay cartas selladas",
+
   "searchTitle": "Buscar personas",
   "searchHint": "Buscar por nombre o @username...",
   "searchEmpty": "Sin resultados",

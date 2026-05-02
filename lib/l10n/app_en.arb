@@ -501,6 +501,16 @@
   "userProfileActionSendLetter": "Letter",
   "userProfileEmptyLetters": "No public letters yet",
 
+  "profileTabOpened": "Opened",
+  "profileTabSealed": "Sealed",
+  "profileSealedLabel": "Sealed",
+  "profileSealedStill": "This letter is still sealed ⏳",
+  "profileSealedReady": "This letter is ready to be opened! ✨",
+  "profileSealedAvailable": "Available to open!",
+  "profileSealedEmptyTitle": "No sealed letters",
+  "profileSealedEmptySubtitle": "Sealed letters received\nwill appear here",
+  "userProfileSealedEmptyTitle": "No sealed letters yet",
+
   "searchTitle": "Search people",
   "searchHint": "Search by name or @username...",
   "searchEmpty": "No results",

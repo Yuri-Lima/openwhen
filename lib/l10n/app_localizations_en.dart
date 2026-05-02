@@ -1527,6 +1527,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userProfileEmptyLetters => 'No public letters yet';
 
   @override
+  String get profileTabOpened => 'Opened';
+
+  @override
+  String get profileTabSealed => 'Sealed';
+
+  @override
+  String get profileSealedLabel => 'Sealed';
+
+  @override
+  String get profileSealedStill => 'This letter is still sealed ⏳';
+
+  @override
+  String get profileSealedReady => 'This letter is ready to be opened! ✨';
+
+  @override
+  String get profileSealedAvailable => 'Available to open!';
+
+  @override
+  String get profileSealedEmptyTitle => 'No sealed letters';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Sealed letters received\nwill appear here';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'No sealed letters yet';
+
+  @override
   String get searchTitle => 'Search people';
 
   @override

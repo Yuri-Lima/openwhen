@@ -11,6 +11,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/avatar_upload_helper.dart';
 import '../../../gamification/profile_badges_strip.dart';
+import '../widgets/sealed_letter_card.dart';
 import 'settings_screen.dart';
 import 'followers_list_screen.dart';
 import '../../../letters/presentation/screens/vault_screen.dart';
@@ -22,8 +23,22 @@ class ProfileScreen extends ConsumerStatefulWidget {
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
+    with SingleTickerProviderStateMixin {
   bool _uploadingAvatar = false;
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,8 +262,33 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                 ),
               ),
+              // ── Tabs: Abertas | Seladas ──
+              Container(
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: context.pal.border, width: 1)),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: context.pal.accent,
+                  unselectedLabelColor: context.pal.inkFaint,
+                  labelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600),
+                  unselectedLabelStyle: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w400),
+                  indicatorColor: context.pal.accent,
+                  indicatorWeight: 2.5,
+                  tabs: [
+                    Tab(text: l10n.profileTabOpened),
+                    Tab(text: l10n.profileTabSealed),
+                  ],
+                ),
+              ),
               Expanded(
-                child: _buildLettersList(user?.uid ?? ''),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildLettersList(user?.uid ?? ''),
+                    _buildSealedLettersList(user?.uid ?? ''),
+                  ],
+                ),
               ),
             ],
           );
@@ -358,6 +398,56 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Text(letterData['message'] ?? '', maxLines: 2, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft, height: 1.5)),
               ]),
             );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSealedLettersList(String uid) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection(FirestoreCollections.letters)
+          .where('receiverUid', isEqualTo: uid)
+          .where('status', isEqualTo: 'locked')
+          .orderBy('openDate')
+          .limit(50)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final l10n = AppLocalizations.of(context)!;
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final docs = snapshot.data?.docs ?? [];
+        if (docs.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('🔒', style: TextStyle(fontSize: 40)),
+                const SizedBox(height: 12),
+                Text(l10n.profileSealedEmptyTitle,
+                    style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 16,
+                        color: context.pal.ink,
+                        fontStyle: FontStyle.italic)),
+                const SizedBox(height: 6),
+                Text(l10n.profileSealedEmptySubtitle,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        color: context.pal.inkSoft,
+                        height: 1.5)),
+              ],
+            ),
+          );
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          itemCount: docs.length,
+          itemBuilder: (context, i) {
+            final letterData = docs[i].data() as Map<String, dynamic>;
+            return SealedLetterCard(data: letterData);
           },
         );
       },

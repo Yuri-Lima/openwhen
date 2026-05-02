@@ -1535,6 +1535,34 @@ class AppLocalizationsEs extends AppLocalizations {
   String get userProfileEmptyLetters => 'Aún no hay cartas públicas';
 
   @override
+  String get profileTabOpened => 'Abiertas';
+
+  @override
+  String get profileTabSealed => 'Selladas';
+
+  @override
+  String get profileSealedLabel => 'Sellada';
+
+  @override
+  String get profileSealedStill => 'Esta carta aún está sellada ⏳';
+
+  @override
+  String get profileSealedReady => '¡Esta carta está lista para abrirse! ✨';
+
+  @override
+  String get profileSealedAvailable => '¡Disponible para abrir!';
+
+  @override
+  String get profileSealedEmptyTitle => 'Sin cartas selladas';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Las cartas selladas recibidas\naparecerán aquí';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'Aún no hay cartas selladas';
+
+  @override
   String get searchTitle => 'Buscar personas';
 
   @override
