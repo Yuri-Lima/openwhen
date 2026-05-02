@@ -231,7 +231,7 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 | Localização (GPS) | Armazenada apenas quando opt-in; deletada/anonimizada com conta | Feature opt-in |
 | Dados de billing | Cancelados no Stripe na deleção | Assinatura |
 | Reports | 90 dias após resolução, depois anonimizados | Moderação e segurança | ✅ `anonymizeResolvedReports` (04:00 UTC) |
-| Feedback | 1 ano após envio, depois anonimizado | Melhoria do produto | 🔲 Não implementado |
+| Feedback | 1 ano após envio, depois anonimizado | Melhoria do produto | ✅ `anonymizeOldFeedback` (05:00 UTC) |
 | Logs de moderação | 2 anos, depois eliminados | Obrigação legal/compliance | ✅ `purgeOldModerationLogs` (04:30 UTC) |
 | Analytics (Firebase) | Conforme política do Firebase (14 meses padrão) | Métricas agregadas |
 | Logs de auditoria (deleção) | 3 anos (sem PII — apenas uid hash + timestamp) | Prova de compliance |
@@ -286,6 +286,7 @@ Referências: `settings_screen.dart`, `account_deletion_service.dart`, `deletion
 | `processScheduledDeletions` | onSchedule | `scheduled_deletion.ts` | 03:00 UTC |
 | `anonymizeResolvedReports` | onSchedule | `anonymize_resolved_reports.ts` | 04:00 UTC |
 | `purgeOldModerationLogs` | onSchedule | `purge_old_moderation_logs.ts` | 04:30 UTC |
+| `anonymizeOldFeedback` | onSchedule | `anonymize_old_feedback.ts` | 05:00 UTC |
 
 Lógica core extraída em `executeAccountDeletion()` (reutilizada pelo callable e scheduler).
 
@@ -306,6 +307,13 @@ As três scheduled functions executam em off-peak (03:00–04:30 UTC) para minim
 - **Paginação com `limit()` + loop:** processa 450 docs por batch, repetindo até não haver mais documentos elegíveis. Evita carregar todos os documentos em memória de uma vez.
 - **Single-field query:** `createdAt < cutoff` usa o índice automático do Firestore (sem composite index adicional).
 - **Custo steady-state:** ~$0.0001/dia (documentos com >2 anos são raros nos primeiros anos de operação).
+
+**`anonymizeOldFeedback`** — Anonimiza feedback com `createdAt` > 1 ano (remove `uid`, `message`; mantém `type`, `appLocale`, `platform` para estatísticas de produto).
+
+- **Query de janela temporal (24h):** feedback com `createdAt` entre 366 e 365 dias atrás. Custo constante.
+- **Backfill com `select()` projection:** `select("anonymizedAt")` + `limit(450)` para feedback anterior ao deploy.
+- **Single-field query:** `createdAt` usa índice automático do Firestore.
+- **Custo steady-state:** ~$0.0001/dia.
 
 **Referência de preços Firestore (us-central1):**
 

@@ -28,6 +28,7 @@ export {requestAccountDeletion, cancelAccountDeletion} from "./request_deletion"
 export {processScheduledDeletions} from "./scheduled_deletion";
 export {anonymizeResolvedReports} from "./anonymize_resolved_reports";
 export {purgeOldModerationLogs} from "./purge_old_moderation_logs";
+export {anonymizeOldFeedback} from "./anonymize_old_feedback";
 
 export {
   claimExternalLetters,
