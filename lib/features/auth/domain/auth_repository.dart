@@ -10,6 +10,7 @@ import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
 import '../../../core/services/safe_callable.dart';
 import '../../../core/user_search/user_search_tokens.dart';
+import '../../../core/services/access_log_service.dart';
 import '../../../core/utils/firebase_locale_helper.dart';
 import '../../../core/utils/username_generator.dart';
 
@@ -76,6 +77,8 @@ class AuthRepository {
     required String password,
   }) async {
     await _authService.loginWithEmail(email: email, password: password);
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'email');
   }
 
   /// Sign in (or sign up) with Apple.
@@ -126,6 +129,8 @@ class AuthRepository {
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'apple');
   }
 
   /// Sign in (or sign up) with Google.
@@ -176,6 +181,8 @@ class AuthRepository {
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'google');
   }
 
   Future<void> signOut() async {

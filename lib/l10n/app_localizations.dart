@@ -4895,6 +4895,54 @@ abstract class AppLocalizations {
   /// **'Cancelar exclusão'**
   String get settingsDeleteCancelButton;
 
+  /// No description provided for @settingsRestrictProcessing.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Restringir processamento'**
+  String get settingsRestrictProcessing;
+
+  /// No description provided for @settingsRestrictProcessingSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Manter dados mas parar todo o processamento (LGPD Art. 18)'**
+  String get settingsRestrictProcessingSubtitle;
+
+  /// No description provided for @settingsRestrictProcessingConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seus dados serão mantidos mas não serão mais processados. Você não poderá enviar cartas, cápsulas ou interagir com conteúdo até suspender a restrição. Você pode suspendê-la a qualquer momento.'**
+  String get settingsRestrictProcessingConfirm;
+
+  /// No description provided for @settingsRestrictProcessingSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Processamento restringido. Seus dados estão armazenados mas não são processados.'**
+  String get settingsRestrictProcessingSuccess;
+
+  /// No description provided for @settingsLiftRestriction.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Suspender restrição'**
+  String get settingsLiftRestriction;
+
+  /// No description provided for @settingsLiftRestrictionSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Retomar o processamento normal dos seus dados'**
+  String get settingsLiftRestrictionSubtitle;
+
+  /// No description provided for @settingsLiftRestrictionConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Isso retomará o processamento normal dos seus dados. Você poderá voltar a enviar cartas, cápsulas e interagir com conteúdo.'**
+  String get settingsLiftRestrictionConfirm;
+
+  /// No description provided for @settingsLiftRestrictionSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Restrição suspensa. Sua conta está totalmente ativa novamente.'**
+  String get settingsLiftRestrictionSuccess;
+
   /// No description provided for @settingsDeleteCancelled.
   ///
   /// In pt_BR, this message translates to:

@@ -2645,6 +2645,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDeleteCancelButton => 'Cancel deletion';
 
   @override
+  String get settingsRestrictProcessing => 'Restrict processing';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Keep your data but stop all processing (GDPR Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Your data will be kept but no longer processed. You won\'t be able to send letters, capsules, or interact with content until you lift the restriction. You can lift it at any time.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Processing restricted. Your data is stored but not processed.';
+
+  @override
+  String get settingsLiftRestriction => 'Lift restriction';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Resume normal processing of your data';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'This will resume normal processing of your data. You\'ll be able to send letters, capsules, and interact with content again.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restriction lifted. Your account is fully active again.';
+
+  @override
   String get settingsDeleteCancelled =>
       'Account deletion cancelled. Your account is active again.';
 

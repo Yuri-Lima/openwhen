@@ -31,6 +31,7 @@ import '../widgets/pending_deletion_banner.dart';
 import 'privacy_center_screen.dart';
 import '../../../../core/consent/analytics_consent_provider.dart';
 import '../../../../core/consent/consent_constants.dart';
+import '../../../../core/services/processing_restriction_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -110,6 +111,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           final notifLetter = data?['notifLetter'] ?? true;
           final accountStatus = data?['accountStatus'] as String? ?? 'active';
           final isPendingDeletion = accountStatus == 'pending_deletion';
+          final isRestricted = accountStatus == 'restricted';
           final deletionScheduledFor = data?['deletionScheduledFor'] as Timestamp?;
           final deletionDaysRemaining = deletionScheduledFor != null
               ? deletionScheduledFor.toDate().difference(DateTime.now()).inDays.clamp(0, 999)
@@ -452,6 +454,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         _buildDivider(),
                         _buildAnalyticsToggle(context, ref, l10n),
                       ],
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: isRestricted ? Icons.lock_open_outlined : Icons.lock_outlined,
+                        iconColor: isRestricted ? const Color(0xFFEF9F27) : const Color(0xFF6B7280),
+                        iconBg: isRestricted ? const Color(0xFFFAEEDA) : context.pal.bg,
+                        label: isRestricted
+                            ? l10n.settingsLiftRestriction
+                            : l10n.settingsRestrictProcessing,
+                        subtitle: isRestricted
+                            ? l10n.settingsLiftRestrictionSubtitle
+                            : l10n.settingsRestrictProcessingSubtitle,
+                        onTap: () => _showRestrictionDialog(context, isRestricted),
+                      ),
                       _buildDivider(),
                       _buildMenuItem(
                         icon: Icons.delete_outline,
@@ -938,6 +953,65 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _CompleteExportButton(user: _user),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showRestrictionDialog(BuildContext context, bool isCurrentlyRestricted) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          isCurrentlyRestricted
+              ? l10n.settingsLiftRestriction
+              : l10n.settingsRestrictProcessing,
+        ),
+        content: Text(
+          isCurrentlyRestricted
+              ? l10n.settingsLiftRestrictionConfirm
+              : l10n.settingsRestrictProcessingConfirm,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.settingsDeleteCancelButton),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                if (isCurrentlyRestricted) {
+                  await ProcessingRestrictionService.liftRestriction();
+                } else {
+                  await ProcessingRestrictionService.restrictProcessing();
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isCurrentlyRestricted
+                            ? l10n.settingsLiftRestrictionSuccess
+                            : l10n.settingsRestrictProcessingSuccess,
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
+                }
+              }
+            },
+            child: Text(
+              isCurrentlyRestricted
+                  ? l10n.settingsLiftRestriction
+                  : l10n.settingsRestrictProcessing,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -29,6 +29,8 @@
 | Export cápsulas recebidas + GPS | ✅ Corrigido | `complete_export_service.dart` — `participantUids array-contains` + coordenadas reais |
 | Audit trail de privacidade completo | ✅ Implementado | `privacy_log_service.dart` — 5 tipos de evento (export, complete_export, deletion_request, deletion_cancellation, reauthentication); `firestore.rules` whitelist atualizada |
 | Hash criptográfico em audit logs | ✅ Implementado | `delete_account.ts` — `hashUid()` HMAC-SHA-256 substitui `simpleHash()` djb2 em todos os ficheiros de backend |
+| Access logs 6 meses (Marco Civil Art. 15) | ✅ Implementado | `log_access.ts` (callable CF, captura IP server-side) + `purge_old_access_logs.ts` (scheduled daily 05:30 UTC, purge > 180 dias) + `access_log_service.dart` (client fire-and-forget) |
+| Restrição de processamento (GDPR Art. 18) | ✅ Implementado | `processing_restriction_service.dart` — `accountStatus: 'restricted'` bloqueia envio via `canSendContent`; UI toggle no Settings; 8 chaves i18n em 4 idiomas |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |

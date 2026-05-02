@@ -44,10 +44,11 @@ class AppUser {
   /// When the user gave or changed analytics consent.
   final DateTime? analyticsConsentDate;
 
-  /// Account lifecycle: `active` | `pending_deletion`.
-  /// When `pending_deletion`, the user can still log in but cannot send
-  /// new letters/capsules. A scheduled Cloud Function will execute the
-  /// actual deletion after the grace period expires.
+  /// Account lifecycle: `active` | `pending_deletion` | `restricted`.
+  /// - `pending_deletion`: user can log in but cannot send content; scheduled deletion pending.
+  /// - `restricted`: GDPR Art. 18 restriction of processing — data is kept but no
+  ///   processing beyond storage occurs (no sending, no moderation, no analytics).
+  ///   User can lift the restriction at any time.
   final String accountStatus;
 
   /// When the user requested account deletion (null if not requested).
@@ -128,6 +129,9 @@ class AppUser {
 
   /// Whether this account is pending deletion (grace period active).
   bool get isPendingDeletion => accountStatus == 'pending_deletion';
+
+  /// Whether processing is restricted (GDPR Art. 18).
+  bool get isRestricted => accountStatus == 'restricted';
 
   /// Whether the user can perform write actions (send letters, capsules, etc.).
   /// Blocked when account is pending deletion.

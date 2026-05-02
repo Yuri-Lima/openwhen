@@ -21,6 +21,9 @@ class FirestoreCollections {
   /// Escrita: cliente (export) + Cloud Function (deleção/anonimização).
   static const String privacyRequestLogs = 'privacyRequestLogs';
 
+  /// Access logs (Marco Civil Art. 15) — escrita só Cloud Function callable; purge após 6 meses.
+  static const String accessLogs = 'accessLogs';
+
   /// Remote feature flags (`reportsEnabled`, etc.); read-only for clients.
   static const String systemConfigAppDocId = 'app';
 }

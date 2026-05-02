@@ -2648,6 +2648,36 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDeleteCancelButton => 'Cancelar exclusão';
 
   @override
+  String get settingsRestrictProcessing => 'Restringir processamento';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Manter dados mas parar todo o processamento (RGPD Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Os seus dados serão mantidos mas deixarão de ser processados. Não poderá enviar cartas, cápsulas ou interagir com conteúdo até levantar a restrição. Pode levantá-la a qualquer momento.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Processamento restringido. Os seus dados estão armazenados mas não são processados.';
+
+  @override
+  String get settingsLiftRestriction => 'Levantar restrição';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Retomar o processamento normal dos seus dados';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'Isto retomará o processamento normal dos seus dados. Poderá voltar a enviar cartas, cápsulas e interagir com conteúdo.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restrição levantada. A sua conta está totalmente ativa novamente.';
+
+  @override
   String get settingsDeleteCancelled =>
       'Exclusão de conta cancelada. Sua conta está ativa novamente.';
 
@@ -5564,6 +5594,36 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsDeleteCancelButton => 'Cancelar exclusão';
+
+  @override
+  String get settingsRestrictProcessing => 'Restringir processamento';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Manter dados mas parar todo o processamento (LGPD Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Seus dados serão mantidos mas não serão mais processados. Você não poderá enviar cartas, cápsulas ou interagir com conteúdo até suspender a restrição. Você pode suspendê-la a qualquer momento.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Processamento restringido. Seus dados estão armazenados mas não são processados.';
+
+  @override
+  String get settingsLiftRestriction => 'Suspender restrição';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Retomar o processamento normal dos seus dados';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'Isso retomará o processamento normal dos seus dados. Você poderá voltar a enviar cartas, cápsulas e interagir com conteúdo.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restrição suspensa. Sua conta está totalmente ativa novamente.';
 
   @override
   String get settingsDeleteCancelled =>

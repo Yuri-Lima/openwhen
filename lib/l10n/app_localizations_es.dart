@@ -2659,6 +2659,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsDeleteCancelButton => 'Cancelar eliminación';
 
   @override
+  String get settingsRestrictProcessing => 'Restringir procesamiento';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Mantener datos pero detener todo el procesamiento (RGPD Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Sus datos se mantendrán pero ya no serán procesados. No podrá enviar cartas, cápsulas ni interactuar con contenido hasta que levante la restricción. Puede levantarla en cualquier momento.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Procesamiento restringido. Sus datos están almacenados pero no se procesan.';
+
+  @override
+  String get settingsLiftRestriction => 'Levantar restricción';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Reanudar el procesamiento normal de sus datos';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'Esto reanudará el procesamiento normal de sus datos. Podrá volver a enviar cartas, cápsulas e interactuar con contenido.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restricción levantada. Su cuenta está totalmente activa nuevamente.';
+
+  @override
   String get settingsDeleteCancelled =>
       'Eliminación de cuenta cancelada. Tu cuenta está activa de nuevo.';
 

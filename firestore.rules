@@ -219,6 +219,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Access logs (Marco Civil Art. 15) — só Admin SDK / Cloud Functions
+    match /accessLogs/{logId} {
+      allow read, write: if false;
+    }
+
     // Config remota legível por utilizadores autenticados (escrita só Admin SDK / Functions)
     match /systemConfig/{docId} {
       allow read: if signedIn();
