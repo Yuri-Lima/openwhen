@@ -3269,6 +3269,18 @@ abstract class AppLocalizations {
   /// **'DADOS E PRIVACIDADE'**
   String get settingsDataSection;
 
+  /// No description provided for @settingsExportData.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Exportar meus dados'**
+  String get settingsExportData;
+
+  /// No description provided for @settingsExportDataSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Baixe todos os seus dados em um arquivo ZIP'**
+  String get settingsExportDataSubtitle;
+
   /// No description provided for @settingsExportLetters.
   ///
   /// In pt_BR, this message translates to:
@@ -3404,13 +3416,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportTitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Exportar cartas'**
+  /// **'Exportar seus dados'**
   String get settingsExportTitle;
 
   /// No description provided for @settingsExportBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.'**
+  /// **'Todos os seus dados — perfil, cartas, cápsulas, comentários, curtidas, seguidores e medalhas — serão exportados em um arquivo ZIP com arquivos JSON e anexos de mídia.'**
   String get settingsExportBody;
 
   /// No description provided for @settingsExportButton.
@@ -3422,7 +3434,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportZipSubtitle.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Um PDF por carta, mais áudio e imagem manuscrita quando houver.'**
+  /// **'Formato legível por máquina (JSON) para portabilidade de dados. Pode levar alguns minutos.'**
   String get settingsExportZipSubtitle;
 
   /// No description provided for @settingsExportSuccess.
@@ -3430,6 +3442,12 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'{count} cartas exportadas.'**
   String settingsExportSuccess(int count);
+
+  /// No description provided for @settingsExportCompleteSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{items} itens e {media} arquivos de mídia exportados.'**
+  String settingsExportCompleteSuccess(int items, int media);
 
   /// No description provided for @settingsExportSnack.
   ///

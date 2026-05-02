@@ -1736,6 +1736,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDataSection => 'DADOS E PRIVACIDADE';
 
   @override
+  String get settingsExportData => 'Exportar os meus dados';
+
+  @override
+  String get settingsExportDataSubtitle =>
+      'Transferir todos os seus dados num ficheiro ZIP';
+
+  @override
   String get settingsExportLetters => 'Exportar minhas cartas';
 
   @override
@@ -1805,18 +1812,18 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get settingsExportTitle => 'Exportar cartas';
+  String get settingsExportTitle => 'Exportar os seus dados';
 
   @override
   String get settingsExportBody =>
-      'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
+      'Todos os seus dados — perfil, cartas, cápsulas, comentários, gostos, seguidores e emblemas — serão exportados num ficheiro ZIP com ficheiros JSON e anexos multimédia.';
 
   @override
   String get settingsExportButton => 'Exportar como ZIP';
 
   @override
   String get settingsExportZipSubtitle =>
-      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+      'Formato legível por máquina (JSON) para portabilidade de dados. Pode demorar alguns minutos.';
 
   @override
   String settingsExportSuccess(int count) {
@@ -1824,7 +1831,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get settingsExportSnack => 'Preparando exportação…';
+  String settingsExportCompleteSuccess(int items, int media) {
+    return '$items itens e $media ficheiros multimédia exportados.';
+  }
+
+  @override
+  String get settingsExportSnack => 'A preparar exportação…';
 
   @override
   String get letterDetailExportPdfTitle => 'Exportar PDF';
@@ -4630,6 +4642,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsDataSection => 'DADOS E PRIVACIDADE';
 
   @override
+  String get settingsExportData => 'Exportar meus dados';
+
+  @override
+  String get settingsExportDataSubtitle =>
+      'Baixe todos os seus dados em um arquivo ZIP';
+
+  @override
   String get settingsExportLetters => 'Exportar minhas cartas';
 
   @override
@@ -4699,22 +4718,27 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get settingsExportTitle => 'Exportar cartas';
+  String get settingsExportTitle => 'Exportar seus dados';
 
   @override
   String get settingsExportBody =>
-      'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
+      'Todos os seus dados — perfil, cartas, cápsulas, comentários, curtidas, seguidores e medalhas — serão exportados em um arquivo ZIP com arquivos JSON e anexos de mídia.';
 
   @override
   String get settingsExportButton => 'Exportar como ZIP';
 
   @override
   String get settingsExportZipSubtitle =>
-      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+      'Formato legível por máquina (JSON) para portabilidade de dados. Pode levar alguns minutos.';
 
   @override
   String settingsExportSuccess(int count) {
     return '$count cartas exportadas.';
+  }
+
+  @override
+  String settingsExportCompleteSuccess(int items, int media) {
+    return '$items itens e $media arquivos de mídia exportados.';
   }
 
   @override

@@ -27,4 +27,26 @@ class PrivacyLogService {
       debugPrint('PrivacyLogService.logExport failed (best-effort): $e');
     }
   }
+
+  /// Logs a complete data export (GDPR Art. 20 / LGPD Art. 18).
+  static Future<void> logCompleteExport({
+    required String uid,
+    required Map<String, int> metadata,
+    required bool success,
+  }) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(FirestoreCollections.privacyRequestLogs)
+          .add({
+        'uid': uid,
+        'type': 'complete_export',
+        'status': success ? 'completed' : 'failed',
+        'metadata': metadata,
+        'createdAt': FieldValue.serverTimestamp(),
+        'source': 'client',
+      });
+    } catch (e) {
+      debugPrint('PrivacyLogService.logCompleteExport failed (best-effort): $e');
+    }
+  }
 }

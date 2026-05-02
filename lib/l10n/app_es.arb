@@ -571,6 +571,8 @@
   "settingsNotifLetterUnlocked": "Carta desbloqueada",
   "settingsNotifLetterUnlockedSubtitle": "Cuando una carta esté lista para abrir",
   "settingsDataSection": "DATOS Y PRIVACIDAD",
+  "settingsExportData": "Exportar mis datos",
+  "settingsExportDataSubtitle": "Descarga todos tus datos en un archivo ZIP",
   "settingsExportLetters": "Exportar mis cartas",
   "settingsExportLettersSubtitle": "PDF o zip con todas las cartas abiertas",
   "settingsDeleteAccount": "Eliminar cuenta",
@@ -596,14 +598,21 @@
   "settingsChangePasswordButton": "Enviar correo de restablecimiento",
   "settingsChangePasswordSent": "Correo enviado a {email}",
 
-  "settingsExportTitle": "Exportar cartas",
-  "settingsExportBody": "Tus cartas abiertas se exportarán en formato PDF. Esto puede tardar unos minutos.",
+  "settingsExportTitle": "Exportar tus datos",
+  "settingsExportBody": "Todos tus datos — perfil, cartas, cápsulas, comentarios, me gusta, seguidores e insignias — se exportarán en un archivo ZIP con archivos JSON y archivos multimedia adjuntos.",
   "settingsExportButton": "Exportar como ZIP",
-  "settingsExportZipSubtitle": "Un PDF por carta, más voz e imagen manuscrita si existen.",
+  "settingsExportZipSubtitle": "Formato legible por máquina (JSON) para portabilidad de datos. Esto puede tardar unos minutos.",
   "settingsExportSuccess": "{count} cartas exportadas.",
   "@settingsExportSuccess": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "settingsExportCompleteSuccess": "{items} elementos y {media} archivos multimedia exportados.",
+  "@settingsExportCompleteSuccess": {
+    "placeholders": {
+      "items": { "type": "int" },
+      "media": { "type": "int" }
     }
   },
   "settingsExportSnack": "Preparando exportación…",

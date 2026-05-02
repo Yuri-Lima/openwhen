@@ -1733,6 +1733,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDataSection => 'DATA AND PRIVACY';
 
   @override
+  String get settingsExportData => 'Export my data';
+
+  @override
+  String get settingsExportDataSubtitle =>
+      'Download all your data as a ZIP file';
+
+  @override
   String get settingsExportLetters => 'Export my letters';
 
   @override
@@ -1803,22 +1810,27 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settingsExportTitle => 'Export letters';
+  String get settingsExportTitle => 'Export your data';
 
   @override
   String get settingsExportBody =>
-      'Your opened letters will be exported in PDF format. This may take a few minutes.';
+      'All your data — profile, letters, capsules, comments, likes, follows and badges — will be exported as a ZIP file with JSON files and media attachments.';
 
   @override
   String get settingsExportButton => 'Export as ZIP';
 
   @override
   String get settingsExportZipSubtitle =>
-      'PDF per letter plus voice and handwritten images when available.';
+      'Machine-readable format (JSON) for data portability. This may take a few minutes.';
 
   @override
   String settingsExportSuccess(int count) {
     return 'Exported $count letters.';
+  }
+
+  @override
+  String settingsExportCompleteSuccess(int items, int media) {
+    return 'Exported $items items and $media media files.';
   }
 
   @override

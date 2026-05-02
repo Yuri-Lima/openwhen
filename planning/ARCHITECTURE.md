@@ -13,7 +13,8 @@
 
 - **Baseline:** como medir antes/depois (bundle web, DevTools, Firestore) — ver secção [Performance e carregamento diferido](#performance-e-carregamento-diferido) abaixo.
 - **Code splitting (web):** [`lib/core/navigation/deferred_screens.dart`](../lib/core/navigation/deferred_screens.dart) importa em modo `deferred` as telas **Escrever carta**, **Nova cápsula** e **Buscar**; cada uma mostra um `CircularProgressIndicator` até `loadLibrary()` completar. As rotas nomeadas `/write`, `/create-capsule` e `/search` em [`main.dart`](../lib/main.dart) usam estes shells.
-- **Exportação PDF/ZIP:** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta ou definições).
+- **Exportação PDF/ZIP (por carta):** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta).
+- **Exportação completa de dados (GDPR Art. 20):** [`lib/core/export/complete_export_service.dart`](../lib/core/export/complete_export_service.dart) — exporta todos os dados do utilizador (perfil, cartas, cápsulas, comentários, likes, follows, badges) em ficheiros JSON + media num ZIP. Queries Firestore paginadas (500/batch), sanitização de campos internos, validação SSRF de URLs de media. Acesso via Settings > Data and Privacy > Export my data (gratuito, sem restrição de tier). Progress callback com estágios para feedback na UI.
 - **Cofre — abas:** o corpo do cofre mostra **apenas a aba selecionada** (sem `TabBarView` que montava as três de uma vez), reduzindo listeners Firestore simultâneos. **Swipe horizontal entre abas** deixou de estar disponível; mudança só por toque nas tabs.
 
 ### Navegação e `go_router`
@@ -39,6 +40,8 @@ lib/
 │   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
 │   ├── constants/
 │   │   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
+│   ├── export/
+│   │   └── complete_export_service.dart # Export completo GDPR Art. 20: ZIP com JSONs + media
 │   ├── utils/
 │   │   ├── email_normalization.dart   # normalizeReceiverEmailForMatching (must match server)
 │   │   ├── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)

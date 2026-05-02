@@ -11,9 +11,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
-import '../../data/letter_export_data.dart';
-import '../../../letters/export/letter_export_deferred.dart';
-import '../../../../shared/utils/music_url.dart';
+import '../../../../core/export/complete_export_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/theme_provider.dart';
@@ -432,21 +430,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.download_outlined,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
-                        label: l10n.settingsExportLetters,
-                        subtitle: l10n.settingsExportLettersSubtitle,
-                        onTap: () async {
-                          final tier = ref.read(subscriptionTierProvider).asData?.value ?? SubscriptionTier.free;
-                          if (!tierMeets(tier, SubscriptionTier.pro)) {
-                            await ensureTierOrPrompt(
-                              context,
-                              current: tier,
-                              requiredTier: SubscriptionTier.pro,
-                            );
-                            return;
-                          }
-                          if (!context.mounted) return;
-                          _showExportDialog(context);
-                        },
+                        label: l10n.settingsExportData,
+                        subtitle: l10n.settingsExportDataSubtitle,
+                        onTap: () => _showExportDialog(context),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
@@ -949,77 +935,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             Text(l10n.settingsExportZipSubtitle,
               style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint, height: 1.45)),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final uid = _user?.uid;
-                if (uid == null) return;
-                final locale = Localizations.localeOf(context).toString();
-                final messenger = ScaffoldMessenger.of(context);
-                Navigator.pop(context);
-                try {
-                  final docs = await fetchLettersForUserExport(
-                    firestore: FirebaseFirestore.instance,
-                    uid: uid,
-                  );
-                  for (final d in docs) {
-                    final m = d.data();
-                    final music = (m['musicUrl'] as String?)?.trim();
-                    if (music != null &&
-                        music.isNotEmpty &&
-                        !isValidHttpsMusicUrl(music)) {
-                      if (context.mounted) {
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              l10n.writeLetterSnackMusicUrlInvalid,
-                              style: GoogleFonts.dmSans(fontSize: 13),
-                            ),
-                          ),
-                        );
-                      }
-                      return;
-                    }
-                  }
-                  if (docs.isEmpty) {
-                    if (context.mounted) {
-                      messenger.showSnackBar(
-                        SnackBar(content: Text(l10n.settingsExportSuccess(0), style: GoogleFonts.dmSans(fontSize: 13))),
-                      );
-                    }
-                    return;
-                  }
-                  await shareExportZipDeferred(
-                    docs: docs,
-                    localeName: locale,
-                    subject: l10n.settingsExportTitle,
-                  );
-                  PrivacyLogService.logExport(uid: uid, letterCount: docs.length, success: true);
-                  if (context.mounted) {
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.settingsExportSuccess(docs.length),
-                          style: GoogleFonts.dmSans(fontSize: 13),
-                        ),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  PrivacyLogService.logExport(uid: uid, letterCount: 0, success: false);
-                  if (context.mounted) {
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.errorGeneric(e.toString()),
-                          style: GoogleFonts.dmSans(fontSize: 13),
-                        ),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
-            ),
+            _CompleteExportButton(user: _user),
           ],
         ),
       ),
@@ -1537,6 +1453,113 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Complete Export Button — handles progress feedback within the bottom sheet
+// ---------------------------------------------------------------------------
+class _CompleteExportButton extends StatefulWidget {
+  const _CompleteExportButton({required this.user});
+  final User? user;
+
+  @override
+  State<_CompleteExportButton> createState() => _CompleteExportButtonState();
+}
+
+class _CompleteExportButtonState extends State<_CompleteExportButton> {
+  bool _exporting = false;
+  String _stage = '';
+  double _progress = 0;
+
+  static const _stageLabels = {
+    'profile': 'Profile',
+    'letters': 'Letters',
+    'media': 'Media',
+    'capsules': 'Capsules',
+    'comments': 'Comments',
+    'likes': 'Likes',
+    'follows': 'Follows',
+    'badges': 'Badges',
+    'zip': 'ZIP',
+    'done': '',
+  };
+
+  Future<void> _runExport() async {
+    final uid = widget.user?.uid;
+    if (uid == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final nav = Navigator.of(context);
+
+    setState(() => _exporting = true);
+
+    try {
+      final (:zipFile, :result) = await buildCompleteExportZip(
+        firestore: FirebaseFirestore.instance,
+        uid: uid,
+        onProgress: (stage, progress) {
+          if (mounted) setState(() { _stage = stage; _progress = progress; });
+        },
+      );
+
+      PrivacyLogService.logCompleteExport(
+        uid: uid,
+        metadata: result.toMetadata(),
+        success: true,
+      );
+
+      nav.pop();
+      await shareCompleteExportZip(zipFile);
+
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.settingsExportCompleteSuccess(result.totalItems, result.mediaFilesCount),
+              style: GoogleFonts.dmSans(fontSize: 13),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      PrivacyLogService.logCompleteExport(uid: uid, metadata: {}, success: false);
+      nav.pop();
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.errorGeneric(e.toString()),
+              style: GoogleFonts.dmSans(fontSize: 13),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_exporting) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LinearProgressIndicator(value: _progress, minHeight: 4, borderRadius: BorderRadius.circular(2)),
+          const SizedBox(height: 10),
+          Text(
+            '${l10n.settingsExportSnack} ${_stageLabels[_stage] ?? _stage}',
+            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
+          ),
+        ],
+      );
+    }
+
+    return ElevatedButton(
+      onPressed: _runExport,
+      child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
     );
   }
 }

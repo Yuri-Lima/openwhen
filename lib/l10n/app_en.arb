@@ -571,6 +571,8 @@
   "settingsNotifLetterUnlocked": "Letter unlocked",
   "settingsNotifLetterUnlockedSubtitle": "When a letter is ready to open",
   "settingsDataSection": "DATA AND PRIVACY",
+  "settingsExportData": "Export my data",
+  "settingsExportDataSubtitle": "Download all your data as a ZIP file",
   "settingsExportLetters": "Export my letters",
   "settingsExportLettersSubtitle": "PDF or zip with all opened letters",
   "settingsDeleteAccount": "Delete account",
@@ -596,14 +598,21 @@
   "settingsChangePasswordButton": "Send reset email",
   "settingsChangePasswordSent": "Email sent to {email}",
 
-  "settingsExportTitle": "Export letters",
-  "settingsExportBody": "Your opened letters will be exported in PDF format. This may take a few minutes.",
+  "settingsExportTitle": "Export your data",
+  "settingsExportBody": "All your data — profile, letters, capsules, comments, likes, follows and badges — will be exported as a ZIP file with JSON files and media attachments.",
   "settingsExportButton": "Export as ZIP",
-  "settingsExportZipSubtitle": "PDF per letter plus voice and handwritten images when available.",
+  "settingsExportZipSubtitle": "Machine-readable format (JSON) for data portability. This may take a few minutes.",
   "settingsExportSuccess": "Exported {count} letters.",
   "@settingsExportSuccess": {
     "placeholders": {
       "count": { "type": "int" }
+    }
+  },
+  "settingsExportCompleteSuccess": "Exported {items} items and {media} media files.",
+  "@settingsExportCompleteSuccess": {
+    "placeholders": {
+      "items": { "type": "int" },
+      "media": { "type": "int" }
     }
   },
   "settingsExportSnack": "Preparing export…",
