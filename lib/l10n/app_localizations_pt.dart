@@ -1891,7 +1891,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get aboutSecurityBody =>
-      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.';
+      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.';
 
   @override
   String get aboutComplianceTitle => 'Conformidade Legal';
@@ -4740,7 +4740,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get aboutSecurityBody =>
-      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.';
+      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.';
 
   @override
   String get aboutComplianceTitle => 'Conformidade Legal';

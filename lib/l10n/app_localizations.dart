@@ -3554,7 +3554,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutSecurityBody.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.'**
+  /// **'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.'**
   String get aboutSecurityBody;
 
   /// No description provided for @aboutComplianceTitle.

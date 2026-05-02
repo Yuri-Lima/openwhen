@@ -630,7 +630,7 @@
   "aboutWhatIsTitle": "What is Whenote",
   "aboutWhatIsBody": "Whenote is a digital platform for time-based communication and an emotional social network. It allows you to create digital letters with a future opening date, combining the sentimental value of a physical letter with the virality of a modern social network.",
   "aboutSecurityTitle": "Security and Privacy",
-  "aboutSecurityBody": "Developed in compliance with the LGPD (Law No. 13,709/2018) and the Brazilian Internet Civil Framework (Law No. 12,965/2014). Your data is protected with end-to-end encryption and stored on the Google Cloud Platform infrastructure.",
+  "aboutSecurityBody": "Developed in compliance with the LGPD (Law No. 13,709/2018) and the Brazilian Internet Civil Framework (Law No. 12,965/2014). Your data is transmitted over a secure connection (TLS) and stored on the Google Cloud Platform infrastructure, which uses encryption at rest.",
   "aboutComplianceTitle": "Legal Compliance",
   "aboutComplianceBody": "Whenote operates in full compliance with current Brazilian legislation, including the LGPD, the Internet Civil Framework, the Consumer Protection Code (Law No. 8,078/1990), and other regulations applicable to the technology sector.",
   "aboutCompanyTitle": "Company",

@@ -1889,7 +1889,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutSecurityBody =>
-      'Developed in compliance with the LGPD (Law No. 13,709/2018) and the Brazilian Internet Civil Framework (Law No. 12,965/2014). Your data is protected with end-to-end encryption and stored on the Google Cloud Platform infrastructure.';
+      'Developed in compliance with the LGPD (Law No. 13,709/2018) and the Brazilian Internet Civil Framework (Law No. 12,965/2014). Your data is transmitted over a secure connection (TLS) and stored on the Google Cloud Platform infrastructure, which uses encryption at rest.';
 
   @override
   String get aboutComplianceTitle => 'Legal Compliance';

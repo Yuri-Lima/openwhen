@@ -658,7 +658,7 @@
   "aboutWhatIsTitle": "O que é o Whenote",
   "aboutWhatIsBody": "O Whenote é uma plataforma digital de comunicação temporal e rede social emocional. Permite criar cartas digitais com data futura de abertura, combinando o valor sentimental de uma carta física com a viralidade de uma rede social moderna.",
   "aboutSecurityTitle": "Segurança e Privacidade",
-  "aboutSecurityBody": "Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.",
+  "aboutSecurityBody": "Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.",
   "aboutComplianceTitle": "Conformidade Legal",
   "aboutComplianceBody": "O Whenote opera em total conformidade com a legislação brasileira vigente, incluindo LGPD, Marco Civil da Internet, Código de Defesa do Consumidor (Lei nº 8.078/1990) e demais normas aplicáveis ao setor de tecnologia.",
   "aboutCompanyTitle": "Empresa",
