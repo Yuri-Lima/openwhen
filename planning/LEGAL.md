@@ -22,6 +22,7 @@
 | Emails do domínio (Cloudflare Email Routing) | ✅ Ativo | 7 endereços → redirecionamento para `y.m.lima19@gmail.com` |
 | Export automático ao deletar | ✅ Implementada (testar) | `functions/src/export_user_data.ts` + `deletion_request_service.dart` |
 | Export completo de dados (GDPR Art. 20) | ✅ Implementado | `complete_export_service.dart` — ZIP com JSONs + media; gratuito para todos |
+| Anonimização de reports (90 dias) | ✅ Implementado | `anonymize_resolved_reports.ts` — scheduled daily 04:00 UTC; remove PII, mantém stats |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |
