@@ -4,6 +4,7 @@ import {getStorage} from "firebase-admin/storage";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import Stripe from "stripe";
+import {createHmac} from "crypto";
 
 const db = () => getFirestore();
 const auth = () => getAuth();
@@ -335,7 +336,7 @@ export async function executeAccountDeletion(
 
   /* ── 15. Audit log (no PII) ────────────────────────────── */
   await firestore.collection("deletionAuditLogs").add({
-    uidHash: simpleHash(uid),
+    uidHash: hashUid(uid),
     mode,
     deletedAt: FieldValue.serverTimestamp(),
     lettersProcessed: sentLetters.size + receivedLetters.size,
@@ -346,7 +347,7 @@ export async function executeAccountDeletion(
 
   /* ── 16. Privacy request log (unified) ───────────────── */
   await firestore.collection("privacyRequestLogs").add({
-    uid: simpleHash(uid),
+    uid: hashUid(uid),
     type: mode === "delete_all" ? "account_deletion" : "account_anonymization",
     status: "completed",
     metadata: {
@@ -554,10 +555,33 @@ async function deleteSubcollection(
   if (snap.size === 500) await deleteSubcollection(firestore, path);
 }
 
+/**
+ * @deprecated Use {@link hashUid} instead. Kept temporarily for reference only.
+ */
 export function simpleHash(s: string): string {
   let h = 0;
   for (let i = 0; i < s.length; i++) {
     h = ((h << 5) - h + s.charCodeAt(i)) | 0;
   }
   return Math.abs(h).toString(16).padStart(8, "0");
+}
+
+/**
+ * Produces a truncated HMAC-SHA-256 hex digest of the input string.
+ * Used to pseudonymise UIDs in audit logs without storing reversible PII.
+ *
+ * The static salt prevents trivial rainbow-table lookups against the
+ * ~28-char Firebase UID space. It does NOT need to be secret — the goal
+ * is collision-resistance (SHA-256) and non-reversibility, not encryption.
+ *
+ * Output: 16 hex chars (64 bits) — collision probability negligible for
+ * the expected volume (< 1 M users).
+ */
+const UID_HASH_SALT = "whenote-audit-log-v1-2026";
+
+export function hashUid(uid: string): string {
+  return createHmac("sha256", UID_HASH_SALT)
+    .update(uid)
+    .digest("hex")
+    .substring(0, 16);
 }
