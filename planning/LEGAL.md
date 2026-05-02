@@ -296,7 +296,7 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 12. Portabilidade e Exportação (ZIP/JSON)
 13. Privacidade de Crianças (COPPA, 13+)
 14. Medidas de Segurança (TLS 1.3, App Check, breach 72h)
-15. Tecnologias de Rastreamento (Firebase Analytics, Crashlytics, GPC)
+15. Tecnologias de Rastreamento (Firebase Analytics, Crashlytics, App Check)
 16. Alterações na Política (aviso 15 dias)
 17. Contato (DPO, privacidade, legal, autoridades)
 

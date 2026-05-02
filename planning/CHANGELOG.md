@@ -31,6 +31,8 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
+- **Menção ao Global Privacy Control (GPC) removida da Política de Privacidade:** frase "We honor the Global Privacy Control (GPC) signal as a valid opt-out request under CCPA" removida da secção 15 (Tracking Technologies) nos 4 idiomas (en/pt/pt-BR/es). GPC é um header HTTP de browser (`Sec-GPC: 1`) — não aplicável a apps nativos móveis. A promessa era inimplementável. O opt-out de analytics para utilizadores CCPA fica coberto pelo toggle nas Settings. Menção será re-adicionada quando existir versão web com implementação real.
+
 - **SMTP customizado migrado de SendGrid para Google Workspace SMTP Relay (2026-04-26):** o envio de emails de autenticação Firebase (verificação de email, reset de password, email change) foi migrado de SendGrid (`smtp.sendgrid.net`) para o SMTP Relay do Google Workspace (`smtp-relay.gmail.com`). Configuração feita em duas etapas: (1) Google Admin Console → Apps → Google Workspace → Gmail → Routing → SMTP relay service: allowed senders "Any addresses", "Require SMTP Authentication" ✅, "Require TLS encryption" ✅; (2) Firebase Console → Authentication → Templates → SMTP settings: host `smtp-relay.gmail.com`, porta 587, STARTTLS, username `yurilima@whenote.com`, password = App Password gerada na conta Workspace. Sender address alterado para `noreply@whenote.com`. Pré-requisito: 2-Step Verification ativada na conta Workspace. Motivação: eliminar dependência do SendGrid e simplificar stack usando serviço já incluído no Google Workspace.
 
 ### Added
