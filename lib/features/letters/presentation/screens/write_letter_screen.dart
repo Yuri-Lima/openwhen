@@ -1132,10 +1132,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                                         label: Text(l10n.writeLetterVoicePreview),
                                       ),
                                       const SizedBox(width: 8),
-                                      TextButton.icon(
+                                      IconButton(
                                         onPressed: _discardVoice,
                                         icon: const Icon(Icons.delete_outline, size: 18),
-                                        label: Text(l10n.writeLetterVoiceDiscard),
+                                        tooltip: l10n.writeLetterVoiceDiscard,
                                       ),
                                     ],
                                   ),
