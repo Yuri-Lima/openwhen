@@ -36,6 +36,14 @@ class AppUser {
   /// Nullable for backwards compatibility with existing users.
   final DateTime? dateOfBirth;
 
+  /// Analytics consent: 'granted' | 'denied' | null (legacy/pending).
+  /// Stored in Firestore for audit trail; also cached in SharedPreferences
+  /// for fast access before login.
+  final String? analyticsConsent;
+
+  /// When the user gave or changed analytics consent.
+  final DateTime? analyticsConsentDate;
+
   /// Account lifecycle: `active` | `pending_deletion`.
   /// When `pending_deletion`, the user can still log in but cannot send
   /// new letters/capsules. A scheduled Cloud Function will execute the
@@ -71,6 +79,8 @@ class AppUser {
     this.subscriptionStatus,
     this.dateOfBirth,
     this.hasCompletedFirstAction = true,
+    this.analyticsConsent,
+    this.analyticsConsentDate,
     this.accountStatus = 'active',
     this.deletionRequestedAt,
     this.deletionMode,
@@ -101,6 +111,10 @@ class AppUser {
           ? (data['dateOfBirth'] as Timestamp).toDate()
           : null,
       hasCompletedFirstAction: data['hasCompletedFirstAction'] as bool? ?? true,
+      analyticsConsent: data['analyticsConsent'] as String?,
+      analyticsConsentDate: data['analyticsConsentDate'] != null
+          ? (data['analyticsConsentDate'] as Timestamp).toDate()
+          : null,
       accountStatus: data['accountStatus'] as String? ?? 'active',
       deletionRequestedAt: data['deletionRequestedAt'] != null
           ? (data['deletionRequestedAt'] as Timestamp).toDate()
@@ -149,6 +163,9 @@ class AppUser {
       if (dateOfBirth != null)
         'dateOfBirth': Timestamp.fromDate(dateOfBirth!),
       'hasCompletedFirstAction': hasCompletedFirstAction,
+      if (analyticsConsent != null) 'analyticsConsent': analyticsConsent,
+      if (analyticsConsentDate != null)
+        'analyticsConsentDate': Timestamp.fromDate(analyticsConsentDate!),
       'accountStatus': accountStatus,
       if (deletionRequestedAt != null)
         'deletionRequestedAt': Timestamp.fromDate(deletionRequestedAt!),

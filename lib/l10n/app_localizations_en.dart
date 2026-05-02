@@ -2874,4 +2874,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get followingEmpty => 'Not following anyone yet';
+
+  @override
+  String get analyticsConsentTitle => 'Help us improve';
+
+  @override
+  String get analyticsConsentBody =>
+      'We use anonymous analytics to understand how the app is used. No personal data is collected. You can change this anytime in Settings.';
+
+  @override
+  String get analyticsConsentAccept => 'Accept';
+
+  @override
+  String get analyticsConsentDecline => 'No thanks';
+
+  @override
+  String get settingsAnalyticsToggle => 'Usage analytics';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Allow anonymous usage data to help improve the app';
 }

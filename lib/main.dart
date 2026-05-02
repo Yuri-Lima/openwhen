@@ -12,11 +12,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/consent/analytics_consent_banner.dart';
+import 'core/services/analytics_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/locale/locale_provider.dart';
 import 'core/constants/firestore_collections.dart';
 import 'core/services/notification_service.dart';
-import 'core/services/analytics_service.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/register_screen.dart';
@@ -83,6 +84,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // --- Analytics: disable collection by default (ePrivacy / UK PECR) ---
+  // Must run before any analytics event fires. Consent provider will
+  // re-enable collection after verifying the user's stored consent.
+  await AnalyticsService.disableByDefault();
 
   // --- Crashlytics: capture all Flutter & Dart errors ---
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -194,21 +200,23 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.themeFromPalette(palette),
       builder: (context, child) {
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            child ?? const SizedBox.shrink(),
-            if (!hideGlobalFeedbackFab)
-              Positioned(
-                top: 0,
-                right: 0,
-                child: SafeArea(
-                  minimum: const EdgeInsets.only(top: 8, right: 8),
-                  child: FeedbackEntryButton(navigatorKey: rootNavigatorKey),
+        return AnalyticsConsentOverlay(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              child ?? const SizedBox.shrink(),
+              if (!hideGlobalFeedbackFab)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: SafeArea(
+                    minimum: const EdgeInsets.only(top: 8, right: 8),
+                    child: FeedbackEntryButton(navigatorKey: rootNavigatorKey),
+                  ),
                 ),
-              ),
-            const KeyboardDismissOverlayButton(),
-          ],
+              const KeyboardDismissOverlayButton(),
+            ],
+          ),
         );
       },
       routes: {

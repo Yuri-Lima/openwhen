@@ -31,6 +31,8 @@ import '../../../../core/services/privacy_log_service.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
 import '../widgets/pending_deletion_banner.dart';
 import 'privacy_center_screen.dart';
+import '../../../../core/consent/analytics_consent_provider.dart';
+import '../../../../core/consent/consent_constants.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -460,6 +462,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ),
                         ),
                       ),
+                      if (ref.read(analyticsConsentProvider.notifier).isConsentRequired) ...[
+                        _buildDivider(),
+                        _buildAnalyticsToggle(context, ref, l10n),
+                      ],
                       _buildDivider(),
                       _buildMenuItem(
                         icon: Icons.delete_outline,
@@ -686,6 +692,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Widget _buildDivider() => Divider(height: 1, indent: 56, color: context.pal.border);
+
+  Widget _buildAnalyticsToggle(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final consentStatus = ref.watch(analyticsConsentProvider);
+    final isEnabled = consentStatus == AnalyticsConsentStatus.granted;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0F9FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(Icons.analytics_outlined, size: 20, color: const Color(0xFF3B82F6)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.settingsAnalyticsToggle,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: context.pal.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.settingsAnalyticsDescription,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: context.pal.inkSoft,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch.adaptive(
+            value: isEnabled,
+            activeColor: context.pal.accent,
+            onChanged: (value) {
+              ref.read(analyticsConsentProvider.notifier).setConsent(
+                    value ? AnalyticsConsentStatus.granted : AnalyticsConsentStatus.denied,
+                  );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildMenuItem({
     required IconData icon,

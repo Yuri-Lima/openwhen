@@ -2887,4 +2887,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get followingEmpty => 'Aún no sigue a nadie';
+
+  @override
+  String get analyticsConsentTitle => 'Ayúdanos a mejorar';
+
+  @override
+  String get analyticsConsentBody =>
+      'Usamos datos de uso anónimos para entender cómo se usa la app. No se recopilan datos personales. Puedes cambiar esto en cualquier momento en Ajustes.';
+
+  @override
+  String get analyticsConsentAccept => 'Aceptar';
+
+  @override
+  String get analyticsConsentDecline => 'No, gracias';
+
+  @override
+  String get settingsAnalyticsToggle => 'Datos de uso';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Permitir datos de uso anónimos para ayudar a mejorar la app';
 }

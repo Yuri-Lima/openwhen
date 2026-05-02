@@ -2876,6 +2876,26 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get followingEmpty => 'Não segue ninguém ainda';
+
+  @override
+  String get analyticsConsentTitle => 'Ajude-nos a melhorar';
+
+  @override
+  String get analyticsConsentBody =>
+      'Utilizamos dados de uso anónimos para compreender como a aplicação é utilizada. Nenhum dado pessoal é recolhido. Pode alterar esta opção a qualquer momento nas Definições.';
+
+  @override
+  String get analyticsConsentAccept => 'Aceitar';
+
+  @override
+  String get analyticsConsentDecline => 'Não, obrigado';
+
+  @override
+  String get settingsAnalyticsToggle => 'Dados de utilização';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Permitir dados de uso anónimos para ajudar a melhorar a aplicação';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5750,4 +5770,24 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get followingEmpty => 'Não segue ninguém ainda';
+
+  @override
+  String get analyticsConsentTitle => 'Ajude-nos a melhorar';
+
+  @override
+  String get analyticsConsentBody =>
+      'Usamos dados de uso anônimos para entender como o app é usado. Nenhum dado pessoal é coletado. Você pode mudar isso a qualquer momento nas Configurações.';
+
+  @override
+  String get analyticsConsentAccept => 'Aceitar';
+
+  @override
+  String get analyticsConsentDecline => 'Não, obrigado';
+
+  @override
+  String get settingsAnalyticsToggle => 'Dados de uso';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Permitir dados de uso anônimos para ajudar a melhorar o app';
 }

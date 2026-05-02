@@ -1001,5 +1001,12 @@
   "followersTabFollowers": "Seguidores",
   "followersTabFollowing": "Seguindo",
   "followersEmpty": "Nenhum seguidor ainda",
-  "followingEmpty": "Não segue ninguém ainda"
+  "followingEmpty": "Não segue ninguém ainda",
+
+  "analyticsConsentTitle": "Ajude-nos a melhorar",
+  "analyticsConsentBody": "Usamos dados de uso anônimos para entender como o app é usado. Nenhum dado pessoal é coletado. Você pode mudar isso a qualquer momento nas Configurações.",
+  "analyticsConsentAccept": "Aceitar",
+  "analyticsConsentDecline": "Não, obrigado",
+  "settingsAnalyticsToggle": "Dados de uso",
+  "settingsAnalyticsDescription": "Permitir dados de uso anônimos para ajudar a melhorar o app"
 }

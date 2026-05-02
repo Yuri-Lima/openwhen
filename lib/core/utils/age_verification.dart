@@ -46,6 +46,18 @@ const _lowerAgeByCountry = <String, int>{
   'SK': 16, // Slovakia (default)
 };
 
+/// Returns `true` if the device locale indicates an EU/EEA/UK jurisdiction
+/// where ePrivacy Directive / UK PECR requires prior consent for analytics.
+///
+/// Fail-safe: if the country code cannot be determined, assumes EU (`true`)
+/// — it is legally safer to show the consent banner unnecessarily than to
+/// skip it for a user who actually needs it.
+bool isEuEeaUkJurisdiction([String? overrideLocale]) {
+  final country = _extractCountryCode(overrideLocale);
+  if (country == null) return true; // fail-safe: assume EU
+  return _euEeaUkCountries.contains(country);
+}
+
 /// Returns the minimum age required for the user's jurisdiction.
 ///
 /// Uses the device locale to infer the user's country:

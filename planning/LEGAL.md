@@ -15,6 +15,7 @@
 | Fundo de Continuidade | ✅ Documentado | Termos de Uso §7 + secção 4 abaixo |
 | Política de retenção de dados | ✅ Documentada | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) |
 | COPPA / GDPR Art. 8 (idade mínima por jurisdição) | ✅ Date picker + verificação automática | `register_screen.dart`, `login_screen.dart`, `age_verification.dart` |
+| Consentimento analytics (ePrivacy / UK PECR) | ✅ Banner EU/EEA/UK + auto-grant resto | `consent_constants.dart`, `analytics_consent_provider.dart`, `analytics_consent_banner.dart` |
 | Cloud Function deleteUserAccount | ✅ Implementada | `functions/src/delete_account.ts` |
 | Domínio `whenote.app` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
 | Revisão com advogado | 🔲 Pendente | — |

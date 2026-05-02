@@ -5308,6 +5308,42 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Não segue ninguém ainda'**
   String get followingEmpty;
+
+  /// No description provided for @analyticsConsentTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ajude-nos a melhorar'**
+  String get analyticsConsentTitle;
+
+  /// No description provided for @analyticsConsentBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Usamos dados de uso anônimos para entender como o app é usado. Nenhum dado pessoal é coletado. Você pode mudar isso a qualquer momento nas Configurações.'**
+  String get analyticsConsentBody;
+
+  /// No description provided for @analyticsConsentAccept.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aceitar'**
+  String get analyticsConsentAccept;
+
+  /// No description provided for @analyticsConsentDecline.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não, obrigado'**
+  String get analyticsConsentDecline;
+
+  /// No description provided for @settingsAnalyticsToggle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Dados de uso'**
+  String get settingsAnalyticsToggle;
+
+  /// No description provided for @settingsAnalyticsDescription.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Permitir dados de uso anônimos para ajudar a melhorar o app'**
+  String get settingsAnalyticsDescription;
 }
 
 class _AppLocalizationsDelegate
