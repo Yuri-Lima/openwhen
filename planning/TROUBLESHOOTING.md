@@ -302,4 +302,58 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting.
+## 10. iOS — Debug connection lost ~20s after launch (App Check retry-storm)
+
+### O que acontece
+
+A app arranca e fica operacional durante ~20 segundos (VM Service conecta, DevFS sincroniza, hot reload fica disponível). Depois a ligação de debug cai com `Lost connection to device`. Os logs mostram:
+
+1. **App Check nativo** tenta `exchangeDeviceCheckToken` automaticamente → HTTP 400: `App not registered: 1:393943450881:ios:b976347b0fb8e5a7f78700`
+2. Retry agressivo (4+ tentativas em <2s), sobrecarrega o network stack do device
+3. iOS detecta `Network connectivity changed` → mata streams Firestore, mDNS entra em `DEFUNCT`
+4. `FlutterDartVMServicePublisher` falha → ligação de debug TCP/USB cai
+
+### Causa raiz
+
+O código Dart em [`main.dart`](../lib/main.dart) (função `_activateAppCheckIfNeeded()`) faz `return` no iOS antes de chamar `activate()` — workaround para deadlock no firebase-ios-sdk 12.9.0 (issue [#15974](https://github.com/firebase/firebase-ios-sdk/issues/15974)). **Mas** o SDK nativo do Firebase iOS faz auto-refresh de DeviceCheck tokens independentemente do plugin Dart, bastando existir o `GoogleService-Info.plist`. Como a app iOS não está registada na secção **App Check** da Firebase Console, cada tentativa devolve 400 e entra em loop.
+
+### Correção aplicada (2026-05-02)
+
+Flag no `Info.plist` que impede o SDK nativo de tentar obter tokens automaticamente:
+
+```xml
+<!-- ios/Runner/Info.plist -->
+<key>FirebaseAppCheckTokenAutoRefreshEnabled</key>
+<false/>
+```
+
+Isto complementa o skip no Dart e bloqueia completamente o App Check no iOS.
+
+### Para resolver definitivamente (futuro)
+
+1. **Registar a app iOS** no Firebase Console → App Check → Apps → Register com provider **DeviceCheck**. Isto faz com que o endpoint aceite os tokens em vez de devolver 400.
+2. **Actualizar firebase-ios-sdk** para >= 12.12.0 (quando FlutterFire lançar), que corrige o deadlock de Swift Concurrency.
+3. Após ambos os passos: remover a flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` do `Info.plist` e o `if (Platform.isIOS) return` do `_activateAppCheckIfNeeded()`.
+
+### Diagnóstico (se voltar a acontecer)
+
+```bash
+# Correr com verbose para ver onde rebenta
+flutter run -d <device-id> -v
+
+# Procurar nos logs:
+# - "exchangeDeviceCheckToken" ou "App not registered" → App Check retry
+# - "No network route" ou "Network connectivity changed" → rede instável
+# - "dnssd_clientstub DEFUNCT" → mDNS morto → debug connection vai cair
+# - "FlutterDartVMServicePublisher" → confirma cascata
+```
+
+### Ficheiros
+
+- Skip Dart: [`lib/main.dart`](../lib/main.dart) — `_activateAppCheckIfNeeded()`
+- Flag nativa: [`ios/Runner/Info.plist`](../ios/Runner/Info.plist) — `FirebaseAppCheckTokenAutoRefreshEnabled`
+- Config Firebase: [`ios/Runner/GoogleService-Info.plist`](../ios/Runner/GoogleService-Info.plist) — `GOOGLE_APP_ID`
+
+---
+
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting. **Debug connection lost ~20s após launch** → secção **10**: App Check nativo em retry-storm; flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist`; futuramente registar app no Firebase Console App Check + actualizar firebase-ios-sdk >= 12.12.0.
