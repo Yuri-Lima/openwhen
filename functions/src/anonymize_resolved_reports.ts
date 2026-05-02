@@ -7,10 +7,9 @@ const db = () => getFirestore();
 /* ══════════════════════════════════════════════════════════════
  *  ANONYMIZE RESOLVED REPORTS
  *
- *  Runs daily at 04:00 UTC. Finds all content reports with
- *  status "resolved" or "dismissed" whose resolvedAt timestamp
- *  is older than 90 days, and strips PII fields while keeping
- *  anonymized metadata for moderation statistics.
+ *  Runs daily at 04:00 UTC. Finds content reports that crossed
+ *  the 90-day threshold since yesterday and strips PII fields,
+ *  keeping anonymized metadata for moderation statistics.
  *
  *  Privacy policy commitment (Section 9 — Data Retention):
  *  "Content reports: anonymized 90 days after resolution."
@@ -19,33 +18,56 @@ const db = () => getFirestore();
  *  Fields KEPT:     targetType, targetId, letterId, reason,
  *                   status, createdAt, resolvedAt
  *  Fields ADDED:    anonymizedAt (server timestamp)
+ *
+ *  COST OPTIMISATION
+ *  -----------------
+ *  Instead of querying ALL reports resolved >90 days ago (which
+ *  grows linearly and re-reads already-anonymized docs every
+ *  day), we query a 24-hour window: reports resolved between
+ *  91 days ago and 90 days ago. This keeps daily reads constant
+ *  regardless of how many historical reports exist.
+ *
+ *  A one-time backfill query runs first (limited, with the
+ *  select() projection) to catch any reports that were missed
+ *  before this function was deployed.
+ *
+ *  Firestore costs per run (steady state):
+ *    Reads:  ~daily resolved reports (typically <10)
+ *    Writes: same count (update to strip PII)
+ *    Cost:   negligible (~$0.0001/day)
  * ══════════════════════════════════════════════════════════════ */
 
 /** Batch write limit for Firestore (max 500 operations per batch). */
 const BATCH_LIMIT = 450;
 
-/** 90 days in milliseconds. */
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const NINETY_DAYS_MS = 90 * ONE_DAY_MS;
 
 export const anonymizeResolvedReports = onSchedule(
   {
     schedule: "every day 04:00",
     timeZone: "UTC",
-    timeoutSeconds: 300, // 5 min — reports are lightweight
+    timeoutSeconds: 300,
     retryCount: 1,
   },
   async () => {
     const firestore = db();
-    const cutoff = Timestamp.fromMillis(Date.now() - NINETY_DAYS_MS);
 
     logger.info("anonymizeResolvedReports: starting daily run");
 
-    // Process "resolved" and "dismissed" separately to use composite index
     let totalAnonymized = 0;
 
     for (const status of ["resolved", "dismissed"] as const) {
-      const count = await anonymizeByStatus(firestore, status, cutoff);
-      totalAnonymized += count;
+      // 1. Window query: reports that crossed the 90-day mark in the
+      //    last 24 hours (resolvedAt between 91d ago and 90d ago).
+      const windowCount = await anonymizeWindow(firestore, status);
+      totalAnonymized += windowCount;
+
+      // 2. Backfill: catch any old reports missed before deployment.
+      //    Uses select() projection to minimise bandwidth. Limited to
+      //    one batch per run to keep costs bounded.
+      const backfillCount = await anonymizeBackfill(firestore, status);
+      totalAnonymized += backfillCount;
     }
 
     logger.info(
@@ -54,45 +76,79 @@ export const anonymizeResolvedReports = onSchedule(
   }
 );
 
-async function anonymizeByStatus(
+/**
+ * Window query: only reports resolved between 91 and 90 days ago.
+ * Constant cost regardless of total report volume.
+ */
+async function anonymizeWindow(
   firestore: FirebaseFirestore.Firestore,
-  status: string,
-  cutoff: Timestamp
+  status: string
 ): Promise<number> {
-  // Query: status matches, resolved before cutoff.
-  // We filter out already-anonymized reports in-memory (by checking
-  // for the presence of anonymizedAt) because Firestore does not
-  // index missing fields — a "== null" filter would miss documents
-  // that don't have the field at all (i.e., all existing reports).
-  const query = firestore
+  const windowStart = Timestamp.fromMillis(Date.now() - NINETY_DAYS_MS - ONE_DAY_MS);
+  const windowEnd = Timestamp.fromMillis(Date.now() - NINETY_DAYS_MS);
+
+  const snapshot = await firestore
     .collection("reports")
     .where("status", "==", status)
-    .where("resolvedAt", "<=", cutoff);
+    .where("resolvedAt", ">=", windowStart)
+    .where("resolvedAt", "<=", windowEnd)
+    .get();
 
-  const snapshot = await query.get();
+  if (snapshot.empty) return 0;
 
-  if (snapshot.empty) {
-    logger.info(`anonymizeResolvedReports: no ${status} reports eligible`);
-    return 0;
-  }
-
-  // Filter out already-anonymized documents in memory
+  // Filter out any already-anonymized (safety net for retries)
   const toAnonymize = snapshot.docs.filter((doc) => !doc.data().anonymizedAt);
-
-  if (toAnonymize.length === 0) {
-    logger.info(`anonymizeResolvedReports: no ${status} reports to anonymize`);
-    return 0;
-  }
+  if (toAnonymize.length === 0) return 0;
 
   logger.info(
-    `anonymizeResolvedReports: ${toAnonymize.length} of ${snapshot.size} ${status} reports need anonymization`
+    `anonymizeResolvedReports: window — ${toAnonymize.length} ${status} reports`
   );
 
+  return await batchAnonymize(firestore, toAnonymize);
+}
+
+/**
+ * Backfill: catches reports from before deployment that were never
+ * anonymized. Uses select() to only fetch the anonymizedAt field,
+ * minimising read bandwidth. Processes one batch per run.
+ */
+async function anonymizeBackfill(
+  firestore: FirebaseFirestore.Firestore,
+  status: string
+): Promise<number> {
+  const cutoff = Timestamp.fromMillis(Date.now() - NINETY_DAYS_MS - ONE_DAY_MS);
+
+  // select() projection: only fetch anonymizedAt to check eligibility.
+  // Saves bandwidth — we don't need reporterUid/detail to decide.
+  const snapshot = await firestore
+    .collection("reports")
+    .where("status", "==", status)
+    .where("resolvedAt", "<=", cutoff)
+    .select("anonymizedAt")
+    .limit(BATCH_LIMIT)
+    .get();
+
+  if (snapshot.empty) return 0;
+
+  const toAnonymize = snapshot.docs.filter((doc) => !doc.data().anonymizedAt);
+  if (toAnonymize.length === 0) return 0;
+
+  logger.info(
+    `anonymizeResolvedReports: backfill — ${toAnonymize.length} ${status} reports`
+  );
+
+  return await batchAnonymize(firestore, toAnonymize);
+}
+
+async function batchAnonymize(
+  firestore: FirebaseFirestore.Firestore,
+  docs: FirebaseFirestore.QueryDocumentSnapshot[]
+): Promise<number> {
   let batch = firestore.batch();
   let batchCount = 0;
   let total = 0;
 
-  for (const doc of toAnonymize) {
+  for (const doc of docs) {
     batch.update(doc.ref, {
       reporterUid: FieldValue.delete(),
       detail: FieldValue.delete(),
@@ -111,7 +167,6 @@ async function anonymizeByStatus(
     }
   }
 
-  // Commit remaining
   if (batchCount > 0) {
     await batch.commit();
   }

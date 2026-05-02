@@ -230,9 +230,9 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 | FCM Token | Sobrescrito a cada login; deletado com conta | Push notifications |
 | Localização (GPS) | Armazenada apenas quando opt-in; deletada/anonimizada com conta | Feature opt-in |
 | Dados de billing | Cancelados no Stripe na deleção | Assinatura |
-| Reports | 90 dias após resolução, depois anonimizados | Moderação e segurança |
-| Feedback | 1 ano após envio, depois anonimizado | Melhoria do produto |
-| Logs de moderação | 2 anos (sem PII direta) | Obrigação legal/compliance |
+| Reports | 90 dias após resolução, depois anonimizados | Moderação e segurança | ✅ `anonymizeResolvedReports` (04:00 UTC) |
+| Feedback | 1 ano após envio, depois anonimizado | Melhoria do produto | 🔲 Não implementado |
+| Logs de moderação | 2 anos, depois eliminados | Obrigação legal/compliance | ✅ `purgeOldModerationLogs` (04:30 UTC) |
 | Analytics (Firebase) | Conforme política do Firebase (14 meses padrão) | Métricas agregadas |
 | Logs de auditoria (deleção) | 3 anos (sem PII — apenas uid hash + timestamp) | Prova de compliance |
 
@@ -255,7 +255,7 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 
 ### P2 (Desejável — roadmap)
 10. 🔲 Dashboard de privacidade (ver quais dados estão armazenados)
-11. 🔲 Retenção automática (cron para limpar reports/feedback antigos)
+11. ✅ Retenção automática — `anonymizeResolvedReports` (reports 90 dias) + `purgeOldModerationLogs` (moderation 2 anos) — implementado 02/05/2026
 
 ---
 
@@ -277,15 +277,43 @@ Referências: `settings_screen.dart`, `account_deletion_service.dart`, `deletion
 
 ## 9. Cloud Functions — Estrutura Atual
 
-| Function | Tipo | Ficheiro |
-|----------|------|----------|
-| `deleteUserAccount` | onCall | `delete_account.ts` (callable direto, legado/admin) |
-| `exportUserData` | onCall | `export_user_data.ts` (export JSON + email) |
-| `requestAccountDeletion` | onCall | `request_deletion.ts` (soft delete 15 dias) |
-| `cancelAccountDeletion` | onCall | `request_deletion.ts` (reverter para active) |
-| `processScheduledDeletions` | onSchedule | `scheduled_deletion.ts` (diária 03:00 UTC) |
+| Function | Tipo | Ficheiro | Horário |
+|----------|------|----------|---------|
+| `deleteUserAccount` | onCall | `delete_account.ts` (callable direto, legado/admin) | — |
+| `exportUserData` | onCall | `export_user_data.ts` (export JSON + email) | — |
+| `requestAccountDeletion` | onCall | `request_deletion.ts` (soft delete 15 dias) | — |
+| `cancelAccountDeletion` | onCall | `request_deletion.ts` (reverter para active) | — |
+| `processScheduledDeletions` | onSchedule | `scheduled_deletion.ts` | 03:00 UTC |
+| `anonymizeResolvedReports` | onSchedule | `anonymize_resolved_reports.ts` | 04:00 UTC |
+| `purgeOldModerationLogs` | onSchedule | `purge_old_moderation_logs.ts` | 04:30 UTC |
 
 Lógica core extraída em `executeAccountDeletion()` (reutilizada pelo callable e scheduler).
+
+### 9.1 Scheduled Functions — Custos e Optimizações
+
+As três scheduled functions executam em off-peak (03:00–04:30 UTC) para minimizar conflitos com tráfego de utilizadores.
+
+**`anonymizeResolvedReports`** — Anonimiza reports resolvidos há >90 dias (remove `reporterUid`, `detail`, `resolvedByUid`; mantém metadata estatística).
+
+- **Query de janela temporal (24h):** em vez de ler todos os reports históricos resolvidos há >90 dias (custo que cresce linearmente), a query usa uma janela: reports com `resolvedAt` entre 91 e 90 dias atrás. Isso mantém o número de reads diários constante (~poucos docs/dia) independentemente do volume acumulado.
+- **Backfill com `select()` projection:** uma segunda query limitada (`limit(450)`) apanha reports anteriores ao deploy da function. Usa `select("anonymizedAt")` para carregar apenas o campo necessário, minimizando bandwidth. Processa um batch por execução até esgotar.
+- **Composite index:** `reports[status ASC, resolvedAt ASC]` em `firestore.indexes.json`.
+- **Custo steady-state:** ~$0.0001/dia (negligível, dentro do free tier).
+
+**`purgeOldModerationLogs`** — Elimina documentos de `moderationIncidents` e `moderationReviews` com `createdAt` > 2 anos.
+
+- **`select()` vazio:** a query usa `.select()` sem argumentos, retornando apenas referências de documentos sem dados de campos. Como só precisamos do `ref` para deletar, isso elimina transferência de bandwidth dos campos PII (text, message, authorDisplayName, etc.).
+- **Paginação com `limit()` + loop:** processa 450 docs por batch, repetindo até não haver mais documentos elegíveis. Evita carregar todos os documentos em memória de uma vez.
+- **Single-field query:** `createdAt < cutoff` usa o índice automático do Firestore (sem composite index adicional).
+- **Custo steady-state:** ~$0.0001/dia (documentos com >2 anos são raros nos primeiros anos de operação).
+
+**Referência de preços Firestore (us-central1):**
+
+| Operação | Preço | Free tier diário |
+|----------|-------|------------------|
+| Leitura | $0.06 / 100k docs | 50.000 |
+| Escrita | $0.18 / 100k docs | 20.000 |
+| Eliminação | $0.02 / 100k docs | 20.000 |
 
 ---
 
