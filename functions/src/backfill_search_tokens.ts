@@ -65,6 +65,7 @@ export const backfillSearchTokens = onCall(
     region: "us-central1",
     timeoutSeconds: 540,
     memory: "512MiB",
+    enforceAppCheck: true,
   },
   async (request) => {
     // Admin-only guard

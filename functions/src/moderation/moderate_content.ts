@@ -43,7 +43,7 @@ async function fetchAuthorDisplayName(uid: string): Promise<string> {
 /**
  * Authenticated clients send text for server-side moderation (OpenAI by default).
  */
-export const moderateContent = onCall({cors: true}, async (request) => {
+export const moderateContent = onCall({cors: true, enforceAppCheck: true}, async (request) => {
   if (!request.auth?.uid) {
     throw new HttpsError("unauthenticated", "Sign in required");
   }

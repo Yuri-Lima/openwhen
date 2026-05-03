@@ -52,7 +52,7 @@ class AuthRepository {
       'photoUrl': null,
       'bio': null,
       'isPrivate': false,
-      'createdAt': Timestamp.now(),
+      'createdAt': FieldValue.serverTimestamp(),
       'lettersSentCount': 0,
       'lettersReceivedCount': 0,
       'lockedLettersCount': 0,
@@ -68,7 +68,7 @@ class AuthRepository {
       'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       'acceptedTermsVersion': kCurrentTermsVersion,
       'acceptedPrivacyVersion': kCurrentPrivacyVersion,
-      'termsAcceptedAt': Timestamp.now(),
+      'termsAcceptedAt': FieldValue.serverTimestamp(),
     });
 
     // Send email verification — required before first login.
@@ -117,7 +117,7 @@ class AuthRepository {
         'photoUrl': null,
         'bio': null,
         'isPrivate': false,
-        'createdAt': Timestamp.now(),
+        'createdAt': FieldValue.serverTimestamp(),
         'lettersSentCount': 0,
         'lettersReceivedCount': 0,
         'lockedLettersCount': 0,
@@ -133,7 +133,7 @@ class AuthRepository {
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
         'acceptedTermsVersion': kCurrentTermsVersion,
         'acceptedPrivacyVersion': kCurrentPrivacyVersion,
-        'termsAcceptedAt': Timestamp.now(),
+        'termsAcceptedAt': FieldValue.serverTimestamp(),
       });
     }
     // Fire-and-forget: Marco Civil Art. 15 access log.
@@ -172,7 +172,7 @@ class AuthRepository {
         'photoUrl': user.photoURL,
         'bio': null,
         'isPrivate': false,
-        'createdAt': Timestamp.now(),
+        'createdAt': FieldValue.serverTimestamp(),
         'lettersSentCount': 0,
         'lettersReceivedCount': 0,
         'lockedLettersCount': 0,
@@ -188,7 +188,7 @@ class AuthRepository {
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
         'acceptedTermsVersion': kCurrentTermsVersion,
         'acceptedPrivacyVersion': kCurrentPrivacyVersion,
-        'termsAcceptedAt': Timestamp.now(),
+        'termsAcceptedAt': FieldValue.serverTimestamp(),
       });
     }
     // Fire-and-forget: Marco Civil Art. 15 access log.

@@ -49,6 +49,7 @@ export {onSendGridWebhook} from "./sendgrid_webhook";
 export {sendPolicyUpdateEmails} from "./send_policy_update_emails";
 
 export {checkUsernameAvailable} from "./check_username";
+export {onUserCreated} from "./on_user_created";
 
 export {
   onLikeCreated,
@@ -168,6 +169,7 @@ async function applySubscriptionToUser(
 export const createCheckoutSession = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!billingConfigured()) {
@@ -233,6 +235,7 @@ export const createCheckoutSession = onCall(
 export const createPortalSession = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!billingConfigured()) {
@@ -273,7 +276,7 @@ export const createPortalSession = onCall(
 );
 
 /** Sets subscriptionTier to free when missing (Admin SDK; bypasses client rules). */
-export const migrateUserBillingDefaults = onCall(async (request) => {
+export const migrateUserBillingDefaults = onCall({cors: true, enforceAppCheck: true}, async (request) => {
   if (!request.auth?.uid) {
     throw new HttpsError("unauthenticated", "Sign in required");
   }

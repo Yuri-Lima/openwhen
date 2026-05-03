@@ -24,6 +24,7 @@ export const exportUserData = onCall(
   {
     cors: true,
     timeoutSeconds: 300, // 5 min — export can be large
+    enforceAppCheck: true,
     secrets: [sendgridApiKey],
   },
   async (request) => {

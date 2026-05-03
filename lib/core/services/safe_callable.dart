@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
@@ -90,6 +91,20 @@ class SafeCallable {
     final user = FirebaseAuth.instance.currentUser;
     final token = await user?.getIdToken();
 
+    // App Check token — required by enforceAppCheck on Cloud Functions.
+    // getToken() contacts DeviceCheck/AppAttest — timeout guards against
+    // potential iOS SDK deadlock (firebase-ios-sdk#15974).
+    String? appCheckToken;
+    try {
+      appCheckToken = await FirebaseAppCheck.instance
+          .getToken()
+          .timeout(const Duration(seconds: 8));
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[SafeCallable] App Check token fetch failed (non-fatal): $e');
+      }
+    }
+
     if (kDebugMode) {
       debugPrint('[SafeCallable] HTTP POST $functionName (iOS fallback)');
     }
@@ -99,6 +114,7 @@ class SafeCallable {
       headers: {
         'Content-Type': 'application/json',
         if (token != null) 'Authorization': 'Bearer $token',
+        if (appCheckToken != null) 'X-Firebase-AppCheck': appCheckToken,
       },
       body: jsonEncode({'data': data}),
     );

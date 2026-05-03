@@ -63,15 +63,12 @@ Future<void> _configureAudioSession() async {
 
 Future<void> _activateAppCheckIfNeeded() async {
   if (kIsWeb) return;
-  // Skip App Check on iOS: Firebase iOS SDK 12.9.0 has a Swift Concurrency
-  // deadlock bug (firebase-ios-sdk#15974) that can hang the entire app at
-  // startup when DeviceCheck/AppAttest tokens are fetched asynchronously.
-  // Re-enable once FlutterFire ships Firebase iOS SDK >= 12.12.0.
-  if (!kIsWeb && Platform.isIOS) {
-    debugPrint('[AppCheck] Skipped on iOS (SDK deadlock workaround)');
-    return;
-  }
   try {
+    // activate() registers the provider (DeviceCheck / PlayIntegrity) but
+    // does NOT fetch a token — tokens are obtained lazily on the first
+    // callable or getToken() call. The iOS deadlock bug (firebase-ios-sdk
+    // #15974) affects HTTPSCallable.call(), not activate(), so this is safe.
+    // The SafeCallable HTTP fallback handles token fetch with its own timeout.
     await FirebaseAppCheck.instance.activate(
       androidProvider:
           kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,

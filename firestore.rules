@@ -40,7 +40,18 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create: if isUser(userId)
         && request.resource.data.subscriptionTier == 'free'
-        && userCreateHasNoServerBillingFields();
+        && userCreateHasNoServerBillingFields()
+        // Anti-abuse: dateOfBirth obrigatório (COPPA / LGPD compliance)
+        && request.resource.data.dateOfBirth is timestamp
+        // Campos obrigatórios: username, createdAt com server timestamp
+        && request.resource.data.username is string
+        && request.resource.data.username.size() >= 3
+        && request.resource.data.username.size() <= 20
+        && request.resource.data.createdAt == request.time
+        // Aceite de termos obrigatório
+        && request.resource.data.acceptedTermsVersion is string
+        && request.resource.data.acceptedPrivacyVersion is string
+        && request.resource.data.termsAcceptedAt is timestamp;
       allow update: if isUser(userId) && (
         userBillingFieldsUnchanged() || userBillingOnlyFreeTierMigration()
       );
@@ -240,6 +251,11 @@ service cloud.firestore {
 
     // Access logs (Marco Civil Art. 15) — só Admin SDK / Cloud Functions
     match /accessLogs/{logId} {
+      allow read, write: if false;
+    }
+
+    // Account creation audit logs — só Admin SDK / Cloud Functions (anti-abuse)
+    match /accountCreationLogs/{logId} {
       allow read, write: if false;
     }
 

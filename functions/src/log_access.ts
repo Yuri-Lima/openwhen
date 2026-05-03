@@ -26,7 +26,7 @@ const db = () => getFirestore();
  * ══════════════════════════════════════════════════════════════ */
 
 export const logAccess = onCall(
-  {cors: true},
+  {cors: true, enforceAppCheck: true},
   async (request) => {
     const uid = request.auth?.uid;
     if (!uid) {

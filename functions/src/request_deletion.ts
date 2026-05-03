@@ -28,6 +28,7 @@ const MAX_REQUESTS_PER_MONTH = 3;
 export const requestAccountDeletion = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
     secrets: [sendgridApiKey],
   },
   async (request) => {
@@ -135,7 +136,7 @@ export const requestAccountDeletion = onCall(
  * ══════════════════════════════════════════════════════════════ */
 
 export const cancelAccountDeletion = onCall(
-  {cors: true},
+  {cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");

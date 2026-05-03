@@ -24,6 +24,7 @@ function assertAdmin(token: Record<string, unknown> | undefined): void {
 export const bootstrapAdminClaim = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     const secret = process.env.ADMIN_BOOTSTRAP_SECRET;
@@ -50,6 +51,7 @@ export const bootstrapAdminClaim = onCall(
 export const adminListPendingReports = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!request.auth?.uid) {
@@ -77,6 +79,7 @@ export const adminListPendingReports = onCall(
 export const adminResolveReport = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!request.auth?.uid) {
@@ -108,6 +111,7 @@ export const adminResolveReport = onCall(
 export const adminListRecentFeedback = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!request.auth?.uid) {
@@ -138,6 +142,7 @@ export const adminListRecentFeedback = onCall(
 export const adminGetModerationInfo = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!request.auth?.uid) {
@@ -161,6 +166,7 @@ export const adminGetModerationInfo = onCall(
 export const adminListModerationIncidents = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!request.auth?.uid) {

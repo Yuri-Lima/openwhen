@@ -252,7 +252,7 @@ async function sendSendgridInvite(params: {
  * to the caller's uid. Idempotent.
  */
 export const claimExternalLetters = onCall(
-  {region: "us-central1", cors: true},
+  {region: "us-central1", cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -357,7 +357,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
 );
 
 export const resendExternalInviteEmail = onCall(
-  {region: "us-central1", cors: true, secrets: [sendgridApiKey]},
+  {region: "us-central1", cors: true, enforceAppCheck: true, secrets: [sendgridApiKey]},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");

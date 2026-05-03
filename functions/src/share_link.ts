@@ -25,7 +25,7 @@ function generateShareToken(): string {
  * Output: { url: string, shareToken: string }
  */
 export const generateShareLink = onCall(
-  {region: "us-central1", cors: true},
+  {region: "us-central1", cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -222,7 +222,7 @@ export const getSharePreview = onRequest(
  * Output: { letterId: string, status: string }
  */
 export const claimShareLink = onCall(
-  {region: "us-central1", cors: true},
+  {region: "us-central1", cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -346,7 +346,7 @@ export const claimShareLink = onCall(
  * Output: { revoked: true, newUrl?: string }
  */
 export const revokeShareLink = onCall(
-  {region: "us-central1", cors: true},
+  {region: "us-central1", cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
