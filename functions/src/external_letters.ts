@@ -318,6 +318,8 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
     const data = snap.data();
     if (!data) return;
     if (data.receiverHasAccount === true) return;
+    // Skip letters shared via link (no email to send to)
+    if (data.deliveryMode === "link" || data.shareMode === "link") return;
     const to = data.receiverEmail as string | undefined;
     if (!to || typeof to !== "string") return;
 

@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/linking/share_link_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/safe_callable.dart';
@@ -45,6 +47,18 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
     final status = widget.data['inviteEmailStatus'] as String?;
     return status == 'bounce' || status == 'bounced' || status == 'dropped' || status == 'send_failed';
   }
+
+  bool get _isSharedViaLink => widget.data['shareMode'] == 'link';
+  bool get _isSharePending =>
+      _isSharedViaLink &&
+      (widget.data['receiverUid'] == null || widget.data['receiverUid'] == '') &&
+      widget.data['shareRevoked'] != true;
+  bool get _isShareClaimed =>
+      _isSharedViaLink &&
+      widget.data['receiverUid'] != null &&
+      (widget.data['receiverUid'] as String).isNotEmpty;
+  bool get _isShareRevoked =>
+      _isSharedViaLink && widget.data['shareRevoked'] == true;
 
   /// Nome do remetente visível na carta.
   /// Receptor e remetente sempre veem o nome real.
@@ -334,8 +348,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                     ),
                   ),
 
-                  // ── Banner de email bounce (só sender, carta externa) ────────
-                  if (_isSender && _hasEmailDeliveryFailure) ...[
+                  // ── Banner de email bounce (só sender, carta externa, não link) ──
+                  if (_isSender && _hasEmailDeliveryFailure && !_isSharedViaLink) ...[
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                       child: Container(
@@ -363,6 +377,14 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                           ],
                         ),
                       ),
+                    ),
+                  ],
+
+                  // ── Banner de link partilhado (só sender) ───────────────────
+                  if (_isSender && _isSharedViaLink) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: _buildShareLinkBanner(context, l10n),
                     ),
                   ],
 
@@ -598,6 +620,75 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
             ),
           ),
           trailing ?? Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
+        ],
+      ),
+    );
+  }
+
+  // ── Share-link banner ────────────────────────────────────────────────────
+  Widget _buildShareLinkBanner(BuildContext context, AppLocalizations l10n) {
+    final Color bg;
+    final Color border;
+    final IconData icon;
+    final String text;
+    final List<Widget> actions;
+
+    if (_isShareRevoked) {
+      bg = Colors.grey.withValues(alpha: 0.1);
+      border = Colors.grey.withValues(alpha: 0.3);
+      icon = Icons.link_off;
+      text = l10n.shareLinkRevoked;
+      actions = [];
+    } else if (_isShareClaimed) {
+      bg = Colors.green.withValues(alpha: 0.1);
+      border = Colors.green.withValues(alpha: 0.3);
+      icon = Icons.check_circle_outline;
+      text = l10n.shareLinkClaimed;
+      actions = [];
+    } else {
+      // pending
+      bg = Colors.orange.withValues(alpha: 0.1);
+      border = Colors.orange.withValues(alpha: 0.3);
+      icon = Icons.link;
+      text = l10n.shareLinkPending;
+      final token = widget.data['shareToken'] as String?;
+      final url = token != null ? 'https://whenote.app/open/$token' : null;
+      actions = [
+        if (url != null) ...[
+          IconButton(
+            icon: const Icon(Icons.copy, size: 18),
+            tooltip: l10n.writeLetterShareLinkCopy,
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: url));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(l10n.writeLetterShareLinkCopied)),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.share, size: 18),
+            tooltip: l10n.writeLetterShareLinkShare,
+            onPressed: () => SharePlus.instance.share(ShareParams(text: url)),
+          ),
+        ],
+      ];
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 22, color: border.withValues(alpha: 1.0)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(text, style: TextStyle(fontSize: 13, color: context.pal.ink)),
+          ),
+          ...actions,
         ],
       ),
     );

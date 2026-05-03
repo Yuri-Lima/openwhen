@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +33,7 @@ import '../../../../core/utils/validators.dart';
 import '../../../../core/auth/email_verification_guard.dart';
 import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/send_moderation_helper.dart';
+import '../../../../core/linking/share_link_service.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
 import '../models/emotional_state.dart';
@@ -88,6 +91,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   String? _receiverName;
   String? _receiverUsername;
   bool _receiverHasAccount = false;
+  /// When true, the letter will be sent via a shareable link (no recipient needed).
+  bool _shareViaLink = false;
 
   // Busca
   final _userSearch = UserSearchService();
@@ -228,11 +233,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     final l10n = AppLocalizations.of(context)!;
     if (!mounted) return;
     final locale = Localizations.localeOf(context).toString();
-    final recipientLabel = _receiverName != null && _receiverName!.isNotEmpty
-        ? ((_receiverUsername != null && _receiverUsername!.isNotEmpty)
-            ? '@${_receiverUsername!} (${_receiverName!})'
-            : _receiverName!)
-        : _emailController.text.trim();
+    final recipientLabel = _shareViaLink
+        ? l10n.writeLetterShareViaLinkLabel
+        : _receiverName != null && _receiverName!.isNotEmpty
+            ? ((_receiverUsername != null && _receiverUsername!.isNotEmpty)
+                ? '@${_receiverUsername!} (${_receiverName!})'
+                : _receiverName!)
+            : _emailController.text.trim();
     final emotionLabel =
         _selectedEmotion != null ? emotionalStateLabel(l10n, _selectedEmotion!.key) : '—';
     final bodyPreview = _isHandwritten
@@ -550,8 +557,85 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverName = null;
       _receiverUsername = null;
       _receiverHasAccount = false;
+      _shareViaLink = false;
       _emailController.clear();
     });
+  }
+
+  void _selectShareViaLink() {
+    setState(() {
+      _shareViaLink = true;
+      _receiverUid = null;
+      _receiverName = null;
+      _receiverUsername = null;
+      _receiverHasAccount = false;
+      _searchResults = [];
+      _showResults = false;
+      _searchController.clear();
+      _emailController.clear();
+    });
+  }
+
+  Future<void> _showShareLinkDialog(String url) async {
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              const Icon(Icons.link, size: 22),
+              const SizedBox(width: 8),
+              Expanded(child: Text(l10n.writeLetterShareLinkTitle,
+                  style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w600))),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: context.pal.accentWarm.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: SelectableText(
+                  url,
+                  style: GoogleFonts.dmMono(fontSize: 13, color: context.pal.accent),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.writeLetterShareLinkHint,
+                style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: url));
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  SnackBar(content: Text(l10n.writeLetterShareLinkCopied)),
+                );
+                Navigator.pop(ctx);
+              },
+              child: Text(l10n.writeLetterShareLinkCopy),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                Share.share(url, subject: l10n.writeLetterShareLinkSubject);
+              },
+              child: Text(l10n.writeLetterShareLinkShare),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _pickHandwrittenImage() async {
@@ -648,7 +732,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.writeLetterSnackPhoto)));
       return;
     }
-    if (_receiverName == null || _receiverName!.isEmpty) {
+    if (_shareViaLink) {
+      // Share via link: no recipient needed — will be claimed later
+      _receiverUid = null;
+      _receiverName = '';
+      _receiverUsername = '';
+      _receiverHasAccount = false;
+    } else if (_receiverName == null || _receiverName!.isEmpty) {
       final emailTrim = _emailController.text.trim();
       if (emailTrim.isNotEmpty) {
         if (!Validators.isValidEmail(emailTrim)) {
@@ -856,9 +946,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         'senderName': senderName,
         'receiverUid': _receiverUid ?? '',
         'receiverName': _receiverName ?? '',
-        'receiverEmail': _receiverHasAccount ? null : externalEmailRaw,
-        if (externalNormalized != null) 'receiverEmailNormalized': externalNormalized,
-        if (!_receiverHasAccount) 'deliveryMode': 'external',
+        'receiverEmail': _shareViaLink ? null : (_receiverHasAccount ? null : externalEmailRaw),
+        if (!_shareViaLink && externalNormalized != null) 'receiverEmailNormalized': externalNormalized,
+        if (_shareViaLink) 'deliveryMode': 'link'
+        else if (!_receiverHasAccount) 'deliveryMode': 'external',
+        if (_shareViaLink) 'shareMode': 'link',
         'receiverHasAccount': _receiverHasAccount,
         'title': _titleController.text.trim(),
         'message': _isHandwritten ? '' : _messageController.text.trim(),
@@ -885,7 +977,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           },
       };
 
-      await LetterSendService.commitLetterSend(
+      final letterId = await LetterSendService.commitLetterSend(
         firestore: firestore,
         senderUid: currentUser.uid,
         letterData: letterData,
@@ -893,12 +985,26 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(_receiverHasAccount
-              ? (areFriends ? l10n.writeLetterSnackSentFriend : l10n.writeLetterSnackSentPending)
-              : l10n.writeLetterSnackSentExternal),
-          backgroundColor: context.pal.accent,
-        ));
+        // Share via link: generate link and show share dialog
+        if (_shareViaLink) {
+          final url = await ShareLinkService.generateShareLink(letterId);
+          if (mounted && url != null) {
+            await _showShareLinkDialog(url);
+          }
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(l10n.writeLetterSnackSentExternal),
+              backgroundColor: context.pal.accent,
+            ));
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(_receiverHasAccount
+                ? (areFriends ? l10n.writeLetterSnackSentFriend : l10n.writeLetterSnackSentPending)
+                : l10n.writeLetterSnackSentExternal),
+            backgroundColor: context.pal.accent,
+          ));
+        }
         AnalyticsService.logLetterCreated(_selectedEmotion?.key ?? 'unknown');
         await _clearDraft();
         await NotificationService.scheduleLetterReminder(
@@ -906,7 +1012,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           title: _titleController.text.trim(),
           openDate: _openDate,
         );
-        Navigator.pop(context);
+        if (mounted) Navigator.pop(context);
       }
     } catch (e, st) {
       if (kDebugMode) {
@@ -1284,7 +1390,35 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   Text(l10n.writeLetterRecipientSection, style: GoogleFonts.dmSans(fontSize: 10, color: context.pal.inkFaint, letterSpacing: 1.5, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 8),
 
-                  if (_receiverName != null)
+                  if (_shareViaLink)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: context.pal.card,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: context.pal.accent),
+                      ),
+                      child: Row(children: [
+                        Container(
+                          width: 40, height: 40,
+                          decoration: BoxDecoration(
+                            color: context.pal.accent.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(child: Icon(Icons.link, color: Color(0xFF6366F1), size: 20)),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(l10n.writeLetterShareViaLinkLabel, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.pal.ink)),
+                          Text(
+                            l10n.writeLetterShareViaLinkHint,
+                            style: GoogleFonts.dmSans(fontSize: 12, color: const Color(0xFF6366F1)),
+                          ),
+                        ])),
+                        GestureDetector(onTap: _clearReceiver, child: Icon(Icons.close, color: context.pal.accent, size: 20)),
+                      ]),
+                    )
+                  else if (_receiverName != null)
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -1354,7 +1488,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               if (_showResults && _searchResults.isNotEmpty)
                                 Container(
                                   margin: const EdgeInsets.only(top: 4),
-                                  decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, 4))]),
+                                  decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(14), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, 4))]),
                                   child: Column(children: _searchResults.map((u) {
                                     final nome = u.publicName;
                                     final foto = u.photoUrl;
@@ -1403,6 +1537,48 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                               hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                          ),
+                        ),
+
+                        // Divisor OU (link)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(children: [
+                            Expanded(child: Divider(color: context.pal.border)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(l10n.writeLetterOrSendExternal, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkFaint)),
+                            ),
+                            Expanded(child: Divider(color: context.pal.border)),
+                          ]),
+                        ),
+
+                        // Botão "Gerar link"
+                        GestureDetector(
+                          onTap: _selectShareViaLink,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: context.pal.accent.withValues(alpha: 0.06),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: context.pal.accent.withValues(alpha: 0.3)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.link, color: context.pal.accent, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l10n.writeLetterGenerateLink,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.pal.accent,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -1457,7 +1633,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     decoration: BoxDecoration(
                       color: context.pal.card,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: _isPrivate ? context.pal.accent.withOpacity(0.4) : context.pal.border),
+                      border: Border.all(color: _isPrivate ? context.pal.accent.withValues(alpha: 0.4) : context.pal.border),
                     ),
                     child: Row(children: [
                       Icon(
@@ -1468,7 +1644,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                       const SizedBox(width: 12),
                       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(
-                          _isPrivate ? 'Carta privada' : 'Permitir publicação no feed',
+                          _isPrivate ? l10n.writeLetterPrivateTitle : l10n.writeLetterPublicTitle,
                           style: GoogleFonts.dmSans(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -1477,8 +1653,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                         ),
                         Text(
                           _isPrivate
-                              ? 'Só você e o destinatário terão acesso'
-                              : 'O destinatário poderá compartilhar no feed após abrir',
+                              ? l10n.writeLetterPrivateHint
+                              : l10n.writeLetterPublicHint,
                           style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft, height: 1.4),
                         ),
                       ])),

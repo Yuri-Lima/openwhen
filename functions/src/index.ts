@@ -38,6 +38,13 @@ export {
   resendExternalInviteEmail,
 } from "./external_letters";
 
+export {
+  generateShareLink,
+  getSharePreview,
+  claimShareLink,
+  revokeShareLink,
+} from "./share_link";
+
 export {onSendGridWebhook} from "./sendgrid_webhook";
 export {sendPolicyUpdateEmails} from "./send_policy_update_emails";
 

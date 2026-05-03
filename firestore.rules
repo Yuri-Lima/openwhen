@@ -108,7 +108,8 @@ service cloud.firestore {
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'senderUid', 'receiverUid', 'createdAt',
           'inviteEmailStatus', 'inviteEmailStatusUpdatedAt', 'inviteEmailStatusReason',
-          'inviteEmailSentAt', 'receiverEmailNormalized', 'deliveryMode', 'lastResendAt'
+          'inviteEmailSentAt', 'receiverEmailNormalized', 'deliveryMode', 'lastResendAt',
+          'shareToken', 'shareMode', 'shareCreatedAt', 'shareClaimedAt', 'shareClaimedBy', 'shareRevoked'
         ]);
       allow delete: if signedIn()
         && resource.data.senderUid == request.auth.uid;
