@@ -79,6 +79,15 @@
       ]
     },
     {
+      "collectionGroup": "letters",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "senderUid", "order": "ASCENDING" },
+        { "fieldPath": "shareMode", "order": "ASCENDING" },
+        { "fieldPath": "shareRevoked", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "follows",
       "queryScope": "COLLECTION",
       "fields": [

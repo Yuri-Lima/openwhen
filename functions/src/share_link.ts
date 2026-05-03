@@ -63,18 +63,35 @@ export const generateShareLink = onCall(
       };
     }
 
-    // Check limit: max 100 share links per user (simple equality query — no composite index needed)
-    const activeCount = await db
+    // --- Dual limit: functional (active) + anti-abuse (total) ---
+    // 1) Total limit (including revoked) — anti-abuse ceiling
+    const totalCount = await db
       .collection("letters")
       .where("senderUid", "==", uid)
       .where("shareMode", "==", "link")
       .count()
       .get();
 
+    if (totalCount.data().count >= 500) {
+      throw new HttpsError(
+        "resource-exhausted",
+        "Lifetime share link limit reached. Contact support."
+      );
+    }
+
+    // 2) Active limit (excluding revoked) — functional cap
+    const activeCount = await db
+      .collection("letters")
+      .where("senderUid", "==", uid)
+      .where("shareMode", "==", "link")
+      .where("shareRevoked", "==", false)
+      .count()
+      .get();
+
     if (activeCount.data().count >= 100) {
       throw new HttpsError(
         "resource-exhausted",
-        "Too many share links. Delete old letters or contact support."
+        "Too many active share links. Revoke old links to create new ones."
       );
     }
 
