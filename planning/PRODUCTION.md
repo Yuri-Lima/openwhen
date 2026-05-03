@@ -23,7 +23,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 > - [x] ~~Ativar **Budget Alerts** na Google Cloud Console~~ — ✅ Configurado 2026-05-01: €20/mês, alertas 50/80/100%, email para admins + project owners.
 > - [ ] Rever a [calculadora de preços do Firebase](https://firebase.google.com/pricing) com estimativas realistas de utilizadores ativos diários (DAU) e operações por sessão.
 > - [x] ~~Ativar o **Firebase Usage dashboard**~~ — ✅ Já ativo (plano Blaze). Verificado 2026-05-01: $0.00, Firestore <1% do quota gratuito. Monitorizar diariamente na primeira semana pós-lançamento.
-> - [ ] Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.
+> - [x] ~~Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.~~ — ✅ Implementado 2026-05-03: `enforceAppCheck: true` em todas as callable Cloud Functions. App Check ativo em iOS (DeviceCheck via `SafeCallable` HTTP fallback + `X-Firebase-AppCheck` header) e Android (Play Integrity). Identity Platform ativado com blocking function `onUserCreated` (anti-abuse: emails descartáveis + rate limit IP).
 > - [ ] Documentar estimativas e limites aceitáveis em [`planning/custos/GASTOS.md`](custos/GASTOS.md).
 >
 > **Sem esta análise, NÃO avançar para produção.** Um pico inesperado de utilizadores ou um bug que gere leituras em loop pode resultar em custos elevados em poucas horas.
@@ -112,7 +112,14 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`, `support.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
 
-**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.app` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
+**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.com` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
+
+### Share via Link — Firebase Hosting
+
+- Landing page em `hosting/public/open/index.html` para partilha via link (preview da carta + botão para abrir/instalar app)
+- Rewrite `/api/share-preview` → Cloud Function `getSharePreview` (preview sanitizado)
+- Rewrite `/open/**` → `/open/index.html` (SPA catch-all para deep links)
+- Deploy: `firebase deploy --only hosting`
 
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
@@ -123,6 +130,20 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 | **Feed público** | Query com `limit` + janela em `openedAt` ([`feed_config.dart`](../lib/core/constants/feed_config.dart)); evita leituras globais ilimitadas. **Explorar:** primeira página em stream + mais páginas com `get()` + `startAfter` ao fazer scroll (custo por página extra). **Destaques:** mesma query limitada; ordenação por engajamento só no cliente, com teto de documentos. **Seguindo:** até **ceil(n/10)** queries/listeners por atualização (n = contas seguidas), por limite `whereIn` do Firestore — monitorizar em contas com muitos follows. |
 | **Busca (lista de utilizadores)** | [`UserSearchService`](../lib/core/user_search/user_search_service.dart) — **não** há `get()` na coleção `users` para pesquisa; usa queries com `limit` (prefixo em `username` + `searchTokens` com `array-contains`). **Até ~abril/2026** o cliente carregava todos os documentos de `users` — ver [`CHANGELOG.md`](CHANGELOG.md). Seguir/Seguindo na tela Buscar: leituras em **batch** (`whereIn` em chunks), não um listener por linha. Pull-to-refresh com throttle (~3 s). Utilizadores sem `searchTokens` (dados antigos) continuam encontráveis por prefixo de `@username` até guardarem o perfil. |
 | **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
+
+### TTL Policy — Deleção automática de drafts
+
+- [x] **TTL Policy configurada (2026-05-03):** Google Cloud Console → Firestore → Time to live (TTL). Collection group: `drafts`, Timestamp field: `expiresAt`, Status: **Serving**. Documentos cuja `expiresAt` tenha passado são automaticamente deletados pelo Firestore (normalmente dentro de 24 horas). Sem custo adicional, sem Cloud Functions.
+- [x] **Firestore Rules para `drafts`:** regras deployadas com proteção de campos imutáveis (`senderUid`, `createdAt`, `expiresAt`). Leitura/escrita/delete só pelo owner.
+
+### Share via Link — Índices Firestore
+
+3 novos índices compostos para suportar queries de share link:
+- `senderUid` + `shareMode` — listar cartas partilhadas por link de um remetente
+- `senderUid` + `shareMode` + `shareRevoked` — filtrar links ativos/revogados
+- Auto-index para `shareToken` — lookup direto pelo token na landing page / claim
+
+Deploy: `firebase deploy --only firestore:indexes`
 
 ### Manutenção periódica
 
@@ -135,7 +156,7 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 ## 5. Cloud Functions — billing (Stripe) e moderação por IA
 
 - **Stripe:** variáveis de **runtime** no Google Cloud (tabela em **[`functions/README.md`](../functions/README.md)**). No **cliente**, billing só com `--dart-define=BILLING_ENABLED=true` quando Stripe e funções estiverem prontos.
-- **Descrição do produto para onboarding Stripe (KYC):** texto curto/long em inglês (e referência em PT) em **[`planning/BUSINESS.md`](BUSINESS.md)** — secção *“Texto para onboarding Stripe”* — alinhado a assinaturas (tiers **Amanhã** / **Brisa** / **Horizonte**), Checkout + Portal, e serviços digitais apenas.
+- **Descrição do produto para onboarding Stripe (KYC):** texto curto/long em inglês (e referência em PT) em **[`planning/ROADMAP.md`](ROADMAP.md)** — secção *”Texto para onboarding Stripe (KYC)”* — alinhado a assinaturas (tiers **Amanhã** / **Brisa** / **Horizonte**), Checkout + Portal, e serviços digitais apenas.
 - **Moderação por IA:** `OPENAI_API_KEY` e opcionalmente `MODERATION_PROVIDER` nas mesmas Functions; o cliente chama `moderateContent` quando `aiModerationEnabled` é `true` em **`systemConfig/app`**. Sem chave, o servidor aplica fallback conforme `aiModerationFailClosed` e regista incidentes em `moderationIncidents`. Superadmin vê provedor e estado das credenciais via `adminGetModerationInfo` (app **Configurações → Moderação**). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md), [functions/README.md](../functions/README.md).
 - **Região:** alinhar `FUNCTIONS_REGION` no build Flutter com a região deployada (`us-central1` por defeito).
 
@@ -153,14 +174,14 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
    - URL: `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
    - Eventos: Bounced, Dropped, Deferred, Delivered
    - **Signed Event Webhook** habilitado (verification key copiada para o passo 2)
-   - Webhook ID: `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
+   - Webhook ID: `0754af3e-9ac0-443e-99aa-6b4837ffe82d`
 5. ✅ **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
 6. ✅ **`preferredLanguage`:** campo sincronizado com Firestore via `locale_provider.dart` quando o utilizador muda o idioma; incluído na criação de conta. Webhook faz fallback: `preferredLanguage` → `language` (2 chars) → `"en"`.
 
-Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo").
 
 **Webhook URL:** `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
-**Webhook ID (SendGrid):** `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
+**Webhook ID (SendGrid):** `0754af3e-9ac0-443e-99aa-6b4837ffe82d`
 
 ### Email de autenticação (SMTP + templates + página de ação)
 
@@ -173,7 +194,7 @@ Configuração inicial feita em 2026-04-12 (SendGrid). **Migrado para Google Wor
 | **Google Workspace SMTP Relay** | ✅ Configurado | `smtp-relay.gmail.com:587` STARTTLS |
 | **Sender address** | ✅ `noreply@whenote.com` | Remetente dos emails de auth |
 | **SMTP username** | ✅ `yurilima@whenote.com` | Conta Workspace com 2FA ativa |
-| **SMTP password** | ✅ App Password | `vpjt xycl yqvt kcmv` (gerada em myaccount.google.com → App Passwords, nome "Firebase SMTP") |
+| **SMTP password** | ✅ App Password | ⚠️ **Não documentar aqui** — gerada em myaccount.google.com → App Passwords (nome "Firebase SMTP"). Configurar no Firebase Console → Authentication → Templates → SMTP Settings. |
 | **Workspace Admin** | ✅ Relay ativado | Admin Console → Apps → Gmail → Routing → "Firebase Auth SMTP Relay" |
 | **Action URL (global)** | ✅ Configurada | `https://whenote.app/auth/action.html` (aplica-se a todos os templates) |
 | **Sender name** | ✅ "Whenote" | Nos 3 templates: verification, password reset, email change |
@@ -206,6 +227,16 @@ Configuração inicial feita em 2026-04-12 (SendGrid). **Migrado para Google Wor
 | `lib/features/auth/presentation/screens/register_screen.dart` | Fix: `popUntil` pós-registro |
 | `planning/EMAIL_SETUP.md` | Guia completo de configuração |
 
+### Share via Link — Cloud Functions
+
+4 novas Cloud Functions em `functions/src/share_link.ts`:
+- `generateShareLink` (callable) — gera shareToken e retorna URL
+- `getSharePreview` (HTTP público) — preview sanitizado para landing page, rate limiting 60 req/min/IP
+- `claimShareLink` (callable) — vincula carta ao destinatário (Firestore transaction)
+- `revokeShareLink` (callable) — revoga ou regenera link
+
+Deploy: `firebase deploy --only functions`
+
 ### Nota (futuro): filas e workers
 
 Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, **filas com requisitos fortes** (ordem, retries elaborados, throughput alto) ou **integração fora do ecossistema Firebase/GCP**, vale relembrar: no Google Cloud o caminho habitual é **Pub/Sub** + subscribers (Cloud Functions ou Cloud Run), **Cloud Tasks** para tarefas adiadas com retries, e **Cloud Scheduler** para cron. **RabbitMQ** (ou outra fila AMQP) e **workers** dedicados só fazem sentido quando houver necessidade explícita ou equipa/infra já orientada a isso — acrescentam operação e integração extra face ao stack atual.
@@ -234,13 +265,14 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: secção [9](#9-testes-em-dispositivo-real-qa); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
 
-**Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
+**Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → C½ (migração de schema) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
 
 ```mermaid
 flowchart LR
   A[IdentidadeBuild] --> B[SegredosFicheiros]
   B --> C[FirebaseBackend]
-  C --> D[FlagsProduto]
+  C --> C2[MigraçãoSchema]
+  C2 --> D[FlagsProduto]
   D --> E[PushPermissoes]
   E --> F[LojasConformidade]
   F --> G[QARelease]
@@ -265,6 +297,25 @@ flowchart LR
 - [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
 - [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+- [ ] Índices Firestore para share link deployados (`firebase deploy --only firestore:indexes`)
+- [ ] Landing page `/open/index.html` deployada no Firebase Hosting (`firebase deploy --only hosting`)
+- [ ] AASA atualizado com path `/open/*` (Universal Links iOS)
+- [ ] Cloud Functions de share link deployadas (`generateShareLink`, `getSharePreview`, `claimShareLink`, `revokeShareLink`)
+- [ ] Testar fluxo end-to-end: gerar link → landing page → claim
+
+### C½. Migração de schema Firestore (campos novos)
+
+> **Contexto:** Firestore é schemaless — adicionar um campo novo ao código não preenche documentos existentes. Se o novo código depende do campo (queries, filtros, UI), utilizadores legacy ficam silenciosamente quebrados. Ver [TROUBLESHOOTING.md §11](TROUBLESHOOTING.md) para caso real (`searchTokens`).
+
+- [ ] **Inventário de campos novos:** listar todos os campos adicionados a collections existentes neste release (comparar `app_user.dart`, `auth_repository.dart`, models Firestore).
+- [ ] **Para cada campo novo, responder:**
+  - O campo é escrito na criação de novos documentos? (`register()`, `signInWithApple()`, `signInWithGoogle()`)
+  - Existem documentos em produção sem este campo?
+  - O código assume que o campo existe? (queries `where`, `array-contains`, `orderBy`, lógica de UI)
+  - Há fallback seguro para `null`/ausente?
+- [ ] **Se o campo é necessário para UX crítica e existem documentos sem ele:** criar Cloud Function de backfill, fazer deploy e executar **antes** de publicar o client nas lojas.
+- [ ] **Se o fallback é aceitável:** documentar no CHANGELOG que utilizadores legacy terão comportamento degradado até editar perfil / re-login.
+- [ ] **Backfill functions deployadas e executadas com sucesso** (verificar resposta `{ updated, skipped, errors }`).
 
 ### D. Funcionalidades e flags de build
 
@@ -279,7 +330,7 @@ flowchart LR
 
 ### F. Lojas e conformidade
 
-- [x] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [BUSINESS.md](BUSINESS.md) se aplicável.
+- [x] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [ROADMAP.md](ROADMAP.md) se aplicável.
 - [ ] **Google Play:** formulário Data safety, classificação de conteúdo, ícones e screenshots conforme políticas atuais.
 - [x] **App Store Connect — metadata iOS 1.0:** descrição, keywords, texto promocional, subtítulo, URLs (suporte `whenote.app/support` + marketing `whenote.app`), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free 175 países, contacto de revisão preenchido.
 - [ ] **App Store — screenshots:** mínimo 3 para iPhone 6.5" (obrigatório para submissão).
@@ -339,6 +390,13 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 **Problemas com envio de carta ou ecrã admin moderação:** [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
+### Share via Link
+
+- Testar gerar link, copiar, partilhar via WhatsApp/iMessage
+- Testar claim com app instalado (Universal Link) e sem app (landing page → install → claim)
+- Testar revogação de link (gerar → revogar → confirmar que link antigo não funciona)
+- Testar rate limiting da landing page (`getSharePreview`: 60 req/min/IP)
+
 ### Regressão web (opcional)
 
 - `flutter run -d chrome` — avatar (galeria), abertura de cápsula e feed continuam funcionando; FCM no web exige configuração extra (VAPID / service worker) e pode estar limitado.
@@ -347,6 +405,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 ## 10. Histórico de alterações deste guia
 
+- **2026-05-03:** Share via Link — documentação de deploy: Cloud Functions (`share_link.ts`), Firebase Hosting (landing page `/open/`), índices Firestore compostos, checklist de deploy e QA adicionados.
 - **2026-05-01:** Firebase Hosting — `firebase deploy --only hosting` concluído; `support.html` e rota `/support` em produção (`whenote.app/support`).
 - **2026-04:** Página de suporte (`support.html`) adicionada ao Firebase Hosting; App Store Connect iOS 1.0 configurado (metadata, pricing, age ratings); checklist F expandida com itens pendentes (screenshots, build, test account, deploy hosting).
 - **2026-04:** DEVICE_TESTING.md absorvido na secção [9](#9-testes-em-dispositivo-real-qa); referências cruzadas atualizadas; secção "Histórico" renumerada para §10.

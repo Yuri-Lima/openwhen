@@ -11,6 +11,7 @@ import '../../../core/services/fcm_token_manager.dart';
 import '../../../core/services/safe_callable.dart';
 import '../../../core/user_search/user_search_tokens.dart';
 import '../../../core/services/access_log_service.dart';
+import '../../../core/policy/policy_constants.dart';
 import '../../../core/utils/firebase_locale_helper.dart';
 import '../../../core/utils/username_generator.dart';
 
@@ -51,7 +52,7 @@ class AuthRepository {
       'photoUrl': null,
       'bio': null,
       'isPrivate': false,
-      'createdAt': Timestamp.now(),
+      'createdAt': FieldValue.serverTimestamp(),
       'lettersSentCount': 0,
       'lettersReceivedCount': 0,
       'lockedLettersCount': 0,
@@ -65,6 +66,9 @@ class AuthRepository {
       'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
       'hasCompletedFirstAction': false,
       'dateOfBirth': Timestamp.fromDate(dateOfBirth),
+      'acceptedTermsVersion': kCurrentTermsVersion,
+      'acceptedPrivacyVersion': kCurrentPrivacyVersion,
+      'termsAcceptedAt': FieldValue.serverTimestamp(),
     });
 
     // Send email verification — required before first login.
@@ -113,7 +117,7 @@ class AuthRepository {
         'photoUrl': null,
         'bio': null,
         'isPrivate': false,
-        'createdAt': Timestamp.now(),
+        'createdAt': FieldValue.serverTimestamp(),
         'lettersSentCount': 0,
         'lettersReceivedCount': 0,
         'lockedLettersCount': 0,
@@ -127,6 +131,9 @@ class AuthRepository {
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
+        'acceptedTermsVersion': kCurrentTermsVersion,
+        'acceptedPrivacyVersion': kCurrentPrivacyVersion,
+        'termsAcceptedAt': FieldValue.serverTimestamp(),
       });
     }
     // Fire-and-forget: Marco Civil Art. 15 access log.
@@ -165,7 +172,7 @@ class AuthRepository {
         'photoUrl': user.photoURL,
         'bio': null,
         'isPrivate': false,
-        'createdAt': Timestamp.now(),
+        'createdAt': FieldValue.serverTimestamp(),
         'lettersSentCount': 0,
         'lettersReceivedCount': 0,
         'lockedLettersCount': 0,
@@ -179,6 +186,9 @@ class AuthRepository {
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
         'dateOfBirth': Timestamp.fromDate(dateOfBirth),
+        'acceptedTermsVersion': kCurrentTermsVersion,
+        'acceptedPrivacyVersion': kCurrentPrivacyVersion,
+        'termsAcceptedAt': FieldValue.serverTimestamp(),
       });
     }
     // Fire-and-forget: Marco Civil Art. 15 access log.

@@ -1,3 +1,5 @@
+import '../../core/constants/app_urls.dart';
+
 /// Allowlisted fields for social story images — never pass raw Firestore maps to painters.
 class StoryShareContent {
   const StoryShareContent({
@@ -40,7 +42,7 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.letter,
       truncatedTitle: _truncate(title),
-      deepLink: 'https://whenote.app/letter/$docId',
+      deepLink: AppUrls.letterUrl(docId),
       dateSubtitle: dateSubtitle,
       brandLine: 'whenote.app',
     );
@@ -58,7 +60,7 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.paperLetter,
       truncatedTitle: _truncate(title),
-      deepLink: 'https://whenote.app/letter/$docId',
+      deepLink: AppUrls.letterUrl(docId),
       dateSubtitle: dateSubtitle,
       brandLine: 'whenote.app',
       senderName: senderName,
@@ -78,7 +80,7 @@ class StoryShareContent {
     return StoryShareContent(
       kind: StoryShareKind.capsule,
       truncatedTitle: _truncate(combined),
-      deepLink: 'https://whenote.app/capsule/$docId',
+      deepLink: AppUrls.capsuleUrl(docId),
       dateSubtitle: dateSubtitle,
       brandLine: 'whenote.app',
     );

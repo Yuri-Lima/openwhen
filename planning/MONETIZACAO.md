@@ -1,6 +1,6 @@
 # Whenote — Estratégia de Monetização e Custos Firebase
 
-> Complementa [`BUSINESS.md`](BUSINESS.md). Foco prático: quanto custa, quando monetizar, como precificar.
+> Complementa [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio"). Foco prático: quanto custa, quando monetizar, como precificar.
 > Última atualização: 13/04/2026
 
 ---
@@ -40,7 +40,7 @@ Pelo uso de Cloud Functions, o plano **Blaze é obrigatório**. O plano inclui q
 1. **Listeners sem `.limit()`** — um stream que lê 10.000 documentos a cada rebuild pode custar mais em 1 dia do que 1.000 usuários normais em 1 mês. Revisar: feed (Explorar), notificações, cofre.
 2. **Moderação por IA (OpenAI)** — a cada carta enviada, `moderateContent` chama a API da OpenAI. Com 1.000 cartas/dia, o custo OpenAI (~$0,002/chamada = ~$2/dia = ~$60/mês) supera o Firebase.
 3. **Storage de áudio** — voz de 1 min em OGG ≈ 500KB. 10.000 cartas com voz = 5GB de Storage. Implementar TTL para áudios de cartas já abertas.
-4. **Bounces de email via SendGrid** — custo por email enviado. Revisar se o plano gratuito do SendGrid (100 emails/dia) é suficiente para o beta.
+4. **Bounces de email via SendGrid** — custo por email enviado. Conta trial (nova, criada 2026-05-03) com 100 emails/dia gratuitos. Revisar se é suficiente para o beta.
 
 ### Ação obrigatória antes de lançar
 
@@ -169,9 +169,9 @@ Não. A taxa de conversão de um app com < 1.000 usuários ativos é < 1%. Cobra
 Cartas de texto são ilimitadas no grátis — não há incentivo para criar múltiplas contas. O premium é sobre a experiência da carta específica, não sobre quantidade.
 
 **"O que acontece com cartas de usuários que cancelam o plano?"**
-Cartas já enviadas permanecem. Quem cancelou perde acesso a novos recursos premium mas todas as cartas enviadas continuam funcionando. Política de continuidade no `CONTINGENCY_PLAN.md`.
+Cartas já enviadas permanecem. Quem cancelou perde acesso a novos recursos premium mas todas as cartas enviadas continuam funcionando. Política de continuidade em [`LEGAL.md`](LEGAL.md) (secção 1).
 
 ---
 
 *Documento criado em 13/04/2026 · Diego Rocha & Claude · Whenote*
-*Relacionado: [`BUSINESS.md`](BUSINESS.md) · [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md) · [`ROADMAP.md`](ROADMAP.md)*
+*Relacionado: [`ROADMAP.md`](ROADMAP.md) · [`DELAWARE.md`](DELAWARE.md)*

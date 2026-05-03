@@ -13,7 +13,7 @@
 
 *Timed letters, time capsules, and an emotional social layer — with a physical QR bridge to the people you care about.*
 
-[Product roadmap](planning/ROADMAP.md) · [MVP checklist](planning/MVP_CHECKLIST.md) · [Architecture](planning/ARCHITECTURE.md) · [Business](planning/BUSINESS.md)
+[Product roadmap](planning/ROADMAP.md) · [MVP checklist](planning/MVP_CHECKLIST.md) · [Architecture](planning/ARCHITECTURE.md)
 
 </div>
 
@@ -223,7 +223,7 @@ Full tree and schema notes: **[planning/ARCHITECTURE.md](planning/ARCHITECTURE.m
 - **Audience:** ~18–35, heavy Instagram/TikTok usage
 - **Monetization:** Freemium now; **pay-per-feature** after **~10k users**
 
-Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
+Full narrative: **[planning/ROADMAP.md](planning/ROADMAP.md)** (section "Contexto de negócio")
 
 ---
 
@@ -253,7 +253,7 @@ Full narrative: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Granular MVP tracking |
 | [planning/ARCHITECTURE.md](planning/ARCHITECTURE.md) | Stack, folders, Firestore |
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Colors, type, capsule themes |
-| [planning/BUSINESS.md](planning/BUSINESS.md) | Strategy for investors |
+| [planning/MONETIZACAO.md](planning/MONETIZACAO.md) | Monetization strategy & Firebase costs |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Keep a Changelog style |
 | [planning/PRODUCTION.md](planning/PRODUCTION.md) | Build/release checklist (`FB_APP_ID`, Firebase, billing flags) |
 | [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Operational fixes: letter send, Firestore rules, admin screen |

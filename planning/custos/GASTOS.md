@@ -1,19 +1,19 @@
-# Gastos de Criação — OpenWhen
+# Gastos de Criação — Whenote
 
 > Registo de todos os custos associados ao desenvolvimento do app.
-> Moeda principal: **EUR (€) e USD ($)**
+> Moeda principal: **USD ($)**. Valores em EUR convertidos a ~1.08 USD/EUR para o total.
 
 ---
 
 ## Resumo
 
-| Categoria              | Total (€/USD) |
+| Categoria              | Total (USD)   |
 |------------------------|---------------|
-| Ferramentas & IA       | €123,80 + $40 |
-| Apple Developer        | $99           |
-| Domínios & Serviços    | $0            |
+| Ferramentas & IA       | ~$194         |
+| Apple Developer (×2)   | $198          |
+| Domínios & Serviços    | ~$50          |
 | Design & Assets        | $0            |
-| **TOTAL GERAL**        | **~$305 USD** |
+| **TOTAL GERAL**        | **~$442 USD** |
 
 ---
 
@@ -28,12 +28,16 @@
 | 2026-04    | Claude                              | $20,00    | Diego | Plano Claude                 |
 | 2026-04    | InVideo AI                          | $20,00    | Diego | Criação de vídeos marketing  |
 
+**Subtotal:** €123,80 (~$134 USD) + $40,00 = **~$174 USD**
+
 ### Apple Developer Program
 
 | Data       | Item                                | Valor     | Quem  | Notas                        |
 |------------|-------------------------------------|-----------|-------|------------------------------|
 | 2026-04    | Apple Developer Program             | $99,00    | Diego | Conta para App Store         |
 | 2026-04    | Apple Developer Program             | $99,00    | Yuri  | Conta para App Store         |
+
+**Subtotal:** $198,00
 
 ### Infraestrutura & Cloud (Firebase, etc.)
 
@@ -43,9 +47,15 @@
 
 ### Domínios & Serviços
 
+Registo anual via Cloudflare Registrar (taxas de registo TLD, não confundir com DNS/hosting gratuito).
+
 | Data       | Item                                | Valor     | Quem  | Notas                        |
 |------------|-------------------------------------|-----------|-------|------------------------------|
-|            | openwhen.live (Cloudflare)          | $0,00     | Yuri  | Incluído no plano            |
+| 2026-04-11 | openwhen.live — renovação/registo   | $25,20    | Yuri  | Fatura Cloudflare IN-62141860 (11 Abr 2026 → 10 Abr 2027) |
+| 2026-04-26 | whenote.com — renovação/registo     | $10,46    | Yuri  | Fatura Cloudflare IN-63478377 (26 Abr 2026 → 25 Abr 2027) |
+| 2026-04-26 | whenote.app — renovação/registo     | $14,20    | Yuri  | Fatura Cloudflare IN-63478350 (26 Abr 2026 → 25 Abr 2027) |
+
+**Subtotal:** $49,86 USD
 
 ### Próximos Gastos Previstos
 
@@ -59,5 +69,5 @@
 
 ---
 
-*Última atualização: Abril 2026*
-*Diego Rocha & Yuri Lima — OpenWhen*
+*Última atualização: Maio 2026*
+*Diego Rocha & Yuri Lima — Whenote*

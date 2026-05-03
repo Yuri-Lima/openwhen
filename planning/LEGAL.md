@@ -37,6 +37,7 @@
 | Runbook: notificação de breach (GDPR Art. 33/34) | ✅ Documentado | [`OPERATIONAL_PRIVACY_RUNBOOKS.md`](OPERATIONAL_PRIVACY_RUNBOOKS.md) §3 — 4 fases, template (Anexo C), contactos autoridades |
 | Export server-side: JSON vs ZIP documentado | ✅ Documentado | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) §5 — client ZIP (promessa) + server JSON (fallback pré-deletion) |
 | Processador SMTP atualizado na Política de Privacidade | ✅ Corrigido | Seção 7(a): Google Workspace SMTP Relay adicionado; SendGrid mantido em 7(c) (convites externos); 4 ARBs + `privacy.html` |
+| Sistema de notificação e re-consentimento de políticas (Seção 16) | ✅ Implementado | `policy_constants.dart`, `policy_update_provider.dart`, `policy_reconsent_screen.dart`, `policy_update_banner.dart`; CF `sendPolicyUpdateEmails.ts`; 11 chaves i18n em 4 idiomas; versionamento por data; dialog bloqueante pós-data-efetiva + banner informativo pré-data |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |
@@ -388,7 +389,7 @@ Quando a feature for activada, actualizar:
 
 - [ ] **Termos de Uso:** nova secção sobre envio físico, responsabilidades, política de reembolso/devolução, itens proibidos
 - [ ] **Política de Privacidade:** recolha de endereço físico do destinatário (dado pessoal sensível); base legal (consentimento ou execução contratual); partilha com parceiro logístico; retenção e eliminação do endereço após entrega
-- [ ] **Stripe KYC:** actualizar descrição do negócio para incluir "tangible goods" (ver [`BUSINESS.md`](BUSINESS.md))
+- [ ] **Stripe KYC:** actualizar descrição do negócio para incluir "tangible goods" (ver [`ROADMAP.md`](ROADMAP.md) secção "Contexto de negócio")
 - [ ] **Páginas web públicas:** `terms.html` e `privacy.html` actualizados
 
 ### 7.6. Protecção de Dados do Destinatário

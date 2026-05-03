@@ -3,6 +3,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
+import {BASE_URL, letterUrl, PRIVACY_URL, TERMS_URL} from "./config/app_urls";
 
 const sendgridApiKey = defineSecret("SENDGRID_API_KEY");
 
@@ -156,9 +157,9 @@ function buildInviteHtml(p: {
                 &copy; 2026 Whenote &middot; Write today. Feel tomorrow.
               </p>
               <p style="font-size:11px;color:#7A726A;margin:0;">
-                <a href="https://whenote.app/privacy.html" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
+                <a href="${PRIVACY_URL}" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
                 &nbsp;&middot;&nbsp;
-                <a href="https://whenote.app/terms.html" style="color:#B8B0A8;text-decoration:none;">Terms</a>
+                <a href="${TERMS_URL}" style="color:#B8B0A8;text-decoration:none;">Terms</a>
               </p>
             </td>
           </tr>
@@ -186,7 +187,7 @@ function buildInvitePlainText(p: {
     ``,
     `---`,
     `Whenote — Write today. Feel tomorrow.`,
-    `https://whenote.app`,
+    BASE_URL,
   ].join("\n");
 }
 
@@ -203,7 +204,7 @@ async function sendSendgridInvite(params: {
     return;
   }
   const fromEmail =
-    process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+    process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.com";
   const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const content: Array<{type: string; value: string}> = [];
@@ -251,7 +252,7 @@ async function sendSendgridInvite(params: {
  * to the caller's uid. Idempotent.
  */
 export const claimExternalLetters = onCall(
-  {region: "us-central1", cors: true},
+  {region: "us-central1", cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -318,6 +319,8 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
     const data = snap.data();
     if (!data) return;
     if (data.receiverHasAccount === true) return;
+    // Skip letters shared via link (no email to send to)
+    if (data.deliveryMode === "link" || data.shareMode === "link") return;
     const to = data.receiverEmail as string | undefined;
     if (!to || typeof to !== "string") return;
 
@@ -325,7 +328,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
     const senderUid = data.senderUid as string;
     const title = (data.title as string) || "Whenote";
     const senderName = (data.senderName as string) || "Someone";
-    const link = `https://whenote.app/letter/${letterId}`;
+    const link = letterUrl(letterId);
     const subject = `${senderName} sent you a letter on Whenote`;
     const templateParams = {senderName, title, link};
     const html = buildInviteHtml(templateParams);
@@ -354,7 +357,7 @@ export const onLetterCreatedSendExternalInviteEmail = onDocumentCreated(
 );
 
 export const resendExternalInviteEmail = onCall(
-  {region: "us-central1", cors: true, secrets: [sendgridApiKey]},
+  {region: "us-central1", cors: true, enforceAppCheck: true, secrets: [sendgridApiKey]},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -388,7 +391,7 @@ export const resendExternalInviteEmail = onCall(
 
     const senderName = (data.senderName as string) || "Someone";
     const title = (data.title as string) || "Whenote";
-    const link = `https://whenote.app/letter/${letterId}`;
+    const link = letterUrl(letterId);
     const subject = `${senderName} sent you a letter on Whenote`;
     const templateParams = {senderName, title, link};
     const html = buildInviteHtml(templateParams);

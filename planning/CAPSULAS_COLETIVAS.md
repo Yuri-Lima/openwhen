@@ -1,8 +1,8 @@
 # Cápsulas Coletivas — Grupos e Comunidades
 
-> **Status:** Ideia validada — aguardando priorização pós-lançamento
-> **Complexidade estimada:** Alta (6–10 semanas de desenvolvimento)
-> **Quando fazer:** Mês 3+ após lançamento, quando base de usuários ativa > 1.000
+> **Status:** ✅ MVP implementado (singleAuthor mode — convites, participantUids, cofre com streams fundidas). Pendente: contribuições pré-selo (multiContributor).
+> **Complexidade estimada (visão completa):** Alta (6–10 semanas de desenvolvimento)
+> **Quando fazer (multiContributor):** Mês 3+ após lançamento, quando base de usuários ativa > 1.000
 
 ---
 

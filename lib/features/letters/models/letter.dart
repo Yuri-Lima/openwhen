@@ -47,6 +47,11 @@ class Letter {
   final DateTime? inviteEmailStatusUpdatedAt;
   /// Email address of external recipient (null for in-app recipients).
   final String? receiverEmail;
+  /// Share-via-link fields (null for non-link delivery).
+  final String? shareToken;
+  final String? shareMode;
+  final DateTime? shareClaimedAt;
+  final bool shareRevoked;
 
   Letter({
     required this.id,
@@ -72,6 +77,10 @@ class Letter {
     this.inviteEmailStatus,
     this.inviteEmailStatusUpdatedAt,
     this.receiverEmail,
+    this.shareToken,
+    this.shareMode,
+    this.shareClaimedAt,
+    this.shareRevoked = false,
   });
 
   bool get isLocked => status == LetterStatus.locked;
@@ -81,6 +90,17 @@ class Letter {
       inviteEmailStatus == InviteEmailStatus.bounced ||
       inviteEmailStatus == InviteEmailStatus.dropped ||
       inviteEmailStatus == InviteEmailStatus.sendFailed;
+
+  /// Whether this letter was shared via a generated link.
+  bool get isSharedViaLink => shareMode == 'link';
+
+  /// Whether the link has been claimed by a recipient.
+  bool get isShareClaimed =>
+      isSharedViaLink && receiverUid.isNotEmpty && shareClaimedAt != null;
+
+  /// Whether the share link is still pending (no one has claimed it yet).
+  bool get isSharePending =>
+      isSharedViaLink && receiverUid.isEmpty && !shareRevoked;
 
   factory Letter.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -121,6 +141,12 @@ class Letter {
           ? (data['inviteEmailStatusUpdatedAt'] as Timestamp).toDate()
           : null,
       receiverEmail: data['receiverEmail'] as String?,
+      shareToken: data['shareToken'] as String?,
+      shareMode: data['shareMode'] as String?,
+      shareClaimedAt: data['shareClaimedAt'] != null
+          ? (data['shareClaimedAt'] as Timestamp).toDate()
+          : null,
+      shareRevoked: data['shareRevoked'] == true,
     );
   }
 }

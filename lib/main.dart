@@ -13,6 +13,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/consent/analytics_consent_banner.dart';
+import 'core/policy/policy_update_provider.dart';
+import 'core/policy/policy_reconsent_screen.dart';
+import 'core/policy/policy_update_banner.dart';
 import 'core/services/analytics_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/locale/locale_provider.dart';
@@ -33,6 +36,8 @@ import 'core/linking/deep_link_bootstrap.dart';
 import 'core/linking/deep_link_coordinator.dart';
 import 'core/navigation/app_navigator_key.dart';
 import 'core/navigation/deferred_screens.dart';
+import 'features/letters/domain/draft_service.dart';
+import 'features/letters/presentation/screens/drafts_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
 import 'shared/widgets/feedback_entry_button.dart';
@@ -58,15 +63,12 @@ Future<void> _configureAudioSession() async {
 
 Future<void> _activateAppCheckIfNeeded() async {
   if (kIsWeb) return;
-  // Skip App Check on iOS: Firebase iOS SDK 12.9.0 has a Swift Concurrency
-  // deadlock bug (firebase-ios-sdk#15974) that can hang the entire app at
-  // startup when DeviceCheck/AppAttest tokens are fetched asynchronously.
-  // Re-enable once FlutterFire ships Firebase iOS SDK >= 12.12.0.
-  if (!kIsWeb && Platform.isIOS) {
-    debugPrint('[AppCheck] Skipped on iOS (SDK deadlock workaround)');
-    return;
-  }
   try {
+    // activate() registers the provider (DeviceCheck / PlayIntegrity) but
+    // does NOT fetch a token — tokens are obtained lazily on the first
+    // callable or getToken() call. The iOS deadlock bug (firebase-ios-sdk
+    // #15974) affects HTTPSCallable.call(), not activate(), so this is safe.
+    // The SafeCallable HTTP fallback handles token fetch with its own timeout.
     await FirebaseAppCheck.instance.activate(
       androidProvider:
           kReleaseMode ? AndroidProvider.playIntegrity : AndroidProvider.debug,
@@ -275,13 +277,11 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     }
 
     final authState = ref.watch(authStateProvider);
+    final policyAsync = ref.watch(policyUpdateProvider);
     return authState.when(
       data: (user) {
         if (user != null) {
-          // Already completed the first-action guide this session → skip check.
-          if (_firstActionGuideDone) return const HomeScreen();
-
-          // Check Firestore flag once; defaults to true for existing users.
+          // Single stream for both first-action guide and policy check.
           return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection(FirestoreCollections.users)
@@ -290,18 +290,23 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
             builder: (context, snap) {
               if (!snap.hasData) return const SplashScreen();
               final data = snap.data?.data() as Map<String, dynamic>?;
-              final completed = data?['hasCompletedFirstAction'] as bool? ?? true;
-              if (completed) {
-                // Cache so we don't re-check every rebuild.
+
+              // First-action guide check (skip if already done this session).
+              if (!_firstActionGuideDone) {
+                final completed = data?['hasCompletedFirstAction'] as bool? ?? true;
+                if (!completed) {
+                  return FirstActionGuideScreen(
+                    onComplete: () {
+                      _firstActionGuideDone = true;
+                      if (mounted) setState(() {});
+                    },
+                  );
+                }
                 _firstActionGuideDone = true;
-                return const HomeScreen();
               }
-              return FirstActionGuideScreen(
-                onComplete: () {
-                  _firstActionGuideDone = true;
-                  if (mounted) setState(() {});
-                },
-              );
+
+              // Policy re-consent check — reuse user data from this stream.
+              return _buildPolicyAwareHome(policyAsync, data);
             },
           );
         }
@@ -317,6 +322,51 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
       error: (e, _) {
         final l10n = AppLocalizations.of(context)!;
         return Scaffold(body: Center(child: Text(l10n.errorGeneric(e.toString()))));
+      },
+    );
+  }
+
+  /// Returns [HomeScreen] wrapped with policy-consent UI when needed.
+  ///
+  /// - If the policy update document hasn't loaded yet, show HomeScreen anyway
+  ///   (fail-open; the check re-runs on every rebuild).
+  /// - [requiresReConsent] → blocking full-screen dialog.
+  /// - [upcomingChange] → non-blocking bottom banner over HomeScreen.
+  Widget _buildPolicyAwareHome(
+    AsyncValue<PolicyUpdate> policyAsync,
+    Map<String, dynamic>? userData,
+  ) {
+    return policyAsync.when(
+      loading: () => const HomeScreen(),
+      error: (_, __) => const HomeScreen(),
+      data: (policyUpdate) {
+        final acceptedTerms =
+            userData?['acceptedTermsVersion'] as String?;
+        final acceptedPrivacy =
+            userData?['acceptedPrivacyVersion'] as String?;
+
+        final state = checkPolicyConsent(
+          policyUpdate: policyUpdate,
+          userAcceptedTermsVersion: acceptedTerms,
+          userAcceptedPrivacyVersion: acceptedPrivacy,
+        );
+
+        switch (state) {
+          case PolicyConsentState.requiresReConsent:
+            return PolicyReConsentScreen(
+              policyUpdate: policyUpdate,
+              onAccepted: () {
+                if (mounted) setState(() {});
+              },
+            );
+          case PolicyConsentState.upcomingChange:
+            return PolicyUpdateBanner(
+              policyUpdate: policyUpdate,
+              child: const HomeScreen(),
+            );
+          case PolicyConsentState.upToDate:
+            return const HomeScreen();
+        }
       },
     );
   }
@@ -351,6 +401,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       // NOTE: billing migration (migrateUserBillingDefaults) must NOT run at
       // startup — the HTTPSCallable crashes the native iOS SDK even through
       // CallableQueue. Runs lazily in SubscriptionPlansScreen instead.
+
+      // Draft: migração SharedPrefs → Firestore (one-time) + limpeza de expirados
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final draftService = DraftService();
+        await draftService.migrateFromSharedPreferences(uid);
+        await draftService.deleteExpiredDrafts(uid);
+      }
     });
   }
 
@@ -439,6 +497,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ctx,
                 MaterialPageRoute(
                     builder: (_) => const DeferredCreateCapsulePage()),
+              );
+            },
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: p.accentWarm,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.drafts_outlined, color: p.accent),
+            ),
+            title: Text(l10n.homeDrafts,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.homeDraftsSubtitle),
+            onTap: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(builder: (_) => const DraftsScreen()),
               );
             },
           ),

@@ -4,7 +4,6 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 **Legenda:** 🔴 crítico/bloqueador · 🟡 importante · 🟢 pós-MVP · ✅ concluído
 
-> **Documento de auditoria completa:** [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md)
 > **Estratégia de monetização e custos Firebase:** [`MONETIZACAO.md`](MONETIZACAO.md)
 > **Abertura da empresa (Delaware holding):** [`DELAWARE.md`](DELAWARE.md)
 > **Nova feature — Aniversário + Notificações:** [`ANIVERSARIO_NOTIFICACAO.md`](ANIVERSARIO_NOTIFICACAO.md)
@@ -38,7 +37,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟡 SEMANA 2 — retenção (primeiros usuários)
 
 - [ ] **Resposta à carta** — botão "Responder" ao abrir carta; `WriteLetterScreen` pré-preenchido; campos `replyToLetterId` + `threadId` no Firestore; cria loop emocional e é o maior driver de retenção do app · **Yuri**
-- [ ] **Rascunho automático** — salvar carta em rascunho ao sair da tela; `shared_preferences` com chave por usuário · **Diego** · `write_letter_screen.dart`
+- [x] **Rascunho automático** — Firestore (`drafts` collection + TTL 30 dias no campo `expiresAt`); auto-save debounce 5 s; `DraftsScreen` com countdown, swipe-to-delete; migração SharedPreferences → Firestore; limite 10/utilizador · **Yuri** · `draft_service.dart`, `drafts_screen.dart`, `write_letter_screen.dart` · ✅ 2026-05-03
 - [ ] **Preview da carta antes de selar** — dialog de confirmação com destinatário, data e prévia do conteúdo · **Diego** · `write_letter_screen.dart`
 - [ ] **Data mínima 30 dias nas cápsulas** — cápsula para amanhã quebra a emoção do conceito; validação no DatePicker · **Diego** · `create_capsule_screen.dart`
 - [ ] **Card compartilhável ao enviar carta** — "Selei uma carta 🦉" para Stories; marketing orgânico por carta enviada · **Diego + Yuri**
@@ -57,7 +56,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 MÊS 2 — pós primeiros 100 usuários
 
-- [ ] **Landing page para destinatário sem conta** — receber link da carta, ver prévia bloqueada, cadastrar para abrir; maior funil de conversão orgânico do app · **Yuri**
+- [x] **Landing page para destinatário sem conta** — Share via link com preview emocional, deep link + claim automático. Cloud Functions `generateShareLink`, `getSharePreview`, `claimShareLink`, `revokeShareLink`. · Yuri · ✅ 2026-05-03
 - [ ] **Follow Request para contas privadas** — conta privada existe mas qualquer pessoa segue sem pedir permissão; `followRequests/{id}` + notificação + aceite/recusa · **Yuri**
 - [ ] **Silenciar conta** — opção intermediária entre seguir e bloquear · **Diego** · `user_profile_screen.dart`
 - [ ] **Feed com visual de envelope** — envelopes que se abrem ao rolar; diferencia visualmente do Instagram · **Yuri**
@@ -69,7 +68,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟢 MÊS 3+ — para crescimento e investidores
 
 - [ ] **Cápsulas Coletivas (grupos)** — grupos de até 50 pessoas com data de abertura coletiva; admin cria e convida por link; todos contribuem em segredo; abertura simultânea com notificação push; monetização: admin paga R$14,99/grupo ou R$4,99/mês · **Yuri + Diego** · ver [`CAPSULAS_COLETIVAS.md`](CAPSULAS_COLETIVAS.md) · ~8–10 semanas
-- [ ] **Nox Card** — card da coruja por nível de uso, animação compartilhável; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 e [`BUSINESS.md`](BUSINESS.md)
+- [ ] **Nox Card** — card da coruja por nível de uso, animação compartilhável; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 - [ ] **Análise Firebase completa** — documentar estimativas por DAU em [`MONETIZACAO.md`](MONETIZACAO.md) ✅ (ver documento)
 - [ ] **Ativar monetização** — apenas após ~10K usuários; ver [`MONETIZACAO.md`](MONETIZACAO.md)
 - [ ] **Abertura da empresa Delaware** — ver [`DELAWARE.md`](DELAWARE.md) para timing e passo a passo
@@ -131,9 +130,9 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ### ⚠️ Parcialmente implementado (4)
 
 - [x] **Verificação de idade em login social** — ~~Sign in with Apple e Google pulavam a tela de registro completamente sem age gate.~~ ✅ **Resolvido 2026-05-02** — dialog com checkboxes de Termos + Idade 13+ adicionado antes de qualquer social sign-in em `login_screen.dart`. Chaves i18n adicionadas nos 4 idiomas.
-- [ ] **App Check iOS desativado** — App Check funciona em Android (Play Integrity), mas está comentado no iOS por bug do SDK Firebase (`firebase-ios-sdk#15974`). A política promete proteção em ambas as plataformas. `main.dart` linhas 58-77. **Corrigir:** reativar quando FlutterFire publicar SDK >= 12.12.0.
+- [x] **App Check iOS desativado** — ~~App Check funciona em Android (Play Integrity), mas está comentado no iOS por bug do SDK Firebase (`firebase-ios-sdk#15974`).~~ ✅ **Resolvido 2026-05-03** — Skip iOS removido; App Check agora ativa em todas as plataformas. `SafeCallable` (HTTP fallback iOS) atualizado para enviar token App Check via header `X-Firebase-AppCheck`. `enforceAppCheck: true` em todas as callable Cloud Functions. Identity Platform ativado com blocking function `onUserCreated` (anti-abuse). **Pendente futuro:** quando FlutterFire publicar SDK >= 12.12.0, remover `SafeCallable` HTTP fallback e usar SDK nativo.
 - [x] **Eliminação "irreversível" vs. grace period** — ~~A política dizia "irreversible" mas o código implementa 15 dias de carência.~~ ✅ **Resolvido 2026-05-02** — texto de `privacySection11Body` atualizado nos 4 idiomas (EN/PT/PT_BR/ES) para explicar o período de carência de 15 dias com opção de cancelamento.
-- [x] **Info.plist: NSLocationAlwaysAndWhenInUseUsageDescription** — ~~O código só usa location `whenInUse`, mas o Info.plist declarava permissão "Always", contradizendo a política.~~ ✅ **Resolvido 2026-05-02** — chave removida do Info.plist.
+- [x] **Info.plist: NSLocationAlwaysAndWhenInUseUsageDescription** — ~~O código só usa location `whenInUse`, mas o Info.plist declarava permissão "Always", contradizendo a política.~~ ✅ **Resolvido 2026-05-02** — chave removida do Info.plist. **Atualização 2026-05-03:** chave re-adicionada com o mesmo texto de `NSLocationWhenInUseUsageDescription`. A Apple exige que ambas as chaves estejam presentes quando qualquer dependência (ex: plugin de localização) referencia a API `CLLocationManager`, mesmo que o app só use `whenInUse`. Sem esta chave, o Transporter/App Store Connect emite warning 90683. O app continua a pedir apenas permissão "when in use" em runtime — a chave no Info.plist é apenas declarativa para satisfazer a validação da Apple.
 
 ### ❌ Ausente no código (5 restantes, 5 resolvidos — todos implementados)
 
@@ -147,7 +146,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ### Notas adicionais da auditoria
 
-- **Hash do audit log não é criptográfico** — `simpleHash` no `account_deletion_service.dart` usa djb2 (32-bit int), que é trivialmente reversível. A política implica hash seguro ("hashed, non-reversible identifiers"). **Recomendação:** substituir por SHA-256 com salt.
+- ~~**Hash do audit log não é criptográfico**~~ — ✅ **Resolvido** — `simpleHash` (djb2) substituído por `hashUid()` (HMAC-SHA-256) em 4 ficheiros backend. `simpleHash()` deprecated. Ver CHANGELOG.
 - **Re-auth social missing** — `reauthenticateWithPassword()` só funciona para email/password. Utilizadores autenticados via Apple/Google OAuth não conseguem re-autenticar para eliminar a conta. **Ação:** implementar `reauthenticateWithCredential` para providers OAuth.
 - **TLS 1.3** — delegado à infraestrutura Firebase/Google Cloud. Não verificável no código, mas a claim é válida.
 - **Notificação de breach (72h)** — compromisso da política sem mecanismo no código. Aceitável como procedimento operacional, mas recomenda-se documentar um playbook de incidentes em `planning/`.
@@ -183,7 +182,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## Futuro — Gift When & Nox Card
 
-Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
+Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 
 **Whenote Gift (Presente Selado)**
 - [ ] Pesquisa legal concluída (*money transmission* EUA e requisitos locais)
@@ -199,7 +198,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
 
 ## Futuro — Whenote Physical
 
-Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
+Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 
 - [ ] Parceiros de impressão/fulfillment (Lob, Stannp, gráficas BR)
 - [ ] Design do template de carta impressa premium
@@ -259,6 +258,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Aviso de conteúdo ofensivo ao escrever — Camada 1 (cliente)
 - [x] Detecção de bounce de email (SendGrid webhook) + banner reenvio
 - [x] Exportar cartas (PDF / ZIP)
+- [x] Compartilhar carta via link (gerar, claim, revogar)
 
 ### Cápsulas do tempo
 - [x] Fluxo criar cápsula (Tema → Perguntas → Detalhes)
@@ -298,6 +298,8 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - [x] Busca de usuários com `searchTokens` (escala)
 - [x] `ensureUserFirestoreProfile` + FCM token handling robusto
 - [x] `privacyRequestLogs` — log unificado de solicitações de privacidade
+- [x] Landing page para share via link (whenote.app/open/{token})
+- [x] Deep link handling para /open/{token} (Android + iOS)
 
 ### Bugfixes registrados
 - [x] Analytics login — `logLogin()` só após sucesso
@@ -320,7 +322,8 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
-- Legal: **textos atualizados** (EN/PT/PT_BR/ES — 13 gaps corrigidos nos .arb 2026-05-02); **auditoria de compliance** feita (9 conformes, 4 parciais, 5 ausentes — ver secção acima); **dateOfBirth + age verification por jurisdição** implementados (02/05/2026); **consentimento analytics EU/UK** implementado (02/05/2026); revisão com advogado pendente
+- Legal: **textos atualizados** (EN/PT/PT_BR/ES — 13 gaps corrigidos nos .arb 2026-05-02); **auditoria de compliance** feita (9 conformes, 3 parciais ✅ App Check resolvido, 5 ausentes — ver secção acima); **dateOfBirth + age verification por jurisdição** implementados (02/05/2026); **consentimento analytics EU/UK** implementado (02/05/2026); revisão com advogado pendente
+- Segurança: **App Check enforced** em todas as Cloud Functions ✅; **Identity Platform** ativado com blocking function anti-abuse ✅; **Firestore rules** reforçadas para criação de utilizador ✅; **Rate limiting** em `checkUsernameAvailable` e `onUserCreated` ✅ (tudo 03/05/2026)
 - Monetização: **planejada** (ativar após 10K users)
 
 ---

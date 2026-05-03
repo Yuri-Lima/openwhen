@@ -19,7 +19,7 @@ import * as logger from "firebase-functions/logger";
 const BATCH_SIZE = 400;
 
 export const backfillFollowCounters = onCall(
-  {cors: true, timeoutSeconds: 540, memory: "512MiB"},
+  {cors: true, timeoutSeconds: 540, memory: "512MiB", enforceAppCheck: true},
   async (request) => {
     // ── Auth: require admin claim ──────────────────────────────────
     if (!request.auth?.token?.admin) {

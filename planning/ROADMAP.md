@@ -37,7 +37,8 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 | Feed em 3 camadas                                                                  | P1         | Concluído | Alto           | Explorar / Destaques / Seguindo; filtros emocionais com até 3 chips fixados; ver `[ARCHITECTURE.md](ARCHITECTURE.md)` secção “Feed”                                                   |
 | Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Pendente  | Médio          | **Nota:** moderação de imagens e áudio já implementada (ver [MODERATION.md](MODERATION.md)); esta linha refere-se à feature de **OCR visível** e **transcrição para texto** como UX do utilizador. Vídeo→carta fica para fase posterior.                                                                                                       |
 | Multilíngue (pt-BR, en, es)                                                        | P1         | Concluído | Alto           | Também no checklist 🟡; expansão para mais locales → Fase 3                                                                                                                           |
-| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **Whenote Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver `[BUSINESS.md](BUSINESS.md)` |
+| **Share via Link** (link partilhável para quem recebe carta sem ter conta)         | P1         | Concluído | Médio          | Landing page web + infraestrutura de link partilhável; crescimento orgânico                                                                                                               |
+| **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **Whenote Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver secção "Contexto de negócio" acima |
 
 
 **Exportar cartas (PDF / ZIP)** está concluído no checklist 🟡 (export no cliente: Configurações). A linha na Fase 3 abaixo referencia **evoluções** opcionais (ex.: processamento server-side, batch grande); a entrega MVP segue o checklist.
@@ -60,6 +61,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 - Card compartilhável ao enviar carta — "Selei uma carta 🦉"
 - Data mínima de 30 dias nas cápsulas
 - Resposta à carta (ver especificações prioritárias)
+- ~~Rascunho automático~~ ✅ Concluído 2026-05-03 — Firestore (`drafts` collection + TTL 30 dias), auto-save com debounce 5 s, `DraftsScreen` com countdown, migração do SharedPreferences
 - Simplificação do onboarding — reduzir fricção na primeira experiência (ref: UX_AUDIT.md #1)
 
 **Semana 3 — Crescimento orgânico**
@@ -70,7 +72,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 
 **Mês 2 — Pós primeiros usuários**
 
-- Landing page web para quem recebe carta sem ter conta
+- ~~Landing page web para quem recebe carta sem ter conta~~ ✅ Concluído 2026-05-03 — Infraestrutura de link partilhável (Share via Link) implementada
 - Feed com identidade visual própria — envelopes que se abrem ao rolar
 - Sistema de sugestões por datas especiais (aniversários, Natal etc)
 
@@ -158,6 +160,7 @@ Foco: expansão de produto e mercado.
 | Moderação assistida (IA)                                                                  | P2         | Alto                  | **Base:** OpenAI Moderation API + adapters + `systemConfig`; ver [`ARCHITECTURE.md`](ARCHITECTURE.md). Evoluções (outras superfícies, políticas): política + custo                                                                                                                                                                                                                                                     |
 | Humor do dia / leitura facial (inferência emocional + sugestões)                          | P2         | Alto                  | Opt-in explícito; compliance regional; preferir revisão jurídica e fornecedor com DPA ou processamento on-device                                                                                                                                                                                                                                      |
 | Exportar cartas (PDF / ZIP) — evoluções                                                   | P2         | Médio                 | **MVP entregue** (`letter_export_service`, allowlist, Configurações). Aqui: melhorias futuras (escala, web/CORS, cloud) se necessário                                                                                                                                                                                                                 |
+| **Export completo: suporte a volumes grandes (> 1 GB)**                                   | **P1**     | **Alto**              | **Obrigação legal (GDPR Art. 20 / LGPD Art. 18 V).** O export client-side actual monta o ZIP em RAM — crash provável em contas com centenas de áudios/fotos. Estratégias: export chunked (múltiplos ZIPs), server-side via Cloud Run, streaming ZIP para disco, ou híbrido com manifesto + signed URLs. Ver [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) §5 para análise detalhada. Resolver antes de escala significativa de utilizadores. |
 | Backup redundante das cartas fora do Firebase                                             | P2         | Médio                 | Cópia de segurança dos dados (Firestore + Storage) para destino externo (ex.: Cloud Storage bucket separado, AWS S3); protecção contra perda acidental ou indisponibilidade do projecto Firebase                                                                                                                                                      |
 | **Criptografia end-to-end (E2E) das cartas**                                             | P2         | Alto                  | Encriptar conteúdo das cartas (título, mensagem, áudio, fotos) no cliente antes de enviar ao Firestore/Storage, de modo que apenas remetente e destinatário consigam ler. Requer: gestão de chaves por utilizador (ex.: libsodium/NaCl sealed box ou AES-256-GCM com chave derivada), troca segura de chaves públicas, migração de cartas existentes (ou flag `encrypted: true` para novas), impacto na moderação (moderar antes de encriptar ou usar enclave). Referência: correção do texto de segurança (maio 2026) que removeu a alegação de E2E por não estar implementada — esta linha visa implementá-la de facto. |
 
@@ -174,7 +177,7 @@ Foco: expansão de produto e mercado.
 | Entrega                                                                                                         | Prioridade | Esforço (est.) | Notas                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | --------------------------------------------------------------------------------------------------------------- | ---------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pay-per-feature premium                                                                                         | —          | Alto           | Stripe / IAP conforme loja                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Whenote Gift** (Presente Selado / Gift When): valor financeiro selado à carta; liberação na data de abertura | —          | Alto           | **Fase 1 (MVP Gift):** Stripe Connect — retenção do valor até a abertura; Brasil e EUA; sem banco próprio; conta Connect aprovada; termos de uso e política de reembolso; pesquisa legal *money transmission* (EUA). Estimativa ~2–3 meses de desenvolvimento. Modelo de receita e posicionamento: `[BUSINESS.md](BUSINESS.md)`. Checklist de execução: `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)` (Futuro — Gift & Nox). |
+| **Whenote Gift** (Presente Selado / Gift When): valor financeiro selado à carta; liberação na data de abertura | —          | Alto           | **Fase 1 (MVP Gift):** Stripe Connect — retenção do valor até a abertura; Brasil e EUA; sem banco próprio; conta Connect aprovada; termos de uso e política de reembolso; pesquisa legal *money transmission* (EUA). Estimativa ~2–3 meses de desenvolvimento. Modelo de receita e posicionamento: secção "Contexto de negócio" acima. Checklist de execução: `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)` (Futuro — Gift & Nox). |
 | Analytics de produto                                                                                            | —          | Médio          | Funis, retenção, conversão                                                                                                                                                                                                                                                                                                                                                                                            |
 
 
@@ -218,7 +221,7 @@ Foco: expansão de produto e mercado.
 - **Legal:** regulamentação de envio postal, impostos sobre produtos, responsabilidade sobre itens em custódia — ver [`LEGAL.md`](LEGAL.md)
 - **Moderação:** itens proibidos (armas, substâncias, etc.) — política de itens aceites
 - **Integração com Gift When:** o presente físico pode substituir ou complementar o valor financeiro selado
-- **Stripe KYC:** se vender produtos físicos, atualizar descrição do negócio no Stripe (ver [`BUSINESS.md`](BUSINESS.md))
+- **Stripe KYC:** se vender produtos físicos, atualizar descrição do negócio no Stripe (ver secção "Contexto de negócio" abaixo)
 
 ### Estratégia para Investidores
 
@@ -250,11 +253,72 @@ Funcionalidades avançadas (GPS, voz, cápsula coletiva, recomendações) devem 
 
 ---
 
+## Contexto de negócio
+
+> Consolidado a partir de `BUSINESS.md` (removido). Detalhes de incorporação Delaware: [`DELAWARE.md`](DELAWARE.md). Estratégia de monetização e custos Firebase: [`MONETIZACAO.md`](MONETIZACAO.md).
+
+### Proposta de valor
+
+Whenote combina **cartas temporizadas**, uma **rede social emocional** e **QR Code físico** para aproximar pessoas no tempo certo — não apenas no feed infinito.
+
+**Tagline:** *Escreva hoje. Sinta amanhã.*
+
+### Mercado e público
+
+| Dimensão | Direção |
+|----------|---------|
+| **Geografia** | Brasil primeiro; expansão para EUA depois |
+| **Faixa etária** | ~18–35 anos |
+| **Comportamento** | Usuários ativos de Instagram / TikTok; confortáveis com stories e compartilhamento |
+
+### Diferenciais competitivos
+
+1. **Carta temporizada** — emoção no momento certo, não só "postar agora".
+2. **Rede social emocional** — feed e interações alinhadas a sentimento e intimidade, não só viralidade.
+3. **QR Code físico** — ponte entre mundo real e digital (presentes, eventos, lembranças).
+4. **Inteligência como apoio emocional** — roadmap prevê IA para sugestões alinhadas ao contexto (família, hábitos, criação de cartas), sempre com foco em confiança e opt-in onde houver dados sensíveis.
+5. **Presente emocional + valor prático** — carta temporizada com opcional de valor financeiro selado (Whenote Gift), incluindo ângulo viral (Nox Card) sem expor montante exato.
+6. **Do digital ao físico** — possibilidade futura de enviar carta impressa real e/ou presentes físicos programados para a data de abertura (Whenote Physical) — nenhuma plataforma combina temporização + envio físico programado.
+
+### Texto para onboarding Stripe (KYC / "What products or services…")
+
+Use na consola Stripe (inglês) — alinhado ao produto e à stack; ajuste só se o go-to-market mudar.
+
+**English (short):**
+"We operate Whenote, a consumer software application for scheduled digital letters, guided time capsules, and an emotional social feed. Through Stripe we sell recurring subscription plans (named tiers) that unlock premium digital features in the app. We may later add optional pay-per-feature upgrades, in-app digital purchases, and scheduled delivery of printed letters and curated physical gifts. Current offerings are digital services; physical goods fulfillment is on our product roadmap."
+
+**English (longer, if the form allows):**
+"Whenote (Delaware C-Corp) offers a cross-platform application where users write messages that unlock in the future—scheduled letters, time capsules, and optional sharing in a social layer—with QR code flows connecting physical touchpoints to the app. Stripe processes subscription payments for premium membership tiers (recurring billing) and, when activated, the Stripe Customer Portal for plan management. Future roadmap items may include sealed monetary gifts attached to letters, additional digital add-ons, and scheduled delivery of printed letters and curated physical gifts tied to letter opening dates. Current offerings are digital services; physical goods fulfillment will be added as a future product line."
+
+**Português (referência interna / formulários em PT):**
+"A Whenote oferece uma aplicação de software para cartas temporizadas, cápsulas do tempo guiadas e feed social emocional, com ponte por QR Code. Através do Stripe vendemos assinaturas recorrentes (planos nomeados) que desbloqueiam funcionalidades premium digitais na app. O roadmap inclui pay-per-feature, complementos digitais, e futuramente envio de cartas impressas e presentes físicos programados para a data de abertura. Atualmente tudo como serviço digital; envio de produtos físicos será adicionado como linha de produto futura."
+
+### Nox Card — níveis de valor
+
+| Nível | Faixa indicativa (USD) | Notas |
+|-------|------------------------|--------|
+| Bronze | $1 – $100 | Visual bronze / tons quentes |
+| Prata | $100 – $500 | Visual prateado |
+| Ouro | $500 – $2.000 | Visual dourado |
+| Rubi | $2.000 – $10.000 | Visual vermelho / exclusivo |
+| Diamante | acima de $10.000 | Visual cristal / lendário |
+
+### Métricas sugeridas (produto)
+
+- Usuários ativos (DAU/WAU/MAU)
+- Retenção D1 / D7 / D30
+- Cartas e cápsulas criadas vs abertas
+- Taxa de publicação no feed (após revisão, nas cápsulas)
+- Crescimento de seguidores e engajamento (curtidas/comentários)
+- Conversão para notificações ativas (FCM)
+
+---
+
 ## Como usar este roadmap
 
 - Acompanhe o detalhamento de MVP em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`.
 - Mudanças de escopo: atualizar esta tabela e o changelog em `[CHANGELOG.md](CHANGELOG.md)`.
-- **Novas ideias de produto:** preferir linhas neste roadmap (+ parágrafo em `[BUSINESS.md](BUSINESS.md)` se houver impacto em receita ou mercado) e itens em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`; reservar arquivos em `planning/` a temas transversais (ex.: design system, testes em dispositivo).
+- **Novas ideias de produto:** preferir linhas neste roadmap (+ actualizar secção "Contexto de negócio" se houver impacto em receita ou mercado) e itens em `[MVP_CHECKLIST.md](MVP_CHECKLIST.md)`; reservar arquivos em `planning/` a temas transversais (ex.: design system, testes em dispositivo).
 - O cronograma detalhado (Semana 1–Mês 3+) e as especificações de funcionalidades prioritárias foram consolidados neste documento a partir de `NEXT_FEATURES.md`, mantendo centralização de roadmap e estratégia.
 - Funcionalidades de **IA com perfilamento, fotos de terceiros ou biometria/emotion** (recomendações, círculo familiar, face): revisar **privacidade, bases legais e fornecedores** antes do lançamento.
 

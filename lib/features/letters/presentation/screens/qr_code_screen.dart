@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/constants/app_urls.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -36,7 +37,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
   bool _sharing = false;
   bool _sharingInstagram = false;
 
-  String get _deepLink => 'https://whenote.app/letter/${widget.docId}';
+  String get _deepLink => AppUrls.letterUrl(widget.docId);
 
   Future<void> _shareQrCode() async {
     setState(() => _sharing = true);

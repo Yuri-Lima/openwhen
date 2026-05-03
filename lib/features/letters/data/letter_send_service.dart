@@ -20,7 +20,8 @@ class LetterSendService {
   }
 
   /// Runs a single transaction: letter document, increment `lettersSentCount`, badge unlocks as needed.
-  static Future<void> commitLetterSend({
+  /// Returns the generated letter document ID.
+  static Future<String> commitLetterSend({
     required FirebaseFirestore firestore,
     required String senderUid,
     required Map<String, dynamic> letterData,
@@ -61,5 +62,6 @@ class LetterSendService {
       }
     });
     _log(step, 'done');
+    return letterRef.id;
   }
 }

@@ -40,7 +40,18 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create: if isUser(userId)
         && request.resource.data.subscriptionTier == 'free'
-        && userCreateHasNoServerBillingFields();
+        && userCreateHasNoServerBillingFields()
+        // Anti-abuse: dateOfBirth obrigatório (COPPA / LGPD compliance)
+        && request.resource.data.dateOfBirth is timestamp
+        // Campos obrigatórios: username, createdAt com server timestamp
+        && request.resource.data.username is string
+        && request.resource.data.username.size() >= 3
+        && request.resource.data.username.size() <= 20
+        && request.resource.data.createdAt == request.time
+        // Aceite de termos obrigatório
+        && request.resource.data.acceptedTermsVersion is string
+        && request.resource.data.acceptedPrivacyVersion is string
+        && request.resource.data.termsAcceptedAt is timestamp;
       allow update: if isUser(userId) && (
         userBillingFieldsUnchanged() || userBillingOnlyFreeTierMigration()
       );
@@ -76,6 +87,24 @@ service cloud.firestore {
       }
     }
 
+    // Rascunhos de cartas — expiram após 30 dias (TTL Policy no campo `expiresAt`).
+    // Limite soft de 10 drafts por user (enforçado via draftCount no user doc).
+    match /drafts/{draftId} {
+      allow read: if signedIn()
+        && resource.data.senderUid == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.senderUid == request.auth.uid
+        && request.resource.data.keys().hasAll(['senderUid', 'expiresAt', 'createdAt'])
+        && request.resource.data.expiresAt is timestamp;
+      allow update: if signedIn()
+        && resource.data.senderUid == request.auth.uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'senderUid', 'createdAt', 'expiresAt'
+        ]);
+      allow delete: if signedIn()
+        && resource.data.senderUid == request.auth.uid;
+    }
+
     // Cartas
     match /letters/{letterId} {
       allow read: if signedIn() && (
@@ -90,7 +119,8 @@ service cloud.firestore {
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'senderUid', 'receiverUid', 'createdAt',
           'inviteEmailStatus', 'inviteEmailStatusUpdatedAt', 'inviteEmailStatusReason',
-          'inviteEmailSentAt', 'receiverEmailNormalized', 'deliveryMode', 'lastResendAt'
+          'inviteEmailSentAt', 'receiverEmailNormalized', 'deliveryMode', 'lastResendAt',
+          'shareToken', 'shareMode', 'shareCreatedAt', 'shareClaimedAt', 'shareClaimedBy', 'shareRevoked'
         ]);
       allow delete: if signedIn()
         && resource.data.senderUid == request.auth.uid;
@@ -221,6 +251,11 @@ service cloud.firestore {
 
     // Access logs (Marco Civil Art. 15) — só Admin SDK / Cloud Functions
     match /accessLogs/{logId} {
+      allow read, write: if false;
+    }
+
+    // Account creation audit logs — só Admin SDK / Cloud Functions (anti-abuse)
+    match /accountCreationLogs/{logId} {
       allow read, write: if false;
     }
 

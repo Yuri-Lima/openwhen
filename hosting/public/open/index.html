@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You received a sealed letter — Whenote</title>
+  <meta name="description" content="Someone sent you a sealed letter on Whenote. Download the app to read it when it unlocks.">
+  <meta name="theme-color" content="#C0392B">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- OG tags (static for v1 — crawlers don't run JS) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="You received a sealed letter 🦉">
+  <meta property="og:description" content="Someone wrote something special for you on Whenote. Download the app to read it when it unlocks.">
+  <meta property="og:image" content="https://whenote.app/images/og.png">
+  <meta property="og:url" content="https://whenote.app">
+  <meta property="og:site_name" content="Whenote">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="You received a sealed letter 🦉">
+  <meta name="twitter:description" content="Someone wrote something special for you on Whenote.">
+  <meta name="twitter:image" content="https://whenote.app/images/og.png">
+
+  <style>
+    :root {
+      --bg: #F7F4F0;
+      --card: #FFFFFF;
+      --ink: #1A1714;
+      --ink-soft: #6B6560;
+      --accent: #C0392B;
+      --accent-dark: #A93226;
+      --border: #EDE8E3;
+      --shadow: rgba(26,23,20,0.12);
+      --badge-bg: rgba(192,57,43,0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1A1714;
+        --card: #252018;
+        --ink: #F5F0EB;
+        --ink-soft: #B8B0A8;
+        --accent: #E74C3C;
+        --accent-dark: #C0392B;
+        --border: rgba(255,255,255,0.06);
+        --shadow: rgba(0,0,0,0.3);
+        --badge-bg: rgba(231,76,60,0.12);
+      }
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .container {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    .seal {
+      width: 64px;
+      height: 64px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(231,76,60,0.3);
+      margin-bottom: 24px;
+    }
+    .seal span {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: #F5F0EB;
+      letter-spacing: -0.3px;
+    }
+    .brand {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 22px;
+      color: var(--ink);
+      margin-bottom: 32px;
+      letter-spacing: -0.3px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px var(--shadow);
+      padding: 36px 28px;
+      margin-bottom: 24px;
+    }
+    .envelope-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+    .subtitle {
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .detail-badge {
+      display: inline-block;
+      background: var(--badge-bg);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .store-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background-color: var(--accent);
+      color: #F5F0EB;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background-color 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(231,76,60,0.25);
+    }
+    .store-btn:hover {
+      background-color: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+    .store-btn svg { width: 20px; height: 20px; fill: #F5F0EB; }
+    .hint {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .hint a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .footer a {
+      color: var(--ink-soft);
+      text-decoration: none;
+    }
+    .error-card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 24px var(--shadow);
+      padding: 36px 28px;
+      margin-bottom: 24px;
+    }
+    .hidden { display: none; }
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <script>
+    // Try to open the app via universal/app link automatically (same pattern as letter/index.html)
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isAndroid = /Android/i.test(ua);
+      var path = window.location.pathname;
+
+      if (isAndroid) {
+        // Try intent-based deep link
+        var intentUrl = 'intent://whenote.app' + path +
+          '#Intent;scheme=https;package=com.whenote.app;end';
+        window.location.replace(intentUrl);
+      }
+      // iOS: universal links should have already intercepted if app is installed.
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="seal"><span>OW</span></div>
+    <div class="brand">Whenote</div>
+
+    <!-- Loading state -->
+    <div id="loading-state" class="card">
+      <div class="loading-spinner"></div>
+      <p class="subtitle">Loading your letter...</p>
+    </div>
+
+    <!-- Main card (shown after preview loads or on fallback) -->
+    <div id="main-card" class="card hidden">
+      <div class="envelope-icon">&#x1F48C;</div>
+      <h1 id="card-title">You have a sealed letter</h1>
+      <p class="subtitle" id="card-subtitle">
+        Someone sent you a letter on Whenote.
+      </p>
+      <div id="open-date-badge" class="detail-badge hidden"></div>
+      <div class="store-buttons">
+        <a href="https://apps.apple.com/app/whenote/id6743217190" class="store-btn" id="btn-ios">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+          App Store
+        </a>
+        <a href="https://play.google.com/store/apps/details?id=com.whenote.app" class="store-btn" id="btn-android">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 1.33a1 1 0 010 1.724l-2.302 1.33-2.533-2.192 2.533-2.192zM5.864 3.457L16.8 9.79l-2.302 2.302-8.635-8.635z"/></svg>
+          Google Play
+        </a>
+      </div>
+    </div>
+
+    <!-- Claimed card -->
+    <div id="claimed-card" class="card hidden">
+      <div class="envelope-icon">&#x2705;</div>
+      <h1>Letter already claimed</h1>
+      <p class="subtitle">
+        This letter has already been received by its recipient.
+      </p>
+    </div>
+
+    <!-- Revoked card -->
+    <div id="revoked-card" class="error-card hidden">
+      <div class="envelope-icon">&#x1F6AB;</div>
+      <h1>Link no longer active</h1>
+      <p class="subtitle">
+        The sender has revoked this link. It can no longer be used.
+      </p>
+    </div>
+
+    <!-- Error card -->
+    <div id="error-card" class="error-card hidden">
+      <div class="envelope-icon">&#x2753;</div>
+      <h1>Link not found</h1>
+      <p class="subtitle">
+        This link may have expired or is invalid.
+      </p>
+    </div>
+
+    <!-- Rate-limited card -->
+    <div id="rate-limit-card" class="error-card hidden">
+      <div class="envelope-icon">&#x23F3;</div>
+      <h1>Too many requests</h1>
+      <p class="subtitle">
+        Please wait a moment and try again.
+      </p>
+      <button onclick="location.reload()" class="store-btn" style="margin-top:16px;cursor:pointer;">
+        &#x1F504; Retry
+      </button>
+    </div>
+
+    <p class="hint" id="hint-text">
+      Already have the app? <a id="open-app-link" href="https://whenote.app">Open Whenote</a>
+    </p>
+
+    <div class="footer">
+      <p>&copy; 2026 Whenote &middot; Write today. Feel tomorrow.</p>
+      <p style="margin-top:4px;">
+        <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Uses Firebase Hosting rewrite → Cloud Function (no hardcoded URL)
+      var PREVIEW_URL = '/api/share-preview';
+      var path = window.location.pathname;
+      var segments = path.split('/').filter(Boolean);
+      // Expected: /open/{token}
+      var token = segments.length >= 2 && segments[0] === 'open' ? segments[1] : null;
+
+      var loadingEl = document.getElementById('loading-state');
+      var mainEl = document.getElementById('main-card');
+      var claimedEl = document.getElementById('claimed-card');
+      var revokedEl = document.getElementById('revoked-card');
+      var errorEl = document.getElementById('error-card');
+      var rateLimitEl = document.getElementById('rate-limit-card');
+      var hintEl = document.getElementById('hint-text');
+      var titleEl = document.getElementById('card-title');
+      var subtitleEl = document.getElementById('card-subtitle');
+      var badgeEl = document.getElementById('open-date-badge');
+      var openAppLink = document.getElementById('open-app-link');
+
+      // Set the "Open Whenote" link to include the current path for deep linking
+      if (openAppLink) {
+        openAppLink.href = 'https://whenote.app' + path;
+      }
+
+      function show(el) { el.classList.remove('hidden'); }
+      function hide(el) { el.classList.add('hidden'); }
+
+      function showCard(card) {
+        hide(loadingEl);
+        hide(mainEl);
+        hide(claimedEl);
+        hide(revokedEl);
+        hide(errorEl);
+        show(card);
+      }
+
+      function formatDate(isoStr) {
+        try {
+          var d = new Date(isoStr);
+          var opts = { year: 'numeric', month: 'long', day: 'numeric' };
+          // Try to use the user's browser locale
+          return d.toLocaleDateString(undefined, opts);
+        } catch (e) {
+          return isoStr;
+        }
+      }
+
+      if (!token) {
+        showCard(errorEl);
+        return;
+      }
+
+      // Fetch preview from Cloud Function
+      fetch(PREVIEW_URL + '?token=' + encodeURIComponent(token))
+        .then(function(res) {
+          if (res.status === 410) {
+            showCard(revokedEl);
+            hide(hintEl);
+            throw new Error('revoked');
+          }
+          if (res.status === 404) {
+            showCard(errorEl);
+            throw new Error('not_found');
+          }
+          if (res.status === 429) {
+            showCard(rateLimitEl);
+            hide(hintEl);
+            throw new Error('rate_limited');
+          }
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          if (!data) return;
+
+          if (data.isClaimed) {
+            showCard(claimedEl);
+            return;
+          }
+
+          // Build dynamic preview
+          var senderName = data.senderName || 'Someone';
+          titleEl.textContent = senderName + ' sealed a letter for you';
+          subtitleEl.textContent = 'Download Whenote to read it when it unlocks.';
+
+          if (data.openDate) {
+            badgeEl.textContent = '📅 Opens ' + formatDate(data.openDate);
+            show(badgeEl);
+          }
+
+          showCard(mainEl);
+        })
+        .catch(function(err) {
+          if (err.message === 'revoked' || err.message === 'not_found' || err.message === 'rate_limited') return;
+          // Network error or parse error — show generic fallback
+          showCard(mainEl);
+        });
+    })();
+  </script>
+</body>
+</html>

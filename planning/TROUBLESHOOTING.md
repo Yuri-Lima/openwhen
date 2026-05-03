@@ -162,13 +162,13 @@ Ao investigar um crash nativo de callable:
 
 **Override individual de pod NÃO funciona:** o plugin `firebase_core` do FlutterFire fixa **todos** os pods Firebase na mesma versão (`12.9.0`). Adicionar `pod 'FirebaseFunctions', '~> 12.12.0'` ao Podfile causa conflito em `pod install`. A solução definitiva requer um novo FlutterFire BoM (>= 4.12.0) que inclua iOS SDK 12.12.0+.
 
-**Mitigação definitiva (client-side, 2026-04-12):** `SafeCallable` — no iOS, todas as callables são invocadas via HTTP direto (`package:http`) em vez do SDK nativo, bypassing completamente o código Swift com `async let`. No Android/web, usa o SDK normalmente. Todas as chamadas continuam serializadas pelo `CallableQueue` com cooldown de 600ms.
+**Mitigação definitiva (client-side, 2026-04-12):** `SafeCallable` — no iOS, todas as callables são invocadas via HTTP direto (`package:http`) em vez do SDK nativo, bypassing completamente o código Swift com `async let`. No Android/web, usa o SDK normalmente. Todas as chamadas continuam serializadas pelo `CallableQueue` com cooldown de 600ms. **Atualização 2026-05-03:** `SafeCallable._callViaHttp()` agora envia o token App Check via header `X-Firebase-AppCheck` (obtido com `FirebaseAppCheck.instance.getToken()`, timeout 8s) — necessário porque `enforceAppCheck: true` foi adicionado a todas as callable Cloud Functions.
 
 **Quando BoM atualizar:** executar `flutter pub upgrade`, depois `cd ios && pod install --repo-update` e testar no dispositivo físico em profile/release. Após confirmar que o SDK 12.12.0+ está no `Podfile.lock`, o fallback HTTP pode ser removido (basta mudar `_useHttpFallback` para `false` em `safe_callable.dart`).
 
 ### Arquivos afetados
 
-- `lib/core/services/safe_callable.dart` — HTTP fallback iOS + proxy para CallableQueue
+- `lib/core/services/safe_callable.dart` — HTTP fallback iOS + proxy para CallableQueue + App Check token via `X-Firebase-AppCheck` header
 - `lib/core/services/callable_queue.dart` — FIFO mutex global com cooldown
 - `lib/main.dart` — HomeScreen NÃO chama callables no initState
 - `lib/features/profile/presentation/screens/subscription_plans_screen.dart` — billing migration lazy
@@ -263,7 +263,7 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 - Banner UI: [`lib/features/letters/presentation/screens/letter_detail_screen.dart`](../lib/features/letters/presentation/screens/letter_detail_screen.dart)
 - Validação: [`lib/core/utils/validators.dart`](../lib/core/utils/validators.dart)
 - Config produção: [PRODUCTION.md](PRODUCTION.md) (secção "SendGrid — webhook de email bounce")
-- Plano completo: [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md)
+- Plano: removido (feature concluída) — ver [`CHANGELOG.md`](CHANGELOG.md) e [`PRODUCTION.md`](PRODUCTION.md) secção "SendGrid"
 
 ---
 
@@ -315,7 +315,9 @@ A app arranca e fica operacional durante ~20 segundos (VM Service conecta, DevFS
 
 ### Causa raiz
 
-O código Dart em [`main.dart`](../lib/main.dart) (função `_activateAppCheckIfNeeded()`) faz `return` no iOS antes de chamar `activate()` — workaround para deadlock no firebase-ios-sdk 12.9.0 (issue [#15974](https://github.com/firebase/firebase-ios-sdk/issues/15974)). **Mas** o SDK nativo do Firebase iOS faz auto-refresh de DeviceCheck tokens independentemente do plugin Dart, bastando existir o `GoogleService-Info.plist`. Como a app iOS não está registada na secção **App Check** da Firebase Console, cada tentativa devolve 400 e entra em loop.
+**Histórico (pré 2026-05-03):** O código Dart em [`main.dart`](../lib/main.dart) (função `_activateAppCheckIfNeeded()`) fazia `return` no iOS antes de chamar `activate()` — workaround para deadlock no firebase-ios-sdk 12.9.0 (issue [#15974](https://github.com/firebase/firebase-ios-sdk/issues/15974)). O SDK nativo do Firebase iOS fazia auto-refresh de DeviceCheck tokens independentemente do plugin Dart, e como a app iOS não estava registada na secção **App Check**, cada tentativa devolvia 400 e entrava em loop.
+
+**Estado actual (2026-05-03):** O skip iOS foi **removido** — `_activateAppCheckIfNeeded()` agora ativa App Check em todas as plataformas (DeviceCheck iOS, Play Integrity Android). O `SafeCallable` (HTTP fallback para iOS, que contorna o bug de `HTTPSCallable.call()`) foi atualizado para enviar o token App Check via header `X-Firebase-AppCheck`, obtido com `FirebaseAppCheck.instance.getToken()` (timeout 8s). **Todas** as callable Cloud Functions agora exigem `enforceAppCheck: true`. Se o token falhar (non-fatal), a chamada prossegue sem o header mas será rejeitada pelo servidor.
 
 ### Correção aplicada (2026-05-02)
 
@@ -327,13 +329,17 @@ Flag no `Info.plist` que impede o SDK nativo de tentar obter tokens automaticame
 <false/>
 ```
 
-Isto complementa o skip no Dart e bloqueia completamente o App Check no iOS.
+### Atualização (2026-05-03) — App Check agora ativo em iOS
+
+O skip iOS no Dart foi **removido**. App Check é ativado em todas as plataformas. O `SafeCallable` envia o token App Check manualmente via header HTTP `X-Firebase-AppCheck` no fallback iOS. **Todas** as Cloud Functions callable agora exigem `enforceAppCheck: true`.
+
+**A flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist` pode precisar de revisão** — se o auto-refresh nativo estiver desativado, apenas o plugin Dart obtém tokens (via `getToken()` no `SafeCallable`). Para o caso de uso atual (iOS via HTTP fallback), isto funciona. Quando FlutterFire actualizar para firebase-ios-sdk >= 12.12.0, a flag deve ser removida para permitir auto-refresh nativo.
 
 ### Para resolver definitivamente (futuro)
 
-1. **Registar a app iOS** no Firebase Console → App Check → Apps → Register com provider **DeviceCheck**. Isto faz com que o endpoint aceite os tokens em vez de devolver 400.
+1. **Registar a app iOS** no Firebase Console → App Check → Apps → Register com provider **DeviceCheck**. ~~Isto faz com que o endpoint aceite os tokens em vez de devolver 400.~~ **Parcialmente feito:** App Check agora enforced nas Cloud Functions; falta verificar registo explícito no Console App Check.
 2. **Actualizar firebase-ios-sdk** para >= 12.12.0 (quando FlutterFire lançar), que corrige o deadlock de Swift Concurrency.
-3. Após ambos os passos: remover a flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` do `Info.plist` e o `if (Platform.isIOS) return` do `_activateAppCheckIfNeeded()`.
+3. Após passo 2: remover `SafeCallable` HTTP fallback (`_useHttpFallback = false`), remover flag `FirebaseAppCheckTokenAutoRefreshEnabled` do `Info.plist`, e usar o SDK nativo normalmente.
 
 ### Diagnóstico (se voltar a acontecer)
 
@@ -356,4 +362,114 @@ flutter run -d <device-id> -v
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting. **Debug connection lost ~20s após launch** → secção **10**: App Check nativo em retry-storm; flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist`; futuramente registar app no Firebase Console App Check + actualizar firebase-ios-sdk >= 12.12.0.
+## 11. Utilizador não aparece na busca — `searchTokens` ausente (campo novo sem backfill)
+
+### O que acontece
+
+Um utilizador existente (e.g. `@YuriLimaOriginal`) não aparece quando outro utilizador pesquisa por "yuri", "lima" ou "original". A busca por `@yurilimaoriginal` (prefixo exato de username) pode funcionar, mas buscas parciais por nome ou partes do username falham.
+
+### Causa raiz
+
+O campo `searchTokens` (array de prefixos para queries `array-contains`) foi adicionado ao schema de `users/{uid}` em abril de 2026. A partir dessa data, o campo é gerado automaticamente em três momentos: registro por email/password (`auth_repository.register()`), primeiro login social Apple/Google (`isNewUser`), e edição de perfil (`edit_profile_screen._save()`).
+
+**O problema:** contas criadas **antes** da implementação do campo não têm `searchTokens` no documento Firestore. A `UserSearchService` faz fallback para busca por prefixo de username, mas perde a busca por `displayName`, `name` e prefixos parciais.
+
+**Este é um padrão recorrente de risco:** sempre que um campo novo é adicionado ao schema Firestore e o código passa a depender dele para funcionalidades existentes (busca, filtros, permissões), os documentos existentes ficam silenciosamente quebrados porque Firestore é schemaless — não há migração automática.
+
+### Diagnóstico
+
+1. Abrir o documento `users/{uid}` no Firebase Console
+2. Verificar se o campo `searchTokens` existe e tem conteúdo (array com 10-30 strings)
+3. Se estiver ausente ou vazio → este é o problema
+
+### Correção
+
+**Imediata (utilizador individual):** ir a Editar Perfil no app e clicar Guardar — regenera os tokens automaticamente.
+
+**Em massa (todos os legacy):** executar a Cloud Function admin `backfillSearchTokens`:
+
+```bash
+firebase deploy --only functions:backfillSearchTokens
+```
+
+Depois chamar via Flutter (admin) ou curl:
+
+```dart
+await FirebaseFunctions.instance.httpsCallable('backfillSearchTokens').call();
+// Retorna: { updated: N, skipped: N, errors: N }
+```
+
+### Prevenção — Checklist de migração de schema
+
+**Este tipo de bug deve ser prevenido na fase de desenvolvimento.** Sempre que um campo novo é adicionado ao Firestore e o código depende dele, seguir esta checklist:
+
+| # | Verificação | Exemplo neste caso |
+|---|------------|-------------------|
+| 1 | **O campo é escrito na criação?** Verificar `register()`, `signInWithApple()`, `signInWithGoogle()` | ✅ Sim — adicionado aos três |
+| 2 | **Existem documentos sem o campo?** Se a collection já tem dados em produção → SIM | ✅ Sim — contas de março 2026 |
+| 3 | **O código assume que o campo existe?** Queries `where`, `array-contains`, `orderBy` sobre o campo | ✅ Sim — `array-contains` em `searchTokens` |
+| 4 | **Há fallback para documentos sem o campo?** | ⚠️ Parcial — fallback por username prefix, mas nome não funciona |
+| 5 | **É necessário backfill?** Se #2 = SIM e #3 = SIM → criar Cloud Function de migração | ❌ Não foi criado na hora — corrigido depois |
+| 6 | **O backfill deve correr antes do deploy do client?** Se o novo código depende do campo para UX crítica → SIM | ✅ Sim — busca é UX crítica |
+
+**Regra:** se a resposta ao ponto #2 for SIM, **não fazer deploy do client sem antes executar o backfill em produção** (ou garantir que o fallback é aceitável para todos os cenários).
+
+### Outros campos com o mesmo risco (auditoria maio 2026)
+
+| Campo | Adicionado em | Backfill necessário? | Status |
+|-------|--------------|---------------------|--------|
+| `searchTokens` | Abril 2026 | Sim | ✅ CF `backfillSearchTokens` criada |
+| `acceptedTermsVersion` | Maio 2026 | Não — `null` tratado como `kInitialPolicyVersion` | ✅ OK |
+| `acceptedPrivacyVersion` | Maio 2026 | Não — `null` tratado como `kInitialPolicyVersion` | ✅ OK |
+| `termsAcceptedAt` | Maio 2026 | Não — campo informativo, não usado em queries | ✅ OK |
+| `dateOfBirth` | Maio 2026 | Não — `null` é aceite (legacy = já verificado) | ✅ OK |
+| `analyticsConsent` | Maio 2026 | Não — `null` = pending, banner aparece para EU | ✅ OK |
+| `accountStatus` | Pré-existente | Não — default implícito "active" | ✅ OK |
+| `profileIncomplete` | Maio 2026 | Não — flag set por `ensureUserFirestoreProfileExists` para perfis fallback (sem dados reais) | ✅ OK |
+
+### Ficheiros
+
+- Geração de tokens: [`lib/core/user_search/user_search_tokens.dart`](../lib/core/user_search/user_search_tokens.dart)
+- Serviço de busca: [`lib/core/user_search/user_search_service.dart`](../lib/core/user_search/user_search_service.dart)
+- Backfill CF: [`functions/src/backfill_search_tokens.ts`](../functions/src/backfill_search_tokens.ts)
+- Registro: [`lib/features/auth/domain/auth_repository.dart`](../lib/features/auth/domain/auth_repository.dart)
+- Edição perfil: [`lib/features/profile/presentation/screens/edit_profile_screen.dart`](../lib/features/profile/presentation/screens/edit_profile_screen.dart)
+
+---
+
+## 12. Share via Link — link não abre o app / claim falha
+
+### O que acontece
+
+O destinatário clica num link `whenote.app/open/{token}` e:
+- O browser abre a landing page em vez de abrir o app (iOS/Android)
+- O claim retorna ALREADY_CLAIMED, SELF_CLAIM ou NOT_FOUND
+- Após instalar o app, a carta não aparece no cofre
+
+### Diagnóstico
+
+| Sintoma | O que verificar |
+|---------|-----------------|
+| Link abre no browser, não no app (iOS) | AASA em `.well-known/apple-app-site-association` não inclui `/open/*` |
+| Link abre no browser, não no app (Android) | Intent filter em `AndroidManifest.xml` não tem `pathPrefix="/open"` |
+| Claim retorna NOT_FOUND | Token inválido ou carta eliminada; verificar `shareToken` no doc |
+| Claim retorna ALREADY_CLAIMED | Carta já tem `receiverUid` preenchido por outro utilizador |
+| Claim retorna SELF_CLAIM | Remetente tentou reclamar a própria carta |
+| Carta não aparece após install + claim | `PendingDeepLink.pendingShareToken` não persistiu; verificar `deep_link_coordinator.dart` |
+| Landing page mostra "link inativo" | Campo `shareRevoked: true` no documento da carta |
+| Landing page mostra "Too many requests" | Rate limiting no `getSharePreview` (60 req/min/IP); aguardar 1 minuto |
+| Email trigger dispara em cartas por link | Guard em `external_letters.ts` não verifica `deliveryMode === 'link'` |
+
+### Ficheiros relevantes
+
+- Cloud Functions: `functions/src/share_link.ts`
+- Deep link: `lib/core/linking/deep_link_coordinator.dart`, `lib/core/linking/pending_deep_link.dart`
+- Landing page: `hosting/public/open/index.html`
+- UI remetente: `lib/features/letters/presentation/screens/letter_detail_screen.dart`
+- Intent filters: `android/app/src/main/AndroidManifest.xml`
+- AASA: `hosting/public/.well-known/apple-app-site-association`
+- Firebase Hosting: `firebase.json` (rewrites `/open/**` e `/api/share-preview`)
+
+---
+
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting. **Debug connection lost ~20s após launch** → secção **10**: App Check nativo em retry-storm; flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist`; futuramente registar app no Firebase Console App Check + actualizar firebase-ios-sdk >= 12.12.0. **Utilizador não aparece na busca** → secção **11**: campo `searchTokens` ausente em contas legacy (criadas antes de abril 2026); corrigir com CF `backfillSearchTokens` ou editar perfil; checklist de migração de schema para prevenir recorrência. **Share via Link não abre app / claim falha** → secção **12**: verificar AASA (iOS), intent filters (Android), estados do claim (NOT_FOUND, ALREADY_CLAIMED, SELF_CLAIM), persistência do `pendingShareToken` e guard de `deliveryMode` em `external_letters.ts`.

@@ -863,6 +863,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'Letter created! Share the link with the recipient. 💌';
 
   @override
+  String get writeLetterGenerateLink => 'Generate shareable link';
+
+  @override
+  String get writeLetterShareViaLinkLabel => 'Share via link';
+
+  @override
+  String get writeLetterShareViaLinkHint =>
+      'A link will be generated after sealing';
+
+  @override
+  String get writeLetterShareLinkTitle => 'Your link is ready!';
+
+  @override
+  String get writeLetterShareLinkHint =>
+      'Share this link with the recipient via WhatsApp, SMS, or any channel.';
+
+  @override
+  String get writeLetterShareLinkCopy => 'Copy';
+
+  @override
+  String get writeLetterShareLinkShare => 'Share';
+
+  @override
+  String get writeLetterShareLinkCopied => 'Link copied!';
+
+  @override
+  String get writeLetterShareLinkSubject =>
+      'Someone sent you a letter on Whenote';
+
+  @override
+  String get shareLinkPending =>
+      'Link shared — waiting for someone to claim this letter';
+
+  @override
+  String get shareLinkClaimed =>
+      'Letter claimed! The recipient has received your letter';
+
+  @override
+  String get shareLinkRevoked => 'Share link was revoked';
+
+  @override
+  String get writeLetterPrivateTitle => 'Private letter';
+
+  @override
+  String get writeLetterPrivateHint =>
+      'Only you and the recipient will have access';
+
+  @override
+  String get writeLetterPublicTitle => 'Allow feed publication';
+
+  @override
+  String get writeLetterPublicHint =>
+      'The recipient can share to the feed after opening';
+
+  @override
   String get writeLetterSnackEmailInvalid =>
       'Please enter a valid email address (e.g. name@example.com)';
 
@@ -2948,4 +3003,80 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsAnalyticsDescription =>
       'Allow anonymous usage data to help improve the app';
+
+  @override
+  String get policyUpdateBannerTitle => 'Policy update coming';
+
+  @override
+  String policyUpdateBannerBody(String date) {
+    return 'Our Terms of Use and Privacy Policy will be updated on $date. Tap to learn more.';
+  }
+
+  @override
+  String get policyUpdateBannerDismiss => 'Got it';
+
+  @override
+  String get policyReconsentTitle => 'We\'ve updated our policies';
+
+  @override
+  String get policyReconsentBody =>
+      'We\'ve made changes to our Terms of Use and/or Privacy Policy. Please review and accept to continue using Whenote.';
+
+  @override
+  String get policyReconsentSummaryLabel => 'Summary of changes:';
+
+  @override
+  String get policyReconsentViewFull => 'View full documents';
+
+  @override
+  String get policyReconsentCheckbox =>
+      'I have read and accept the updated Terms of Use and Privacy Policy';
+
+  @override
+  String get policyReconsentAccept => 'Accept and continue';
+
+  @override
+  String get policyReconsentLogout => 'Log out';
+
+  @override
+  String policyReconsentEffectiveDate(String date) {
+    return 'Effective from $date';
+  }
+
+  @override
+  String get draftsTitle => 'Drafts';
+
+  @override
+  String get draftsEmpty =>
+      'No drafts yet.\nWhen you start writing a letter and leave, it will be saved here automatically.';
+
+  @override
+  String get draftsUntitled => 'Untitled';
+
+  @override
+  String get draftsNoContent => 'No content yet';
+
+  @override
+  String get draftsDeleteTitle => 'Delete draft?';
+
+  @override
+  String get draftsDeleteMessage => 'This draft will be permanently deleted.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expires in $days days',
+      one: 'Expires in 1 day',
+      zero: 'Expires today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Drafts';
+
+  @override
+  String get homeDraftsSubtitle => 'Continue a letter you started';
 }

@@ -108,7 +108,7 @@ O nome deve ser:
    - Significa: se um founder sair no ano 1, não leva nada; após o cliff, veste proporcionalmente
    - Protege ambos os founders — se um sair cedo, o outro não fica com sócio inativo com 50% da empresa
 
-4. Preparar descrição do negócio em inglês (usar o texto do `BUSINESS.md`)
+4. Preparar descrição do negócio em inglês (usar o texto KYC Stripe em [`ROADMAP.md`](ROADMAP.md) secção "Contexto de negócio")
 
 **Semana 2 — Abertura no Stripe Atlas**
 
@@ -239,4 +239,4 @@ Abrir uma empresa americana como cidadão/residente brasileiro tem implicações
 ---
 
 *Documento criado em 13/04/2026 · Diego Rocha & Claude · Whenote*
-*Relacionado: [`BUSINESS.md`](BUSINESS.md) · [`MONETIZACAO.md`](MONETIZACAO.md)*
+*Relacionado: [`ROADMAP.md`](ROADMAP.md) · [`MONETIZACAO.md`](MONETIZACAO.md)*

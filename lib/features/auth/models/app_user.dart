@@ -44,6 +44,16 @@ class AppUser {
   /// When the user gave or changed analytics consent.
   final DateTime? analyticsConsentDate;
 
+  /// Version of Terms of Use the user accepted (date string "YYYY-MM-DD").
+  /// Null for legacy users who registered before versioning was introduced.
+  final String? acceptedTermsVersion;
+
+  /// Version of Privacy Policy the user accepted (date string "YYYY-MM-DD").
+  final String? acceptedPrivacyVersion;
+
+  /// When the user last accepted / re-accepted the legal documents.
+  final DateTime? termsAcceptedAt;
+
   /// Account lifecycle: `active` | `pending_deletion` | `restricted`.
   /// - `pending_deletion`: user can log in but cannot send content; scheduled deletion pending.
   /// - `restricted`: GDPR Art. 18 restriction of processing — data is kept but no
@@ -82,6 +92,9 @@ class AppUser {
     this.hasCompletedFirstAction = true,
     this.analyticsConsent,
     this.analyticsConsentDate,
+    this.acceptedTermsVersion,
+    this.acceptedPrivacyVersion,
+    this.termsAcceptedAt,
     this.accountStatus = 'active',
     this.deletionRequestedAt,
     this.deletionMode,
@@ -115,6 +128,11 @@ class AppUser {
       analyticsConsent: data['analyticsConsent'] as String?,
       analyticsConsentDate: data['analyticsConsentDate'] != null
           ? (data['analyticsConsentDate'] as Timestamp).toDate()
+          : null,
+      acceptedTermsVersion: data['acceptedTermsVersion'] as String?,
+      acceptedPrivacyVersion: data['acceptedPrivacyVersion'] as String?,
+      termsAcceptedAt: data['termsAcceptedAt'] != null
+          ? (data['termsAcceptedAt'] as Timestamp).toDate()
           : null,
       accountStatus: data['accountStatus'] as String? ?? 'active',
       deletionRequestedAt: data['deletionRequestedAt'] != null
@@ -170,6 +188,12 @@ class AppUser {
       if (analyticsConsent != null) 'analyticsConsent': analyticsConsent,
       if (analyticsConsentDate != null)
         'analyticsConsentDate': Timestamp.fromDate(analyticsConsentDate!),
+      if (acceptedTermsVersion != null)
+        'acceptedTermsVersion': acceptedTermsVersion,
+      if (acceptedPrivacyVersion != null)
+        'acceptedPrivacyVersion': acceptedPrivacyVersion,
+      if (termsAcceptedAt != null)
+        'termsAcceptedAt': Timestamp.fromDate(termsAcceptedAt!),
       'accountStatus': accountStatus,
       if (deletionRequestedAt != null)
         'deletionRequestedAt': Timestamp.fromDate(deletionRequestedAt!),

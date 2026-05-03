@@ -865,6 +865,61 @@ class AppLocalizationsEs extends AppLocalizations {
       '¡Carta creada! Comparte el enlace con el destinatario. 💌';
 
   @override
+  String get writeLetterGenerateLink => 'Generar enlace compartible';
+
+  @override
+  String get writeLetterShareViaLinkLabel => 'Compartir por enlace';
+
+  @override
+  String get writeLetterShareViaLinkHint =>
+      'Se generará un enlace después de sellar';
+
+  @override
+  String get writeLetterShareLinkTitle => '¡Tu enlace está listo!';
+
+  @override
+  String get writeLetterShareLinkHint =>
+      'Comparte este enlace con el destinatario por WhatsApp, SMS o cualquier canal.';
+
+  @override
+  String get writeLetterShareLinkCopy => 'Copiar';
+
+  @override
+  String get writeLetterShareLinkShare => 'Compartir';
+
+  @override
+  String get writeLetterShareLinkCopied => '¡Enlace copiado!';
+
+  @override
+  String get writeLetterShareLinkSubject =>
+      'Alguien te envió una carta en Whenote';
+
+  @override
+  String get shareLinkPending =>
+      'Enlace compartido — esperando que alguien reclame esta carta';
+
+  @override
+  String get shareLinkClaimed =>
+      '¡Carta reclamada! El destinatario ha recibido tu carta';
+
+  @override
+  String get shareLinkRevoked => 'El enlace de compartir fue revocado';
+
+  @override
+  String get writeLetterPrivateTitle => 'Carta privada';
+
+  @override
+  String get writeLetterPrivateHint =>
+      'Solo tú y el destinatario tendrán acceso';
+
+  @override
+  String get writeLetterPublicTitle => 'Permitir publicación en el feed';
+
+  @override
+  String get writeLetterPublicHint =>
+      'El destinatario podrá compartir en el feed después de abrir';
+
+  @override
   String get writeLetterSnackEmailInvalid =>
       'Ingresa un email válido (ej: nombre@ejemplo.com)';
 
@@ -2961,4 +3016,81 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsAnalyticsDescription =>
       'Permitir datos de uso anónimos para ayudar a mejorar la app';
+
+  @override
+  String get policyUpdateBannerTitle => 'Actualización de políticas';
+
+  @override
+  String policyUpdateBannerBody(String date) {
+    return 'Nuestros Términos de Uso y Política de Privacidad se actualizarán el $date. Toca para saber más.';
+  }
+
+  @override
+  String get policyUpdateBannerDismiss => 'Entendido';
+
+  @override
+  String get policyReconsentTitle => 'Hemos actualizado nuestras políticas';
+
+  @override
+  String get policyReconsentBody =>
+      'Hemos realizado cambios en nuestros Términos de Uso y/o Política de Privacidad. Por favor, revisa y acepta para continuar usando Whenote.';
+
+  @override
+  String get policyReconsentSummaryLabel => 'Resumen de los cambios:';
+
+  @override
+  String get policyReconsentViewFull => 'Ver documentos completos';
+
+  @override
+  String get policyReconsentCheckbox =>
+      'He leído y acepto los Términos de Uso y la Política de Privacidad actualizados';
+
+  @override
+  String get policyReconsentAccept => 'Aceptar y continuar';
+
+  @override
+  String get policyReconsentLogout => 'Cerrar sesión';
+
+  @override
+  String policyReconsentEffectiveDate(String date) {
+    return 'Efectivo desde $date';
+  }
+
+  @override
+  String get draftsTitle => 'Borradores';
+
+  @override
+  String get draftsEmpty =>
+      'Sin borradores.\nCuando empieces a escribir una carta y salgas, se guardará aquí automáticamente.';
+
+  @override
+  String get draftsUntitled => 'Sin título';
+
+  @override
+  String get draftsNoContent => 'Sin contenido';
+
+  @override
+  String get draftsDeleteTitle => '¿Eliminar borrador?';
+
+  @override
+  String get draftsDeleteMessage =>
+      'Este borrador se eliminará permanentemente.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expira en $days días',
+      one: 'Expira en 1 día',
+      zero: 'Expira hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Borradores';
+
+  @override
+  String get homeDraftsSubtitle => 'Continúa una carta que empezaste';
 }

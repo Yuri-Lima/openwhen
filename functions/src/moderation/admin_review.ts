@@ -22,7 +22,7 @@ function rejectionTitle(locale: string | undefined): string {
 }
 
 export const adminListPendingModerationReviews = onCall(
-  {cors: true},
+  {cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -59,7 +59,7 @@ export const adminListPendingModerationReviews = onCall(
 );
 
 export const adminResolveModerationReview = onCall(
-  {cors: true},
+  {cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");

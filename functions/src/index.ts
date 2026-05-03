@@ -38,9 +38,18 @@ export {
   resendExternalInviteEmail,
 } from "./external_letters";
 
+export {
+  generateShareLink,
+  getSharePreview,
+  claimShareLink,
+  revokeShareLink,
+} from "./share_link";
+
 export {onSendGridWebhook} from "./sendgrid_webhook";
+export {sendPolicyUpdateEmails} from "./send_policy_update_emails";
 
 export {checkUsernameAvailable} from "./check_username";
+export {onUserCreated} from "./on_user_created";
 
 export {
   onLikeCreated,
@@ -50,6 +59,7 @@ export {
 } from "./engagement";
 
 export {backfillFollowCounters} from "./backfill_follow_counters";
+export {backfillSearchTokens} from "./backfill_search_tokens";
 
 setGlobalOptions({region: "us-central1"});
 
@@ -159,6 +169,7 @@ async function applySubscriptionToUser(
 export const createCheckoutSession = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!billingConfigured()) {
@@ -224,6 +235,7 @@ export const createCheckoutSession = onCall(
 export const createPortalSession = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
   },
   async (request) => {
     if (!billingConfigured()) {
@@ -264,7 +276,7 @@ export const createPortalSession = onCall(
 );
 
 /** Sets subscriptionTier to free when missing (Admin SDK; bypasses client rules). */
-export const migrateUserBillingDefaults = onCall(async (request) => {
+export const migrateUserBillingDefaults = onCall({cors: true, enforceAppCheck: true}, async (request) => {
   if (!request.auth?.uid) {
     throw new HttpsError("unauthenticated", "Sign in required");
   }

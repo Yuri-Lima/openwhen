@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
@@ -104,8 +104,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   late AnimationController _paperCtrl;
   late AnimationController _contentCtrl;
   late AnimationController _particleCtrl;
-  late AnimationController _sealCtrl;
-
   late Animation<double> _glowAnim;
   late Animation<double> _scaleAnim;
   late Animation<double> _shakeAnim;
@@ -133,8 +131,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     _contentCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _particleCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 60))..repeat();
     _particleCtrl.addListener(() { if (mounted) setState(() => _tickParticles()); });
-    _sealCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 5500));
-
     _glowAnim = Tween(begin: 0.08, end: 0.22).animate(_glowCtrl);
     _scaleAnim = Tween(begin: 1.0, end: 1.06).animate(CurvedAnimation(parent: _scaleCtrl, curve: Curves.easeInOut));
     _shakeAnim = TweenSequence([
@@ -188,8 +184,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     setState(() => _tapped = true);
     _scaleCtrl.stop();
 
-    await _sealCtrl.forward();
-
     await _shakeCtrl.forward();
     _spawnParticles();
 
@@ -231,7 +225,6 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
   void dispose() {
     _glowCtrl.dispose(); _scaleCtrl.dispose(); _shakeCtrl.dispose();
     _paperCtrl.dispose(); _contentCtrl.dispose(); _particleCtrl.dispose();
-    _sealCtrl.dispose();
     super.dispose();
   }
 
@@ -372,9 +365,10 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                             shape: BoxShape.circle,
                                             color: glowColor.withOpacity(0.12),
                                           ),
-                                          child: OwlSealOpeningAnimation(
-                                            size: 52,
-                                            animation: _sealCtrl,
+                                          child: Icon(
+                                            Icons.lock_rounded,
+                                            size: 30,
+                                            color: Colors.white.withOpacity(0.85),
                                           ),
                                         ),
                                       ),

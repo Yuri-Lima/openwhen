@@ -93,35 +93,38 @@ A Seção 16 da Política de Privacidade promete: "notify you via in-app notific
    - Atualizar os ficheiros ARB (4 idiomas: en, pt, pt_BR, es)
    - Atualizar as páginas web (`hosting/public/privacy.html`, `terms.html`)
 
-2. **Notificação in-app (D-15)**
-   - Criar documento em `systemConfig/policyUpdate` com:
+2. **Notificação in-app + email (D-15)**
+   - Criar documento `systemConfig/policyUpdate` no Firestore com:
      ```json
      {
-       "type": "privacy_policy_update",
-       "effectiveDate": "2026-XX-XX",
-       "notifiedAt": "2026-XX-XX",
+       "active": true,
+       "termsVersion": "2026-XX-XX",
+       "privacyVersion": "2026-XX-XX",
+       "effectiveDate": "2026-XX-XX (Timestamp)",
+       "notifiedAt": "2026-XX-XX (Timestamp)",
        "summaryEn": "Brief summary of changes",
        "summaryPt": "Resumo breve das alterações",
        "summaryEs": "Resumen breve de los cambios",
-       "dismissed": false
+       "changesUrl": "https://whenote.app/privacy.html",
+       "emailBatchStatus": "pending"
      }
      ```
-   - O client pode ler `systemConfig` (Firestore rules: `allow read: if signedIn()`) e mostrar banner/dialog
-   - **Nota:** O widget de notificação in-app para policy updates ainda não está implementado no client. Para a v1, usar o sistema de notificações existente (collection `notifications` em `users/{uid}`)
+   - **In-app (automático):** o `policyUpdateProvider` (Riverpod `StreamProvider`) deteta o documento e aplica o modelo de 3 estados:
+     - `upcomingChange` (antes da `effectiveDate`): `PolicyUpdateBanner` — banner informativo não-bloqueante com animação slide-up
+     - `requiresReConsent` (após `effectiveDate`): `PolicyReConsentScreen` — dialog full-screen bloqueante (`PopScope(canPop: false)`); utilizador só pode aceitar ou fazer logout
+     - `upToDate`: sem UI adicional
+   - **Email (automático):** ao definir `emailBatchStatus: "pending"`, a Cloud Function `sendPolicyUpdateEmails` (`onDocumentWritten`) dispara batch de emails via SendGrid com template HTML branded, multi-idioma (en/pt/es), throttle 50 emails/s, paginação 200 users. Progresso registado em `emailBatchSentCount`; estado final: `completed` ou `failed`.
+   - **Ficheiros relevantes:** `lib/core/policy/policy_update_provider.dart`, `policy_reconsent_screen.dart`, `policy_update_banner.dart`, `functions/src/send_policy_update_emails.ts`
 
-3. **Notificação por email (D-15)**
-   - Enviar email a todos os utilizadores ativos via Cloud Function batch ou serviço de email
-   - Template: informar o que mudou + link para a nova versão + data efetiva
-   - Usar `noreply@whenote.app` (Google Workspace SMTP Relay)
-
-4. **Publicação (D-0)**
+3. **Publicação (D-0)**
    - Deploy dos ficheiros ARB atualizados (requer app update via stores)
    - Deploy das páginas web: `firebase deploy --only hosting`
-   - Atualizar `systemConfig/policyUpdate.dismissed = true` (ou remover)
+   - Após todos os utilizadores aceitarem (ou período razoável), desativar: `systemConfig/policyUpdate.active = false`
 
-5. **Registo**
+4. **Registo**
    - Documentar no CHANGELOG.md
    - Guardar snapshot da versão anterior (git tag: `policy-v{N}`)
+   - Atualizar `policy_constants.dart` com novas versões (`kCurrentTermsVersion`, `kCurrentPrivacyVersion`)
 
 ---
 

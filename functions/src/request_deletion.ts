@@ -3,6 +3,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import {hashUid} from "./delete_account";
+import {DEFAULT_FROM_EMAIL} from "./config/app_urls";
 
 const db = () => getFirestore();
 const sendgridApiKey = defineSecret("SENDGRID_API_KEY");
@@ -27,6 +28,7 @@ const MAX_REQUESTS_PER_MONTH = 3;
 export const requestAccountDeletion = onCall(
   {
     cors: true,
+    enforceAppCheck: true,
     secrets: [sendgridApiKey],
   },
   async (request) => {
@@ -134,7 +136,7 @@ export const requestAccountDeletion = onCall(
  * ══════════════════════════════════════════════════════════════ */
 
 export const cancelAccountDeletion = onCall(
-  {cors: true},
+  {cors: true, enforceAppCheck: true},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
@@ -202,7 +204,7 @@ async function sendDeletionConfirmationEmail(params: DeletionEmailParams): Promi
     return;
   }
 
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromEmail = DEFAULT_FROM_EMAIL;
   const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const isPt = params.locale.startsWith("pt");

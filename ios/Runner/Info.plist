@@ -56,6 +56,8 @@
 	<string>O Whenote pode usar a câmera para a foto de perfil.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>O Whenote usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>O Whenote usa sua localização para anexar o local ao enviar cartas ou cápsulas e, quando ativado, para permitir abertura apenas perto desse ponto.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>O Whenote usa o microfone para gravar mensagens de voz nas cartas.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
