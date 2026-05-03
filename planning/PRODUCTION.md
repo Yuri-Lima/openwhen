@@ -23,7 +23,7 @@ Este documento reúne **tudo o que precisa de estar definido** para compilar, pu
 > - [x] ~~Ativar **Budget Alerts** na Google Cloud Console~~ — ✅ Configurado 2026-05-01: €20/mês, alertas 50/80/100%, email para admins + project owners.
 > - [ ] Rever a [calculadora de preços do Firebase](https://firebase.google.com/pricing) com estimativas realistas de utilizadores ativos diários (DAU) e operações por sessão.
 > - [x] ~~Ativar o **Firebase Usage dashboard**~~ — ✅ Já ativo (plano Blaze). Verificado 2026-05-01: $0.00, Firestore <1% do quota gratuito. Monitorizar diariamente na primeira semana pós-lançamento.
-> - [ ] Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.
+> - [x] ~~Considerar **App Check** para reduzir abuso (bots, scraping) que inflaciona custos desnecessariamente.~~ — ✅ Implementado 2026-05-03: `enforceAppCheck: true` em todas as callable Cloud Functions. App Check ativo em iOS (DeviceCheck via `SafeCallable` HTTP fallback + `X-Firebase-AppCheck` header) e Android (Play Integrity). Identity Platform ativado com blocking function `onUserCreated` (anti-abuse: emails descartáveis + rate limit IP).
 > - [ ] Documentar estimativas e limites aceitáveis em [`planning/custos/GASTOS.md`](custos/GASTOS.md).
 >
 > **Sem esta análise, NÃO avançar para produção.** Um pico inesperado de utilizadores ou um bug que gere leituras em loop pode resultar em custos elevados em poucas horas.

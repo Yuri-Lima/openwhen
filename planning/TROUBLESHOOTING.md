@@ -162,13 +162,13 @@ Ao investigar um crash nativo de callable:
 
 **Override individual de pod NÃO funciona:** o plugin `firebase_core` do FlutterFire fixa **todos** os pods Firebase na mesma versão (`12.9.0`). Adicionar `pod 'FirebaseFunctions', '~> 12.12.0'` ao Podfile causa conflito em `pod install`. A solução definitiva requer um novo FlutterFire BoM (>= 4.12.0) que inclua iOS SDK 12.12.0+.
 
-**Mitigação definitiva (client-side, 2026-04-12):** `SafeCallable` — no iOS, todas as callables são invocadas via HTTP direto (`package:http`) em vez do SDK nativo, bypassing completamente o código Swift com `async let`. No Android/web, usa o SDK normalmente. Todas as chamadas continuam serializadas pelo `CallableQueue` com cooldown de 600ms.
+**Mitigação definitiva (client-side, 2026-04-12):** `SafeCallable` — no iOS, todas as callables são invocadas via HTTP direto (`package:http`) em vez do SDK nativo, bypassing completamente o código Swift com `async let`. No Android/web, usa o SDK normalmente. Todas as chamadas continuam serializadas pelo `CallableQueue` com cooldown de 600ms. **Atualização 2026-05-03:** `SafeCallable._callViaHttp()` agora envia o token App Check via header `X-Firebase-AppCheck` (obtido com `FirebaseAppCheck.instance.getToken()`, timeout 8s) — necessário porque `enforceAppCheck: true` foi adicionado a todas as callable Cloud Functions.
 
 **Quando BoM atualizar:** executar `flutter pub upgrade`, depois `cd ios && pod install --repo-update` e testar no dispositivo físico em profile/release. Após confirmar que o SDK 12.12.0+ está no `Podfile.lock`, o fallback HTTP pode ser removido (basta mudar `_useHttpFallback` para `false` em `safe_callable.dart`).
 
 ### Arquivos afetados
 
-- `lib/core/services/safe_callable.dart` — HTTP fallback iOS + proxy para CallableQueue
+- `lib/core/services/safe_callable.dart` — HTTP fallback iOS + proxy para CallableQueue + App Check token via `X-Firebase-AppCheck` header
 - `lib/core/services/callable_queue.dart` — FIFO mutex global com cooldown
 - `lib/main.dart` — HomeScreen NÃO chama callables no initState
 - `lib/features/profile/presentation/screens/subscription_plans_screen.dart` — billing migration lazy
@@ -315,7 +315,9 @@ A app arranca e fica operacional durante ~20 segundos (VM Service conecta, DevFS
 
 ### Causa raiz
 
-O código Dart em [`main.dart`](../lib/main.dart) (função `_activateAppCheckIfNeeded()`) faz `return` no iOS antes de chamar `activate()` — workaround para deadlock no firebase-ios-sdk 12.9.0 (issue [#15974](https://github.com/firebase/firebase-ios-sdk/issues/15974)). **Mas** o SDK nativo do Firebase iOS faz auto-refresh de DeviceCheck tokens independentemente do plugin Dart, bastando existir o `GoogleService-Info.plist`. Como a app iOS não está registada na secção **App Check** da Firebase Console, cada tentativa devolve 400 e entra em loop.
+**Histórico (pré 2026-05-03):** O código Dart em [`main.dart`](../lib/main.dart) (função `_activateAppCheckIfNeeded()`) fazia `return` no iOS antes de chamar `activate()` — workaround para deadlock no firebase-ios-sdk 12.9.0 (issue [#15974](https://github.com/firebase/firebase-ios-sdk/issues/15974)). O SDK nativo do Firebase iOS fazia auto-refresh de DeviceCheck tokens independentemente do plugin Dart, e como a app iOS não estava registada na secção **App Check**, cada tentativa devolvia 400 e entrava em loop.
+
+**Estado actual (2026-05-03):** O skip iOS foi **removido** — `_activateAppCheckIfNeeded()` agora ativa App Check em todas as plataformas (DeviceCheck iOS, Play Integrity Android). O `SafeCallable` (HTTP fallback para iOS, que contorna o bug de `HTTPSCallable.call()`) foi atualizado para enviar o token App Check via header `X-Firebase-AppCheck`, obtido com `FirebaseAppCheck.instance.getToken()` (timeout 8s). **Todas** as callable Cloud Functions agora exigem `enforceAppCheck: true`. Se o token falhar (non-fatal), a chamada prossegue sem o header mas será rejeitada pelo servidor.
 
 ### Correção aplicada (2026-05-02)
 
@@ -327,13 +329,17 @@ Flag no `Info.plist` que impede o SDK nativo de tentar obter tokens automaticame
 <false/>
 ```
 
-Isto complementa o skip no Dart e bloqueia completamente o App Check no iOS.
+### Atualização (2026-05-03) — App Check agora ativo em iOS
+
+O skip iOS no Dart foi **removido**. App Check é ativado em todas as plataformas. O `SafeCallable` envia o token App Check manualmente via header HTTP `X-Firebase-AppCheck` no fallback iOS. **Todas** as Cloud Functions callable agora exigem `enforceAppCheck: true`.
+
+**A flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist` pode precisar de revisão** — se o auto-refresh nativo estiver desativado, apenas o plugin Dart obtém tokens (via `getToken()` no `SafeCallable`). Para o caso de uso atual (iOS via HTTP fallback), isto funciona. Quando FlutterFire actualizar para firebase-ios-sdk >= 12.12.0, a flag deve ser removida para permitir auto-refresh nativo.
 
 ### Para resolver definitivamente (futuro)
 
-1. **Registar a app iOS** no Firebase Console → App Check → Apps → Register com provider **DeviceCheck**. Isto faz com que o endpoint aceite os tokens em vez de devolver 400.
+1. **Registar a app iOS** no Firebase Console → App Check → Apps → Register com provider **DeviceCheck**. ~~Isto faz com que o endpoint aceite os tokens em vez de devolver 400.~~ **Parcialmente feito:** App Check agora enforced nas Cloud Functions; falta verificar registo explícito no Console App Check.
 2. **Actualizar firebase-ios-sdk** para >= 12.12.0 (quando FlutterFire lançar), que corrige o deadlock de Swift Concurrency.
-3. Após ambos os passos: remover a flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` do `Info.plist` e o `if (Platform.isIOS) return` do `_activateAppCheckIfNeeded()`.
+3. Após passo 2: remover `SafeCallable` HTTP fallback (`_useHttpFallback = false`), remover flag `FirebaseAppCheckTokenAutoRefreshEnabled` do `Info.plist`, e usar o SDK nativo normalmente.
 
 ### Diagnóstico (se voltar a acontecer)
 
@@ -419,6 +425,7 @@ await FirebaseFunctions.instance.httpsCallable('backfillSearchTokens').call();
 | `dateOfBirth` | Maio 2026 | Não — `null` é aceite (legacy = já verificado) | ✅ OK |
 | `analyticsConsent` | Maio 2026 | Não — `null` = pending, banner aparece para EU | ✅ OK |
 | `accountStatus` | Pré-existente | Não — default implícito "active" | ✅ OK |
+| `profileIncomplete` | Maio 2026 | Não — flag set por `ensureUserFirestoreProfileExists` para perfis fallback (sem dados reais) | ✅ OK |
 
 ### Ficheiros
 

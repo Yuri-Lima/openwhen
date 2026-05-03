@@ -153,10 +153,12 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 
 | Serviço | Uso |
 |---------|-----|
-| **Authentication** | Sessão do usuário |
+| **Authentication + Identity Platform** | Sessão do usuário; blocking functions (`beforeUserCreated`) para anti-abuse |
 | **Cloud Firestore** | Dados principais (usuários, cartas, drafts, social, cápsulas, moderação) |
 | **Cloud Storage** | Avatares; fotos de carta manuscrita (`handwritten/`); mensagens de voz (`voiceLetters/`, áudio curto); mídia de cápsulas (`capsules/**`) — ver [`storage.rules`](../storage.rules) |
 | **FCM** | Notificações push (Firebase Cloud Messaging; integrado no app — ver `MVP_CHECKLIST.md` 🔴) |
+
+| **App Check** | Atestação de dispositivo (DeviceCheck iOS, Play Integrity Android). Enforced (`enforceAppCheck: true`) em todas as callable Cloud Functions. No iOS, `SafeCallable` envia token App Check via header HTTP `X-Firebase-AppCheck` (workaround para firebase-ios-sdk#15974). |
 
 **Projeto Firebase (referência):** `whenote-923f5`
 
@@ -181,6 +183,7 @@ Coleções também usadas no código (strings / queries):
 | `moderationIncidents` | Alertas operacionais da moderação por IA (agregados por tipo + hora UTC); escrita só Admin SDK / Cloud Functions; leitura no app via `adminListModerationIncidents` |
 | `systemConfig` | Documento `app`: feature flags remotas (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, …); leitura autenticada, escrita só admin/backend |
 | `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
+| `accountCreationLogs` | Auditoria anti-abuse — IP, provider, emailDomain, timestamp de cada criação de conta. Escrita: Admin SDK (Cloud Function `onUserCreated`). Leitura/escrita pelo cliente: **bloqueada** nas Firestore Rules. Usado para rate limiting (5 contas/IP/24h). Índice composto: `ip ASC, createdAt ASC`. |
 
 ### Busca de utilizadores
 
@@ -250,6 +253,7 @@ Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed W
 
 | Function | Tipo | Trigger | Ficheiro | Estado |
 |----------|------|---------|----------|--------|
+| `onUserCreated` | Blocking (Identity Platform) | `beforeUserCreated` — bloqueia emails descartáveis + rate limit IP (5/24h) | `functions/src/on_user_created.ts` | ✅ Deployed |
 | `moderateContent` | Callable | Cliente chama antes de publicar comentário/carta/cápsula | `functions/src/moderation/moderate_content.ts` | ✅ Deployed |
 | `moderateUploadedFile` | Storage trigger | `onObjectFinalized` em avatars, capsules/photos, handwritten, voiceLetters | `functions/src/moderation/moderate_storage.ts` | ✅ Deployed |
 | `adminGetModerationInfo` | Callable | Admin screen — info de provedor/chave | `functions/src/moderation/moderate_content.ts` | ✅ Deployed |

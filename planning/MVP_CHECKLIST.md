@@ -130,7 +130,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ### ⚠️ Parcialmente implementado (4)
 
 - [x] **Verificação de idade em login social** — ~~Sign in with Apple e Google pulavam a tela de registro completamente sem age gate.~~ ✅ **Resolvido 2026-05-02** — dialog com checkboxes de Termos + Idade 13+ adicionado antes de qualquer social sign-in em `login_screen.dart`. Chaves i18n adicionadas nos 4 idiomas.
-- [ ] **App Check iOS desativado** — App Check funciona em Android (Play Integrity), mas está comentado no iOS por bug do SDK Firebase (`firebase-ios-sdk#15974`). A política promete proteção em ambas as plataformas. `main.dart` linhas 58-77. **Corrigir:** reativar quando FlutterFire publicar SDK >= 12.12.0.
+- [x] **App Check iOS desativado** — ~~App Check funciona em Android (Play Integrity), mas está comentado no iOS por bug do SDK Firebase (`firebase-ios-sdk#15974`).~~ ✅ **Resolvido 2026-05-03** — Skip iOS removido; App Check agora ativa em todas as plataformas. `SafeCallable` (HTTP fallback iOS) atualizado para enviar token App Check via header `X-Firebase-AppCheck`. `enforceAppCheck: true` em todas as callable Cloud Functions. Identity Platform ativado com blocking function `onUserCreated` (anti-abuse). **Pendente futuro:** quando FlutterFire publicar SDK >= 12.12.0, remover `SafeCallable` HTTP fallback e usar SDK nativo.
 - [x] **Eliminação "irreversível" vs. grace period** — ~~A política dizia "irreversible" mas o código implementa 15 dias de carência.~~ ✅ **Resolvido 2026-05-02** — texto de `privacySection11Body` atualizado nos 4 idiomas (EN/PT/PT_BR/ES) para explicar o período de carência de 15 dias com opção de cancelamento.
 - [x] **Info.plist: NSLocationAlwaysAndWhenInUseUsageDescription** — ~~O código só usa location `whenInUse`, mas o Info.plist declarava permissão "Always", contradizendo a política.~~ ✅ **Resolvido 2026-05-02** — chave removida do Info.plist. **Atualização 2026-05-03:** chave re-adicionada com o mesmo texto de `NSLocationWhenInUseUsageDescription`. A Apple exige que ambas as chaves estejam presentes quando qualquer dependência (ex: plugin de localização) referencia a API `CLLocationManager`, mesmo que o app só use `whenInUse`. Sem esta chave, o Transporter/App Store Connect emite warning 90683. O app continua a pedir apenas permissão "when in use" em runtime — a chave no Info.plist é apenas declarativa para satisfazer a validação da Apple.
 
@@ -146,7 +146,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ### Notas adicionais da auditoria
 
-- **Hash do audit log não é criptográfico** — `simpleHash` no `account_deletion_service.dart` usa djb2 (32-bit int), que é trivialmente reversível. A política implica hash seguro ("hashed, non-reversible identifiers"). **Recomendação:** substituir por SHA-256 com salt.
+- ~~**Hash do audit log não é criptográfico**~~ — ✅ **Resolvido** — `simpleHash` (djb2) substituído por `hashUid()` (HMAC-SHA-256) em 4 ficheiros backend. `simpleHash()` deprecated. Ver CHANGELOG.
 - **Re-auth social missing** — `reauthenticateWithPassword()` só funciona para email/password. Utilizadores autenticados via Apple/Google OAuth não conseguem re-autenticar para eliminar a conta. **Ação:** implementar `reauthenticateWithCredential` para providers OAuth.
 - **TLS 1.3** — delegado à infraestrutura Firebase/Google Cloud. Não verificável no código, mas a claim é válida.
 - **Notificação de breach (72h)** — compromisso da política sem mecanismo no código. Aceitável como procedimento operacional, mas recomenda-se documentar um playbook de incidentes em `planning/`.
@@ -322,7 +322,8 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`ROADMAP.md`](ROADMAP.md) (secção "Co
 - 🟡 Semana 2: **6 pendentes** (inclui aniversário + notificação)
 - 🟢 Mês 3+: **1 nova feature validada** (Cápsulas Coletivas)
 - Núcleo técnico: **totalmente concluído** ✅
-- Legal: **textos atualizados** (EN/PT/PT_BR/ES — 13 gaps corrigidos nos .arb 2026-05-02); **auditoria de compliance** feita (9 conformes, 4 parciais, 5 ausentes — ver secção acima); **dateOfBirth + age verification por jurisdição** implementados (02/05/2026); **consentimento analytics EU/UK** implementado (02/05/2026); revisão com advogado pendente
+- Legal: **textos atualizados** (EN/PT/PT_BR/ES — 13 gaps corrigidos nos .arb 2026-05-02); **auditoria de compliance** feita (9 conformes, 3 parciais ✅ App Check resolvido, 5 ausentes — ver secção acima); **dateOfBirth + age verification por jurisdição** implementados (02/05/2026); **consentimento analytics EU/UK** implementado (02/05/2026); revisão com advogado pendente
+- Segurança: **App Check enforced** em todas as Cloud Functions ✅; **Identity Platform** ativado com blocking function anti-abuse ✅; **Firestore rules** reforçadas para criação de utilizador ✅; **Rate limiting** em `checkUsernameAvailable` e `onUserCreated` ✅ (tudo 03/05/2026)
 - Monetização: **planejada** (ativar após 10K users)
 
 ---
