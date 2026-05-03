@@ -36,7 +36,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 | Item | Status | Ação necessária | Referência |
 |------|--------|-----------------|------------|
 | **Moderação de cartas (Camada 2 — IA no envio)** | ✅ Implementado (12 abr 2026) | Text moderation (letters + capsules) e media moderation (images + audio) implementados. Ver MODERATION.md para detalhes. | MODERATION.md |
-| **Sign in with Apple** | 🟡 Pendente | Obrigatório para iOS (Apple exige), mas Google Play também recomenda. Pode ser pós-launch Android se necessário. | MVP_CHECKLIST.md §Importante |
+| **Sign in with Apple** | ✅ Implementado (28 abr 2026) | `OAuthProvider('apple.com')` com nonce SHA-256. Entitlements configurados. Visível só iOS. | MVP_CHECKLIST.md §Importante |
 | **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@whenote.app`. | PRODUCTION.md §Email |
 | **Deploy da action page de email** | ✅ Concluído | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
 | **Verificação de email no cadastro** | ✅ Implementado | `sendEmailVerification()` no registo + guard `requireVerifiedEmail()` bloqueia cartas/comentários/cápsulas até verificação. Soft-block (login permitido). | MVP_CHECKLIST.md §Email |
@@ -63,16 +63,27 @@ Cada nova submissão ao Play Store exige `versionCode` incrementado.
 
 ## Fase 2 — Conta Google Play e identidade
 
-### 2.1 Criar conta Google Play Console
+### 2.1 Conta Google Play Console — ✅ Criada (verificação pendente)
 
-1. Aceder a [play.google.com/console](https://play.google.com/console)
-2. Registar como **Organização** (Delaware C-Corp — Whenote via Stripe Atlas)
-   - Serão pedidos: nome legal da empresa, endereço, DUNS number (se aplicável), website
-   - **Taxa única: $25 USD**
-3. Verificar identidade (Google pode pedir documentos da empresa)
-4. Aceitar o Developer Distribution Agreement
+**Conta criada** como **Personal account** (Yuri Lima).
+- **Account ID:** `8483810936262656285`
+- **Endereço:** C. Antonio Maura, Casa 26, Oviedo - 33012, Spain (ES)
+- **Email de contacto:** y.m.lima19@gmail.com ✅ verificado
+- **Telefone:** +34613784493
+- **Website:** ❌ Não configurado (adicionar `https://whenote.app`)
+- **Developer profile:** ❌ Não configurado
 
-> **⚠️ Yuri precisa fazer:** Este passo é manual e requer pagamento + verificação de identidade. Pode demorar 1–7 dias para aprovação.
+#### ⚠️ 3 verificações pendentes (bloqueiam criação de apps)
+
+| # | Verificação | Status | Ação necessária |
+|---|-------------|--------|-----------------|
+| 1 | **Verificar identidade** | ❌ Pendente | Fazer upload de documento oficial (passaporte ou BI). Clicar "Get started" na Home. Pode levar dias. |
+| 2 | **Verificar acesso a dispositivo Android** | ❌ Pendente | Instalar app [Play Console](https://play.google.com/store/apps/details?id=com.google.android.apps.playconsole) no celular e fazer login. |
+| 3 | **Verificar telefone de contacto** | ❌ Pendente | Depende da verificação de identidade (item 1). Após aprovação, verificar o número. |
+
+> **Nota sobre tipo de conta:** A conta foi criada como "Personal account". Para uma C-Corp Delaware, o ideal seria "Organization", mas o Google Play permite publicar como pessoa física. A mudança para Organization pode ser feita depois se necessário — o importante agora é completar as verificações e publicar.
+
+> **⚠️ Yuri precisa fazer:** Completar as 3 verificações acima. O botão "Create app" está **bloqueado** até todas estarem aprovadas. Começar pela verificação de identidade (é a que mais demora).
 
 ### 2.2 Criar o app no Play Console
 
@@ -419,8 +430,8 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 
 | Prioridade | Item |
 |-----------|------|
-| P0 | Sign in with Apple (se não feito antes) |
-| P0 | Notificações de engajamento (likes/comments/follows) |
+| ~~P0~~ | ~~Sign in with Apple~~ ✅ Implementado (28 abr 2026) |
+| ~~P0~~ | ~~Notificações de engajamento~~ ✅ Deploy concluído (12 abr 2026) |
 | P1 | Carta multimodal (OCR, transcrição) |
 | P1 | Nox Card (viralidade) |
 | P2 | Premium pay-per-feature (~10k users) |
@@ -431,15 +442,17 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 
 ### Yuri (dev + ops)
 
-1. [ ] Resolver pendências de código (Fase 1.1)
-2. [ ] Registar conta Google Play Console ($25)
-3. [ ] Gerar keystore e configurar `key.properties`
-4. [ ] Adicionar 4 registros DNS no Cloudflare (email Firebase Auth)
-5. [ ] Executar deploys Firebase (`rules`, `functions`, `hosting`)
-6. [ ] Gerar AAB de release
-7. [ ] QA em dispositivo real
-8. [ ] Preencher formulários no Play Console
-9. [ ] Submeter release
+1. [x] ~~Resolver pendências de código (Fase 1.1)~~ — moderação ✅, Sign in Apple ✅, email ✅
+2. [x] ~~Registar conta Google Play Console ($25)~~ — conta criada (Personal account)
+3. [ ] **BLOQUEADOR:** Completar 3 verificações do Play Console (identidade → device → telefone)
+4. [ ] Configurar Developer Profile e Website no Play Console
+5. [ ] Gerar keystore e configurar `key.properties`
+6. [ ] Adicionar 4 registros DNS no Cloudflare (email Firebase Auth — `noreply@whenote.app`)
+7. [ ] Executar deploys Firebase (`rules`, `functions`, `hosting`)
+8. [ ] Gerar AAB de release
+9. [ ] QA em dispositivo real
+10. [ ] Preencher formulários no Play Console
+11. [ ] Submeter release
 
 ### Diego (design + conteúdo)
 
@@ -461,31 +474,35 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 ## Ordem de execução sugerida (timeline)
 
 ```
-Semana 1:
-├── Yuri: Registar Play Console + gerar keystore
-├── Yuri: Resolver pendências código (moderação, email DNS, action page)
-├── Diego: Criar Feature Graphic + capturar screenshots
+Semana 1 (AGORA — maio 2026):
+├── Yuri: ⚡ Completar verificação de identidade no Play Console (upload documento)
+├── Yuri: ⚡ Instalar app Play Console no celular (verificar device)
+├── Yuri: Adicionar 4 registros DNS no Cloudflare (email noreply@whenote.app)
+├── Diego: Criar Feature Graphic (1024×500)
+└── Diego: Começar a capturar screenshots (8 telas, pt-BR primeiro)
+
+Semana 2 (após verificações aprovadas):
+├── Yuri: Configurar Developer Profile + Website no Play Console
+├── Yuri: Gerar keystore + key.properties
+├── Yuri: Deploy Firebase (rules, functions, hosting) — se não feito
+├── Yuri: Build AAB de release
+├── Diego: Finalizar screenshots (en, es)
 └── Ambos: Revisar descrição da loja
 
-Semana 2:
-├── Yuri: Deploy Firebase (rules, functions, hosting)
-├── Yuri: Build AAB + QA em dispositivo
-├── Diego: Finalizar screenshots nos 3 idiomas
-├── Ambos: Preencher formulários Play Console
-└── Yuri: Upload para Internal Testing
-
 Semana 3:
-├── Ambos: Testar via Internal Testing (equipe)
-├── Yuri: Corrigir bugs encontrados
-├── Yuri: Promover para Closed Testing (beta testers)
-└── Monitorar feedback
+├── Yuri: QA em dispositivo Android real (checklist Fase 8)
+├── Ambos: Preencher formulários Play Console (Data Safety, Content Rating)
+├── Yuri: Upload para Internal Testing
+└── Ambos: Testar via Internal Testing
 
 Semana 4:
-├── Yuri: Corrigir issues do beta
+├── Yuri: Corrigir bugs encontrados
+├── Yuri: Promover para Closed Testing (beta testers)
+├── Monitorar feedback
 ├── Yuri: Submeter para Production
 └── Aguardar revisão Google (1-7 dias)
 ```
 
 ---
 
-*Documento criado em 12 de abril de 2026. Atualizar conforme o progresso.*
+*Documento criado em 12 de abril de 2026. Última atualização: 3 de maio de 2026 (estado real do Play Console verificado).*
