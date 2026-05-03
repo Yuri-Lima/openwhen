@@ -234,13 +234,14 @@ Comandos específicos de build seguem a documentação oficial do Flutter; as va
 
 Use esta lista como roteiro antes de submeter builds às lojas ou de declarar o ambiente “produção”. Detalhes e comandos estão nas secções [1](#1-ficheiros-obrigatórios-no-cliente-firebase)–[7](#7-assinatura-e-publicação-nas-lojas-resumo); regressão em dispositivo: secção [9](#9-testes-em-dispositivo-real-qa); critérios MVP: [MVP_CHECKLIST.md](MVP_CHECKLIST.md).
 
-**Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
+**Ordem sugerida:** A (identidade e build) → B (segredos e ficheiros) → C (Firebase e backend) → C½ (migração de schema) → D (flags de produto) → E (push) → F (lojas e conformidade) → G (QA final).
 
 ```mermaid
 flowchart LR
   A[IdentidadeBuild] --> B[SegredosFicheiros]
   B --> C[FirebaseBackend]
-  C --> D[FlagsProduto]
+  C --> C2[MigraçãoSchema]
+  C2 --> D[FlagsProduto]
   D --> E[PushPermissoes]
   E --> F[LojasConformidade]
   F --> G[QARelease]
@@ -265,6 +266,20 @@ flowchart LR
 - [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
 - [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+
+### C½. Migração de schema Firestore (campos novos)
+
+> **Contexto:** Firestore é schemaless — adicionar um campo novo ao código não preenche documentos existentes. Se o novo código depende do campo (queries, filtros, UI), utilizadores legacy ficam silenciosamente quebrados. Ver [TROUBLESHOOTING.md §11](TROUBLESHOOTING.md) para caso real (`searchTokens`).
+
+- [ ] **Inventário de campos novos:** listar todos os campos adicionados a collections existentes neste release (comparar `app_user.dart`, `auth_repository.dart`, models Firestore).
+- [ ] **Para cada campo novo, responder:**
+  - O campo é escrito na criação de novos documentos? (`register()`, `signInWithApple()`, `signInWithGoogle()`)
+  - Existem documentos em produção sem este campo?
+  - O código assume que o campo existe? (queries `where`, `array-contains`, `orderBy`, lógica de UI)
+  - Há fallback seguro para `null`/ausente?
+- [ ] **Se o campo é necessário para UX crítica e existem documentos sem ele:** criar Cloud Function de backfill, fazer deploy e executar **antes** de publicar o client nas lojas.
+- [ ] **Se o fallback é aceitável:** documentar no CHANGELOG que utilizadores legacy terão comportamento degradado até editar perfil / re-login.
+- [ ] **Backfill functions deployadas e executadas com sucesso** (verificar resposta `{ updated, skipped, errors }`).
 
 ### D. Funcionalidades e flags de build
 
