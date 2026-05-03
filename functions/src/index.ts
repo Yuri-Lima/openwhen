@@ -51,6 +51,7 @@ export {
 } from "./engagement";
 
 export {backfillFollowCounters} from "./backfill_follow_counters";
+export {backfillSearchTokens} from "./backfill_search_tokens";
 
 setGlobalOptions({region: "us-central1"});
 
