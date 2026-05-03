@@ -322,3 +322,12 @@ Use na consola Stripe (inglês) — alinhado ao produto e à stack; ajuste só s
 - O cronograma detalhado (Semana 1–Mês 3+) e as especificações de funcionalidades prioritárias foram consolidados neste documento a partir de `NEXT_FEATURES.md`, mantendo centralização de roadmap e estratégia.
 - Funcionalidades de **IA com perfilamento, fotos de terceiros ou biometria/emotion** (recomendações, círculo familiar, face): revisar **privacidade, bases legais e fornecedores** antes do lançamento.
 
+
+---
+
+## Web App — app.whenote.app
+
+Lançar versão web após estabilização mobile.
+Foco: escrever cartas longas no computador com teclado físico.
+URL sugerida: app.whenote.app
+Prioridade: Mês 2 após lançamento mobile.
