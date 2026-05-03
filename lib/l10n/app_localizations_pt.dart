@@ -2989,6 +2989,44 @@ class AppLocalizationsPt extends AppLocalizations {
   String policyReconsentEffectiveDate(String date) {
     return 'Efetivo a partir de $date';
   }
+
+  @override
+  String get draftsTitle => 'Rascunhos';
+
+  @override
+  String get draftsEmpty =>
+      'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será guardada aqui automaticamente.';
+
+  @override
+  String get draftsUntitled => 'Sem título';
+
+  @override
+  String get draftsNoContent => 'Sem conteúdo';
+
+  @override
+  String get draftsDeleteTitle => 'Eliminar rascunho?';
+
+  @override
+  String get draftsDeleteMessage =>
+      'Este rascunho será eliminado permanentemente.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expira em $days dias',
+      one: 'Expira em 1 dia',
+      zero: 'Expira hoje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Rascunhos';
+
+  @override
+  String get homeDraftsSubtitle => 'Continue uma carta que começou';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5976,4 +6014,42 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String policyReconsentEffectiveDate(String date) {
     return 'Efetivo a partir de $date';
   }
+
+  @override
+  String get draftsTitle => 'Rascunhos';
+
+  @override
+  String get draftsEmpty =>
+      'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será salva aqui automaticamente.';
+
+  @override
+  String get draftsUntitled => 'Sem título';
+
+  @override
+  String get draftsNoContent => 'Sem conteúdo';
+
+  @override
+  String get draftsDeleteTitle => 'Excluir rascunho?';
+
+  @override
+  String get draftsDeleteMessage =>
+      'Este rascunho será excluído permanentemente.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expira em $days dias',
+      one: 'Expira em 1 dia',
+      zero: 'Expira hoje',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Rascunhos';
+
+  @override
+  String get homeDraftsSubtitle => 'Continue uma carta que começou';
 }

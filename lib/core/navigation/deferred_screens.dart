@@ -15,12 +15,17 @@ class DeferredWriteLetterPage extends StatelessWidget {
   final String? recipientUsername;
   final String? recipientPhotoUrl;
 
+  /// ID de um rascunho existente para retomar a edição.
+  /// Mutuamente exclusivo com [recipientUid].
+  final String? draftId;
+
   const DeferredWriteLetterPage({
     super.key,
     this.recipientUid,
     this.recipientName,
     this.recipientUsername,
     this.recipientPhotoUrl,
+    this.draftId,
   });
 
   @override
@@ -38,6 +43,7 @@ class DeferredWriteLetterPage extends StatelessWidget {
           recipientName: recipientName,
           recipientUsername: recipientUsername,
           recipientPhotoUrl: recipientPhotoUrl,
+          draftId: draftId,
         );
       },
     );

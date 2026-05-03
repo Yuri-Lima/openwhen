@@ -2987,4 +2987,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String policyReconsentEffectiveDate(String date) {
     return 'Effective from $date';
   }
+
+  @override
+  String get draftsTitle => 'Drafts';
+
+  @override
+  String get draftsEmpty =>
+      'No drafts yet.\nWhen you start writing a letter and leave, it will be saved here automatically.';
+
+  @override
+  String get draftsUntitled => 'Untitled';
+
+  @override
+  String get draftsNoContent => 'No content yet';
+
+  @override
+  String get draftsDeleteTitle => 'Delete draft?';
+
+  @override
+  String get draftsDeleteMessage => 'This draft will be permanently deleted.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expires in $days days',
+      one: 'Expires in 1 day',
+      zero: 'Expires today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Drafts';
+
+  @override
+  String get homeDraftsSubtitle => 'Continue a letter you started';
 }

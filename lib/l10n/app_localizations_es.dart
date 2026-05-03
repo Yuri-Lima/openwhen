@@ -3000,4 +3000,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String policyReconsentEffectiveDate(String date) {
     return 'Efectivo desde $date';
   }
+
+  @override
+  String get draftsTitle => 'Borradores';
+
+  @override
+  String get draftsEmpty =>
+      'Sin borradores.\nCuando empieces a escribir una carta y salgas, se guardará aquí automáticamente.';
+
+  @override
+  String get draftsUntitled => 'Sin título';
+
+  @override
+  String get draftsNoContent => 'Sin contenido';
+
+  @override
+  String get draftsDeleteTitle => '¿Eliminar borrador?';
+
+  @override
+  String get draftsDeleteMessage =>
+      'Este borrador se eliminará permanentemente.';
+
+  @override
+  String draftsExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expira en $days días',
+      one: 'Expira en 1 día',
+      zero: 'Expira hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeDrafts => 'Borradores';
+
+  @override
+  String get homeDraftsSubtitle => 'Continúa una carta que empezaste';
 }

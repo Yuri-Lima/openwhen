@@ -5500,6 +5500,60 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Efetivo a partir de {date}'**
   String policyReconsentEffectiveDate(String date);
+
+  /// No description provided for @draftsTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rascunhos'**
+  String get draftsTitle;
+
+  /// No description provided for @draftsEmpty.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será salva aqui automaticamente.'**
+  String get draftsEmpty;
+
+  /// No description provided for @draftsUntitled.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sem título'**
+  String get draftsUntitled;
+
+  /// No description provided for @draftsNoContent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sem conteúdo'**
+  String get draftsNoContent;
+
+  /// No description provided for @draftsDeleteTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Excluir rascunho?'**
+  String get draftsDeleteTitle;
+
+  /// No description provided for @draftsDeleteMessage.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este rascunho será excluído permanentemente.'**
+  String get draftsDeleteMessage;
+
+  /// No description provided for @draftsExpiresIn.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{days,plural, =0{Expira hoje} =1{Expira em 1 dia} other{Expira em {days} dias}}'**
+  String draftsExpiresIn(int days);
+
+  /// No description provided for @homeDrafts.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rascunhos'**
+  String get homeDrafts;
+
+  /// No description provided for @homeDraftsSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Continue uma carta que começou'**
+  String get homeDraftsSubtitle;
 }
 
 class _AppLocalizationsDelegate

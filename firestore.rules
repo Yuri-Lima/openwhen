@@ -76,6 +76,24 @@ service cloud.firestore {
       }
     }
 
+    // Rascunhos de cartas — expiram após 30 dias (TTL Policy no campo `expiresAt`).
+    // Limite soft de 10 drafts por user (enforçado via draftCount no user doc).
+    match /drafts/{draftId} {
+      allow read: if signedIn()
+        && resource.data.senderUid == request.auth.uid;
+      allow create: if signedIn()
+        && request.resource.data.senderUid == request.auth.uid
+        && request.resource.data.keys().hasAll(['senderUid', 'expiresAt', 'createdAt'])
+        && request.resource.data.expiresAt is timestamp;
+      allow update: if signedIn()
+        && resource.data.senderUid == request.auth.uid
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'senderUid', 'createdAt', 'expiresAt'
+        ]);
+      allow delete: if signedIn()
+        && resource.data.senderUid == request.auth.uid;
+    }
+
     // Cartas
     match /letters/{letterId} {
       allow read: if signedIn() && (

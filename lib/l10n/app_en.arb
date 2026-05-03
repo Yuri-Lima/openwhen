@@ -1016,5 +1016,16 @@
   "policyReconsentAccept": "Accept and continue",
   "policyReconsentLogout": "Log out",
   "policyReconsentEffectiveDate": "Effective from {date}",
-  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } }
+  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } },
+
+  "draftsTitle": "Drafts",
+  "draftsEmpty": "No drafts yet.\nWhen you start writing a letter and leave, it will be saved here automatically.",
+  "draftsUntitled": "Untitled",
+  "draftsNoContent": "No content yet",
+  "draftsDeleteTitle": "Delete draft?",
+  "draftsDeleteMessage": "This draft will be permanently deleted.",
+  "draftsExpiresIn": "{days,plural, =0{Expires today} =1{Expires in 1 day} other{Expires in {days} days}}",
+  "@draftsExpiresIn": { "placeholders": { "days": { "type": "int" } } },
+  "homeDrafts": "Drafts",
+  "homeDraftsSubtitle": "Continue a letter you started"
 }

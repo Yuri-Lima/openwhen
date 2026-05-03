@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +11,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../domain/draft_model.dart';
+import '../../domain/draft_service.dart';
+import 'drafts_screen.dart';
 import '../../../../core/user_search/user_search_result.dart';
 import '../../../../core/user_search/user_search_service.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -33,40 +33,12 @@ import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../data/letter_send_service.dart';
 import '../../data/letter_send_step.dart';
+import '../models/emotional_state.dart';
 import '../voice_letter.dart';
-
-class EmotionalState {
-  final String key;
-  final String label;
-  final String emoji;
-  final Color color;
-  final Color bgColor;
-  const EmotionalState({required this.key, required this.label, required this.emoji, required this.color, required this.bgColor});
-}
-
-const List<EmotionalState> emotionalStates = [
-  EmotionalState(key: 'love', label: 'Amor', emoji: '💕', color: Color(0xFFE91E8C), bgColor: Color(0xFFFCE4F3)),
-  EmotionalState(key: 'achievement', label: 'Conquista', emoji: '🏆', color: Color(0xFFF59E0B), bgColor: Color(0xFFFEF3C7)),
-  EmotionalState(key: 'advice', label: 'Conselho', emoji: '🌿', color: Color(0xFF10B981), bgColor: Color(0xFFD1FAE5)),
-  EmotionalState(key: 'nostalgia', label: 'Saudade', emoji: '🍂', color: Color(0xFFD97706), bgColor: Color(0xFFFEF3C7)),
-  EmotionalState(key: 'farewell', label: 'Despedida', emoji: '🦋', color: Color(0xFF8B5CF6), bgColor: Color(0xFFEDE9FE)),
-];
-
-String emotionalStateLabel(AppLocalizations l10n, String key) {
-  switch (key) {
-    case 'love': return l10n.writeLetterEmotionLove;
-    case 'achievement': return l10n.writeLetterEmotionAchievement;
-    case 'advice': return l10n.writeLetterEmotionAdvice;
-    case 'nostalgia': return l10n.writeLetterEmotionNostalgia;
-    case 'farewell': return l10n.writeLetterEmotionFarewell;
-    default: return key;
-  }
-}
 
 /// `false` até definirmos o fluxo ideal para link de música na carta.
 const bool kWriteLetterShowMusicUrlField = false;
 
-const String _kWriteLetterDraftPrefsKey = 'write_letter_draft_v1';
 
 class WriteLetterScreen extends ConsumerStatefulWidget {
   /// Dados opcionais para pré-popular o destinatário (ex: ação rápida do perfil).
@@ -75,13 +47,21 @@ class WriteLetterScreen extends ConsumerStatefulWidget {
   final String? recipientUsername;
   final String? recipientPhotoUrl;
 
+  /// ID de um rascunho existente para retomar a edição.
+  /// Mutuamente exclusivo com [recipientUid].
+  final String? draftId;
+
   const WriteLetterScreen({
     super.key,
     this.recipientUid,
     this.recipientName,
     this.recipientUsername,
     this.recipientPhotoUrl,
-  });
+    this.draftId,
+  }) : assert(
+         recipientUid == null || draftId == null,
+         'recipientUid and draftId are mutually exclusive',
+       );
 
   @override
   ConsumerState<WriteLetterScreen> createState() => _WriteLetterScreenState();
@@ -130,58 +110,117 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   Timer? _recordingTimer;
   Timer? _userSearchDebounce;
 
-  void _onMessageChanged() => setState(() {});
+  void _onMessageChanged() {
+    setState(() {});
+    _scheduleDraftAutoSave();
+  }
 
-  Future<void> _loadDraft() async {
-    if (widget.recipientUid != null) return;
+  // --- Draft (Firestore) ---
+  final DraftService _draftService = DraftService();
+  String? _currentDraftId;
+  bool _draftCleared = false;
+  Timer? _autoSaveTimer;
+
+  /// Carrega um draft existente pelo ID.
+  Future<void> _loadDraftById(String draftId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getString(_kWriteLetterDraftPrefsKey);
-      if (raw == null || raw.isEmpty) return;
-      final data = jsonDecode(raw) as Map<String, dynamic>?;
-      if (data == null || !mounted) return;
+      final draft = await _draftService.getDraft(draftId);
+      if (draft == null || !mounted) return;
 
-      _titleController.text = data['title'] as String? ?? '';
-      _messageController.text = data['message'] as String? ?? '';
-      _emailController.text = data['email'] as String? ?? '';
-      _musicUrlController.text = data['musicUrl'] as String? ?? '';
-      _isHandwritten = data['isHandwritten'] as bool? ?? false;
-      _isPrivate = data['isPrivate'] as bool? ?? true;
-      _messageExpanded = data['messageExpanded'] as bool? ?? false;
+      _currentDraftId = draft.id;
+      _titleController.text = draft.title;
+      _messageController.text = draft.message;
+      _emailController.text = draft.email;
+      _musicUrlController.text = draft.musicUrl;
+      _isHandwritten = draft.isHandwritten;
+      _handwrittenImageUrl = draft.handwrittenImageUrl;
+      _isPrivate = draft.isPrivate;
+      _messageExpanded = draft.messageExpanded;
+      _openDate = DateTime.fromMillisecondsSinceEpoch(draft.openDateMs);
 
-      final openMs = data['openDateMs'];
-      if (openMs is int) {
-        _openDate = DateTime.fromMillisecondsSinceEpoch(openMs);
-      }
-      final emotionKey = data['emotion'] as String?;
-      if (emotionKey != null) {
+      if (draft.emotionKey != null) {
         for (final e in emotionalStates) {
-          if (e.key == emotionKey) {
+          if (e.key == draft.emotionKey) {
             _selectedEmotion = e;
             break;
           }
         }
       }
       setState(() {});
-    } catch (_) {}
+    } catch (e) {
+      if (kDebugMode) debugPrint('[WriteLetterScreen] load draft error: $e');
+    }
   }
 
-  Future<void> _saveDraft() async {
+  /// Agenda auto-save com debounce de 5 segundos.
+  void _scheduleDraftAutoSave() {
     if (widget.recipientUid != null) return;
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted && !_draftCleared) _saveDraftToFirestore();
+    });
+  }
+
+  Future<void> _saveDraftToFirestore() async {
+    if (widget.recipientUid != null || _draftCleared) return;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+
+    final hasContent = _titleController.text.trim().isNotEmpty ||
+        _messageController.text.trim().isNotEmpty ||
+        _handwrittenImageUrl != null;
+    if (!hasContent && _currentDraftId == null) return;
+
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final data = <String, dynamic>{
-        'title': _titleController.text,
-        'message': _messageController.text,
-        'email': _emailController.text,
-        'musicUrl': _musicUrlController.text,
-        'isHandwritten': _isHandwritten,
-        'isPrivate': _isPrivate,
-        'messageExpanded': _messageExpanded,
-        'openDateMs': _openDate.millisecondsSinceEpoch,
-        'emotion': _selectedEmotion?.key,
-      };
-      await prefs.setString(_kWriteLetterDraftPrefsKey, jsonEncode(data));
+      if (_currentDraftId != null) {
+        final draft = LetterDraft(
+          id: _currentDraftId,
+          senderUid: uid,
+          title: _titleController.text,
+          message: _messageController.text,
+          email: _emailController.text,
+          musicUrl: _musicUrlController.text,
+          isHandwritten: _isHandwritten,
+          handwrittenImageUrl: _handwrittenImageUrl,
+          isPrivate: _isPrivate,
+          messageExpanded: _messageExpanded,
+          openDateMs: _openDate.millisecondsSinceEpoch,
+          emotionKey: _selectedEmotion?.key,
+          createdAt: DateTime.now(),
+          expiresAt: DateTime.now(),
+        );
+        await _draftService.saveDraft(draft);
+      } else {
+        final canCreate = await _draftService.canCreateDraft(uid);
+        if (!canCreate) return;
+
+        final draft = LetterDraft.create(
+          senderUid: uid,
+          title: _titleController.text,
+          message: _messageController.text,
+          email: _emailController.text,
+          musicUrl: _musicUrlController.text,
+          isHandwritten: _isHandwritten,
+          handwrittenImageUrl: _handwrittenImageUrl,
+          isPrivate: _isPrivate,
+          messageExpanded: _messageExpanded,
+          openDateMs: _openDate.millisecondsSinceEpoch,
+          emotionKey: _selectedEmotion?.key,
+        );
+        _currentDraftId = await _draftService.saveDraft(draft);
+      }
+    } catch (e) {
+      if (kDebugMode) debugPrint('[WriteLetterScreen] save draft error: $e');
+    }
+  }
+
+  Future<void> _clearDraft() async {
+    try {
+      if (_currentDraftId != null) {
+        final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+        await _draftService.deleteDraft(_currentDraftId!, uid);
+      }
+      _draftCleared = true;
     } catch (_) {}
   }
 
@@ -272,8 +311,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       _receiverHasAccount = true;
     }
 
-    if (widget.recipientUid == null) {
-      unawaited(_loadDraft());
+    if (widget.draftId != null) {
+      _currentDraftId = widget.draftId;
+      unawaited(_loadDraftById(widget.draftId!));
     }
   }
 
@@ -291,8 +331,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   @override
   void dispose() {
-    if (widget.recipientUid == null) {
-      unawaited(_saveDraft());
+    _autoSaveTimer?.cancel();
+    if (widget.recipientUid == null && !_draftCleared) {
+      unawaited(_saveDraftToFirestore());
     }
     _recordingTimer?.cancel();
     _userSearchDebounce?.cancel();
@@ -552,7 +593,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         child: child!,
       ),
     );
-    if (picked != null) setState(() => _openDate = picked);
+    if (picked != null) {
+      setState(() => _openDate = picked);
+      _scheduleDraftAutoSave();
+    }
   }
 
   String _letterSendErrorMessage(AppLocalizations l10n, LetterSendStep step, Object e) {
@@ -856,6 +900,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           backgroundColor: context.pal.accent,
         ));
         AnalyticsService.logLetterCreated(_selectedEmotion?.key ?? 'unknown');
+        await _clearDraft();
         await NotificationService.scheduleLetterReminder(
           id: _openDate.millisecondsSinceEpoch ~/ 1000,
           title: _titleController.text.trim(),
@@ -894,13 +939,22 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             child: Row(children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back, color: context.pal.ink)),
               const SizedBox(width: 16),
-              Row(children: [
+              Expanded(child: Row(children: [
                 Text(l10n.writeLetterTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink)),
                 const SizedBox(width: 6),
                 OwlFeedbackAffordance(
                   child: OwlWatermark(width: 18, height: 22, color: context.pal.ink),
                 ),
-              ]),
+              ])),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const DraftsScreen()),
+                  );
+                },
+                child: Icon(Icons.drafts_outlined, size: 22, color: context.pal.inkSoft),
+              ),
             ]),
           ),
           Expanded(
@@ -914,7 +968,10 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   Row(children: emotionalStates.map((e) {
                     final isSelected = _selectedEmotion?.key == e.key;
                     return Expanded(child: GestureDetector(
-                      onTap: () => setState(() => _selectedEmotion = e),
+                      onTap: () {
+                        setState(() => _selectedEmotion = e);
+                        _scheduleDraftAutoSave();
+                      },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         margin: const EdgeInsets.symmetric(horizontal: 3),
@@ -940,7 +997,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   Row(children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => setState(() => _isHandwritten = false),
+                        onTap: () { setState(() => _isHandwritten = false); _scheduleDraftAutoSave(); },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -960,7 +1017,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () => setState(() => _isHandwritten = true),
+                        onTap: () { setState(() => _isHandwritten = true); _scheduleDraftAutoSave(); },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),

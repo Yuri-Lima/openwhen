@@ -36,6 +36,8 @@ import 'core/linking/deep_link_bootstrap.dart';
 import 'core/linking/deep_link_coordinator.dart';
 import 'core/navigation/app_navigator_key.dart';
 import 'core/navigation/deferred_screens.dart';
+import 'features/letters/domain/draft_service.dart';
+import 'features/letters/presentation/screens/drafts_screen.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/theme/theme_provider.dart';
 import 'shared/widgets/feedback_entry_button.dart';
@@ -402,6 +404,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       // NOTE: billing migration (migrateUserBillingDefaults) must NOT run at
       // startup — the HTTPSCallable crashes the native iOS SDK even through
       // CallableQueue. Runs lazily in SubscriptionPlansScreen instead.
+
+      // Draft: migração SharedPrefs → Firestore (one-time) + limpeza de expirados
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid != null) {
+        final draftService = DraftService();
+        await draftService.migrateFromSharedPreferences(uid);
+        await draftService.deleteExpiredDrafts(uid);
+      }
     });
   }
 
@@ -490,6 +500,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ctx,
                 MaterialPageRoute(
                     builder: (_) => const DeferredCreateCapsulePage()),
+              );
+            },
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: p.accentWarm,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.drafts_outlined, color: p.accent),
+            ),
+            title: Text(l10n.homeDrafts,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(l10n.homeDraftsSubtitle),
+            onTap: () {
+              Navigator.pop(ctx);
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(builder: (_) => const DraftsScreen()),
               );
             },
           ),

@@ -1044,5 +1044,16 @@
   "policyReconsentAccept": "Aceitar e continuar",
   "policyReconsentLogout": "Sair",
   "policyReconsentEffectiveDate": "Efetivo a partir de {date}",
-  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } }
+  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } },
+
+  "draftsTitle": "Rascunhos",
+  "draftsEmpty": "Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será guardada aqui automaticamente.",
+  "draftsUntitled": "Sem título",
+  "draftsNoContent": "Sem conteúdo",
+  "draftsDeleteTitle": "Eliminar rascunho?",
+  "draftsDeleteMessage": "Este rascunho será eliminado permanentemente.",
+  "draftsExpiresIn": "{days,plural, =0{Expira hoje} =1{Expira em 1 dia} other{Expira em {days} dias}}",
+  "@draftsExpiresIn": { "placeholders": { "days": { "type": "int" } } },
+  "homeDrafts": "Rascunhos",
+  "homeDraftsSubtitle": "Continue uma carta que começou"
 }

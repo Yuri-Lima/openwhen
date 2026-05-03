@@ -203,7 +203,7 @@ async function sendSendgridInvite(params: {
     return;
   }
   const fromEmail =
-    process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+    process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.com";
   const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const content: Array<{type: string; value: string}> = [];

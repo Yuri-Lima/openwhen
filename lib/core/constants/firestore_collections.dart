@@ -14,6 +14,8 @@ class FirestoreCollections {
   static const String moderationReviews = 'moderationReviews';
   /// Subcoleção de `users/{uid}` — notificações (ex.: moderação); escrita só Functions.
   static const String userNotifications = 'notifications';
+  /// Rascunhos de cartas — expiram após 30 dias (TTL Policy no campo `expiresAt`).
+  static const String drafts = 'drafts';
   static const String systemConfig = 'systemConfig';
   /// Logs de auditoria de deleção de conta (sem PII) — escrita só Cloud Function.
   static const String deletionAuditLogs = 'deletionAuditLogs';
