@@ -2948,4 +2948,43 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsAnalyticsDescription =>
       'Allow anonymous usage data to help improve the app';
+
+  @override
+  String get policyUpdateBannerTitle => 'Policy update coming';
+
+  @override
+  String policyUpdateBannerBody(String date) {
+    return 'Our Terms of Use and Privacy Policy will be updated on $date. Tap to learn more.';
+  }
+
+  @override
+  String get policyUpdateBannerDismiss => 'Got it';
+
+  @override
+  String get policyReconsentTitle => 'We\'ve updated our policies';
+
+  @override
+  String get policyReconsentBody =>
+      'We\'ve made changes to our Terms of Use and/or Privacy Policy. Please review and accept to continue using Whenote.';
+
+  @override
+  String get policyReconsentSummaryLabel => 'Summary of changes:';
+
+  @override
+  String get policyReconsentViewFull => 'View full documents';
+
+  @override
+  String get policyReconsentCheckbox =>
+      'I have read and accept the updated Terms of Use and Privacy Policy';
+
+  @override
+  String get policyReconsentAccept => 'Accept and continue';
+
+  @override
+  String get policyReconsentLogout => 'Log out';
+
+  @override
+  String policyReconsentEffectiveDate(String date) {
+    return 'Effective from $date';
+  }
 }

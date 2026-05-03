@@ -26,4 +26,8 @@ class FirestoreCollections {
 
   /// Remote feature flags (`reportsEnabled`, etc.); read-only for clients.
   static const String systemConfigAppDocId = 'app';
+
+  /// Documento com informação da atualização de política ativa.
+  /// Escrita: Admin SDK / Firebase Console; leitura: clientes autenticados.
+  static const String systemConfigPolicyUpdateDocId = 'policyUpdate';
 }

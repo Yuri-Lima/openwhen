@@ -1001,5 +1001,20 @@
   "analyticsConsentAccept": "Aceptar",
   "analyticsConsentDecline": "No, gracias",
   "settingsAnalyticsToggle": "Datos de uso",
-  "settingsAnalyticsDescription": "Permitir datos de uso anónimos para ayudar a mejorar la app"
+  "settingsAnalyticsDescription": "Permitir datos de uso anónimos para ayudar a mejorar la app",
+
+  "policyUpdateBannerTitle": "Actualización de políticas",
+  "policyUpdateBannerBody": "Nuestros Términos de Uso y Política de Privacidad se actualizarán el {date}. Toca para saber más.",
+  "@policyUpdateBannerBody": { "placeholders": { "date": { "type": "String" } } },
+  "policyUpdateBannerDismiss": "Entendido",
+
+  "policyReconsentTitle": "Hemos actualizado nuestras políticas",
+  "policyReconsentBody": "Hemos realizado cambios en nuestros Términos de Uso y/o Política de Privacidad. Por favor, revisa y acepta para continuar usando Whenote.",
+  "policyReconsentSummaryLabel": "Resumen de los cambios:",
+  "policyReconsentViewFull": "Ver documentos completos",
+  "policyReconsentCheckbox": "He leído y acepto los Términos de Uso y la Política de Privacidad actualizados",
+  "policyReconsentAccept": "Aceptar y continuar",
+  "policyReconsentLogout": "Cerrar sesión",
+  "policyReconsentEffectiveDate": "Efectivo desde {date}",
+  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } }
 }

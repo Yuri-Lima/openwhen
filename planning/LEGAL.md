@@ -37,6 +37,7 @@
 | Runbook: notificação de breach (GDPR Art. 33/34) | ✅ Documentado | [`OPERATIONAL_PRIVACY_RUNBOOKS.md`](OPERATIONAL_PRIVACY_RUNBOOKS.md) §3 — 4 fases, template (Anexo C), contactos autoridades |
 | Export server-side: JSON vs ZIP documentado | ✅ Documentado | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) §5 — client ZIP (promessa) + server JSON (fallback pré-deletion) |
 | Processador SMTP atualizado na Política de Privacidade | ✅ Corrigido | Seção 7(a): Google Workspace SMTP Relay adicionado; SendGrid mantido em 7(c) (convites externos); 4 ARBs + `privacy.html` |
+| Sistema de notificação e re-consentimento de políticas (Seção 16) | ✅ Implementado | `policy_constants.dart`, `policy_update_provider.dart`, `policy_reconsent_screen.dart`, `policy_update_banner.dart`; CF `sendPolicyUpdateEmails.ts`; 11 chaves i18n em 4 idiomas; versionamento por data; dialog bloqueante pós-data-efetiva + banner informativo pré-data |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |

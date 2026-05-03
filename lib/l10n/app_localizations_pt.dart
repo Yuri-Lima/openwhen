@@ -2950,6 +2950,45 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get settingsAnalyticsDescription =>
       'Permitir dados de uso anónimos para ajudar a melhorar a aplicação';
+
+  @override
+  String get policyUpdateBannerTitle => 'Atualização de políticas';
+
+  @override
+  String policyUpdateBannerBody(String date) {
+    return 'Os nossos Termos de Uso e Política de Privacidade serão atualizados em $date. Toque para saber mais.';
+  }
+
+  @override
+  String get policyUpdateBannerDismiss => 'Entendi';
+
+  @override
+  String get policyReconsentTitle => 'Atualizámos as nossas políticas';
+
+  @override
+  String get policyReconsentBody =>
+      'Fizemos alterações aos nossos Termos de Uso e/ou Política de Privacidade. Por favor, reveja e aceite para continuar a usar o Whenote.';
+
+  @override
+  String get policyReconsentSummaryLabel => 'Resumo das alterações:';
+
+  @override
+  String get policyReconsentViewFull => 'Ver documentos completos';
+
+  @override
+  String get policyReconsentCheckbox =>
+      'Li e aceito os Termos de Uso e a Política de Privacidade atualizados';
+
+  @override
+  String get policyReconsentAccept => 'Aceitar e continuar';
+
+  @override
+  String get policyReconsentLogout => 'Sair';
+
+  @override
+  String policyReconsentEffectiveDate(String date) {
+    return 'Efetivo a partir de $date';
+  }
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -5898,4 +5937,43 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get settingsAnalyticsDescription =>
       'Permitir dados de uso anônimos para ajudar a melhorar o app';
+
+  @override
+  String get policyUpdateBannerTitle => 'Atualização de políticas';
+
+  @override
+  String policyUpdateBannerBody(String date) {
+    return 'Nossos Termos de Uso e Política de Privacidade serão atualizados em $date. Toque para saber mais.';
+  }
+
+  @override
+  String get policyUpdateBannerDismiss => 'Entendi';
+
+  @override
+  String get policyReconsentTitle => 'Atualizamos nossas políticas';
+
+  @override
+  String get policyReconsentBody =>
+      'Fizemos alterações nos nossos Termos de Uso e/ou Política de Privacidade. Por favor, revise e aceite para continuar usando o Whenote.';
+
+  @override
+  String get policyReconsentSummaryLabel => 'Resumo das alterações:';
+
+  @override
+  String get policyReconsentViewFull => 'Ver documentos completos';
+
+  @override
+  String get policyReconsentCheckbox =>
+      'Li e aceito os Termos de Uso e a Política de Privacidade atualizados';
+
+  @override
+  String get policyReconsentAccept => 'Aceitar e continuar';
+
+  @override
+  String get policyReconsentLogout => 'Sair';
+
+  @override
+  String policyReconsentEffectiveDate(String date) {
+    return 'Efetivo a partir de $date';
+  }
 }

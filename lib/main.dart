@@ -13,6 +13,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/consent/analytics_consent_banner.dart';
+import 'core/policy/policy_update_provider.dart';
+import 'core/policy/policy_reconsent_screen.dart';
+import 'core/policy/policy_update_banner.dart';
 import 'core/services/analytics_service.dart';
 import 'l10n/app_localizations.dart';
 import 'shared/locale/locale_provider.dart';
@@ -275,13 +278,11 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
     }
 
     final authState = ref.watch(authStateProvider);
+    final policyAsync = ref.watch(policyUpdateProvider);
     return authState.when(
       data: (user) {
         if (user != null) {
-          // Already completed the first-action guide this session → skip check.
-          if (_firstActionGuideDone) return const HomeScreen();
-
-          // Check Firestore flag once; defaults to true for existing users.
+          // Single stream for both first-action guide and policy check.
           return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection(FirestoreCollections.users)
@@ -290,18 +291,23 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
             builder: (context, snap) {
               if (!snap.hasData) return const SplashScreen();
               final data = snap.data?.data() as Map<String, dynamic>?;
-              final completed = data?['hasCompletedFirstAction'] as bool? ?? true;
-              if (completed) {
-                // Cache so we don't re-check every rebuild.
+
+              // First-action guide check (skip if already done this session).
+              if (!_firstActionGuideDone) {
+                final completed = data?['hasCompletedFirstAction'] as bool? ?? true;
+                if (!completed) {
+                  return FirstActionGuideScreen(
+                    onComplete: () {
+                      _firstActionGuideDone = true;
+                      if (mounted) setState(() {});
+                    },
+                  );
+                }
                 _firstActionGuideDone = true;
-                return const HomeScreen();
               }
-              return FirstActionGuideScreen(
-                onComplete: () {
-                  _firstActionGuideDone = true;
-                  if (mounted) setState(() {});
-                },
-              );
+
+              // Policy re-consent check — reuse user data from this stream.
+              return _buildPolicyAwareHome(policyAsync, data);
             },
           );
         }
@@ -317,6 +323,51 @@ class _AuthWrapperState extends ConsumerState<AuthWrapper> {
       error: (e, _) {
         final l10n = AppLocalizations.of(context)!;
         return Scaffold(body: Center(child: Text(l10n.errorGeneric(e.toString()))));
+      },
+    );
+  }
+
+  /// Returns [HomeScreen] wrapped with policy-consent UI when needed.
+  ///
+  /// - If the policy update document hasn't loaded yet, show HomeScreen anyway
+  ///   (fail-open; the check re-runs on every rebuild).
+  /// - [requiresReConsent] → blocking full-screen dialog.
+  /// - [upcomingChange] → non-blocking bottom banner over HomeScreen.
+  Widget _buildPolicyAwareHome(
+    AsyncValue<PolicyUpdate> policyAsync,
+    Map<String, dynamic>? userData,
+  ) {
+    return policyAsync.when(
+      loading: () => const HomeScreen(),
+      error: (_, __) => const HomeScreen(),
+      data: (policyUpdate) {
+        final acceptedTerms =
+            userData?['acceptedTermsVersion'] as String?;
+        final acceptedPrivacy =
+            userData?['acceptedPrivacyVersion'] as String?;
+
+        final state = checkPolicyConsent(
+          policyUpdate: policyUpdate,
+          userAcceptedTermsVersion: acceptedTerms,
+          userAcceptedPrivacyVersion: acceptedPrivacy,
+        );
+
+        switch (state) {
+          case PolicyConsentState.requiresReConsent:
+            return PolicyReConsentScreen(
+              policyUpdate: policyUpdate,
+              onAccepted: () {
+                if (mounted) setState(() {});
+              },
+            );
+          case PolicyConsentState.upcomingChange:
+            return PolicyUpdateBanner(
+              policyUpdate: policyUpdate,
+              child: const HomeScreen(),
+            );
+          case PolicyConsentState.upToDate:
+            return const HomeScreen();
+        }
       },
     );
   }

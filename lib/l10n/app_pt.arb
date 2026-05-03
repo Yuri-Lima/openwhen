@@ -1029,5 +1029,20 @@
   "analyticsConsentAccept": "Aceitar",
   "analyticsConsentDecline": "Não, obrigado",
   "settingsAnalyticsToggle": "Dados de utilização",
-  "settingsAnalyticsDescription": "Permitir dados de uso anónimos para ajudar a melhorar a aplicação"
+  "settingsAnalyticsDescription": "Permitir dados de uso anónimos para ajudar a melhorar a aplicação",
+
+  "policyUpdateBannerTitle": "Atualização de políticas",
+  "policyUpdateBannerBody": "Os nossos Termos de Uso e Política de Privacidade serão atualizados em {date}. Toque para saber mais.",
+  "@policyUpdateBannerBody": { "placeholders": { "date": { "type": "String" } } },
+  "policyUpdateBannerDismiss": "Entendi",
+
+  "policyReconsentTitle": "Atualizámos as nossas políticas",
+  "policyReconsentBody": "Fizemos alterações aos nossos Termos de Uso e/ou Política de Privacidade. Por favor, reveja e aceite para continuar a usar o Whenote.",
+  "policyReconsentSummaryLabel": "Resumo das alterações:",
+  "policyReconsentViewFull": "Ver documentos completos",
+  "policyReconsentCheckbox": "Li e aceito os Termos de Uso e a Política de Privacidade atualizados",
+  "policyReconsentAccept": "Aceitar e continuar",
+  "policyReconsentLogout": "Sair",
+  "policyReconsentEffectiveDate": "Efetivo a partir de {date}",
+  "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } }
 }

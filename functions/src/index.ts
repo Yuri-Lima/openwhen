@@ -39,6 +39,7 @@ export {
 } from "./external_letters";
 
 export {onSendGridWebhook} from "./sendgrid_webhook";
+export {sendPolicyUpdateEmails} from "./send_policy_update_emails";
 
 export {checkUsernameAvailable} from "./check_username";
 

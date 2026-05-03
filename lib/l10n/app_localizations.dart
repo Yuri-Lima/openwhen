@@ -5434,6 +5434,72 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Permitir dados de uso anônimos para ajudar a melhorar o app'**
   String get settingsAnalyticsDescription;
+
+  /// No description provided for @policyUpdateBannerTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Atualização de políticas'**
+  String get policyUpdateBannerTitle;
+
+  /// No description provided for @policyUpdateBannerBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Nossos Termos de Uso e Política de Privacidade serão atualizados em {date}. Toque para saber mais.'**
+  String policyUpdateBannerBody(String date);
+
+  /// No description provided for @policyUpdateBannerDismiss.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Entendi'**
+  String get policyUpdateBannerDismiss;
+
+  /// No description provided for @policyReconsentTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Atualizamos nossas políticas'**
+  String get policyReconsentTitle;
+
+  /// No description provided for @policyReconsentBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Fizemos alterações nos nossos Termos de Uso e/ou Política de Privacidade. Por favor, revise e aceite para continuar usando o Whenote.'**
+  String get policyReconsentBody;
+
+  /// No description provided for @policyReconsentSummaryLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Resumo das alterações:'**
+  String get policyReconsentSummaryLabel;
+
+  /// No description provided for @policyReconsentViewFull.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ver documentos completos'**
+  String get policyReconsentViewFull;
+
+  /// No description provided for @policyReconsentCheckbox.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Li e aceito os Termos de Uso e a Política de Privacidade atualizados'**
+  String get policyReconsentCheckbox;
+
+  /// No description provided for @policyReconsentAccept.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Aceitar e continuar'**
+  String get policyReconsentAccept;
+
+  /// No description provided for @policyReconsentLogout.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Sair'**
+  String get policyReconsentLogout;
+
+  /// No description provided for @policyReconsentEffectiveDate.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Efetivo a partir de {date}'**
+  String policyReconsentEffectiveDate(String date);
 }
 
 class _AppLocalizationsDelegate
