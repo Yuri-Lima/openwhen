@@ -2850,57 +2850,111 @@ abstract class AppLocalizations {
   String get badgeVoiceLetterDesc;
 
   /// No description provided for @badgeHintFirstLetterSent.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Envie sua primeira carta para desbloquear.'**
   String get badgeHintFirstLetterSent;
 
   /// No description provided for @badgeHintFirstLetterOpened.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abra sua primeira carta para desbloquear.'**
   String get badgeHintFirstLetterOpened;
 
   /// No description provided for @badgeHintFirstPublic.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhe uma carta no feed público.'**
   String get badgeHintFirstPublic;
 
   /// No description provided for @badgeHintLettersSentFive.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Envie 5 cartas para desbloquear.'**
   String get badgeHintLettersSentFive;
 
   /// No description provided for @badgeHintLettersSentTen.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Envie 10 cartas para desbloquear.'**
   String get badgeHintLettersSentTen;
 
   /// No description provided for @badgeHintVoiceLetter.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Envie uma carta com áudio para desbloquear.'**
   String get badgeHintVoiceLetter;
 
   /// No description provided for @badgeFirstLetterReceivedTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carta recebida'**
   String get badgeFirstLetterReceivedTitle;
 
   /// No description provided for @badgeFirstLetterReceivedDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você recebeu sua primeira carta.'**
   String get badgeFirstLetterReceivedDesc;
 
   /// No description provided for @badgeHintFirstLetterReceived.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Receba sua primeira carta para desbloquear.'**
   String get badgeHintFirstLetterReceived;
 
   /// No description provided for @badgeProfileCompleteTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Perfil completo'**
   String get badgeProfileCompleteTitle;
 
   /// No description provided for @badgeProfileCompleteDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você completou seu perfil.'**
   String get badgeProfileCompleteDesc;
 
   /// No description provided for @badgeHintProfileComplete.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Preencha nome, username, bio e avatar.'**
   String get badgeHintProfileComplete;
 
   /// No description provided for @badgeThreeDayStreakTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'3 dias seguidos'**
   String get badgeThreeDayStreakTitle;
 
   /// No description provided for @badgeThreeDayStreakDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você usou o app por 3 dias consecutivos.'**
   String get badgeThreeDayStreakDesc;
 
   /// No description provided for @badgeHintThreeDayStreak.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Use o app por 3 dias seguidos.'**
   String get badgeHintThreeDayStreak;
 
   /// No description provided for @badgeLetterLikedByTenTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'10 curtidas'**
   String get badgeLetterLikedByTenTitle;
 
   /// No description provided for @badgeLetterLikedByTenDesc.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Uma carta sua recebeu 10 curtidas.'**
   String get badgeLetterLikedByTenDesc;
 
   /// No description provided for @badgeHintLetterLikedByTen.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Receba 10 curtidas em uma carta.'**
   String get badgeHintLetterLikedByTen;
 
   /// No description provided for @profileStatLetters.

@@ -1541,7 +1541,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get badgeFirstLetterReceivedDesc => 'You received your first letter.';
 
   @override
-  String get badgeHintFirstLetterReceived => 'Receive your first letter to unlock.';
+  String get badgeHintFirstLetterReceived =>
+      'Receive your first letter to unlock.';
 
   @override
   String get badgeProfileCompleteTitle => 'Profile complete';
@@ -1550,13 +1551,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get badgeProfileCompleteDesc => 'You completed your profile.';
 
   @override
-  String get badgeHintProfileComplete => 'Fill in your name, username, bio and avatar.';
+  String get badgeHintProfileComplete =>
+      'Fill in your name, username, bio and avatar.';
 
   @override
   String get badgeThreeDayStreakTitle => '3-day streak';
 
   @override
-  String get badgeThreeDayStreakDesc => 'You used the app for 3 consecutive days.';
+  String get badgeThreeDayStreakDesc =>
+      'You used the app for 3 consecutive days.';
 
   @override
   String get badgeHintThreeDayStreak => 'Use the app for 3 consecutive days.';

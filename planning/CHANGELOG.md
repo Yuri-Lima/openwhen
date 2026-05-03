@@ -11,6 +11,14 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
+- **Conquistas redesenhadas — escudos/brasões (2026-05-04):** visual de "chip com ícone + texto" substituído por escudos (`CustomPainter`) com formato de brasão. Cores por categoria: dourado (marcos), roxo (social), verde (volume), coral (voz), azul (engajamento), amber (dedicação). Conquistas bloqueadas aparecem com borda tracejada e "???". Tap abre bottom sheet com escudo ampliado, título, descrição (ou dica de desbloqueio) e data. Todas as cores adaptam ao tema ativo (Classic, Dark, Midnight, Sepia) — `_BadgeColors.lockedFrom(pal)` e `pal.inkSoft`/`pal.inkFaint` substituem `Colors.white` hardcoded. Agora mostra todas as 10 conquistas (desbloqueadas + bloqueadas), não apenas as desbloqueadas.
+
+### Added
+
+- **4 novas conquistas (2026-05-04):** `first_letter_received` (receber 1.ª carta), `profile_complete` (preencher nome, username, bio e avatar), `three_day_streak` (3 dias consecutivos de uso), `letter_liked_by_ten` (carta com 10+ curtidas). Novos hooks em `badge_unlock_service.dart`: `afterLetterReceivedByUser` (chamado no `letter_send_service`), `afterProfileSaved` (chamado no `edit_profile_screen`), `onSessionStart` (chamado no `HomeScreen.initState`), `afterLetterLiked` (chamado no `feed_screen` ao adicionar like). Campos Firestore novos no user doc: `lastActiveDate` (string ISO), `currentStreak` (int). Firestore rules atualizadas com 4 novos badge IDs na allowlist. 36 novas chaves i18n (title + desc + hint × 4 badges × 3 ficheiros por idioma).
+
+### Changed
+
 - **Drafts: auto-save removido → save manual + dialog (2026-05-04):** auto-save periódico (debounce 5 s) e save no `dispose()` removidos por questões de performance. Substituído por: (1) botão de save manual (ícone `save_outlined`) na AppBar do `WriteLetterScreen`; (2) `PopScope` com dialog de 3 opções (Salvar rascunho / Descartar / Cancelar) ao sair com conteúdo no body não salvo. Snackbar de confirmação/erro no save manual. 7 novas chaves i18n (`draftSaveDialog*`, `draftSaved*`). Mensagem `draftsEmpty` actualizada para refletir comportamento manual.
 - **`withOpacity` deprecated corrigido (2026-05-04):** todas as ~390 ocorrências de `.withOpacity(x)` em `lib/` substituídas por `.withValues(alpha: x)` (API não-deprecated do Flutter 3.22+). 34 ficheiros alterados. Warnings no `flutter analyze` caíram de 525 para 137.
 - **Migração para nova conta SendGrid (2026-05-03):** conta SendGrid recriada. Nova API key (`whenote-cloud-functions`), novo Event Webhook (ID `0754af3e-9ac0-443e-99aa-6b4837ffe82d`), Signed Webhook habilitado. Remetente atualizado de `noreply@whenote.app` para `noreply@whenote.com`. Secrets Firebase (`SENDGRID_API_KEY`, `SENDGRID_WEBHOOK_VERIFICATION_KEY`) precisam de atualização + redeploy de functions.
