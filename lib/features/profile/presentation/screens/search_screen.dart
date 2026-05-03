@@ -168,13 +168,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.08),
+                              color: Colors.white.withValues(alpha:0.08),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               Icons.arrow_back,
                               size: 18,
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withValues(alpha:0.6),
                             ),
                           ),
                         ),
@@ -205,10 +205,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     const SizedBox(height: 16),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.08),
+                        color: Colors.white.withValues(alpha:0.08),
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white.withValues(alpha:0.1),
                         ),
                       ),
                       padding: const EdgeInsets.symmetric(
@@ -220,7 +220,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           Icon(
                             Icons.search,
                             size: 18,
-                            color: Colors.white.withOpacity(0.4),
+                            color: Colors.white.withValues(alpha:0.4),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
@@ -235,7 +235,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 border: InputBorder.none,
                                 hintText: l10n.searchHint,
                                 hintStyle: GoogleFonts.dmSans(
-                                  color: Colors.white.withOpacity(0.3),
+                                  color: Colors.white.withValues(alpha:0.3),
                                   fontSize: 15,
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
@@ -254,7 +254,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               child: Icon(
                                 Icons.close,
                                 size: 18,
-                                color: Colors.white.withOpacity(0.4),
+                                color: Colors.white.withValues(alpha:0.4),
                               ),
                             ),
                         ],

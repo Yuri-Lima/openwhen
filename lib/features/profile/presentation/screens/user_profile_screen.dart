@@ -117,7 +117,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                           width: 180, height: 180,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: RadialGradient(colors: [context.pal.accent.withOpacity(0.1), Colors.transparent]),
+                            gradient: RadialGradient(colors: [context.pal.accent.withValues(alpha:0.1), Colors.transparent]),
                           ),
                         ),
                       ),
@@ -132,10 +132,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                   child: Container(
                                     width: 36, height: 36,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.08),
+                                      color: Colors.white.withValues(alpha:0.08),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                                    child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                                   ),
                                 ),
                               ],
@@ -148,7 +148,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                   decoration: BoxDecoration(
                                     color: context.pal.accent,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.1), width: 2),
                                   ),
                                   child: ClipOval(
                                     child: UserAvatar(
@@ -169,7 +169,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                         style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white)),
                                       const SizedBox(height: 4),
                                       Text('@${data?['username'] ?? ''}',
-                                        style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
+                                        style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withValues(alpha:0.35), fontWeight: FontWeight.w300)),
                                     ],
                                   ),
                                 ),
@@ -192,10 +192,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                             color: isFollowing ? Colors.transparent : context.pal.accent,
                                             borderRadius: BorderRadius.circular(20),
                                             border: Border.all(
-                                              color: isFollowing ? Colors.white.withOpacity(0.2) : context.pal.accent,
+                                              color: isFollowing ? Colors.white.withValues(alpha:0.2) : context.pal.accent,
                                             ),
                                             boxShadow: isFollowing ? null : [
-                                              BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12),
+                                              BoxShadow(color: context.pal.accent.withValues(alpha:0.3), blurRadius: 12),
                                             ],
                                           ),
                                           child: Text(
@@ -203,7 +203,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                             style: GoogleFonts.dmSans(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w500,
-                                              color: isFollowing ? Colors.white.withOpacity(0.6) : context.pal.white,
+                                              color: isFollowing ? Colors.white.withValues(alpha:0.6) : context.pal.white,
                                             ),
                                           ),
                                         ),
@@ -316,9 +316,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha:0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withOpacity(0.18)),
+          border: Border.all(color: color.withValues(alpha:0.18)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -345,7 +345,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
         children: [
           Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+          Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.3), fontWeight: FontWeight.w300)),
         ],
       ),
     );
@@ -360,7 +360,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
           children: [
             Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
             const SizedBox(height: 2),
-            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.3), fontWeight: FontWeight.w300)),
           ],
         ),
       ),
@@ -368,7 +368,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
   }
 
   Widget _buildDivider() {
-    return Container(width: 1, height: 32, color: Colors.white.withOpacity(0.08));
+    return Container(width: 1, height: 32, color: Colors.white.withValues(alpha:0.08));
   }
 
   Widget _buildOpenedLettersList(AppLocalizations l10n) {
@@ -412,7 +412,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                 border: Border.all(color: context.pal.border),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha:0.04),
                       blurRadius: 12,
                       offset: const Offset(0, 4))
                 ],

@@ -33,7 +33,7 @@ class LocationShareTileDark extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF1A1714),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
         ),
         child: Row(
           children: [
@@ -41,9 +41,9 @@ class LocationShareTileDark extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: context.pal.accent.withOpacity(0.15),
+                color: context.pal.accent.withValues(alpha:0.15),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: context.pal.accent.withOpacity(0.3)),
+                border: Border.all(color: context.pal.accent.withValues(alpha:0.3)),
               ),
               child: Icon(Icons.location_on_outlined, size: 22, color: context.pal.accent),
             ),
@@ -64,13 +64,13 @@ class LocationShareTileDark extends StatelessWidget {
                     l10n.locationShareTileSubtitle,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha:0.4),
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.copy_rounded, color: Colors.white.withOpacity(0.35), size: 20),
+            Icon(Icons.copy_rounded, color: Colors.white.withValues(alpha:0.35), size: 20),
           ],
         ),
       ),

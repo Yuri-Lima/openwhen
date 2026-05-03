@@ -269,7 +269,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             ),
           child: SafeArea(bottom: false, child: Column(children: [
             Stack(children: [
-              Positioned(top: -20, right: -20, child: Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [context.pal.accent.withOpacity(0.1), Colors.transparent])))),
+              Positioned(top: -20, right: -20, child: Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [context.pal.accent.withValues(alpha:0.1), Colors.transparent])))),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
                 child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -283,15 +283,15 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                       ),
                     ]),
                     const SizedBox(height: 4),
-                    Text(l10n.vaultSubtitle, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
+                    Text(l10n.vaultSubtitle, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                   ]),
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.08),
+                      color: Colors.white.withValues(alpha:0.08),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.08)),
+                      border: Border.all(color: Colors.white.withValues(alpha:0.08)),
                     ),
                     child: Badge(
                       isLabelVisible: _vaultFilters.isActiveForTab(_tabController.index),
@@ -301,7 +301,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                         padding: EdgeInsets.zero,
                         tooltip: l10n.vaultFilterTitle,
                         onPressed: _openVaultFilterSheet,
-                        icon: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withOpacity(0.85)),
+                        icon: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withValues(alpha:0.85)),
                       ),
                     ),
                   ),
@@ -312,7 +312,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             TabBar(
               controller: _tabController,
               labelColor: context.pal.white,
-              unselectedLabelColor: Colors.white.withOpacity(0.3),
+              unselectedLabelColor: Colors.white.withValues(alpha:0.3),
               indicatorColor: context.pal.accent,
               indicatorWeight: 2,
               isScrollable: true,
@@ -541,13 +541,13 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         color: context.pal.card,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: context.pal.border),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: statusColor.withValues(alpha:0.1), borderRadius: BorderRadius.circular(20)),
             child: Text('$statusEmoji $statusLabel', style: GoogleFonts.dmSans(fontSize: 11, color: statusColor == context.pal.inkSoft ? context.pal.ink : statusColor, fontWeight: FontWeight.w500)),
           ),
           const Spacer(),
@@ -615,34 +615,34 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         color: isOpen ? context.pal.headerGradient.first : context.pal.card,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: isOpen ? Colors.transparent : context.pal.border),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: isOpen ? Colors.white.withOpacity(0.1) : td.$3.withOpacity(0.12), borderRadius: BorderRadius.circular(20)),
-            child: Text('${td.$1} ${td.$2}', style: GoogleFonts.dmSans(fontSize: 11, color: isOpen ? Colors.white.withOpacity(0.7) : td.$3, fontWeight: FontWeight.w500)),
+            decoration: BoxDecoration(color: isOpen ? Colors.white.withValues(alpha:0.1) : td.$3.withValues(alpha:0.12), borderRadius: BorderRadius.circular(20)),
+            child: Text('${td.$1} ${td.$2}', style: GoogleFonts.dmSans(fontSize: 11, color: isOpen ? Colors.white.withValues(alpha:0.7) : td.$3, fontWeight: FontWeight.w500)),
           ),
           if (isCollectiveCapsule) ...[
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: isOpen ? Colors.white.withOpacity(0.12) : context.pal.accentWarm,
+                color: isOpen ? Colors.white.withValues(alpha:0.12) : context.pal.accentWarm,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isOpen ? Colors.white.withOpacity(0.25) : context.pal.border),
+                border: Border.all(color: isOpen ? Colors.white.withValues(alpha:0.25) : context.pal.border),
               ),
               child: Text(
                 l10n.vaultCapsuleCollectiveBadge,
-                style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w600, color: isOpen ? Colors.white.withOpacity(0.9) : context.pal.inkSoft),
+                style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w600, color: isOpen ? Colors.white.withValues(alpha:0.9) : context.pal.inkSoft),
               ),
             ),
           ],
           const Spacer(),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: canOpen ? context.pal.accentWarm : (isOpen ? Colors.white.withOpacity(0.08) : context.pal.border), borderRadius: BorderRadius.circular(20), border: Border.all(color: isOpen ? Colors.white.withOpacity(0.15) : (canOpen ? context.pal.accent : context.pal.inkFaint), width: 1)),
+            decoration: BoxDecoration(color: canOpen ? context.pal.accentWarm : (isOpen ? Colors.white.withValues(alpha:0.08) : context.pal.border), borderRadius: BorderRadius.circular(20), border: Border.all(color: isOpen ? Colors.white.withValues(alpha:0.15) : (canOpen ? context.pal.accent : context.pal.inkFaint), width: 1)),
             child: Text(isOpen ? l10n.vaultStatusOpened : (canOpen ? l10n.vaultStatusReady : l10n.vaultCapsuleSealed), style: GoogleFonts.dmSans(fontSize: 10, color: isOpen ? context.pal.white : (canOpen ? context.pal.accent : context.pal.ink), fontWeight: FontWeight.w500)),
           ),
         ]),
@@ -651,21 +651,21 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         const SizedBox(height: 6),
         Row(children: [
           if (photos > 0) ...[
-            Icon(Icons.photo_outlined, size: 13, color: isOpen ? Colors.white.withOpacity(0.4) : context.pal.inkSoft),
+            Icon(Icons.photo_outlined, size: 13, color: isOpen ? Colors.white.withValues(alpha:0.4) : context.pal.inkSoft),
             const SizedBox(width: 4),
-            Text(l10n.vaultPhotoCount(photos), style: GoogleFonts.dmSans(fontSize: 12, color: isOpen ? Colors.white.withOpacity(0.4) : context.pal.inkSoft)),
+            Text(l10n.vaultPhotoCount(photos), style: GoogleFonts.dmSans(fontSize: 12, color: isOpen ? Colors.white.withValues(alpha:0.4) : context.pal.inkSoft)),
             const SizedBox(width: 12),
           ],
-          Icon(Icons.help_outline_rounded, size: 13, color: isOpen ? Colors.white.withOpacity(0.4) : context.pal.inkSoft),
+          Icon(Icons.help_outline_rounded, size: 13, color: isOpen ? Colors.white.withValues(alpha:0.4) : context.pal.inkSoft),
           const SizedBox(width: 4),
-          Text(l10n.vaultAnswerCount(questions), style: GoogleFonts.dmSans(fontSize: 12, color: isOpen ? Colors.white.withOpacity(0.4) : context.pal.inkSoft)),
+          Text(l10n.vaultAnswerCount(questions), style: GoogleFonts.dmSans(fontSize: 12, color: isOpen ? Colors.white.withValues(alpha:0.4) : context.pal.inkSoft)),
         ]),
         if (openDate != null) ...[
           const SizedBox(height: 12),
           if (!isOpen) ClipRRect(borderRadius: BorderRadius.circular(4), child: LinearProgressIndicator(value: _progress(createdAt, openDate), backgroundColor: const Color(0xFFF0EBE6), valueColor: AlwaysStoppedAnimation<Color>(canOpen ? context.pal.accent : context.pal.inkFaint), minHeight: 4)),
           const SizedBox(height: 8),
           if (isOpen)
-            Text(l10n.vaultCapsuleOpenedOn(formatShortDate(openDate, locale)), style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.4), fontWeight: FontWeight.w500))
+            Text(l10n.vaultCapsuleOpenedOn(formatShortDate(openDate, locale)), style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withValues(alpha:0.4), fontWeight: FontWeight.w500))
           else
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -708,13 +708,13 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                side: BorderSide(color: Colors.white.withValues(alpha:0.2)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               child: Text(
                 l10n.vaultViewFullCapsule,
-                style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withOpacity(0.85)),
+                style: GoogleFonts.dmSans(fontSize: 14, color: Colors.white.withValues(alpha:0.85)),
               ),
             ),
           ),
@@ -731,7 +731,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))]),
+      decoration: BoxDecoration(color: context.pal.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: context.pal.border), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:0.04), blurRadius: 12, offset: const Offset(0, 4))]),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: canOpen ? context.pal.accentWarm : context.pal.bg, borderRadius: BorderRadius.circular(20)), child: Text(canOpen ? l10n.vaultStatusReady : l10n.vaultStatusLocked, style: GoogleFonts.dmSans(fontSize: 10, color: canOpen ? context.pal.accent : context.pal.inkSoft, fontWeight: FontWeight.w500))),
@@ -757,7 +757,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
                     data: Map<String, dynamic>.from(data),
                     docId: docId,
                   ),
-              style: ElevatedButton.styleFrom(backgroundColor: context.pal.accent, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 8, shadowColor: context.pal.accent.withOpacity(0.4)),
+              style: ElevatedButton.styleFrom(backgroundColor: context.pal.accent, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)), elevation: 8, shadowColor: context.pal.accent.withValues(alpha:0.4)),
               child: Text(l10n.vaultOpenLetter, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500, color: context.pal.white, letterSpacing: 0.5)),
             ),
           ),
@@ -780,7 +780,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
         color: context.pal.card,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: context.pal.border),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

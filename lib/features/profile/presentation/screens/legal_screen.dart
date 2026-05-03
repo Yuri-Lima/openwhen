@@ -47,10 +47,10 @@ class LegalScreen extends StatelessWidget {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -142,7 +142,7 @@ class LegalScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: context.pal.accent,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 20)],
+                      boxShadow: [BoxShadow(color: context.pal.accent.withValues(alpha:0.3), blurRadius: 20)],
                     ),
                     child: const Center(
                       child: OwlLogo(size: 64),
@@ -212,7 +212,7 @@ class LegalScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.pal.accentWarm,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: context.pal.accent.withOpacity(0.2)),
+            border: Border.all(color: context.pal.accent.withValues(alpha:0.2)),
           ),
           child: Row(
             children: [
@@ -283,7 +283,7 @@ class LegalScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: context.pal.accentWarm,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: context.pal.accent.withOpacity(0.2)),
+            border: Border.all(color: context.pal.accent.withValues(alpha:0.2)),
           ),
           child: Row(
             children: [

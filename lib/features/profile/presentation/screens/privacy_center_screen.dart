@@ -389,7 +389,7 @@ class _PrivacyCenterScreenState extends State<PrivacyCenterScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              color: context.pal.accent.withOpacity(0.1),
+              color: context.pal.accent.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text('$count',
@@ -407,7 +407,7 @@ class _PrivacyCenterScreenState extends State<PrivacyCenterScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: context.pal.accent.withOpacity(0.06),
+        color: context.pal.accent.withValues(alpha:0.06),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(text,

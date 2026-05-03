@@ -2849,6 +2849,24 @@ abstract class AppLocalizations {
   /// **'Você enviou uma carta com áudio.'**
   String get badgeVoiceLetterDesc;
 
+  /// No description provided for @badgeHintFirstLetterSent.
+  String get badgeHintFirstLetterSent;
+
+  /// No description provided for @badgeHintFirstLetterOpened.
+  String get badgeHintFirstLetterOpened;
+
+  /// No description provided for @badgeHintFirstPublic.
+  String get badgeHintFirstPublic;
+
+  /// No description provided for @badgeHintLettersSentFive.
+  String get badgeHintLettersSentFive;
+
+  /// No description provided for @badgeHintLettersSentTen.
+  String get badgeHintLettersSentTen;
+
+  /// No description provided for @badgeHintVoiceLetter.
+  String get badgeHintVoiceLetter;
+
   /// No description provided for @profileStatLetters.
   ///
   /// In pt_BR, this message translates to:
@@ -5606,7 +5624,7 @@ abstract class AppLocalizations {
   /// No description provided for @draftsEmpty.
   ///
   /// In pt_BR, this message translates to:
-  /// **'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será salva aqui automaticamente.'**
+  /// **'Sem rascunhos.\nSalve uma carta como rascunho para continuar depois.'**
   String get draftsEmpty;
 
   /// No description provided for @draftsUntitled.
@@ -5650,6 +5668,48 @@ abstract class AppLocalizations {
   /// In pt_BR, this message translates to:
   /// **'Continue uma carta que começou'**
   String get homeDraftsSubtitle;
+
+  /// No description provided for @draftSaveDialogTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Salvar rascunho?'**
+  String get draftSaveDialogTitle;
+
+  /// No description provided for @draftSaveDialogMessage.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você tem alterações não salvas. Deseja salvar esta carta como rascunho?'**
+  String get draftSaveDialogMessage;
+
+  /// No description provided for @draftSaveDialogSave.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Salvar rascunho'**
+  String get draftSaveDialogSave;
+
+  /// No description provided for @draftSaveDialogDiscard.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Descartar'**
+  String get draftSaveDialogDiscard;
+
+  /// No description provided for @draftSaveDialogCancel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Cancelar'**
+  String get draftSaveDialogCancel;
+
+  /// No description provided for @draftSavedSnackbar.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Rascunho salvo'**
+  String get draftSavedSnackbar;
+
+  /// No description provided for @draftSaveErrorSnackbar.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Não foi possível salvar o rascunho'**
+  String get draftSaveErrorSnackbar;
 }
 
 class _AppLocalizationsDelegate

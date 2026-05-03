@@ -493,6 +493,12 @@
   "badgeLettersSentTenDesc": "Enviaste 10 cartas.",
   "badgeVoiceLetterTitle": "Voz",
   "badgeVoiceLetterDesc": "Enviaste una carta con audio.",
+  "badgeHintFirstLetterSent": "Envía tu primera carta para desbloquear.",
+  "badgeHintFirstLetterOpened": "Abre tu primera carta para desbloquear.",
+  "badgeHintFirstPublic": "Comparte una carta en el feed público.",
+  "badgeHintLettersSentFive": "Envía 5 cartas para desbloquear.",
+  "badgeHintLettersSentTen": "Envía 10 cartas para desbloquear.",
+  "badgeHintVoiceLetter": "Envía una carta con audio para desbloquear.",
   "profileStatLetters": "Cartas",
   "profileEmptyTitle": "Ninguna carta publicada",
   "profileEmptySubtitle": "Tus cartas abiertas y públicas\naparecerán aquí",
@@ -1035,7 +1041,7 @@
   "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } },
 
   "draftsTitle": "Borradores",
-  "draftsEmpty": "Sin borradores.\nCuando empieces a escribir una carta y salgas, se guardará aquí automáticamente.",
+  "draftsEmpty": "Sin borradores.\nGuarda una carta como borrador para continuarla después.",
   "draftsUntitled": "Sin título",
   "draftsNoContent": "Sin contenido",
   "draftsDeleteTitle": "¿Eliminar borrador?",
@@ -1043,5 +1049,12 @@
   "draftsExpiresIn": "{days,plural, =0{Expira hoy} =1{Expira en 1 día} other{Expira en {days} días}}",
   "@draftsExpiresIn": { "placeholders": { "days": { "type": "int" } } },
   "homeDrafts": "Borradores",
-  "homeDraftsSubtitle": "Continúa una carta que empezaste"
+  "homeDraftsSubtitle": "Continúa una carta que empezaste",
+  "draftSaveDialogTitle": "¿Guardar borrador?",
+  "draftSaveDialogMessage": "Tienes cambios sin guardar. ¿Deseas guardar esta carta como borrador?",
+  "draftSaveDialogSave": "Guardar borrador",
+  "draftSaveDialogDiscard": "Descartar",
+  "draftSaveDialogCancel": "Cancelar",
+  "draftSavedSnackbar": "Borrador guardado",
+  "draftSaveErrorSnackbar": "No se pudo guardar el borrador"
 }

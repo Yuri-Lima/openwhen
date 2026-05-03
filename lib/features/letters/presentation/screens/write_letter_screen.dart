@@ -117,14 +117,12 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   void _onMessageChanged() {
     setState(() {});
-    _scheduleDraftAutoSave();
   }
 
   // --- Draft (Firestore) ---
   final DraftService _draftService = DraftService();
   String? _currentDraftId;
   bool _draftCleared = false;
-  Timer? _autoSaveTimer;
 
   /// Carrega um draft existente pelo ID.
   Future<void> _loadDraftById(String draftId) async {
@@ -157,13 +155,11 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     }
   }
 
-  /// Agenda auto-save com debounce de 5 segundos.
-  void _scheduleDraftAutoSave() {
-    if (widget.recipientUid != null) return;
-    _autoSaveTimer?.cancel();
-    _autoSaveTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted && !_draftCleared) _saveDraftToFirestore();
-    });
+  /// Verifica se há conteúdo não salvo (body da carta).
+  bool get _hasUnsavedContent {
+    if (_draftCleared) return false;
+    return _messageController.text.trim().isNotEmpty ||
+        _handwrittenImageUrl != null;
   }
 
   Future<void> _saveDraftToFirestore() async {
@@ -178,6 +174,9 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
     try {
       if (_currentDraftId != null) {
+        // createdAt/expiresAt são obrigatórios no modelo mas ignorados pelo
+        // DraftService em updates (removidos antes do Firestore write).
+        final placeholder = DateTime.now();
         final draft = LetterDraft(
           id: _currentDraftId,
           senderUid: uid,
@@ -191,8 +190,8 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           messageExpanded: _messageExpanded,
           openDateMs: _openDate.millisecondsSinceEpoch,
           emotionKey: _selectedEmotion?.key,
-          createdAt: DateTime.now(),
-          expiresAt: DateTime.now(),
+          createdAt: placeholder,
+          expiresAt: placeholder,
         );
         await _draftService.saveDraft(draft);
       } else {
@@ -227,6 +226,65 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
       }
       _draftCleared = true;
     } catch (_) {}
+  }
+
+  /// Salva o draft manualmente e mostra feedback via snackbar.
+  Future<void> _saveManualDraft() async {
+    if (widget.recipientUid != null) return;
+    try {
+      await _saveDraftToFirestore();
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.draftSavedSnackbar), duration: const Duration(seconds: 2)),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.draftSaveErrorSnackbar), duration: const Duration(seconds: 2)),
+        );
+      }
+    }
+  }
+
+  /// Mostra dialog ao tentar sair com conteúdo não salvo.
+  /// Retorna true se deve prosseguir com a navegação (sair), false se cancelou.
+  Future<bool> _onWillPop() async {
+    if (!_hasUnsavedContent || widget.recipientUid != null) return true;
+
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.draftSaveDialogTitle),
+        content: Text(l10n.draftSaveDialogMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'cancel'),
+            child: Text(l10n.draftSaveDialogCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'discard'),
+            child: Text(l10n.draftSaveDialogDiscard, style: const TextStyle(color: Colors.red)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, 'save'),
+            child: Text(l10n.draftSaveDialogSave),
+          ),
+        ],
+      ),
+    );
+
+    if (result == 'save') {
+      await _saveDraftToFirestore();
+      return true;
+    } else if (result == 'discard') {
+      return true;
+    }
+    // 'cancel' ou dismiss
+    return false;
   }
 
   Future<void> _previewAndSend() async {
@@ -338,10 +396,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
 
   @override
   void dispose() {
-    _autoSaveTimer?.cancel();
-    if (widget.recipientUid == null && !_draftCleared) {
-      unawaited(_saveDraftToFirestore());
-    }
     _recordingTimer?.cancel();
     _userSearchDebounce?.cancel();
     if (_isRecording) {
@@ -679,7 +733,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
     );
     if (picked != null) {
       setState(() => _openDate = picked);
-      _scheduleDraftAutoSave();
     }
   }
 
@@ -1031,7 +1084,14 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop();
+        if (shouldPop && mounted) Navigator.pop(context);
+      },
+      child: Scaffold(
       backgroundColor: context.pal.bg,
       body: SafeArea(
         child: Column(children: [
@@ -1043,7 +1103,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             ),
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 14),
             child: Row(children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back, color: context.pal.ink)),
+              GestureDetector(
+                onTap: () async {
+                  final shouldPop = await _onWillPop();
+                  if (shouldPop && mounted) Navigator.pop(context);
+                },
+                child: Icon(Icons.arrow_back, color: context.pal.ink),
+              ),
               const SizedBox(width: 16),
               Expanded(child: Row(children: [
                 Text(l10n.writeLetterTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink)),
@@ -1052,6 +1118,13 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   child: OwlWatermark(width: 18, height: 22, color: context.pal.ink),
                 ),
               ])),
+              if (widget.recipientUid == null) ...[
+                GestureDetector(
+                  onTap: _saveManualDraft,
+                  child: Icon(Icons.save_outlined, size: 22, color: context.pal.inkSoft),
+                ),
+                const SizedBox(width: 16),
+              ],
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -1076,7 +1149,6 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     return Expanded(child: GestureDetector(
                       onTap: () {
                         setState(() => _selectedEmotion = e);
-                        _scheduleDraftAutoSave();
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -1103,7 +1175,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                   Row(children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: () { setState(() => _isHandwritten = false); _scheduleDraftAutoSave(); },
+                        onTap: () { setState(() => _isHandwritten = false); },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -1123,7 +1195,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () { setState(() => _isHandwritten = true); _scheduleDraftAutoSave(); },
+                        onTap: () { setState(() => _isHandwritten = true); },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -1679,6 +1751,7 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
             ),
           ),
         ]),
+      ),
       ),
     );
   }

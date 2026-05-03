@@ -1517,6 +1517,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get badgeVoiceLetterDesc => 'You sent a letter with voice.';
 
   @override
+  String get badgeHintFirstLetterSent => 'Send your first letter to unlock.';
+
+  @override
+  String get badgeHintFirstLetterOpened => 'Open your first letter to unlock.';
+
+  @override
+  String get badgeHintFirstPublic => 'Share a letter on the public feed.';
+
+  @override
+  String get badgeHintLettersSentFive => 'Send 5 letters to unlock.';
+
+  @override
+  String get badgeHintLettersSentTen => 'Send 10 letters to unlock.';
+
+  @override
+  String get badgeHintVoiceLetter => 'Send a letter with voice to unlock.';
+
+  @override
   String get profileStatLetters => 'Letters';
 
   @override
@@ -3048,7 +3066,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get draftsEmpty =>
-      'No drafts yet.\nWhen you start writing a letter and leave, it will be saved here automatically.';
+      'No drafts yet.\nSave a letter as draft to continue it later.';
 
   @override
   String get draftsUntitled => 'Untitled';
@@ -3079,4 +3097,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeDraftsSubtitle => 'Continue a letter you started';
+
+  @override
+  String get draftSaveDialogTitle => 'Save draft?';
+
+  @override
+  String get draftSaveDialogMessage =>
+      'You have unsaved changes. Would you like to save this letter as a draft?';
+
+  @override
+  String get draftSaveDialogSave => 'Save draft';
+
+  @override
+  String get draftSaveDialogDiscard => 'Discard';
+
+  @override
+  String get draftSaveDialogCancel => 'Cancel';
+
+  @override
+  String get draftSavedSnackbar => 'Draft saved';
+
+  @override
+  String get draftSaveErrorSnackbar => 'Could not save draft';
 }

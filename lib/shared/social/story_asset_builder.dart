@@ -247,7 +247,7 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                     fontSize: 36,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 4,
-                    color: Colors.white.withOpacity(0.85),
+                    color: Colors.white.withValues(alpha:0.85),
                   ),
                 ),
               ],
@@ -263,12 +263,12 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: accentColor.withOpacity(0.15),
+                      color: accentColor.withValues(alpha:0.15),
                       blurRadius: 48,
                       spreadRadius: 4,
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
+                      color: Colors.black.withValues(alpha:0.4),
                       blurRadius: 32,
                       offset: const Offset(0, 8),
                     ),
@@ -306,7 +306,7 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     letterSpacing: 6,
-                                    color: accentColor.withOpacity(0.8),
+                                    color: accentColor.withValues(alpha:0.8),
                                   )),
                                 const SizedBox(height: 14),
                                 // Sender name
@@ -325,7 +325,7 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                                   )),
                                 const SizedBox(height: 28),
                                 // Divider
-                                Container(width: 48, height: 2, color: accentColor.withOpacity(0.5)),
+                                Container(width: 48, height: 2, color: accentColor.withValues(alpha:0.5)),
                                 const SizedBox(height: 16),
                                 // Title
                                 Text(content.truncatedTitle,
@@ -403,7 +403,7 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 2,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha:0.7),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -411,7 +411,7 @@ class _PaperLetterStoryTemplate extends StatelessWidget {
                       content.dateSubtitle,
                       style: GoogleFonts.dmSans(
                         fontSize: 18,
-                        color: Colors.white.withOpacity(0.35),
+                        color: Colors.white.withValues(alpha:0.35),
                       ),
                     ),
                   ],
@@ -429,7 +429,7 @@ class _StoryPaperLinesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final line = Paint()
-      ..color = Colors.black.withOpacity(0.04)
+      ..color = Colors.black.withValues(alpha:0.04)
       ..strokeWidth = 1.5;
     for (double y = 48; y < size.height; y += 48) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
@@ -439,7 +439,7 @@ class _StoryPaperLinesPainter extends CustomPainter {
       const Offset(56, 0),
       Offset(56, size.height),
       Paint()
-        ..color = const Color(0xFFC0392B).withOpacity(0.12)
+        ..color = const Color(0xFFC0392B).withValues(alpha:0.12)
         ..strokeWidth = 1.5,
     );
   }

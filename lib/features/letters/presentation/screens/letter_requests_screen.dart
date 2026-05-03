@@ -97,7 +97,7 @@ class LetterRequestsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.pal.accent,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                  boxShadow: [BoxShadow(color: context.pal.accent.withValues(alpha:0.3), blurRadius: 12, offset: const Offset(0, 4))],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -198,10 +198,10 @@ class LetterRequestsScreen extends StatelessWidget {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -211,7 +211,7 @@ class LetterRequestsScreen extends StatelessWidget {
                         Text(l10n.requestsTitle,
                           style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
                         Text(l10n.requestsSubtitle,
-                          style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
+                          style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withValues(alpha:0.3))),
                       ],
                     ),
                   ],
@@ -264,7 +264,7 @@ class LetterRequestsScreen extends StatelessWidget {
                         color: context.pal.card,
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: context.pal.border),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 4))],
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha:0.04), blurRadius: 12, offset: const Offset(0, 4))],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,7 +331,7 @@ class LetterRequestsScreen extends StatelessWidget {
                                       0, 0, 0, 0, 1,
                                       0, 0, 0, 0.08, 0,
                                     ]),
-                                    child: Container(color: context.pal.card.withOpacity(0.85)),
+                                    child: Container(color: context.pal.card.withValues(alpha:0.85)),
                                   ),
                                 ),
                               ),

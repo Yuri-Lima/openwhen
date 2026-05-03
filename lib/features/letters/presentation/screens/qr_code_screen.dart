@@ -150,10 +150,10 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -163,7 +163,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                         Text(l10n.qrScreenTitle,
                           style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white, fontStyle: FontStyle.italic)),
                         Text(l10n.qrScreenSubtitle,
-                          style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
+                          style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withValues(alpha:0.3))),
                       ],
                     ),
                   ],
@@ -184,7 +184,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                         color: context.pal.card,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 32, offset: const Offset(0, 8)),
+                          BoxShadow(color: Colors.black.withValues(alpha:0.08), blurRadius: 32, offset: const Offset(0, 8)),
                         ],
                       ),
                       child: Column(
@@ -213,7 +213,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                         shape: BoxShape.circle,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: context.pal.accent.withOpacity(0.45),
+                                            color: context.pal.accent.withValues(alpha:0.45),
                                             blurRadius: 18,
                                           ),
                                         ],
@@ -232,7 +232,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                                 const SizedBox(height: 4),
                                 Text(l10n.qrCardMeta(widget.senderName, formatShortDate(widget.openDate, locale)),
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.4))),
+                                  style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withValues(alpha:0.4))),
                               ],
                             ),
                           ),
@@ -303,7 +303,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                     decoration: BoxDecoration(
                       color: context.pal.accentWarm,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: context.pal.accent.withOpacity(0.2)),
+                      border: Border.all(color: context.pal.accent.withValues(alpha:0.2)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,7 +374,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                             decoration: BoxDecoration(
                               color: const Color(0xFF25D366),
                               borderRadius: BorderRadius.circular(14),
-                              boxShadow: [BoxShadow(color: const Color(0xFF25D366).withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                              boxShadow: [BoxShadow(color: const Color(0xFF25D366).withValues(alpha:0.3), blurRadius: 12, offset: const Offset(0, 4))],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -396,7 +396,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                             decoration: BoxDecoration(
                               color: context.pal.accent,
                               borderRadius: BorderRadius.circular(14),
-                              boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                              boxShadow: [BoxShadow(color: context.pal.accent.withValues(alpha:0.3), blurRadius: 12, offset: const Offset(0, 4))],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -423,9 +423,9 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
                         decoration: BoxDecoration(
                           color: context.pal.card,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: context.pal.accent.withOpacity(0.35)),
+                          border: Border.all(color: context.pal.accent.withValues(alpha:0.35)),
                           boxShadow: [
-                            BoxShadow(color: context.pal.accent.withOpacity(0.12), blurRadius: 12, offset: const Offset(0, 4)),
+                            BoxShadow(color: context.pal.accent.withValues(alpha:0.12), blurRadius: 12, offset: const Offset(0, 4)),
                           ],
                         ),
                         child: Row(

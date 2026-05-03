@@ -48,7 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   center: Alignment.center,
                   radius: 1.2,
                   colors: [
-                    context.pal.accent.withOpacity(0.12),
+                    context.pal.accent.withValues(alpha:0.12),
                     Colors.transparent,
                   ],
                 ),
@@ -79,8 +79,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       gradient: RadialGradient(colors: [
-                                        context.pal.accent.withOpacity(0.15),
-                                        context.pal.accent.withOpacity(0.05),
+                                        context.pal.accent.withValues(alpha:0.15),
+                                        context.pal.accent.withValues(alpha:0.05),
                                         Colors.transparent,
                                       ]),
                                     ),
@@ -90,10 +90,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                     height: 100,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.white.withOpacity(0.05),
+                                      color: Colors.white.withValues(alpha:0.05),
                                       border: Border.all(
                                           color:
-                                              Colors.white.withOpacity(0.08)),
+                                              Colors.white.withValues(alpha:0.08)),
                                     ),
                                     child: const Center(
                                         child: Text('💌',
@@ -107,11 +107,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 5),
                                 decoration: BoxDecoration(
-                                  color: context.pal.accent.withOpacity(0.15),
+                                  color: context.pal.accent.withValues(alpha:0.15),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                       color:
-                                          context.pal.accent.withOpacity(0.3)),
+                                          context.pal.accent.withValues(alpha:0.3)),
                                 ),
                                 child: Text(l10n.onboardingTag1,
                                     style: GoogleFonts.dmSans(
@@ -135,7 +135,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.dmSans(
                                       fontSize: 15,
-                                      color: Colors.white.withOpacity(0.4),
+                                      color: Colors.white.withValues(alpha:0.4),
                                       fontWeight: FontWeight.w300,
                                       height: 1.7)),
                             ],
@@ -169,7 +169,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               boxShadow: [
                                 BoxShadow(
                                     color:
-                                        context.pal.accent.withOpacity(0.4),
+                                        context.pal.accent.withValues(alpha:0.4),
                                     blurRadius: 20,
                                     offset: const Offset(0, 8))
                               ],
@@ -191,7 +191,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         child: Text(l10n.onboardingAlreadyHaveAccount,
                             style: GoogleFonts.dmSans(
                                 fontSize: 13,
-                                color: Colors.white.withOpacity(0.3))),
+                                color: Colors.white.withValues(alpha:0.3))),
                       ),
                     ],
                   ),

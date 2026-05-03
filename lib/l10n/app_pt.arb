@@ -519,6 +519,12 @@
   "badgeLettersSentTenDesc": "Você enviou 10 cartas.",
   "badgeVoiceLetterTitle": "Voz",
   "badgeVoiceLetterDesc": "Você enviou uma carta com áudio.",
+  "badgeHintFirstLetterSent": "Envie sua primeira carta para desbloquear.",
+  "badgeHintFirstLetterOpened": "Abra sua primeira carta para desbloquear.",
+  "badgeHintFirstPublic": "Compartilhe uma carta no feed público.",
+  "badgeHintLettersSentFive": "Envie 5 cartas para desbloquear.",
+  "badgeHintLettersSentTen": "Envie 10 cartas para desbloquear.",
+  "badgeHintVoiceLetter": "Envie uma carta com áudio para desbloquear.",
   "profileStatLetters": "Cartas",
   "profileEmptyTitle": "Nenhuma carta publicada",
   "profileEmptySubtitle": "Suas cartas abertas e publicas\naparecera aqui",
@@ -1063,7 +1069,7 @@
   "@policyReconsentEffectiveDate": { "placeholders": { "date": { "type": "String" } } },
 
   "draftsTitle": "Rascunhos",
-  "draftsEmpty": "Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será guardada aqui automaticamente.",
+  "draftsEmpty": "Sem rascunhos.\nGuarde uma carta como rascunho para continuar depois.",
   "draftsUntitled": "Sem título",
   "draftsNoContent": "Sem conteúdo",
   "draftsDeleteTitle": "Eliminar rascunho?",
@@ -1071,5 +1077,12 @@
   "draftsExpiresIn": "{days,plural, =0{Expira hoje} =1{Expira em 1 dia} other{Expira em {days} dias}}",
   "@draftsExpiresIn": { "placeholders": { "days": { "type": "int" } } },
   "homeDrafts": "Rascunhos",
-  "homeDraftsSubtitle": "Continue uma carta que começou"
+  "homeDraftsSubtitle": "Continue uma carta que começou",
+  "draftSaveDialogTitle": "Guardar rascunho?",
+  "draftSaveDialogMessage": "Tem alterações não guardadas. Deseja guardar esta carta como rascunho?",
+  "draftSaveDialogSave": "Guardar rascunho",
+  "draftSaveDialogDiscard": "Descartar",
+  "draftSaveDialogCancel": "Cancelar",
+  "draftSavedSnackbar": "Rascunho guardado",
+  "draftSaveErrorSnackbar": "Não foi possível guardar o rascunho"
 }

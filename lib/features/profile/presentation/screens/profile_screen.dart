@@ -83,7 +83,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           width: 180, height: 180,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: RadialGradient(colors: [context.pal.accent.withOpacity(0.1), Colors.transparent]),
+                            gradient: RadialGradient(colors: [context.pal.accent.withValues(alpha:0.1), Colors.transparent]),
                           ),
                         ),
                       ),
@@ -109,11 +109,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                   child: Container(
                                     width: 36, height: 36,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.08),
+                                      color: Colors.white.withValues(alpha:0.08),
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white.withOpacity(0.08)),
+                                      border: Border.all(color: Colors.white.withValues(alpha:0.08)),
                                     ),
-                                    child: Icon(Icons.settings_outlined, size: 18, color: Colors.white.withOpacity(0.6)),
+                                    child: Icon(Icons.settings_outlined, size: 18, color: Colors.white.withValues(alpha:0.6)),
                                   ),
                                 ),
                               ],
@@ -140,7 +140,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                         height: 72,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
+                                          border: Border.all(color: Colors.white.withValues(alpha:0.1), width: 2),
                                         ),
                                         child: ClipOval(
                                           child: UserAvatar(
@@ -178,7 +178,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                             shape: BoxShape.circle,
                                             border: Border.all(color: const Color(0xFF1A1714), width: 2),
                                           ),
-                                          child: Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white.withOpacity(0.95)),
+                                          child: Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white.withValues(alpha:0.95)),
                                         ),
                                       ),
                                     ],
@@ -197,11 +197,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                                               style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white)),
                                             const SizedBox(height: 4),
                                             Text('@${data?['username'] ?? ''}',
-                                              style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withOpacity(0.35), fontWeight: FontWeight.w300)),
+                                              style: GoogleFonts.dmSans(fontSize: 13, color: Colors.white.withValues(alpha:0.35), fontWeight: FontWeight.w300)),
                                             if (data?['bio'] != null && (data?['bio'] as String).isNotEmpty) ...[
                                               const SizedBox(height: 4),
                                               Text(data?['bio'] ?? '',
-                                                style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.5))),
+                                                style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withValues(alpha:0.5))),
                                             ],
                                           ],
                                         ),
@@ -301,9 +301,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: isPrivate ? Colors.white.withOpacity(0.08) : context.pal.accent.withOpacity(0.15),
+        color: isPrivate ? Colors.white.withValues(alpha:0.08) : context.pal.accent.withValues(alpha:0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isPrivate ? Colors.white.withOpacity(0.1) : context.pal.accent.withOpacity(0.3)),
+        border: Border.all(color: isPrivate ? Colors.white.withValues(alpha:0.1) : context.pal.accent.withValues(alpha:0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -311,14 +311,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           Icon(
             isPrivate ? Icons.lock : Icons.public,
             size: 10,
-            color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent,
+            color: isPrivate ? Colors.white.withValues(alpha:0.4) : context.pal.accent,
           ),
           const SizedBox(width: 4),
           Text(
             isPrivate ? l10n.profilePrivate : l10n.profilePublic,
             style: GoogleFonts.dmSans(
               fontSize: 10,
-              color: isPrivate ? Colors.white.withOpacity(0.4) : context.pal.accent,
+              color: isPrivate ? Colors.white.withValues(alpha:0.4) : context.pal.accent,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -333,7 +333,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         children: [
           Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
           const SizedBox(height: 2),
-          Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+          Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.3), fontWeight: FontWeight.w300)),
         ],
       ),
     );
@@ -348,7 +348,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           children: [
             Text(value.toString(), style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white)),
             const SizedBox(height: 2),
-            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.3), fontWeight: FontWeight.w300)),
+            Text(label, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.3), fontWeight: FontWeight.w300)),
           ],
         ),
       ),
@@ -356,7 +356,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildDividerVertical() {
-    return Container(width: 1, height: 32, color: Colors.white.withOpacity(0.08));
+    return Container(width: 1, height: 32, color: Colors.white.withValues(alpha:0.08));
   }
 
   Widget _buildLettersList(String uid) {

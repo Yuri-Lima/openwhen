@@ -228,7 +228,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Row(children: [
               GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: Container(width: 36, height: 36, decoration: BoxDecoration(color: Colors.white.withOpacity(0.08), borderRadius: BorderRadius.circular(12)), child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6))),
+                child: Container(width: 36, height: 36, decoration: BoxDecoration(color: Colors.white.withValues(alpha:0.08), borderRadius: BorderRadius.circular(12)), child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6))),
               ),
               const SizedBox(width: 16),
               Text(l10n.editProfileTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: context.pal.white, fontStyle: FontStyle.italic)),
@@ -335,7 +335,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: readOnly ? context.pal.card.withOpacity(0.5) : context.pal.card,
+        color: readOnly ? context.pal.card.withValues(alpha:0.5) : context.pal.card,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: context.pal.border),
       ),

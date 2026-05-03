@@ -1524,6 +1524,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get badgeVoiceLetterDesc => 'Enviaste una carta con audio.';
 
   @override
+  String get badgeHintFirstLetterSent => 'Envía tu primera carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstLetterOpened => 'Abre tu primera carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstPublic => 'Comparte una carta en el feed público.';
+
+  @override
+  String get badgeHintLettersSentFive => 'Envía 5 cartas para desbloquear.';
+
+  @override
+  String get badgeHintLettersSentTen => 'Envía 10 cartas para desbloquear.';
+
+  @override
+  String get badgeHintVoiceLetter => 'Envía una carta con audio para desbloquear.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -3061,7 +3079,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get draftsEmpty =>
-      'Sin borradores.\nCuando empieces a escribir una carta y salgas, se guardará aquí automáticamente.';
+      'Sin borradores.\nGuarda una carta como borrador para continuarla después.';
 
   @override
   String get draftsUntitled => 'Sin título';
@@ -3093,4 +3111,26 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeDraftsSubtitle => 'Continúa una carta que empezaste';
+
+  @override
+  String get draftSaveDialogTitle => '¿Guardar borrador?';
+
+  @override
+  String get draftSaveDialogMessage =>
+      'Tienes cambios sin guardar. ¿Deseas guardar esta carta como borrador?';
+
+  @override
+  String get draftSaveDialogSave => 'Guardar borrador';
+
+  @override
+  String get draftSaveDialogDiscard => 'Descartar';
+
+  @override
+  String get draftSaveDialogCancel => 'Cancelar';
+
+  @override
+  String get draftSavedSnackbar => 'Borrador guardado';
+
+  @override
+  String get draftSaveErrorSnackbar => 'No se pudo guardar el borrador';
 }

@@ -138,10 +138,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           child: Container(
                             width: 36, height: 36,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.08),
+                              color: Colors.white.withValues(alpha:0.08),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                            child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -1449,7 +1449,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                 child: Row(
                   children: [
                     Icon(Icons.lock_outline, size: 18,
-                        color: context.pal.inkFaint.withOpacity(0.6)),
+                        color: context.pal.inkFaint.withValues(alpha:0.6)),
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
@@ -1476,7 +1476,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                             ? Icons.visibility_off_outlined
                             : Icons.visibility_outlined,
                         size: 18,
-                        color: context.pal.inkFaint.withOpacity(0.6),
+                        color: context.pal.inkFaint.withValues(alpha:0.6),
                       ),
                     ),
                   ],
@@ -1498,9 +1498,9 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha:0.3),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha:0.4)),
                   ),
                   child: Row(
                     children: [
@@ -1597,7 +1597,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFEF4444),
                 disabledBackgroundColor:
-                    const Color(0xFFEF4444).withOpacity(0.3),
+                    const Color(0xFFEF4444).withValues(alpha:0.3),
               ),
               child: Text(
                 l10n.settingsDeleteConfirm,
@@ -1639,12 +1639,12 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFFEF4444).withOpacity(0.08)
+              ? const Color(0xFFEF4444).withValues(alpha:0.08)
               : context.pal.bg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected
-                ? const Color(0xFFEF4444).withOpacity(0.4)
+                ? const Color(0xFFEF4444).withValues(alpha:0.4)
                 : context.pal.border,
             width: selected ? 1.5 : 1,
           ),

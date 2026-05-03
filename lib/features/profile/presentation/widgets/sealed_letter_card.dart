@@ -52,12 +52,12 @@ class SealedLetterCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: canOpen
-                ? context.pal.accent.withOpacity(0.4)
+                ? context.pal.accent.withValues(alpha:0.4)
                 : context.pal.border,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha:0.04),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -72,7 +72,7 @@ class SealedLetterCard extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: canOpen
-                    ? context.pal.accent.withOpacity(0.12)
+                    ? context.pal.accent.withValues(alpha:0.12)
                     : context.pal.bg,
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -92,7 +92,7 @@ class SealedLetterCard extends StatelessWidget {
               width: 180,
               height: 14,
               decoration: BoxDecoration(
-                color: context.pal.border.withOpacity(0.5),
+                color: context.pal.border.withValues(alpha:0.5),
                 borderRadius: BorderRadius.circular(7),
               ),
             ),
@@ -101,7 +101,7 @@ class SealedLetterCard extends StatelessWidget {
               width: 120,
               height: 10,
               decoration: BoxDecoration(
-                color: context.pal.border.withOpacity(0.3),
+                color: context.pal.border.withValues(alpha:0.3),
                 borderRadius: BorderRadius.circular(5),
               ),
             ),

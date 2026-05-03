@@ -88,7 +88,7 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                   center: Alignment.center,
                   radius: 1.2,
                   colors: [
-                    p.accent.withOpacity(0.10),
+                    p.accent.withValues(alpha:0.10),
                     Colors.transparent,
                   ],
                 ),
@@ -111,8 +111,8 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: RadialGradient(colors: [
-                              p.accent.withOpacity(0.15),
-                              p.accent.withOpacity(0.05),
+                              p.accent.withValues(alpha:0.15),
+                              p.accent.withValues(alpha:0.05),
                               Colors.transparent,
                             ]),
                           ),
@@ -122,9 +122,9 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.05),
+                            color: Colors.white.withValues(alpha:0.05),
                             border: Border.all(
-                                color: Colors.white.withOpacity(0.08)),
+                                color: Colors.white.withValues(alpha:0.08)),
                           ),
                           child: const Center(
                               child:
@@ -150,7 +150,7 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                       textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.4),
+                        color: Colors.white.withValues(alpha:0.4),
                         fontWeight: FontWeight.w300,
                         height: 1.6,
                       ),
@@ -180,7 +180,7 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                         l10n.firstActionSkip,
                         style: GoogleFonts.dmSans(
                           fontSize: 13,
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha:0.3),
                         ),
                       ),
                     ),
@@ -208,9 +208,9 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.06),
+          color: Colors.white.withValues(alpha:0.06),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
         ),
         child: Row(
           children: [
@@ -237,13 +237,13 @@ class _FirstActionGuideScreenState extends State<FirstActionGuideScreen>
                   Text(subtitle,
                       style: GoogleFonts.dmSans(
                           fontSize: 13,
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha:0.4),
                           fontWeight: FontWeight.w300)),
                 ],
               ),
             ),
             Icon(Icons.chevron_right_rounded,
-                color: Colors.white.withOpacity(0.2)),
+                color: Colors.white.withValues(alpha:0.2)),
           ],
         ),
       ),

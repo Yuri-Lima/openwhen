@@ -77,7 +77,7 @@ class _VoiceLetterTileDarkState extends State<VoiceLetterTileDark> {
         decoration: BoxDecoration(
           color: const Color(0xFF1A1714),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
         ),
         child: Row(
           children: [
@@ -85,9 +85,9 @@ class _VoiceLetterTileDarkState extends State<VoiceLetterTileDark> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.15),
+                color: accentColor.withValues(alpha:0.15),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: accentColor.withOpacity(0.35)),
+                border: Border.all(color: accentColor.withValues(alpha:0.35)),
               ),
               child: Icon(
                 _playing ? Icons.pause_rounded : Icons.mic_rounded,
@@ -112,7 +112,7 @@ class _VoiceLetterTileDarkState extends State<VoiceLetterTileDark> {
                     l10n.voiceLetterSubtitle,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha:0.4),
                     ),
                   ),
                 ],
@@ -120,7 +120,7 @@ class _VoiceLetterTileDarkState extends State<VoiceLetterTileDark> {
             ),
             Icon(
               _playing ? Icons.pause_circle_outline : Icons.play_circle_outline,
-              color: Colors.white.withOpacity(0.35),
+              color: Colors.white.withValues(alpha:0.35),
               size: 28,
             ),
           ],
@@ -218,8 +218,8 @@ class _VoiceLetterOpeningButtonState extends State<VoiceLetterOpeningButton> {
           ),
         ),
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: accent.withOpacity(0.55)),
-          backgroundColor: accent.withOpacity(0.06),
+          side: BorderSide(color: accent.withValues(alpha:0.55)),
+          backgroundColor: accent.withValues(alpha:0.06),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
