@@ -1542,6 +1542,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String get badgeHintVoiceLetter => 'Envía una carta con audio para desbloquear.';
 
   @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recibida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Recibiste tu primera carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived => 'Recibe tu primera carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Completaste tu perfil.';
+
+  @override
+  String get badgeHintProfileComplete => 'Completa nombre, username, bio y avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 días seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc => 'Usaste la app por 3 días consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Usa la app por 3 días seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 likes';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Una carta tuya recibió 10 likes.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Recibe 10 likes en una carta.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override

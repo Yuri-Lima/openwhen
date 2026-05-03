@@ -61,7 +61,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 - Card compartilhável ao enviar carta — "Selei uma carta 🦉"
 - Data mínima de 30 dias nas cápsulas
 - Resposta à carta (ver especificações prioritárias)
-- ~~Rascunho automático~~ ✅ Concluído 2026-05-03 — Firestore (`drafts` collection + TTL 30 dias), auto-save com debounce 5 s, `DraftsScreen` com countdown, migração do SharedPreferences
+- ~~Rascunhos de carta~~ ✅ Concluído 2026-05-04 — Firestore (`drafts` collection + TTL 30 dias), save manual (botão AppBar) + dialog ao sair, `DraftsScreen` com countdown, migração do SharedPreferences
 - Simplificação do onboarding — reduzir fricção na primeira experiência (ref: UX_AUDIT.md #1)
 
 **Semana 3 — Crescimento orgânico**

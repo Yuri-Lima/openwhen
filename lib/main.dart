@@ -36,6 +36,7 @@ import 'core/linking/deep_link_bootstrap.dart';
 import 'core/linking/deep_link_coordinator.dart';
 import 'core/navigation/app_navigator_key.dart';
 import 'core/navigation/deferred_screens.dart';
+import 'features/gamification/badge_unlock_service.dart';
 import 'features/letters/domain/draft_service.dart';
 import 'features/letters/presentation/screens/drafts_screen.dart';
 import 'shared/theme/app_theme.dart';
@@ -408,6 +409,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         final draftService = DraftService();
         await draftService.migrateFromSharedPreferences(uid);
         await draftService.deleteExpiredDrafts(uid);
+
+        // Track daily streak for gamification badges.
+        BadgeUnlockHooks.onSessionStart(uid);
       }
     });
   }

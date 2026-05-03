@@ -6,6 +6,10 @@ abstract final class BadgeId {
   static const lettersSentFive = 'letters_sent_five';
   static const lettersSentTen = 'letters_sent_ten';
   static const voiceLetter = 'voice_letter';
+  static const firstLetterReceived = 'first_letter_received';
+  static const profileComplete = 'profile_complete';
+  static const threeDayStreak = 'three_day_streak';
+  static const letterLikedByTen = 'letter_liked_by_ten';
 
   static const List<String> all = [
     firstLetterSent,
@@ -14,5 +18,9 @@ abstract final class BadgeId {
     lettersSentFive,
     lettersSentTen,
     voiceLetter,
+    firstLetterReceived,
+    profileComplete,
+    threeDayStreak,
+    letterLikedByTen,
   ];
 }

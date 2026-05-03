@@ -1535,6 +1535,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get badgeHintVoiceLetter => 'Send a letter with voice to unlock.';
 
   @override
+  String get badgeFirstLetterReceivedTitle => 'Letter received';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'You received your first letter.';
+
+  @override
+  String get badgeHintFirstLetterReceived => 'Receive your first letter to unlock.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Profile complete';
+
+  @override
+  String get badgeProfileCompleteDesc => 'You completed your profile.';
+
+  @override
+  String get badgeHintProfileComplete => 'Fill in your name, username, bio and avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3-day streak';
+
+  @override
+  String get badgeThreeDayStreakDesc => 'You used the app for 3 consecutive days.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Use the app for 3 consecutive days.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 likes';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'One of your letters got 10 likes.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Get 10 likes on a letter.';
+
+  @override
   String get profileStatLetters => 'Letters';
 
   @override

@@ -54,6 +54,20 @@ class _BadgeColors {
     icon: Color(0xFFE24B4A),
   );
 
+  /// Blue – engagement / community
+  static const blue = _BadgeColors(
+    fill: Color(0x333B82F6),
+    stroke: Color(0xAA3B82F6),
+    icon: Color(0xFF3B82F6),
+  );
+
+  /// Amber – dedication / streaks
+  static const amber = _BadgeColors(
+    fill: Color(0x33EF9F27),
+    stroke: Color(0xAAEF9F27),
+    icon: Color(0xFFEF9F27),
+  );
+
   /// Locked – adapts to current theme brightness
   static _BadgeColors lockedFrom(WhenotePalette pal) {
     return _BadgeColors(
@@ -68,14 +82,20 @@ _BadgeColors _colorsForBadge(String badgeId) {
   switch (badgeId) {
     case BadgeId.firstLetterSent:
     case BadgeId.firstLetterOpened:
+    case BadgeId.firstLetterReceived:
       return _BadgeColors.gold;
     case BadgeId.firstPublic:
+    case BadgeId.letterLikedByTen:
       return _BadgeColors.purple;
     case BadgeId.lettersSentFive:
     case BadgeId.lettersSentTen:
       return _BadgeColors.green;
     case BadgeId.voiceLetter:
       return _BadgeColors.coral;
+    case BadgeId.profileComplete:
+      return _BadgeColors.blue;
+    case BadgeId.threeDayStreak:
+      return _BadgeColors.amber;
     default:
       return _BadgeColors.gold;
   }
@@ -331,6 +351,14 @@ class _BadgeShield extends StatelessWidget {
         return Icons.stars_outlined;
       case BadgeId.voiceLetter:
         return Icons.mic_none_rounded;
+      case BadgeId.firstLetterReceived:
+        return Icons.markunread_mailbox_outlined;
+      case BadgeId.profileComplete:
+        return Icons.person_outline_rounded;
+      case BadgeId.threeDayStreak:
+        return Icons.local_fire_department_outlined;
+      case BadgeId.letterLikedByTen:
+        return Icons.favorite_border_rounded;
       default:
         return Icons.emoji_events_outlined;
     }
@@ -350,6 +378,14 @@ class _BadgeShield extends StatelessWidget {
         return l10n.badgeLettersSentTenTitle;
       case BadgeId.voiceLetter:
         return l10n.badgeVoiceLetterTitle;
+      case BadgeId.firstLetterReceived:
+        return l10n.badgeFirstLetterReceivedTitle;
+      case BadgeId.profileComplete:
+        return l10n.badgeProfileCompleteTitle;
+      case BadgeId.threeDayStreak:
+        return l10n.badgeThreeDayStreakTitle;
+      case BadgeId.letterLikedByTen:
+        return l10n.badgeLetterLikedByTenTitle;
       default:
         return badgeId;
     }
@@ -369,6 +405,14 @@ class _BadgeShield extends StatelessWidget {
         return l10n.badgeLettersSentTenDesc;
       case BadgeId.voiceLetter:
         return l10n.badgeVoiceLetterDesc;
+      case BadgeId.firstLetterReceived:
+        return l10n.badgeFirstLetterReceivedDesc;
+      case BadgeId.profileComplete:
+        return l10n.badgeProfileCompleteDesc;
+      case BadgeId.threeDayStreak:
+        return l10n.badgeThreeDayStreakDesc;
+      case BadgeId.letterLikedByTen:
+        return l10n.badgeLetterLikedByTenDesc;
       default:
         return '';
     }
@@ -388,6 +432,14 @@ class _BadgeShield extends StatelessWidget {
         return l10n.badgeHintLettersSentTen;
       case BadgeId.voiceLetter:
         return l10n.badgeHintVoiceLetter;
+      case BadgeId.firstLetterReceived:
+        return l10n.badgeHintFirstLetterReceived;
+      case BadgeId.profileComplete:
+        return l10n.badgeHintProfileComplete;
+      case BadgeId.threeDayStreak:
+        return l10n.badgeHintThreeDayStreak;
+      case BadgeId.letterLikedByTen:
+        return l10n.badgeHintLetterLikedByTen;
       default:
         return '';
     }

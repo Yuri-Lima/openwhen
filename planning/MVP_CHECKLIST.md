@@ -37,7 +37,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟡 SEMANA 2 — retenção (primeiros usuários)
 
 - [ ] **Resposta à carta** — botão "Responder" ao abrir carta; `WriteLetterScreen` pré-preenchido; campos `replyToLetterId` + `threadId` no Firestore; cria loop emocional e é o maior driver de retenção do app · **Yuri**
-- [x] **Rascunho automático** — Firestore (`drafts` collection + TTL 30 dias no campo `expiresAt`); auto-save debounce 5 s; `DraftsScreen` com countdown, swipe-to-delete; migração SharedPreferences → Firestore; limite 10/utilizador · **Yuri** · `draft_service.dart`, `drafts_screen.dart`, `write_letter_screen.dart` · ✅ 2026-05-03
+- [x] **Rascunhos de carta** — Firestore (`drafts` collection + TTL 30 dias no campo `expiresAt`); save manual via botão na AppBar + dialog ao sair (Salvar/Descartar/Cancelar); `DraftsScreen` com countdown, swipe-to-delete; migração SharedPreferences → Firestore; limite 10/utilizador · **Yuri** · `draft_service.dart`, `drafts_screen.dart`, `write_letter_screen.dart` · ✅ 2026-05-04
 - [ ] **Preview da carta antes de selar** — dialog de confirmação com destinatário, data e prévia do conteúdo · **Diego** · `write_letter_screen.dart`
 - [ ] **Data mínima 30 dias nas cápsulas** — cápsula para amanhã quebra a emoção do conceito; validação no DatePicker · **Diego** · `create_capsule_screen.dart`
 - [ ] **Card compartilhável ao enviar carta** — "Selei uma carta 🦉" para Stories; marketing orgânico por carta enviada · **Diego + Yuri**

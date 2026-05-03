@@ -2867,6 +2867,42 @@ abstract class AppLocalizations {
   /// No description provided for @badgeHintVoiceLetter.
   String get badgeHintVoiceLetter;
 
+  /// No description provided for @badgeFirstLetterReceivedTitle.
+  String get badgeFirstLetterReceivedTitle;
+
+  /// No description provided for @badgeFirstLetterReceivedDesc.
+  String get badgeFirstLetterReceivedDesc;
+
+  /// No description provided for @badgeHintFirstLetterReceived.
+  String get badgeHintFirstLetterReceived;
+
+  /// No description provided for @badgeProfileCompleteTitle.
+  String get badgeProfileCompleteTitle;
+
+  /// No description provided for @badgeProfileCompleteDesc.
+  String get badgeProfileCompleteDesc;
+
+  /// No description provided for @badgeHintProfileComplete.
+  String get badgeHintProfileComplete;
+
+  /// No description provided for @badgeThreeDayStreakTitle.
+  String get badgeThreeDayStreakTitle;
+
+  /// No description provided for @badgeThreeDayStreakDesc.
+  String get badgeThreeDayStreakDesc;
+
+  /// No description provided for @badgeHintThreeDayStreak.
+  String get badgeHintThreeDayStreak;
+
+  /// No description provided for @badgeLetterLikedByTenTitle.
+  String get badgeLetterLikedByTenTitle;
+
+  /// No description provided for @badgeLetterLikedByTenDesc.
+  String get badgeLetterLikedByTenDesc;
+
+  /// No description provided for @badgeHintLetterLikedByTen.
+  String get badgeHintLetterLikedByTen;
+
   /// No description provided for @profileStatLetters.
   ///
   /// In pt_BR, this message translates to:

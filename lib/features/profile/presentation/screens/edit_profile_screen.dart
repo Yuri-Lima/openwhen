@@ -10,6 +10,7 @@ import '../../../../core/user_search/user_search_tokens.dart';
 import '../../../../core/utils/username_generator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/app_theme.dart';
+import '../../../gamification/badge_unlock_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -186,6 +187,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .collection(FirestoreCollections.users)
         .doc(uid)
         .update(update);
+
+    // Check if profile is now complete (name, username, bio, avatar).
+    if (uid != null) {
+      BadgeUnlockHooks.afterProfileSaved(uid);
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

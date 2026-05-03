@@ -182,7 +182,7 @@ Coleções também usadas no código (strings / queries):
 | `reports` | Denúncias de utilizadores (UGC) — schema fixo em `firestore.rules` |
 | `moderationIncidents` | Alertas operacionais da moderação por IA (agregados por tipo + hora UTC); escrita só Admin SDK / Cloud Functions; leitura no app via `adminListModerationIncidents` |
 | `systemConfig` | Documento `app`: feature flags remotas (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, …); leitura autenticada, escrita só admin/backend |
-| `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
+| `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Save manual (botão na AppBar) + dialog ao sair com conteúdo não salvo. Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
 | `accountCreationLogs` | Auditoria anti-abuse — IP, provider, emailDomain, timestamp de cada criação de conta. Escrita: Admin SDK (Cloud Function `onUserCreated`). Leitura/escrita pelo cliente: **bloqueada** nas Firestore Rules. Usado para rate limiting (5 contas/IP/24h). Índice composto: `ip ASC, createdAt ASC`. |
 
 ### Busca de utilizadores

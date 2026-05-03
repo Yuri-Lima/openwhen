@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/constants/firestore_collections.dart';
 import '../../gamification/badge_id.dart';
+import '../../gamification/badge_unlock_service.dart';
 import 'letter_send_step.dart';
 
 /// Atomic Firestore commit for sending a letter: `letters` create + `users` stats + `badgeUnlocks`.
@@ -61,6 +62,14 @@ class LetterSendService {
         }
       }
     });
+
+    // Award "first letter received" badge to the receiver (outside transaction).
+    final receiverUid = letterData['receiverUid'] as String?;
+    if (receiverUid != null && receiverUid.isNotEmpty) {
+      // Fire-and-forget — don't block the send flow.
+      BadgeUnlockHooks.afterLetterReceivedByUser(receiverUid);
+    }
+
     _log(step, 'done');
     return letterRef.id;
   }

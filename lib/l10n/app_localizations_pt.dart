@@ -1538,6 +1538,42 @@ class AppLocalizationsPt extends AppLocalizations {
   String get badgeHintVoiceLetter => 'Envie uma carta com áudio para desbloquear.';
 
   @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recebida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Você recebeu sua primeira carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived => 'Receba sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Você completou seu perfil.';
+
+  @override
+  String get badgeHintProfileComplete => 'Preencha nome, username, bio e avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 dias seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc => 'Você usou o app por 3 dias consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Use o app por 3 dias seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 curtidas';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Uma carta sua recebeu 10 curtidas.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Receba 10 curtidas em uma carta.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -4654,6 +4690,42 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get badgeHintVoiceLetter => 'Envie uma carta com áudio para desbloquear.';
+
+  @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recebida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Você recebeu sua primeira carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived => 'Receba sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Você completou seu perfil.';
+
+  @override
+  String get badgeHintProfileComplete => 'Preencha nome, username, bio e avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 dias seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc => 'Você usou o app por 3 dias consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Use o app por 3 dias seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 curtidas';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Uma carta sua recebeu 10 curtidas.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Receba 10 curtidas em uma carta.';
 
   @override
   String get profileStatLetters => 'Cartas';

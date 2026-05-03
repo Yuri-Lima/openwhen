@@ -27,6 +27,7 @@ import '../../../letters/data/letter_repository_actions.dart';
 import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
 import '../../../../shared/social/instagram_stories_share_service.dart';
 import '../../../../shared/social/story_share_content.dart';
+import '../../../gamification/badge_unlock_service.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -1106,6 +1107,8 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                         } else {
                           await FirebaseFirestore.instance.collection(FirestoreCollections.likes).add({'letterId': widget.docId, 'userUid': uid, 'createdAt': Timestamp.now()});
                           await FirebaseFirestore.instance.collection(FirestoreCollections.letters).doc(widget.docId).update({'likeCount': FieldValue.increment(1)});
+                          // Check "10 likes" badge for the letter author.
+                          BadgeUnlockHooks.afterLetterLiked(letterDocId: widget.docId);
                         }
                       },
                       child: Padding(
