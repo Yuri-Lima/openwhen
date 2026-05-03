@@ -11,6 +11,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Added
 
+- **Rascunhos de carta (Drafts):** nova coleção Firestore `drafts` com auto-save (debounce 5 s), TTL Policy no campo `expiresAt` (30 dias, deleção automática server-side). `DraftService` com CRUD, limpeza client-side de expirados, limite de 10 drafts/utilizador (`draftCount` no user doc), e migração one-time do SharedPreferences legado. `DraftsScreen` com listagem, emoji badges, barra de countdown (cores por urgência), swipe-to-delete com confirmação. Navegação via FAB ("Rascunhos") e ícone no header do WriteLetterScreen. 10 chaves i18n (en/pt/pt-BR/es) com plurais ICU. Novos ficheiros: `draft_model.dart`, `draft_service.dart`, `drafts_screen.dart`, `emotional_state.dart` (extraído para resolver dependência circular). Regras Firestore para `drafts/{draftId}` com proteção de campos imutáveis.
 - **Restrição de processamento — GDPR Art. 18:** `ProcessingRestrictionService` com `accountStatus: 'restricted'`. UI no Settings com toggle dinâmico + diálogo de confirmação. 8 chaves i18n (en/pt/pt-BR/es).
 - **Access logs — Marco Civil Art. 15:** Cloud Function `logAccess` + `purgeOldAccessLogs` (6 meses). IP server-side, UID pseudonimizado (HMAC-SHA-256). Client: `AccessLogService.logLogin()` fire-and-forget.
 - **Hash criptográfico em audit logs:** `hashUid()` (HMAC-SHA-256) substitui `simpleHash()` (djb2) em 4 ficheiros backend. `simpleHash()` deprecated.
@@ -49,6 +50,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Fixed
 
+- **Dados stale ao criar carta:** draft do SharedPreferences não era limpo após envio bem-sucedido; formulário retinha dados da última carta. Corrigido com `_clearDraft()` no callback de sucesso + migração para Firestore.
 - **NSLocationAlwaysAndWhenInUseUsageDescription:** re-adicionado ao Info.plist (App Store warning 90683).
 - **Cursor preso + copiar/colar ausente na carta:** `GestureDetector` global substituído por `TapRegion` isolado. Campo mensagem unificado em `TextField`. Bloqueador B2 fechado.
 - **Moderação lexical alinhada:** lista e SnackBar partilhados entre cartas, cápsulas e comentários.
@@ -69,6 +71,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ### Changed
 
+- **Animação da coruja removida da abertura de carta:** `OwlSealOpeningAnimation` substituído por `Icon(Icons.lock_rounded)` em `letter_opening_screen.dart`. `AnimationController` de 5.5 s removido, reduzindo tempo de abertura.
 - **GPC removido da Política de Privacidade:** não aplicável a apps nativos. Re-adicionar com versão web.
 - **SMTP migrado para Google Workspace Relay (2026-04-26):** `smtp-relay.gmail.com:587`, sender `noreply@whenote.com`.
 - **Envio carta — botão OK removido:** email validado automaticamente ao clicar “Enviar carta”.

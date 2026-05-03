@@ -38,6 +38,7 @@
 | Cartas (voz) | Storage: `voiceLetters/{uid}_{ts}.m4a` | voiceUrl |
 | Cápsulas | `capsules/{id}` | title, message, theme, photos |
 | Fotos de cápsulas | Storage: `capsulePhotos/{uid}_{ts}.jpg` | photos[] |
+| Rascunhos de carta | `drafts/{id}` | title, message, emotionalState, expiresAt, senderUid |
 | Comentários | `comments/{id}` | message, userUid, letterId |
 | Curtidas | `likes/{id}` | userUid, letterId |
 
@@ -274,6 +275,7 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 | Reports | 90 dias após resolução, depois anonimizados | Moderação e segurança | ✅ `anonymizeResolvedReports` (04:00 UTC) |
 | Feedback | 1 ano após envio, depois anonimizado | Melhoria do produto | ✅ `anonymizeOldFeedback` (05:00 UTC) |
 | Logs de moderação | 2 anos, depois eliminados | Obrigação legal/compliance | ✅ `purgeOldModerationLogs` (04:30 UTC) |
+| Rascunhos (drafts) | **30 dias** — Firestore TTL Policy no campo `expiresAt`; deleção automática server-side (sem Cloud Functions). Fallback client-side em `DraftService.deleteExpiredDrafts()` | Dados temporários, sem valor após expiração |
 | Analytics (Firebase) | Conforme política do Firebase (14 meses padrão) | Métricas agregadas |
 | Logs de auditoria (deleção) | 3 anos (sem PII — apenas uid hash + timestamp) | Prova de compliance |
 

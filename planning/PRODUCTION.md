@@ -124,6 +124,11 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 | **Busca (lista de utilizadores)** | [`UserSearchService`](../lib/core/user_search/user_search_service.dart) — **não** há `get()` na coleção `users` para pesquisa; usa queries com `limit` (prefixo em `username` + `searchTokens` com `array-contains`). **Até ~abril/2026** o cliente carregava todos os documentos de `users` — ver [`CHANGELOG.md`](CHANGELOG.md). Seguir/Seguindo na tela Buscar: leituras em **batch** (`whereIn` em chunks), não um listener por linha. Pull-to-refresh com throttle (~3 s). Utilizadores sem `searchTokens` (dados antigos) continuam encontráveis por prefixo de `@username` até guardarem o perfil. |
 | **Exportação (Pro)** | Cartas apenas onde o utilizador é remetente ou destinatário e `status == opened`; links `musicUrl` validados com allowlist ([`music_url.dart`](../lib/shared/utils/music_url.dart)). |
 
+### TTL Policy — Deleção automática de drafts
+
+- [x] **TTL Policy configurada (2026-05-03):** Google Cloud Console → Firestore → Time to live (TTL). Collection group: `drafts`, Timestamp field: `expiresAt`, Status: **Serving**. Documentos cuja `expiresAt` tenha passado são automaticamente deletados pelo Firestore (normalmente dentro de 24 horas). Sem custo adicional, sem Cloud Functions.
+- [x] **Firestore Rules para `drafts`:** regras deployadas com proteção de campos imutáveis (`senderUid`, `createdAt`, `expiresAt`). Leitura/escrita/delete só pelo owner.
+
 ### Manutenção periódica
 
 - [ ] **Domínio `whenote.app`:** verificar estado de renovação no Cloudflare (expira 10 de abril de 2027). Activar auto-renew.

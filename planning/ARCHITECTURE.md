@@ -57,12 +57,17 @@ lib/
 │   │       ├── providers/auth_provider.dart
 │   │       └── screens/ (splash, login, register, onboarding)
 │   ├── letters/
+│   │   ├── domain/
+│   │   │   ├── draft_model.dart             # LetterDraft — modelo com expiração 30 dias, fromFirestore/toFirestore
+│   │   │   └── draft_service.dart           # CRUD Firestore, TTL fallback, migração SharedPrefs, limite 10/user
 │   │   ├── export/
 │   │   │   ├── letter_export_service.dart
 │   │   │   └── letter_export_deferred.dart  # API fina: loadLibrary + share* (chunk pdf/archive)
 │   │   ├── models/
 │   │   └── presentation/
-│   │       ├── screens/ (write, vault, detail, opening, requests, qr)
+│   │       ├── models/
+│   │       │   └── emotional_state.dart     # EmotionalState extraído (evita dep. circular write↔drafts)
+│   │       ├── screens/ (write, vault, detail, opening, requests, qr, drafts)
 │   │       ├── vault_list_filters.dart   # estado de filtros por aba + sort/filtro em memória sobre snapshots
 │   │       ├── widgets/ (vault_filter_sheet — bottom sheet de filtro/ordenação)
 │   │       └── voice_letter.dart    # conditional export: upload/delete ficheiro local (IO vs web stub)
@@ -143,7 +148,7 @@ Outras features hoje concentram-se em `presentation` + `models` conforme necessi
 | Serviço | Uso |
 |---------|-----|
 | **Authentication** | Sessão do usuário |
-| **Cloud Firestore** | Dados principais (usuários, cartas, social, cápsulas, moderação) |
+| **Cloud Firestore** | Dados principais (usuários, cartas, drafts, social, cápsulas, moderação) |
 | **Cloud Storage** | Avatares; fotos de carta manuscrita (`handwritten/`); mensagens de voz (`voiceLetters/`, áudio curto); mídia de cápsulas (`capsules/**`) — ver [`storage.rules`](../storage.rules) |
 | **FCM** | Notificações push (Firebase Cloud Messaging; integrado no app — ver `MVP_CHECKLIST.md` 🔴) |
 
@@ -169,6 +174,7 @@ Coleções também usadas no código (strings / queries):
 | `reports` | Denúncias de utilizadores (UGC) — schema fixo em `firestore.rules` |
 | `moderationIncidents` | Alertas operacionais da moderação por IA (agregados por tipo + hora UTC); escrita só Admin SDK / Cloud Functions; leitura no app via `adminListModerationIncidents` |
 | `systemConfig` | Documento `app`: feature flags remotas (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, …); leitura autenticada, escrita só admin/backend |
+| `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
 
 ### Busca de utilizadores
 

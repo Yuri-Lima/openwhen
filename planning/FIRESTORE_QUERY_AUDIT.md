@@ -142,6 +142,10 @@ StreamBuilder<QuerySnapshot>(
 | Followers list | Cursor pagination 20/página + `whereIn` chunks | `followers_paginator.dart` | ✅ |
 | Follow state batch | `whereIn` chunks de 10 | `user_search_follows.dart` | ✅ Bounded pelo tamanho do chunk |
 | Notificações | `.limit(50)` + `orderBy` | `moderation_notifications_screen.dart` | ✅ |
+| Drafts — count | `.count()` aggregate (sem fetch de docs) | `draft_service.dart` L107-112 | ✅ Usa `AggregateQuery.count()` |
+| Drafts — list | `.where('senderUid').orderBy('expiresAt').get()` | `draft_service.dart` L69-73 | ⚠️ Sem `.limit()` — bounded pelo soft-limit de 10 drafts/user (`draftCount`); risco baixo mas considerar `.limit(15)` como safety net |
+| Drafts — stream | `.where('senderUid').orderBy('expiresAt').snapshots()` | `draft_service.dart` L90-93 | ⚠️ Listener sem `.limit()` — mesmo bounded implícito de 10; considerar `.limit(15)` |
+| Drafts — cleanup | `.where('senderUid').where('expiresAt', isLessThan: now).get()` | `draft_service.dart` L142-145 | ✅ Compound query + batch delete; chamado uma vez no app start |
 
 ---
 
