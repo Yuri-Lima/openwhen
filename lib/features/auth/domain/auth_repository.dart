@@ -10,6 +10,7 @@ import '../../../core/billing/subscription_tier.dart';
 import '../../../core/services/fcm_token_manager.dart';
 import '../../../core/services/safe_callable.dart';
 import '../../../core/user_search/user_search_tokens.dart';
+import '../../../core/services/access_log_service.dart';
 import '../../../core/utils/firebase_locale_helper.dart';
 import '../../../core/utils/username_generator.dart';
 
@@ -26,6 +27,7 @@ class AuthRepository {
     required String email,
     required String password,
     required String username,
+    required DateTime dateOfBirth,
   }) async {
     final credential = await _authService.registerWithEmail(
       email: email,
@@ -62,6 +64,7 @@ class AuthRepository {
       'country': null,
       'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
       'hasCompletedFirstAction': false,
+      'dateOfBirth': Timestamp.fromDate(dateOfBirth),
     });
 
     // Send email verification — required before first login.
@@ -74,11 +77,14 @@ class AuthRepository {
     required String password,
   }) async {
     await _authService.loginWithEmail(email: email, password: password);
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'email');
   }
 
   /// Sign in (or sign up) with Apple.
   /// Creates a Firestore user document on first login.
-  Future<void> signInWithApple() async {
+  /// [dateOfBirth] is collected from the age-gate dialog for new users.
+  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
     final credential = await _authService.signInWithApple();
     final user = credential.user!;
     final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
@@ -120,13 +126,17 @@ class AuthRepository {
         'country': null,
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'apple');
   }
 
   /// Sign in (or sign up) with Google.
   /// Creates a Firestore user document on first login.
-  Future<void> signInWithGoogle() async {
+  /// [dateOfBirth] is collected from the age-gate dialog for new users.
+  Future<void> signInWithGoogle({required DateTime dateOfBirth}) async {
     final credential = await _authService.signInWithGoogle();
     final user = credential.user!;
     final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
@@ -168,8 +178,11 @@ class AuthRepository {
         'country': null,
         'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
         'hasCompletedFirstAction': false,
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       });
     }
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'google');
   }
 
   Future<void> signOut() async {

@@ -2,7 +2,7 @@ import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
-import {simpleHash} from "./delete_account";
+import {hashUid} from "./delete_account";
 
 const db = () => getFirestore();
 const sendgridApiKey = defineSecret("SENDGRID_API_KEY");
@@ -63,7 +63,7 @@ export const requestAccountDeletion = onCall(
     const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const recentRequests = await firestore
       .collection("privacyRequestLogs")
-      .where("uid", "==", simpleHash(uid))
+      .where("uid", "==", hashUid(uid))
       .where("type", "==", "deletion_request")
       .where("createdAt", ">=", Timestamp.fromDate(monthAgo))
       .get();
@@ -90,7 +90,7 @@ export const requestAccountDeletion = onCall(
 
     // Log the request
     await firestore.collection("privacyRequestLogs").add({
-      uid: simpleHash(uid),
+      uid: hashUid(uid),
       type: "deletion_request",
       status: "pending",
       metadata: {
@@ -168,7 +168,7 @@ export const cancelAccountDeletion = onCall(
 
     // Log cancellation
     await firestore.collection("privacyRequestLogs").add({
-      uid: simpleHash(uid),
+      uid: hashUid(uid),
       type: "deletion_request",
       status: "cancelled",
       metadata: {

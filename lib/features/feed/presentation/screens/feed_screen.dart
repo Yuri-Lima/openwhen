@@ -24,6 +24,8 @@ import '../../../profile/presentation/screens/user_profile_screen.dart';
 import '../../../letters/presentation/screens/letter_detail_screen.dart';
 import '../../../letters/data/letter_repository_actions.dart';
 import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
+import '../../../../shared/social/instagram_stories_share_service.dart';
+import '../../../../shared/social/story_share_content.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -702,6 +704,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
   bool _showAllComments = false;
   final Set<String> _expandedCommentPreviewIds = <String>{};
   bool _expanded = false;
+  bool _sharingStory = false;
   late AnimationController _heartCtrl;
   late Animation<double> _heartScale;
 
@@ -998,56 +1001,86 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
           ),
 
           // Conteúdo da carta
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(data['title'] ?? '',
-                  style: GoogleFonts.dmSerifDisplay(fontSize: 18,
-                    color: _text(context),
-                    fontStyle: FontStyle.italic, height: 1.3)),
-                const SizedBox(height: 8),
-                Text(data['message'] ?? '',
-                  maxLines: _expanded ? null : 4,
-                  overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                  style: GoogleFonts.dmSans(fontSize: 14,
-                    color: _textSoft(context),
-                    height: 1.6)),
-                const SizedBox(height: 6),
-                // Botões: "Ler mais" ou "Ler carta completa"
-                if (!_expanded)
+          if (!_expanded) ...[
+            // ── Preview com fade gradual ──────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data['title'] ?? '',
+                    style: GoogleFonts.dmSerifDisplay(fontSize: 18,
+                      color: _text(context),
+                      fontStyle: FontStyle.italic, height: 1.3)),
+                  const SizedBox(height: 8),
+                  Stack(
+                    children: [
+                      Text(data['message'] ?? '',
+                        maxLines: 3,
+                        overflow: TextOverflow.clip,
+                        style: GoogleFonts.dmSans(fontSize: 14,
+                          color: _textSoft(context),
+                          height: 1.6)),
+                      // Fade gradual para esconder o final
+                      Positioned(
+                        left: 0, right: 0, bottom: 0,
+                        height: 40,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                _bg(context).withOpacity(0.0),
+                                _bg(context),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () => setState(() => _expanded = true),
-                    child: Text(l10n.feedReadMore,
-                      style: GoogleFonts.dmSans(fontSize: 13,
-                        color: _textFaint(context),
-                        fontWeight: FontWeight.w500)),
-                  )
-                else ...[
-                  GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                      builder: (_) => LetterDetailScreen(
-                        data: data,
-                        docId: widget.docId,
-                      ),
-                    )),
-                    child: Text(l10n.feedReadFullLetter,
-                      style: GoogleFonts.dmSans(fontSize: 13,
-                        color: context.pal.accent,
-                        fontWeight: FontWeight.w500)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.mail_outline_rounded, size: 16, color: context.pal.accent),
+                        const SizedBox(width: 6),
+                        Text(l10n.feedOpenLetter,
+                          style: GoogleFonts.dmSans(fontSize: 13,
+                            color: context.pal.accent,
+                            fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
+                    style: GoogleFonts.dmSans(fontSize: 10,
+                      color: _textMuted(context),
+                      letterSpacing: 1),
                   ),
                 ],
-                const SizedBox(height: 6),
-                Text(
-                  l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
-                  style: GoogleFonts.dmSans(fontSize: 10,
-                    color: _textMuted(context),
-                    letterSpacing: 1),
-                ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
+          ] else ...[
+            // ── Carta expandida com layout de papel ──────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Builder(
+                builder: (ctx) => _FeedPaperLetter(
+                  data: data,
+                  accentColor: context.pal.accent,
+                  onClose: () => setState(() => _expanded = false),
+                  onShare: () => _sharePaperLetter(ctx),
+                  isSharing: _sharingStory,
+                ),
+              ),
+            ),
+          ],
 
           // Ações — like e comentário
           Padding(
@@ -1119,6 +1152,26 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                     ),
                   ),
                 ),
+                const Spacer(),
+                // Share
+                Builder(
+                  builder: (ctx) => GestureDetector(
+                    onTap: _sharingStory ? null : () => _sharePaperLetter(ctx),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _sharingStory
+                          ? SizedBox(
+                              width: 20, height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: _iconFaint(context),
+                              ),
+                            )
+                          : Icon(Icons.share_outlined, size: 20,
+                              color: _iconFaint(context)),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -1131,6 +1184,47 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
         ],
       ),
     );
+  }
+
+  Future<void> _sharePaperLetter(BuildContext triggerContext) async {
+    if (_sharingStory) return;
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final data = widget.data;
+    final deepLink = 'https://whenote.app/letter/${widget.docId}';
+    final openedAt = data['openedAt'] != null
+        ? (data['openedAt'] as Timestamp).toDate()
+        : DateTime.now();
+
+    final hideSender = (data['hideSenderName'] ?? false) == true;
+    final senderName = hideSender
+        ? l10n.feedSenderAnonymous
+        : (data['senderName'] as String? ?? '');
+
+    final content = StoryShareContent.paperLetter(
+      docId: widget.docId,
+      title: data['title'] ?? '',
+      message: data['message'] ?? '',
+      senderName: senderName,
+      receiverName: data['receiverName'] ?? '',
+      dateSubtitle: l10n.feedOpenedOnDate(formatShortDate(openedAt, locale)),
+    );
+
+    final box = triggerContext.findRenderObject() as RenderBox?;
+    final origin = box != null ? box.localToGlobal(Offset.zero) & box.size : null;
+
+    setState(() => _sharingStory = true);
+    try {
+      await InstagramStoriesShareService.share(
+        context: context,
+        content: content,
+        shareText: l10n.qrShareText(data['title'] ?? '', deepLink),
+        shareSubject: l10n.qrShareSubject,
+        sharePositionOrigin: origin,
+      );
+    } finally {
+      if (mounted) setState(() => _sharingStory = false);
+    }
   }
 
   Widget _buildCommentsPreview(String? uid) {
@@ -1214,4 +1308,227 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
       },
     );
   }
+}
+
+// ── Carta expandida no feed com layout de papel ─────────────────────────
+class _FeedPaperLetter extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final Color accentColor;
+  final VoidCallback onClose;
+  final VoidCallback onShare;
+  final bool isSharing;
+
+  const _FeedPaperLetter({
+    required this.data,
+    required this.accentColor,
+    required this.onClose,
+    required this.onShare,
+    this.isSharing = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final createdAt = data['createdAt'] != null
+        ? (data['createdAt'] as Timestamp).toDate()
+        : DateTime.now();
+    final hideSender = (data['hideSenderName'] ?? false) == true;
+    final senderName = hideSender
+        ? l10n.feedSenderAnonymous
+        : (data['senderName'] as String? ?? '');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2E8D5),
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 24,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Barra colorida no topo
+          Container(
+            height: 5,
+            decoration: BoxDecoration(
+              color: accentColor,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+            ),
+          ),
+          // Conteúdo com linhas de papel
+          Stack(
+            children: [
+              // Linhas ruled do papel
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _FeedPaperLinesPainter(),
+                ),
+              ),
+              // Conteúdo da carta
+              Padding(
+                padding: const EdgeInsets.fromLTRB(48, 28, 24, 28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // FROM
+                    Text(l10n.letterDetailHeaderFrom,
+                      style: TextStyle(
+                        fontSize: 9,
+                        letterSpacing: 4,
+                        color: accentColor.withOpacity(0.8),
+                      )),
+                    const SizedBox(height: 8),
+                    // Nome do remetente
+                    Text(senderName,
+                      style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 20,
+                        color: const Color(0xFF160D04),
+                      )),
+                    const SizedBox(height: 4),
+                    // Para: destinatário
+                    Text(l10n.letterDetailTo(data['receiverName'] ?? ''),
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                        color: const Color(0xFF7A5C3A),
+                      )),
+                    const SizedBox(height: 16),
+                    // Divider
+                    Container(width: 24, height: 1, color: accentColor.withOpacity(0.5)),
+                    const SizedBox(height: 8),
+                    // Título
+                    Text(data['title'] ?? '',
+                      style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 17,
+                        color: const Color(0xFF160D04),
+                        fontStyle: FontStyle.italic,
+                      )),
+                    const SizedBox(height: 16),
+                    // Mensagem completa
+                    Text(data['message'] ?? '',
+                      style: GoogleFonts.dmSerifDisplay(
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic,
+                        color: const Color(0xFF241608),
+                        height: 2.0,
+                      )),
+                    const SizedBox(height: 24),
+                    // Assinatura
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('— $senderName',
+                        style: GoogleFonts.dmSerifDisplay(
+                          fontSize: 15,
+                          fontStyle: FontStyle.italic,
+                          color: const Color(0xFF4A2E14),
+                        )),
+                    ),
+                    const SizedBox(height: 4),
+                    // Data
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        formatShortDate(createdAt, locale),
+                        style: TextStyle(
+                          fontSize: 8,
+                          letterSpacing: 2,
+                          color: accentColor.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Botões: fechar e compartilhar
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: onClose,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: const Color(0xFFD4C5B0)),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(l10n.feedCloseLetter,
+                              style: GoogleFonts.dmSans(
+                                fontSize: 12,
+                                color: const Color(0xFF7A5C3A),
+                                fontWeight: FontWeight.w500,
+                              )),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: isSharing ? null : onShare,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: accentColor.withOpacity(0.12),
+                              border: Border.all(color: accentColor.withOpacity(0.4)),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: isSharing
+                                ? SizedBox(
+                                    width: 16, height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: accentColor,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.share_outlined, size: 14, color: accentColor),
+                                      const SizedBox(width: 6),
+                                      Text(l10n.letterDetailShareTitle,
+                                        style: GoogleFonts.dmSans(
+                                          fontSize: 12,
+                                          color: accentColor,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Painter de linhas do papel para o feed ──────────────────────────────
+class _FeedPaperLinesPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final line = Paint()
+      ..color = Colors.black.withOpacity(0.04)
+      ..strokeWidth = 1;
+    for (double y = 28; y < size.height; y += 28) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
+    }
+    // Margem vermelha
+    canvas.drawLine(
+      const Offset(36, 0),
+      Offset(36, size.height),
+      Paint()
+        ..color = const Color(0xFFC0392B).withOpacity(0.12)
+        ..strokeWidth = 1,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }

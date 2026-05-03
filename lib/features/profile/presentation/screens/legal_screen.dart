@@ -95,6 +95,7 @@ class LegalScreen extends StatelessWidget {
         _Section(l10n.termsSection6Title, l10n.termsSection6Body),
         _Section(l10n.termsSection7Title, l10n.termsSection7Body),
         _Section(l10n.termsSection8Title, l10n.termsSection8Body),
+        _Section(l10n.termsSection9Title, l10n.termsSection9Body),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/services/safe_callable.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/username_generator.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
+import '../../../../core/utils/age_verification.dart';
 import '../auth_error_messages.dart';
 import '../providers/auth_provider.dart';
 
@@ -28,7 +30,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isLoading = false;
   bool _showPassword = false;
   bool _acceptedTerms = false;
-  bool _confirmedAge = false;
+  DateTime? _dateOfBirth;
+  String? _dateOfBirthError;
 
   // ── Username state ───────────────────────────────────────────────────
   List<String> _suggestions = [];
@@ -168,10 +171,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
 
-    if (!_acceptedTerms || !_confirmedAge) {
+    if (!_acceptedTerms || _dateOfBirth == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.registerMustAcceptTerms)),
       );
+      return;
+    }
+
+    final ageError = validateAge(_dateOfBirth!);
+    if (ageError != null) {
+      setState(() => _dateOfBirthError = l10n.registerAgeUnder(getMinimumAgeForLocale()));
       return;
     }
 
@@ -183,6 +192,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             email: _emailController.text.trim(),
             password: _passwordController.text.trim(),
             username: username,
+            dateOfBirth: _dateOfBirth!,
           );
       if (!mounted) return;
       final registerState = ref.read(authNotifierProvider);
@@ -648,25 +658,89 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
-                  // Age 13+ checkbox (COPPA compliance)
-                  _buildCheckRow(
-                    value: _confirmedAge,
-                    onChanged: (v) =>
-                        setState(() => _confirmedAge = v ?? false),
-                    child: Text(
-                      l10n.registerConfirmAge,
-                      style: GoogleFonts.dmSans(
-                          fontSize: 12,
-                          color: context.pal.inkSoft,
-                          height: 1.4),
+                  // Date of birth picker (COPPA / GDPR Art. 8 compliance)
+                  Text(
+                    l10n.registerDateOfBirthLabel,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 10,
+                      color: context.pal.inkFaint,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
+                  const SizedBox(height: 6),
+                  GestureDetector(
+                    onTap: () async {
+                      final now = DateTime.now();
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _dateOfBirth ?? DateTime(now.year - 18, now.month, now.day),
+                        firstDate: DateTime(1900),
+                        lastDate: now,
+                        helpText: l10n.registerDateOfBirthLabel,
+                        builder: (ctx, child) {
+                          return Theme(
+                            data: Theme.of(ctx).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: context.pal.accent,
+                                onSurface: context.pal.ink,
+                                surface: context.pal.card,
+                              ),
+                              dialogBackgroundColor: context.pal.card,
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          _dateOfBirth = picked;
+                          _dateOfBirthError = null;
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: context.pal.card,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _dateOfBirthError != null
+                              ? Colors.red.withOpacity(0.6)
+                              : context.pal.border,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today, size: 16, color: context.pal.inkSoft),
+                          const SizedBox(width: 10),
+                          Text(
+                            _dateOfBirth != null
+                                ? DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(_dateOfBirth!)
+                                : l10n.registerDateOfBirthHint,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 14,
+                              color: _dateOfBirth != null ? context.pal.ink : context.pal.inkFaint,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (_dateOfBirthError != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      _dateOfBirthError!,
+                      style: GoogleFonts.dmSans(fontSize: 11, color: Colors.red),
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed:
-                        (_isLoading || !_acceptedTerms || !_confirmedAge)
+                        (_isLoading || !_acceptedTerms || _dateOfBirth == null)
                             ? null
                             : _register,
                     child: _isLoading

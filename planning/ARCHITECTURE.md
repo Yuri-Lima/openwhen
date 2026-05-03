@@ -13,7 +13,8 @@
 
 - **Baseline:** como medir antes/depois (bundle web, DevTools, Firestore) — ver secção [Performance e carregamento diferido](#performance-e-carregamento-diferido) abaixo.
 - **Code splitting (web):** [`lib/core/navigation/deferred_screens.dart`](../lib/core/navigation/deferred_screens.dart) importa em modo `deferred` as telas **Escrever carta**, **Nova cápsula** e **Buscar**; cada uma mostra um `CircularProgressIndicator` até `loadLibrary()` completar. As rotas nomeadas `/write`, `/create-capsule` e `/search` em [`main.dart`](../lib/main.dart) usam estes shells.
-- **Exportação PDF/ZIP:** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta ou definições).
+- **Exportação PDF/ZIP (por carta):** [`lib/features/letters/export/letter_export_deferred.dart`](../lib/features/letters/export/letter_export_deferred.dart) importa [`letter_export_service.dart`](../lib/features/letters/export/letter_export_service.dart) em modo `deferred`; o chunk com `pdf` / `archive` só é carregado quando o utilizador exporta (detalhe da carta).
+- **Exportação completa de dados (GDPR Art. 20):** [`lib/core/export/complete_export_service.dart`](../lib/core/export/complete_export_service.dart) — exporta todos os dados do utilizador (perfil, cartas, cápsulas, comentários, likes, follows, badges) em ficheiros JSON + media num ZIP. Queries Firestore paginadas (500/batch), sanitização de campos internos, validação SSRF de URLs de media. Acesso via Settings > Data and Privacy > Export my data (gratuito, sem restrição de tier). Progress callback com estágios para feedback na UI.
 - **Cofre — abas:** o corpo do cofre mostra **apenas a aba selecionada** (sem `TabBarView` que montava as três de uma vez), reduzindo listeners Firestore simultâneos. **Swipe horizontal entre abas** deixou de estar disponível; mudança só por toque nas tabs.
 
 ### Navegação e `go_router`
@@ -39,9 +40,12 @@ lib/
 │   │   └── facebook_app_config.dart  # `FB_APP_ID` (dart-define) para Instagram Sharing to Stories
 │   ├── constants/
 │   │   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
+│   ├── export/
+│   │   └── complete_export_service.dart # Export completo GDPR Art. 20: ZIP com JSONs + media
 │   ├── utils/
 │   │   ├── email_normalization.dart   # normalizeReceiverEmailForMatching (must match server)
-│   │   └── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
+│   │   ├── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
+│   │   └── age_verification.dart     # validateAge — idade mínima por jurisdição (GDPR Art. 8 / COPPA)
 │   └── moderation/
 │       └── moderation_functions_service.dart  # Callable `moderateContent` (região igual a billing)
 ├── features/
@@ -321,10 +325,12 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 - `lib/features/profile/presentation/screens/settings_screen.dart` — UI (`_DeleteAccountSheet`)
 - `planning/DATA_RETENTION_POLICY.md` — política completa
 
-### COPPA / GDPR / LGPD
-- Registro: checkboxes obrigatórios para idade 13+ e aceite de Termos/Privacidade
-- Deleção: escolha do usuário entre remover tudo ou anonimizar cartas
-- Audit log: `deletionAuditLogs` com hash do UID (sem PII)
+### COPPA / GDPR Art. 8 / LGPD
+- **Verificação de idade:** date picker de data de nascimento no registro (email/password) e age gate modal no login social (Google/Apple). A idade mínima é determinada automaticamente pela jurisdição do dispositivo (`Platform.localeName`) via `age_verification.dart`, que mapeia 27 países EU/EEA/UK com idades entre 13–16 (GDPR Art. 8); restantes defaultam a 16 (EU) ou 13 (COPPA).
+- **Campo `dateOfBirth`:** gravado no Firestore (`users/{uid}`) como `Timestamp`; campo nullable para retrocompatibilidade com contas existentes.
+- Aceite obrigatório de Termos de Uso e Política de Privacidade no registro.
+- Deleção: escolha do usuário entre remover tudo ou anonimizar cartas.
+- Audit log: `deletionAuditLogs` com hash do UID (sem PII).
 
 ---
 

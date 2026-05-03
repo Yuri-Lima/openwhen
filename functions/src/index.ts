@@ -26,6 +26,11 @@ export {deleteUserAccount} from "./delete_account";
 export {exportUserData} from "./export_user_data";
 export {requestAccountDeletion, cancelAccountDeletion} from "./request_deletion";
 export {processScheduledDeletions} from "./scheduled_deletion";
+export {anonymizeResolvedReports} from "./anonymize_resolved_reports";
+export {purgeOldModerationLogs} from "./purge_old_moderation_logs";
+export {anonymizeOldFeedback} from "./anonymize_old_feedback";
+export {logAccess} from "./log_access";
+export {purgeOldAccessLogs} from "./purge_old_access_logs";
 
 export {
   claimExternalLetters,

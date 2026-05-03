@@ -1,7 +1,7 @@
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
-import {executeAccountDeletion} from "./delete_account";
+import {executeAccountDeletion, hashUid} from "./delete_account";
 import type {DeletionMode} from "./delete_account";
 
 const db = () => getFirestore();
@@ -75,7 +75,7 @@ export const processScheduledDeletions = onSchedule(
         // Mark the failure for admin review but don't block other deletions
         try {
           await firestore.collection("deletionAuditLogs").add({
-            uidHash: uid.substring(0, 8) + "...",
+            uidHash: hashUid(uid),
             mode,
             status: "scheduled_failure",
             error: e instanceof Error ? e.message : String(e),

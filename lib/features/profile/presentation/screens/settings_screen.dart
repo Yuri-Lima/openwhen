@@ -11,9 +11,7 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'legal_screen.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/avatar_upload_helper.dart';
-import '../../data/letter_export_data.dart';
-import '../../../letters/export/letter_export_deferred.dart';
-import '../../../../shared/utils/music_url.dart';
+import '../../../../core/export/complete_export_service.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/theme_provider.dart';
@@ -31,6 +29,9 @@ import '../../../../core/services/privacy_log_service.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
 import '../widgets/pending_deletion_banner.dart';
 import 'privacy_center_screen.dart';
+import '../../../../core/consent/analytics_consent_provider.dart';
+import '../../../../core/consent/consent_constants.dart';
+import '../../../../core/services/processing_restriction_service.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -110,6 +111,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           final notifLetter = data?['notifLetter'] ?? true;
           final accountStatus = data?['accountStatus'] as String? ?? 'active';
           final isPendingDeletion = accountStatus == 'pending_deletion';
+          final isRestricted = accountStatus == 'restricted';
           final deletionScheduledFor = data?['deletionScheduledFor'] as Timestamp?;
           final deletionDaysRemaining = deletionScheduledFor != null
               ? deletionScheduledFor.toDate().difference(DateTime.now()).inDays.clamp(0, 999)
@@ -430,21 +432,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.download_outlined,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
-                        label: l10n.settingsExportLetters,
-                        subtitle: l10n.settingsExportLettersSubtitle,
-                        onTap: () async {
-                          final tier = ref.read(subscriptionTierProvider).asData?.value ?? SubscriptionTier.free;
-                          if (!tierMeets(tier, SubscriptionTier.pro)) {
-                            await ensureTierOrPrompt(
-                              context,
-                              current: tier,
-                              requiredTier: SubscriptionTier.pro,
-                            );
-                            return;
-                          }
-                          if (!context.mounted) return;
-                          _showExportDialog(context);
-                        },
+                        label: l10n.settingsExportData,
+                        subtitle: l10n.settingsExportDataSubtitle,
+                        onTap: () => _showExportDialog(context),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
@@ -459,6 +449,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             builder: (_) => const PrivacyCenterScreen(),
                           ),
                         ),
+                      ),
+                      if (ref.read(analyticsConsentProvider.notifier).isConsentRequired) ...[
+                        _buildDivider(),
+                        _buildAnalyticsToggle(context, ref, l10n),
+                      ],
+                      _buildDivider(),
+                      _buildMenuItem(
+                        icon: isRestricted ? Icons.lock_open_outlined : Icons.lock_outlined,
+                        iconColor: isRestricted ? const Color(0xFFEF9F27) : const Color(0xFF6B7280),
+                        iconBg: isRestricted ? const Color(0xFFFAEEDA) : context.pal.bg,
+                        label: isRestricted
+                            ? l10n.settingsLiftRestriction
+                            : l10n.settingsRestrictProcessing,
+                        subtitle: isRestricted
+                            ? l10n.settingsLiftRestrictionSubtitle
+                            : l10n.settingsRestrictProcessingSubtitle,
+                        onTap: () => _showRestrictionDialog(context, isRestricted),
                       ),
                       _buildDivider(),
                       _buildMenuItem(
@@ -687,6 +694,60 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildDivider() => Divider(height: 1, indent: 56, color: context.pal.border);
 
+  Widget _buildAnalyticsToggle(BuildContext context, WidgetRef ref, AppLocalizations l10n) {
+    final consentStatus = ref.watch(analyticsConsentProvider);
+    final isEnabled = consentStatus == AnalyticsConsentStatus.granted;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0F9FF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(Icons.analytics_outlined, size: 20, color: const Color(0xFF3B82F6)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.settingsAnalyticsToggle,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: context.pal.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.settingsAnalyticsDescription,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: context.pal.inkSoft,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch.adaptive(
+            value: isEnabled,
+            activeColor: context.pal.accent,
+            onChanged: (value) {
+              ref.read(analyticsConsentProvider.notifier).setConsent(
+                    value ? AnalyticsConsentStatus.granted : AnalyticsConsentStatus.denied,
+                  );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMenuItem({
     required IconData icon,
     required Color iconColor,
@@ -889,79 +950,68 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             Text(l10n.settingsExportZipSubtitle,
               style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkFaint, height: 1.45)),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                final uid = _user?.uid;
-                if (uid == null) return;
-                final locale = Localizations.localeOf(context).toString();
-                final messenger = ScaffoldMessenger.of(context);
-                Navigator.pop(context);
-                try {
-                  final docs = await fetchLettersForUserExport(
-                    firestore: FirebaseFirestore.instance,
-                    uid: uid,
-                  );
-                  for (final d in docs) {
-                    final m = d.data();
-                    final music = (m['musicUrl'] as String?)?.trim();
-                    if (music != null &&
-                        music.isNotEmpty &&
-                        !isValidHttpsMusicUrl(music)) {
-                      if (context.mounted) {
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              l10n.writeLetterSnackMusicUrlInvalid,
-                              style: GoogleFonts.dmSans(fontSize: 13),
-                            ),
-                          ),
-                        );
-                      }
-                      return;
-                    }
-                  }
-                  if (docs.isEmpty) {
-                    if (context.mounted) {
-                      messenger.showSnackBar(
-                        SnackBar(content: Text(l10n.settingsExportSuccess(0), style: GoogleFonts.dmSans(fontSize: 13))),
-                      );
-                    }
-                    return;
-                  }
-                  await shareExportZipDeferred(
-                    docs: docs,
-                    localeName: locale,
-                    subject: l10n.settingsExportTitle,
-                  );
-                  PrivacyLogService.logExport(uid: uid, letterCount: docs.length, success: true);
-                  if (context.mounted) {
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.settingsExportSuccess(docs.length),
-                          style: GoogleFonts.dmSans(fontSize: 13),
-                        ),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  PrivacyLogService.logExport(uid: uid, letterCount: 0, success: false);
-                  if (context.mounted) {
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.errorGeneric(e.toString()),
-                          style: GoogleFonts.dmSans(fontSize: 13),
-                        ),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
-            ),
+            _CompleteExportButton(user: _user),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showRestrictionDialog(BuildContext context, bool isCurrentlyRestricted) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          isCurrentlyRestricted
+              ? l10n.settingsLiftRestriction
+              : l10n.settingsRestrictProcessing,
+        ),
+        content: Text(
+          isCurrentlyRestricted
+              ? l10n.settingsLiftRestrictionConfirm
+              : l10n.settingsRestrictProcessingConfirm,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.settingsDeleteCancelButton),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                if (isCurrentlyRestricted) {
+                  await ProcessingRestrictionService.liftRestriction();
+                } else {
+                  await ProcessingRestrictionService.restrictProcessing();
+                }
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isCurrentlyRestricted
+                            ? l10n.settingsLiftRestrictionSuccess
+                            : l10n.settingsRestrictProcessingSuccess,
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
+                }
+              }
+            },
+            child: Text(
+              isCurrentlyRestricted
+                  ? l10n.settingsLiftRestriction
+                  : l10n.settingsRestrictProcessing,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -975,9 +1025,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _DeleteAccountSheet(
         l10n: l10n,
-        onConfirm: (DeletionMode mode, String password) async {
+        authProvider: AccountDeletionService.currentAuthProvider(),
+        onConfirm: (DeletionMode mode) async {
           Navigator.pop(context);
-          await _executeAccountDeletion(context, mode, password);
+          await _executeAccountDeletion(context, mode);
         },
       ),
     );
@@ -986,7 +1037,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _executeAccountDeletion(
     BuildContext context,
     DeletionMode mode,
-    String password,
   ) async {
     final l10n = AppLocalizations.of(context)!;
 
@@ -1017,24 +1067,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
 
-    try {
-      // Step 1: Re-authenticate
-      final reauthError =
-          await AccountDeletionService.reauthenticateWithPassword(password);
-      if (reauthError != null) {
-        if (!context.mounted) return;
-        Navigator.pop(context); // dismiss loading
-        final msg = reauthError == 'wrong-password' || reauthError == 'invalid-credential'
-            ? l10n.settingsDeleteWrongPassword
-            : l10n.settingsDeleteReauthFailed;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-        return;
-      }
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final provider = AccountDeletionService.currentAuthProvider();
+    final modeStr = mode == DeletionMode.deleteAll ? 'delete_all' : 'anonymize';
 
-      // Step 2: Request soft deletion (export + 15-day grace period)
+    try {
+      // Request soft deletion (export + 15-day grace period)
+      // Re-auth was already done in the bottom sheet before calling onConfirm.
       final scheduledFor = await AccountDeletionService.requestSoftDeletion(mode);
 
-      // Step 3: Sign out locally
+      // Audit log (best-effort)
+      PrivacyLogService.logDeletionRequest(
+        uid: uid,
+        mode: modeStr,
+        authProvider: provider.name,
+        success: true,
+      );
+
+      // Sign out locally
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
 
@@ -1054,6 +1104,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
     } catch (e, st) {
       debugPrint('Account deletion request failed: $e\n$st');
+      PrivacyLogService.logDeletionRequest(
+        uid: uid,
+        mode: modeStr,
+        authProvider: provider.name,
+        success: false,
+      );
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1065,9 +1121,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<void> _cancelDeletion(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     try {
       await DeletionRequestService.cancelDeletion();
+      PrivacyLogService.logDeletionCancellation(uid: uid, success: true);
       if (context.mounted) {
         messenger.showSnackBar(
           SnackBar(
@@ -1078,6 +1136,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
     } catch (e) {
       debugPrint('Cancel deletion failed: $e');
+      PrivacyLogService.logDeletionCancellation(uid: uid, success: false);
       if (context.mounted) {
         messenger.showSnackBar(
           SnackBar(
@@ -1166,10 +1225,12 @@ class _DeleteAccountSheet extends StatefulWidget {
   const _DeleteAccountSheet({
     required this.l10n,
     required this.onConfirm,
+    required this.authProvider,
   });
 
   final AppLocalizations l10n;
-  final Future<void> Function(DeletionMode mode, String password) onConfirm;
+  final AuthProvider authProvider;
+  final Future<void> Function(DeletionMode mode) onConfirm;
 
   @override
   State<_DeleteAccountSheet> createState() => _DeleteAccountSheetState();
@@ -1180,6 +1241,12 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
   DeletionMode _mode = DeletionMode.deleteAll;
   bool _confirmed = false;
   bool _showPassword = false;
+  bool _reauthenticated = false;
+  bool _reauthenticating = false;
+  String? _reauthError;
+
+  bool get _isPasswordProvider =>
+      widget.authProvider == AuthProvider.password;
 
   @override
   void dispose() {
@@ -1187,8 +1254,73 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
     super.dispose();
   }
 
-  bool get _canProceed =>
-      _confirmed && _passwordCtrl.text.isNotEmpty;
+  bool get _canProceed {
+    if (!_confirmed) return false;
+    if (_isPasswordProvider) return _passwordCtrl.text.isNotEmpty;
+    return _reauthenticated;
+  }
+
+  Future<void> _handleSocialReauth() async {
+    setState(() {
+      _reauthenticating = true;
+      _reauthError = null;
+    });
+
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final providerName = widget.authProvider.name;
+    final error = await AccountDeletionService.reauthenticate();
+
+    if (!mounted) return;
+    if (error == null) {
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: providerName, success: true,
+      );
+      setState(() {
+        _reauthenticated = true;
+        _reauthenticating = false;
+      });
+    } else if (error == 'cancelled') {
+      setState(() => _reauthenticating = false);
+    } else {
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: providerName, success: false,
+      );
+      setState(() {
+        _reauthenticating = false;
+        _reauthError = error;
+      });
+    }
+  }
+
+  Future<void> _handleConfirm() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+    if (_isPasswordProvider) {
+      // Re-auth with password first
+      final error = await AccountDeletionService.reauthenticateWithPassword(
+        _passwordCtrl.text,
+      );
+      if (!mounted) return;
+      if (error != null) {
+        PrivacyLogService.logReauthentication(
+          uid: uid, provider: 'password', success: false,
+        );
+        final l10n = widget.l10n;
+        final msg = error == 'wrong-password' || error == 'invalid-credential'
+            ? l10n.settingsDeleteWrongPassword
+            : l10n.settingsDeleteReauthFailed;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg)),
+        );
+        return;
+      }
+      PrivacyLogService.logReauthentication(
+        uid: uid, provider: 'password', success: true,
+      );
+    }
+    // Social re-auth was already done via _handleSocialReauth
+    await widget.onConfirm(_mode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1294,60 +1426,138 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
             ),
             const SizedBox(height: 20),
 
-            // Password field for re-authentication
-            Text(
-              l10n.settingsDeletePasswordLabel,
-              style: GoogleFonts.dmSans(
-                fontSize: 10,
-                color: context.pal.inkFaint,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 1.5,
+            // Re-authentication section
+            if (_isPasswordProvider) ...[
+              // Password field for email/password users
+              Text(
+                l10n.settingsDeletePasswordLabel,
+                style: GoogleFonts.dmSans(
+                  fontSize: 10,
+                  color: context.pal.inkFaint,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.5,
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              decoration: BoxDecoration(
-                color: context.pal.bg,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: context.pal.border, width: 1.5),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-              child: Row(
-                children: [
-                  Icon(Icons.lock_outline, size: 18,
-                      color: context.pal.inkFaint.withOpacity(0.6)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: _passwordCtrl,
-                      obscureText: !_showPassword,
-                      onChanged: (_) => setState(() {}),
-                      style: GoogleFonts.dmSans(
-                        fontSize: 14,
-                        color: context.pal.ink,
-                      ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: l10n.settingsDeletePasswordHint,
-                        hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 14),
+              const SizedBox(height: 6),
+              Container(
+                decoration: BoxDecoration(
+                  color: context.pal.bg,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: context.pal.border, width: 1.5),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                child: Row(
+                  children: [
+                    Icon(Icons.lock_outline, size: 18,
+                        color: context.pal.inkFaint.withOpacity(0.6)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: _passwordCtrl,
+                        obscureText: !_showPassword,
+                        onChanged: (_) => setState(() {}),
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          color: context.pal.ink,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: l10n.settingsDeletePasswordHint,
+                          hintStyle: GoogleFonts.dmSans(color: context.pal.inkFaint),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 14),
+                        ),
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () => setState(() => _showPassword = !_showPassword),
+                      child: Icon(
+                        _showPassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 18,
+                        color: context.pal.inkFaint.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              // Social re-auth button for Google/Apple users
+              Text(
+                l10n.settingsDeleteReauthLabel,
+                style: GoogleFonts.dmSans(
+                  fontSize: 10,
+                  color: context.pal.inkFaint,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 6),
+              if (_reauthenticated)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.4)),
                   ),
-                  GestureDetector(
-                    onTap: () => setState(() => _showPassword = !_showPassword),
-                    child: Icon(
-                      _showPassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 18,
-                      color: context.pal.inkFaint.withOpacity(0.6),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, size: 18, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 10),
+                      Text(
+                        l10n.settingsDeleteReauthSuccess,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                OutlinedButton.icon(
+                  onPressed: _reauthenticating ? null : _handleSocialReauth,
+                  icon: _reauthenticating
+                      ? SizedBox(
+                          width: 16, height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: context.pal.inkSoft,
+                          ),
+                        )
+                      : Icon(
+                          widget.authProvider == AuthProvider.apple
+                              ? Icons.apple
+                              : Icons.g_mobiledata,
+                          size: 20,
+                        ),
+                  label: Text(
+                    widget.authProvider == AuthProvider.apple
+                        ? l10n.settingsDeleteReauthApple
+                        : l10n.settingsDeleteReauthGoogle,
+                    style: GoogleFonts.dmSans(fontSize: 14),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 48),
+                    side: BorderSide(color: context.pal.border, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+              if (_reauthError != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  l10n.settingsDeleteReauthFailed,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: const Color(0xFFEF4444),
+                  ),
+                ),
+              ],
+            ],
             const SizedBox(height: 16),
 
             // Confirmation checkbox
@@ -1383,9 +1593,7 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
 
             // Confirm button
             ElevatedButton(
-              onPressed: _canProceed
-                  ? () => widget.onConfirm(_mode, _passwordCtrl.text)
-                  : null,
+              onPressed: _canProceed ? _handleConfirm : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFEF4444),
                 disabledBackgroundColor:
@@ -1477,6 +1685,113 @@ class _DeleteAccountSheetState extends State<_DeleteAccountSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Complete Export Button — handles progress feedback within the bottom sheet
+// ---------------------------------------------------------------------------
+class _CompleteExportButton extends StatefulWidget {
+  const _CompleteExportButton({required this.user});
+  final User? user;
+
+  @override
+  State<_CompleteExportButton> createState() => _CompleteExportButtonState();
+}
+
+class _CompleteExportButtonState extends State<_CompleteExportButton> {
+  bool _exporting = false;
+  String _stage = '';
+  double _progress = 0;
+
+  static const _stageLabels = {
+    'profile': 'Profile',
+    'letters': 'Letters',
+    'media': 'Media',
+    'capsules': 'Capsules',
+    'comments': 'Comments',
+    'likes': 'Likes',
+    'follows': 'Follows',
+    'badges': 'Badges',
+    'zip': 'ZIP',
+    'done': '',
+  };
+
+  Future<void> _runExport() async {
+    final uid = widget.user?.uid;
+    if (uid == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final nav = Navigator.of(context);
+
+    setState(() => _exporting = true);
+
+    try {
+      final (:zipFile, :result) = await buildCompleteExportZip(
+        firestore: FirebaseFirestore.instance,
+        uid: uid,
+        onProgress: (stage, progress) {
+          if (mounted) setState(() { _stage = stage; _progress = progress; });
+        },
+      );
+
+      PrivacyLogService.logCompleteExport(
+        uid: uid,
+        metadata: result.toMetadata(),
+        success: true,
+      );
+
+      nav.pop();
+      await shareCompleteExportZip(zipFile);
+
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.settingsExportCompleteSuccess(result.totalItems, result.mediaFilesCount),
+              style: GoogleFonts.dmSans(fontSize: 13),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      PrivacyLogService.logCompleteExport(uid: uid, metadata: {}, success: false);
+      nav.pop();
+      if (context.mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.errorGeneric(e.toString()),
+              style: GoogleFonts.dmSans(fontSize: 13),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_exporting) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LinearProgressIndicator(value: _progress, minHeight: 4, borderRadius: BorderRadius.circular(2)),
+          const SizedBox(height: 10),
+          Text(
+            '${l10n.settingsExportSnack} ${_stageLabels[_stage] ?? _stage}',
+            style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.inkSoft),
+          ),
+        ],
+      );
+    }
+
+    return ElevatedButton(
+      onPressed: _runExport,
+      child: Text(l10n.settingsExportButton, style: GoogleFonts.dmSans(fontSize: 15, fontWeight: FontWeight.w500)),
     );
   }
 }

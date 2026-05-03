@@ -14,12 +14,29 @@
 | Página web pública (sem login) | ✅ Criada | `hosting/public/privacy.html` + `terms.html` |
 | Fundo de Continuidade | ✅ Documentado | Termos de Uso §7 + secção 4 abaixo |
 | Política de retenção de dados | ✅ Documentada | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) |
-| COPPA (idade 13+) | ✅ Checkbox no registro | `register_screen.dart` |
+| COPPA / GDPR Art. 8 (idade mínima por jurisdição) | ✅ Date picker + verificação automática | `register_screen.dart`, `login_screen.dart`, `age_verification.dart` |
+| Consentimento analytics (ePrivacy / UK PECR) | ✅ Banner EU/EEA/UK + auto-grant resto | `consent_constants.dart`, `analytics_consent_provider.dart`, `analytics_consent_banner.dart` |
 | Cloud Function deleteUserAccount | ✅ Implementada | `functions/src/delete_account.ts` |
 | Domínio `whenote.app` registado (Cloudflare) | ✅ Ativo | DNS gerido na Cloudflare; conectado ao Firebase Hosting |
 | Revisão com advogado | 🔲 Pendente | — |
 | Emails do domínio (Cloudflare Email Routing) | ✅ Ativo | 7 endereços → redirecionamento para `y.m.lima19@gmail.com` |
 | Export automático ao deletar | ✅ Implementada (testar) | `functions/src/export_user_data.ts` + `deletion_request_service.dart` |
+| Export completo de dados (GDPR Art. 20) | ✅ Implementado | `complete_export_service.dart` — ZIP com JSONs + media; gratuito para todos |
+| Anonimização de reports (90 dias) | ✅ Implementado | `anonymize_resolved_reports.ts` — scheduled daily 04:00 UTC; remove PII, mantém stats |
+| Purge de logs de moderação (2 anos) | ✅ Implementado | `purge_old_moderation_logs.ts` — scheduled daily 04:30 UTC; deleta incidents + reviews |
+| Anonimização de feedback (1 ano) | ✅ Implementado | `anonymize_old_feedback.ts` — scheduled daily 05:00 UTC; remove uid + message, mantém stats |
+| Re-auth social (Apple/Google) na eliminação | ✅ Implementado | `account_deletion_service.dart` — deteta provider, re-auth via OAuth antes de eliminar |
+| Export cápsulas recebidas + GPS | ✅ Corrigido | `complete_export_service.dart` — `participantUids array-contains` + coordenadas reais |
+| Audit trail de privacidade completo | ✅ Implementado | `privacy_log_service.dart` — 5 tipos de evento (export, complete_export, deletion_request, deletion_cancellation, reauthentication); `firestore.rules` whitelist atualizada |
+| Hash criptográfico em audit logs | ✅ Implementado | `delete_account.ts` — `hashUid()` HMAC-SHA-256 substitui `simpleHash()` djb2 em todos os ficheiros de backend |
+| Access logs 6 meses (Marco Civil Art. 15) | ✅ Implementado | `log_access.ts` (callable CF, captura IP server-side) + `purge_old_access_logs.ts` (scheduled daily 05:30 UTC, purge > 180 dias) + `access_log_service.dart` (client fire-and-forget) |
+| Restrição de processamento (GDPR Art. 18) | ✅ Implementado | `processing_restriction_service.dart` — `accountStatus: 'restricted'` bloqueia envio via `canSendContent`; UI toggle no Settings; 8 chaves i18n em 4 idiomas |
+| Runbook: objeção ao processamento (GDPR Art. 21) | ✅ Documentado | [`OPERATIONAL_PRIVACY_RUNBOOKS.md`](OPERATIONAL_PRIVACY_RUNBOOKS.md) §1 — procedimento + templates (Anexos A, B) |
+| Runbook: notificação de mudança de política (Seção 16) | ✅ Documentado | [`OPERATIONAL_PRIVACY_RUNBOOKS.md`](OPERATIONAL_PRIVACY_RUNBOOKS.md) §2 — checklist D-30 a D-0, in-app + email |
+| DPIA — dados de localização (GDPR Art. 35) | ✅ Documentado | [`DPIA_LOCATION_DATA.md`](DPIA_LOCATION_DATA.md) — risco residual BAIXO; 5 riscos identificados e mitigados |
+| Runbook: notificação de breach (GDPR Art. 33/34) | ✅ Documentado | [`OPERATIONAL_PRIVACY_RUNBOOKS.md`](OPERATIONAL_PRIVACY_RUNBOOKS.md) §3 — 4 fases, template (Anexo C), contactos autoridades |
+| Export server-side: JSON vs ZIP documentado | ✅ Documentado | [`DATA_RETENTION_POLICY.md`](DATA_RETENTION_POLICY.md) §5 — client ZIP (promessa) + server JSON (fallback pré-deletion) |
+| Processador SMTP atualizado na Política de Privacidade | ✅ Corrigido | Seção 7(a): Google Workspace SMTP Relay adicionado; SendGrid mantido em 7(c) (convites externos); 4 ARBs + `privacy.html` |
 | Exclusão com prazo 15 dias (soft delete) | ✅ Implementada (testar) | `functions/src/request_deletion.ts` + `scheduled_deletion.ts` |
 | Cartas locked sobrevivem exclusão | ✅ Implementada (testar) | `functions/src/delete_account.ts` (preservação automática) |
 | Central de privacidade no app | ✅ Implementada (testar) | `lib/features/profile/presentation/screens/privacy_center_screen.dart` + settings |
@@ -287,7 +304,7 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 4. Bases Legais (LGPD Art. 7 + GDPR Art. 6)
 5. Finalidades do Tratamento
 6. Decisões Automatizadas (IA/OpenAI, Art. 22 GDPR)
-7. Compartilhamento e Terceiros (Firebase, OpenAI, SendGrid, Stripe, Google Fonts)
+7. Compartilhamento e Terceiros (Firebase, Google Workspace, OpenAI, SendGrid, Stripe, Google Fonts)
 8. Transferências Internacionais (SCCs, Schrems II)
 9. Retenção de Dados (períodos por categoria)
 10. Seus Direitos (LGPD / GDPR / CCPA-CPRA separados)
@@ -295,7 +312,7 @@ A política completa está implementada nos arquivos de localização (`lib/l10n
 12. Portabilidade e Exportação (ZIP/JSON)
 13. Privacidade de Crianças (COPPA, 13+)
 14. Medidas de Segurança (TLS 1.3, App Check, breach 72h)
-15. Tecnologias de Rastreamento (Firebase Analytics, Crashlytics, GPC)
+15. Tecnologias de Rastreamento (Firebase Analytics, Crashlytics, App Check)
 16. Alterações na Política (aviso 15 dias)
 17. Contato (DPO, privacidade, legal, autoridades)
 
@@ -319,7 +336,7 @@ Os emails referenciados nos documentos legais estão ativos via **Cloudflare Ema
 | `dpo@whenote.app` | Encarregado de Proteção de Dados |
 | `juridico@whenote.app` | Departamento jurídico |
 | `info@whenote.app` | Informações gerais |
-| `noreply@whenote.app` | Remetente de emails transacionais (SendGrid) |
+| `noreply@whenote.app` | Remetente de emails transacionais (Google Workspace SMTP Relay) |
 
 **Nota:** quando o volume justificar, migrar para caixas dedicadas (ex: Google Workspace ou Zoho). O redirecionamento Cloudflare é suficiente para a fase atual.
 

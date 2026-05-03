@@ -1531,6 +1531,34 @@ class AppLocalizationsPt extends AppLocalizations {
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';
 
   @override
+  String get profileTabOpened => 'Abertas';
+
+  @override
+  String get profileTabSealed => 'Seladas';
+
+  @override
+  String get profileSealedLabel => 'Selada';
+
+  @override
+  String get profileSealedStill => 'Esta carta ainda está selada ⏳';
+
+  @override
+  String get profileSealedReady => 'Esta carta está pronta para ser aberta! ✨';
+
+  @override
+  String get profileSealedAvailable => 'Disponível para abrir!';
+
+  @override
+  String get profileSealedEmptyTitle => 'Nenhuma carta selada';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Cartas seladas recebidas\naparecerão aqui';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'Nenhuma carta selada ainda';
+
+  @override
   String get searchTitle => 'Buscar pessoas';
 
   @override
@@ -1708,6 +1736,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDataSection => 'DADOS E PRIVACIDADE';
 
   @override
+  String get settingsExportData => 'Exportar os meus dados';
+
+  @override
+  String get settingsExportDataSubtitle =>
+      'Transferir todos os seus dados num ficheiro ZIP';
+
+  @override
   String get settingsExportLetters => 'Exportar minhas cartas';
 
   @override
@@ -1777,18 +1812,18 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get settingsExportTitle => 'Exportar cartas';
+  String get settingsExportTitle => 'Exportar os seus dados';
 
   @override
   String get settingsExportBody =>
-      'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
+      'Todos os seus dados — perfil, cartas, cápsulas, comentários, gostos, seguidores e emblemas — serão exportados num ficheiro ZIP com ficheiros JSON e anexos multimédia.';
 
   @override
   String get settingsExportButton => 'Exportar como ZIP';
 
   @override
   String get settingsExportZipSubtitle =>
-      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+      'Formato legível por máquina (JSON) para portabilidade de dados. Pode demorar alguns minutos.';
 
   @override
   String settingsExportSuccess(int count) {
@@ -1796,7 +1831,12 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get settingsExportSnack => 'Preparando exportação…';
+  String settingsExportCompleteSuccess(int items, int media) {
+    return '$items itens e $media ficheiros multimédia exportados.';
+  }
+
+  @override
+  String get settingsExportSnack => 'A preparar exportação…';
 
   @override
   String get letterDetailExportPdfTitle => 'Exportar PDF';
@@ -1863,7 +1903,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get aboutSecurityBody =>
-      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.';
+      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.';
 
   @override
   String get aboutComplianceTitle => 'Conformidade Legal';
@@ -2246,7 +2286,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get termsSection2Body =>
-      'Para utilizar a Plataforma, o usuário deverá: (i) ter capacidade civil plena, nos termos do art. 3º do Código Civil Brasileiro (Lei nº 10.406/2002), ou ser assistido por responsável legal quando menor de 16 anos; (ii) fornecer dados verídicos no cadastro, sob pena de cancelamento imediato da conta, nos termos do art. 7º, inciso VI, do Marco Civil da Internet; (iii) manter a confidencialidade de suas credenciais de acesso, sendo responsável por todas as atividades realizadas em sua conta.';
+      'Para utilizar a Plataforma, o usuário deverá: (i) ter pelo menos 13 anos de idade (ou a idade mínima exigida pela legislação aplicável no país de residência do usuário — por exemplo, 16 anos em determinados Estados-Membros da UE nos termos do art. 8 do GDPR); usuários abaixo da idade mínima aplicável só poderão usar a Plataforma com consentimento parental ou de responsável legal verificável; (ii) fornecer dados verídicos no cadastro, sob pena de cancelamento imediato da conta; (iii) manter a confidencialidade de suas credenciais de acesso, sendo responsável por todas as atividades realizadas em sua conta. Durante o cadastro, o usuário deverá informar sua data de nascimento e confirmar que atende ao requisito de idade mínima.';
 
   @override
   String get termsSection3Title =>
@@ -2254,21 +2294,21 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get termsSection3Body =>
-      'O usuário se compromete a utilizar a Plataforma em conformidade com a legislação vigente, especialmente: (i) a Lei nº 12.965/2014 (Marco Civil da Internet); (ii) a Lei nº 13.709/2018 (LGPD); (iii) o Código Penal Brasileiro no que tange a crimes contra a honra (arts. 138 a 140); (iv) a Lei nº 7.716/1989 (Lei de Crimes de Preconceito); e (v) o Estatuto da Criança e do Adolescente (ECA — Lei nº 8.069/1990). É expressamente vedado ao usuário publicar conteúdo que: (a) seja difamatório, calunioso ou injurioso; (b) incite violência, ódio ou discriminação de qualquer natureza; (c) viole direitos de propriedade intelectual de terceiros; (d) constitua assédio, cyberbullying ou perseguição; (e) envolva pornografia infantil ou conteúdo sexual envolvendo menores de idade.';
+      'O usuário se compromete a utilizar a Plataforma em conformidade com todas as leis aplicáveis em sua jurisdição, incluindo, mas não se limitando a: (i) no Brasil — Lei nº 12.965/2014 (Marco Civil da Internet), Lei nº 13.709/2018 (LGPD), o Código Penal Brasileiro no que tange a crimes contra a honra (arts. 138 a 140), Lei nº 7.716/1989 (Lei de Crimes de Preconceito) e o Estatuto da Criança e do Adolescente (ECA — Lei nº 8.069/1990); (ii) na União Europeia — o Regulamento Geral de Proteção de Dados (GDPR), o Regulamento de Serviços Digitais (Regulamento UE 2022/2065) e as leis nacionais aplicáveis de cada Estado-Membro; (iii) nos Estados Unidos — leis federais incluindo o Communications Decency Act (47 U.S.C. § 230), o Children\'s Online Privacy Protection Act (COPPA) e leis estaduais aplicáveis incluindo o California Consumer Privacy Act (CCPA/CPRA); (iv) em qualquer outra jurisdição — todas as leis locais aplicáveis que regem conduta online, proteção de dados, propriedade intelectual e moderação de conteúdo. É expressamente vedado ao usuário publicar conteúdo que: (a) seja difamatório, calunioso ou injurioso; (b) incite violência, ódio ou discriminação de qualquer natureza; (c) viole direitos de propriedade intelectual de terceiros; (d) constitua assédio, cyberbullying ou perseguição; (e) envolva material de abuso sexual infantil (CSAM) ou conteúdo sexual envolvendo menores de idade; (f) viole qualquer lei ou regulamento aplicável na jurisdição do usuário.';
 
   @override
   String get termsSection4Title => '4. DA RESPONSABILIDADE CIVIL DA EMPRESA';
 
   @override
   String get termsSection4Body =>
-      'A Empresa, na qualidade de provedora de aplicação, não se responsabiliza pelo conteúdo gerado pelos usuários (\"UGC — User Generated Content\"), nos termos do art. 19 do Marco Civil da Internet. A responsabilidade civil da Empresa somente será configurada mediante descumprimento de ordem judicial específica determinando a remoção de conteúdo. A Empresa adota mecanismos de moderação e denúncia, sem que isso implique assunção de responsabilidade editorial sobre o conteúdo dos usuários.';
+      'A Empresa, na qualidade de provedora de aplicação, não se responsabiliza pelo conteúdo gerado pelos usuários (\"UGC — User Generated Content\"), nos termos do art. 19 do Marco Civil da Internet (Brasil) e em consonância com a Seção 230 do Communications Decency Act (EUA) e o Regulamento de Serviços Digitais (UE). A responsabilidade civil da Empresa somente será configurada mediante descumprimento de ordem judicial específica determinando a remoção de conteúdo ou, na UE, ao tomar conhecimento efetivo de conteúdo ilegal e não agir com celeridade. A Empresa adota mecanismos de moderação e denúncia, sem que isso implique assunção de responsabilidade editorial sobre o conteúdo dos usuários.\n\nA PLATAFORMA É FORNECIDA \"NO ESTADO EM QUE SE ENCONTRA\" E \"CONFORME DISPONÍVEL\", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS OU IMPLÍCITAS, INCLUINDO, MAS NÃO SE LIMITANDO A, GARANTIAS IMPLÍCITAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM PROPÓSITO ESPECÍFICO E NÃO VIOLAÇÃO. NA MÁXIMA EXTENSÃO PERMITIDA PELA LEGISLAÇÃO APLICÁVEL, OS OPERADORES NÃO SERÃO RESPONSÁVEIS POR QUAISQUER DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS, CONSEQUENTES OU PUNITIVOS, OU POR QUALQUER PERDA DE LUCROS, DADOS OU CLIENTELA, DECORRENTES DE OU RELACIONADOS AO USO DA PLATAFORMA. A RESPONSABILIDADE TOTAL AGREGADA DOS OPERADORES NÃO EXCEDERÁ O VALOR PAGO AOS OPERADORES NOS 12 MESES ANTERIORES À RECLAMAÇÃO, OU USD 100, O QUE FOR MAIOR. NADA NESTES TERMOS EXCLUI OU LIMITA A RESPONSABILIDADE POR MORTE OU LESÃO PESSOAL CAUSADA POR NEGLIGÊNCIA, FRAUDE OU QUALQUER OUTRA RESPONSABILIDADE QUE NÃO POSSA SER EXCLUÍDA OU LIMITADA NOS TERMOS DA LEGISLAÇÃO APLICÁVEL.';
 
   @override
   String get termsSection5Title => '5. DA PROPRIEDADE INTELECTUAL';
 
   @override
   String get termsSection5Body =>
-      'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, nos termos da Lei nº 9.610/1998 (Lei de Direitos Autorais). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, irrevogável, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma, podendo revogar tal licença mediante a exclusão do conteúdo ou encerramento da conta. A marca, logotipo, design e código-fonte do Whenote são de titularidade exclusiva da Empresa e protegidos pela Lei nº 9.279/1996 (Lei da Propriedade Industrial).';
+      'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, em conformidade com a legislação de direitos autorais aplicável (incluindo a Lei nº 9.610/1998 no Brasil, a Convenção de Berna e o U.S. Copyright Act). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma. Esta licença é revogável a qualquer momento mediante a exclusão do conteúdo ou encerramento da conta; após a revogação, a Empresa cessará a exibição do conteúdo em prazo razoável. A marca, logotipo, design e código-fonte do Whenote são de titularidade exclusiva dos Operadores e protegidos pela legislação de propriedade intelectual aplicável.';
 
   @override
   String get termsSection6Title => '6. DA VIGÊNCIA E RESCISÃO';
@@ -2286,15 +2326,22 @@ class AppLocalizationsPt extends AppLocalizations {
       'O Whenote empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a: (i) notificar todos os usuários cadastrados por e-mail e notificação no app com no mínimo 90 (noventa) dias de antecedência do encerramento definitivo; (ii) durante o período de aviso, disponibilizar a exportação de todos os dados do usuário (cartas, cápsulas, perfil, mídia) pelo app ou por e-mail; (iii) entregar todas as cartas bloqueadas cuja data de abertura caia dentro do período de aviso; (iv) após o período de 90 dias, excluir permanente e irreversivelmente todos os dados dos usuários dos seus servidores. A Empresa poderá estabelecer um Fundo de Continuidade — uma reserva financeira suficiente para manter a infraestrutura essencial (Firebase, armazenamento, funções de entrega) por pelo menos 2 (dois) anos mesmo que o app deixe de gerar receita. Quando estabelecido, a existência e o status deste fundo serão documentados nestes Termos. Este compromisso constitui uma garantia de produto, não uma obrigação legal, e poderá ser ajustado conforme a capacidade financeira da Empresa evolua.';
 
   @override
-  String get termsSection8Title => '8. DAS DISPOSIÇÕES GERAIS';
+  String get termsSection8Title => '8. RESOLUÇÃO DE DISPUTAS';
 
   @override
   String get termsSection8Body =>
-      'Estes Termos são regidos pelas leis do Estado da Flórida, Estados Unidos. Fica eleito o foro de Miami-Dade County, FL, EUA para dirimir quaisquer controvérsias decorrentes deste instrumento. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 1 de maio de 2026.';
+      'Para usuários residentes nos Estados Unidos: qualquer disputa decorrente destes Termos será resolvida por arbitragem vinculante administrada pela American Arbitration Association (AAA) segundo suas Regras de Arbitragem do Consumidor, conduzida em inglês, em Miami-Dade County, FL, EUA. Você e os Operadores concordam em renunciar a qualquer direito de participar de ação coletiva, arbitragem coletiva ou processo representativo. Você pode optar por não aderir a esta cláusula de arbitragem enviando notificação por escrito para juridico@whenote.app dentro de 30 dias do primeiro uso da Plataforma. Pedidos de tutela de urgência e disputas que se qualifiquem para juizado de pequenas causas estão isentos de arbitragem. Para usuários residentes na União Europeia ou Espaço Econômico Europeu: qualquer disputa será submetida aos tribunais competentes do país de residência habitual do usuário, em conformidade com o Regulamento (UE) nº 1215/2012 (Bruxelas I Reformulado). Nada nestes Termos limita seus direitos sob as leis obrigatórias de proteção ao consumidor do seu Estado-Membro. Para usuários residentes no Brasil: qualquer disputa será submetida ao foro do domicílio do usuário, nos termos do art. 101, inciso I, do Código de Defesa do Consumidor (Lei nº 8.078/1990). Para usuários residentes em qualquer outra jurisdição: as disputas serão submetidas aos tribunais da residência habitual do usuário, salvo se a lei local permitir a eleição de foro alternativo, caso em que os tribunais de Miami-Dade County, FL, EUA serão aplicáveis.';
+
+  @override
+  String get termsSection9Title => '9. DAS DISPOSIÇÕES GERAIS';
+
+  @override
+  String get termsSection9Body =>
+      'Estes Termos são regidos pelas leis do Estado da Flórida, Estados Unidos, sem consideração a princípios de conflito de leis. No entanto, esta escolha de lei não priva consumidores na União Europeia, Brasil, Reino Unido ou qualquer outra jurisdição da proteção conferida por disposições obrigatórias de suas leis locais de proteção ao consumidor, que se aplicarão na medida em que ofereçam maior proteção. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 2 de maio de 2026.';
 
   @override
   String get privacyIntro =>
-      'Esta Política de Privacidade (\"Política\") descreve como a Yuri Matos de Lima e Diego Ricardo Martins Rocha (\"Operadores\", \"nós\", \"nos\", \"nosso\") coletam, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.';
+      'Esta Política de Privacidade (\"Política\") descreve como Yuri Matos de Lima e Diego Ricardo Martins Rocha (\"Operadores\", \"nós\", \"nos\", \"nosso\") coletam, tratam, armazenam e compartilham os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) o Regulamento Geral de Proteção de Dados do Reino Unido — UK GDPR, conforme retido pelo European Union (Withdrawal) Act 2018, e o UK Data Protection Act 2018; (d) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (e) o Marco Civil da Internet (Lei nº 12.965/2014); e (f) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). Os Operadores atuam como Controladores de Dados (LGPD art. 5º VI / GDPR art. 4(7) / UK GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 2 de maio de 2026.';
 
   @override
   String get privacySection1Title => '1. DEFINIÇÕES';
@@ -2308,7 +2355,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection2Body =>
-      'Coletamos as seguintes categorias de dados pessoais:\n\n(a) Dados de Cadastro: nome completo, nome de exibição, endereço de e-mail, nome de usuário, foto de perfil (opcional) e texto biográfico (opcional).\n\n(b) Conteúdo Gerado pelo Usuário: cartas (texto, título, estado emocional), imagens de cartas manuscritas (capturadas pela câmera), mensagens de voz (até 1 minuto, capturadas pelo microfone), cápsulas do tempo (texto, tema, fotos), comentários em cartas públicas e links opcionais de música.\n\n(c) Dados de Localização Precisa (opt-in): quando você opta por anexar uma localização a uma carta ou cápsula, coletamos suas coordenadas GPS precisas (latitude e longitude) e o momento da captura. Você também pode ativar um requisito de proximidade (aproximadamente 10 metros) para o destinatário abrir a carta. A coleta de localização é sempre opcional e solicitada por carta ou cápsula — nunca coletamos localização em segundo plano.\n\n(d) Dados Técnicos e de Dispositivo: endereço IP, identificador do dispositivo, sistema operacional, versão do app, token de notificação push (Firebase Cloud Messaging), plataforma do dispositivo (Android/iOS/web), idioma preferido e logs de acesso nos termos do art. 15 do Marco Civil da Internet.\n\n(e) Dados de Analytics: eventos de uso (cartas criadas, abertas, compartilhadas; cápsulas criadas, abertas; visualizações do feed; curtidas, comentários, follows; visualizações de perfil; alterações de tema e idioma), visualizações de tela e relatórios de falhas/erros, coletados via Firebase Analytics e Firebase Crashlytics.\n\n(f) Dados Sociais: relações de seguidores/seguindo, bloqueios entre usuários, curtidas em cartas públicas e comentários.\n\n(g) Dados de Cobrança: quando os recursos de assinatura estão habilitados, armazenamos seu identificador de cliente Stripe, identificador de assinatura, nível de assinatura (free/plus/pro) e status da assinatura. Dados de cartão de pagamento são processados e armazenados exclusivamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(h) Dados de Moderação: denúncias de conteúdo enviadas por usuários (motivo, detalhe, conteúdo alvo), resultados de análise de moderação por IA (categorias sinalizadas e pontuações), registros de revisão humana de moderação e logs de incidentes de moderação.\n\n(i) Dados de Comunicação: mensagens de feedback do produto (incluindo metadados de plataforma e idioma do app) e solicitações de suporte.\n\n(j) Dados de Gamificação: registros de desbloqueio de badges e histórico de notificações no app.\n\nPara fins da CCPA, as categorias de PI coletadas nos últimos 12 meses incluem: identificadores (nome, e-mail, nome de usuário, ID do dispositivo); atividade de rede de internet/eletrônica (eventos de uso, logs de acesso); dados de geolocalização (GPS preciso quando opt-in); informações de áudio/visuais (mensagens de voz, fotos); e informações profissionais ou pessoais inferidas do conteúdo que você cria.';
+      'Coletamos as seguintes categorias de dados pessoais:\n\n(a) Dados de Cadastro: nome completo, nome de exibição, endereço de e-mail, nome de usuário, foto de perfil (opcional) e texto biográfico (opcional).\n\n(b) Conteúdo Gerado pelo Usuário: cartas (texto, título, estado emocional), imagens de cartas manuscritas (capturadas pela câmera), mensagens de voz (até 1 minuto, capturadas pelo microfone), cápsulas do tempo (texto, tema, fotos), comentários em cartas públicas e links opcionais de música.\n\n(c) Dados de Localização Precisa (opt-in): quando você opta por anexar uma localização a uma carta ou cápsula, coletamos suas coordenadas GPS precisas (latitude e longitude) e o momento da captura. Você também pode ativar um requisito de proximidade (aproximadamente 10 metros) para o destinatário abrir a carta. A coleta de localização é sempre opcional e solicitada por carta ou cápsula — nunca coletamos localização em segundo plano. Uma Avaliação de Impacto à Proteção de Dados (DPIA) nos termos do art. 35 do GDPR foi conduzida para o tratamento de dados de localização precisa, e está disponível mediante solicitação ao nosso DPO.\n\n(d) Dados Técnicos e de Dispositivo: endereço IP, identificador do dispositivo, sistema operacional, versão do app, token de notificação push (Firebase Cloud Messaging), plataforma do dispositivo (Android/iOS/web), idioma preferido e logs de acesso nos termos do art. 15 do Marco Civil da Internet.\n\n(e) Dados de Analytics: eventos de uso (cartas criadas, abertas, compartilhadas; cápsulas criadas, abertas; visualizações do feed; curtidas, comentários, follows; visualizações de perfil; alterações de tema e idioma), visualizações de tela e relatórios de falhas/erros, coletados via Firebase Analytics e Firebase Crashlytics.\n\n(f) Dados Sociais: relações de seguidores/seguindo, bloqueios entre usuários, curtidas em cartas públicas e comentários.\n\n(g) Dados de Cobrança: quando os recursos de assinatura estão habilitados, armazenamos seu identificador de cliente Stripe, identificador de assinatura, nível de assinatura (free/plus/pro) e status da assinatura. Dados de cartão de pagamento são processados e armazenados exclusivamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(h) Dados de Moderação: denúncias de conteúdo enviadas por usuários (motivo, detalhe, conteúdo alvo), resultados de análise de moderação por IA (categorias sinalizadas e pontuações), registros de revisão humana de moderação e logs de incidentes de moderação.\n\n(i) Dados de Comunicação: mensagens de feedback do produto (incluindo metadados de plataforma e idioma do app) e solicitações de suporte.\n\n(j) Dados de Gamificação: registros de desbloqueio de badges e histórico de notificações no app.\n\nPara fins da CCPA, as categorias de PI coletadas nos últimos 12 meses incluem: identificadores (nome, e-mail, nome de usuário, ID do dispositivo); atividade de rede de internet/eletrônica (eventos de uso, logs de acesso); dados de geolocalização (GPS preciso quando opt-in); informações de áudio/visuais (mensagens de voz, fotos); e informações profissionais ou pessoais inferidas do conteúdo que você cria.';
 
   @override
   String get privacySection3Title => '3. COMO COLETAMOS DADOS';
@@ -2344,7 +2391,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection7Body =>
-      'Não vendemos, alugamos ou comercializamos seus dados pessoais. Para fins da CCPA: não vendemos nem compartilhamos (conforme definido na CCPA § 1798.140(ad) e (ah)) informações pessoais de consumidores nos últimos 12 meses, e não temos conhecimento efetivo de venda ou compartilhamento de PI de consumidores menores de 16 anos. Os dados são compartilhados com as seguintes categorias de prestadores de serviço/operadores, cada um vinculado por acordos de processamento de dados:\n\n(a) Google LLC / Firebase: infraestrutura em nuvem (banco de dados Firestore, Cloud Storage para arquivos, Cloud Functions para lógica do servidor), serviços de autenticação, notificações push (FCM), analytics (Firebase Analytics), relatórios de falhas (Crashlytics) e atestação de dispositivo (App Check). O Google trata dados como Operador sob nossas instruções. Compromissos de privacidade do Google: https://firebase.google.com/support/privacy.\n\n(b) OpenAI, Inc.: conteúdo textual é enviado à API de Moderação da OpenAI exclusivamente para análise de segurança de conteúdo. Apenas o texto do conteúdo sendo moderado é transmitido — nenhum identificador de usuário, imagem ou dado de voz é enviado. A política de uso de dados da OpenAI para clientes da API estabelece que inputs da API não são usados para treinar modelos.\n\n(c) Twilio Inc. (SendGrid): endereços de e-mail de destinatários externos são processados para enviar e-mails de convite quando uma carta é endereçada a alguém que ainda não possui conta. Apenas o e-mail do destinatário, um nome de exibição do remetente e um título da carta são incluídos.\n\n(d) Stripe, Inc.: quando os recursos de assinatura/pagamento estão ativos, o Stripe processa dados de cartão de pagamento, identificadores de cliente e status de assinatura. Os dados do cartão são coletados diretamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(e) Google Fonts: o app pode carregar fontes tipográficas dos servidores do Google, o que envolve o envio do seu endereço IP para o Google.\n\n(f) Autoridades públicas: podemos compartilhar dados com autoridades governamentais quando exigido por ordem judicial ou requisição legal fundamentada.\n\n(g) Transações corporativas: em caso de fusão, aquisição ou reestruturação, seus dados poderão ser transferidos à entidade sucessora, que ficará vinculada a esta Política.';
+      'Não vendemos, alugamos ou comercializamos seus dados pessoais. Para fins da CCPA: não vendemos nem compartilhamos (conforme definido na CCPA § 1798.140(ad) e (ah)) informações pessoais de consumidores nos últimos 12 meses, e não temos conhecimento efetivo de venda ou compartilhamento de PI de consumidores menores de 16 anos. Os dados são compartilhados com as seguintes categorias de prestadores de serviço/operadores, cada um vinculado por acordos de processamento de dados (DPAs) nos termos do art. 28 do GDPR e art. 39 da LGPD. Cópias destes DPAs estão disponíveis mediante solicitação em dpo@whenote.app:\n\n(a) Google LLC / Firebase / Google Workspace: infraestrutura em nuvem (banco de dados Firestore, Cloud Storage para arquivos, Cloud Functions para lógica do servidor), serviços de autenticação, emails transacionais (verificação de email, redefinição de palavra-passe) via Google Workspace SMTP Relay, notificações push (FCM), analytics (Firebase Analytics), relatórios de falhas (Crashlytics) e atestação de dispositivo (App Check). O Google trata dados como Operador sob nossas instruções. Compromissos de privacidade do Google: https://firebase.google.com/support/privacy.\n\n(b) OpenAI, Inc.: conteúdo textual é enviado à API de Moderação da OpenAI exclusivamente para análise de segurança de conteúdo. Apenas o texto do conteúdo sendo moderado é transmitido — nenhum identificador de usuário, imagem ou dado de voz é enviado. A política de uso de dados da OpenAI para clientes da API estabelece que inputs da API não são usados para treinar modelos.\n\n(c) Twilio Inc. (SendGrid): endereços de e-mail de destinatários externos são processados para enviar e-mails de convite quando uma carta é endereçada a alguém que ainda não possui conta. Apenas o e-mail do destinatário, um nome de exibição do remetente e um título da carta são incluídos.\n\n(d) Stripe, Inc.: quando os recursos de assinatura/pagamento estão ativos, o Stripe processa dados de cartão de pagamento, identificadores de cliente e status de assinatura. Os dados do cartão são coletados diretamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(e) Google Fonts: o app pode carregar fontes tipográficas dos servidores do Google, o que envolve o envio do seu endereço IP para o Google.\n\n(f) Autoridades públicas: podemos compartilhar dados com autoridades governamentais quando exigido por ordem judicial ou requisição legal fundamentada.\n\n(g) Transações corporativas: em caso de fusão, aquisição ou reestruturação, seus dados poderão ser transferidos à entidade sucessora, que ficará vinculada a esta Política.';
 
   @override
   String get privacySection8Title =>
@@ -2373,7 +2420,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection11Body =>
-      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) a exclusão é irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
+      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) após a confirmação, sua conta entra em um período de carência de 15 dias durante o qual você pode cancelar a solicitação de exclusão em Configurações; expirado esse período, a exclusão é executada de forma permanente e irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
 
   @override
   String get privacySection12Title => '12. PORTABILIDADE E EXPORTAÇÃO DE DADOS';
@@ -2387,7 +2434,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection13Body =>
-      'O Whenote não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Durante o cadastro, os usuários devem confirmar que têm 13 anos ou mais. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos sem consentimento parental verificável, excluiremos prontamente tais dados. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@whenote.app para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma.';
+      'O Whenote não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Na União Europeia e no Reino Unido, a idade mínima para consentimento ao tratamento de dados é de 16 anos (ou a idade inferior definida por cada Estado-Membro nos termos do art. 8 do GDPR, mas nunca inferior a 13). Durante o cadastro, os usuários devem informar sua data de nascimento e confirmar que atendem ao requisito de idade mínima aplicável à sua jurisdição. Se tomarmos conhecimento de que coletamos dados de uma criança abaixo da idade mínima aplicável sem consentimento parental verificável, excluiremos prontamente tais dados e a conta associada. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@whenote.app para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma. Estamos comprometidos em cumprir os padrões em evolução de verificação de idade, incluindo o UK Age Appropriate Design Code (AADC) e frameworks similares.';
 
   @override
   String get privacySection14Title => '14. MEDIDAS DE SEGURANÇA';
@@ -2401,7 +2448,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection15Body =>
-      'A Plataforma não utiliza cookies tradicionais de navegador. No entanto, as seguintes tecnologias coletam dados automaticamente: (a) Firebase Analytics: coleta eventos de uso anônimos, visualizações de tela e propriedades do dispositivo usando identificadores móveis. Você pode redefinir seu identificador de publicidade nas configurações do dispositivo. O período de retenção do Firebase Analytics é de 14 meses. (b) Firebase Crashlytics: coleta relatórios de falhas incluindo estado do dispositivo, versão do app e rastreamento de pilha para nos ajudar a corrigir bugs. (c) Firebase App Check: verifica a integridade do dispositivo para proteção contra abusos automatizados. Estas tecnologias são essenciais para a operação, segurança e melhoria da Plataforma. Não utilizamos nenhuma tecnologia de rastreamento para publicidade ou rastreamento comportamental entre sites/apps. Respeitamos o sinal Global Privacy Control (GPC) como solicitação válida de opt-out nos termos da CCPA.';
+      'A Plataforma não utiliza cookies tradicionais de navegador. No entanto, as seguintes tecnologias coletam dados automaticamente: (a) Firebase Analytics: coleta eventos de uso, visualizações de tela e propriedades do dispositivo usando identificadores móveis. Na União Europeia e no Reino Unido, identificadores de dispositivos móveis podem ser considerados equivalentes a cookies nos termos da Diretiva ePrivacy (2002/58/CE) e do UK Privacy and Electronic Communications Regulations (PECR). Quando exigido, obtemos seu consentimento antes de ativar a coleta de analytics. Você pode redefinir seu identificador de publicidade nas configurações do dispositivo ou desativar analytics nas configurações do app. O período de retenção do Firebase Analytics é de 14 meses. (b) Firebase Crashlytics: coleta relatórios de falhas incluindo estado do dispositivo, versão do app e rastreamento de pilha para nos ajudar a corrigir bugs. O Crashlytics é classificado como tecnologia estritamente necessária para a estabilidade e segurança da Plataforma. (c) Firebase App Check: verifica a integridade do dispositivo para proteção contra abusos automatizados. Estas tecnologias são essenciais para a operação, segurança e melhoria da Plataforma. Não utilizamos nenhuma tecnologia de rastreamento para publicidade ou rastreamento comportamental entre sites/apps.';
 
   @override
   String get privacySection16Title => '16. ALTERAÇÕES NESTA POLÍTICA';
@@ -2415,7 +2462,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get privacySection17Body =>
-      'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nÚltima atualização: 1 de maio de 2026.';
+      'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nRepresentante na UE/EEE (GDPR art. 27): Yuri Matos de Lima, Oviedo, Espanha — eu-representative@whenote.app. Este representante é designado para ser contactado por autoridades supervisoras e titulares de dados na UE/EEE em todas as questões relacionadas ao tratamento de dados pessoais.\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nReino Unido — Você pode apresentar reclamação ao Information Commissioner\'s Office (ICO): https://ico.org.uk/make-a-complaint\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nÚltima atualização: 2 de maio de 2026.';
 
   @override
   String get letterPrivacyPublicLabel => 'Pública';
@@ -2445,6 +2492,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get feedReadFullLetter => 'Ler carta completa';
 
   @override
+  String get feedOpenLetter => 'Abrir carta';
+
+  @override
+  String get feedCloseLetter => 'Fechar';
+
+  @override
   String get feedCardToAnonymous => 'Para: alguém especial';
 
   @override
@@ -2472,11 +2525,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String get registerAcceptTermsAnd => ' e a ';
 
   @override
-  String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
-
-  @override
   String get registerMustAcceptTerms =>
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Antes de continuar';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'Para criar sua conta, confirme o seguinte:';
+
+  @override
+  String get socialSignInContinue => 'Continuar';
+
+  @override
+  String get registerDateOfBirthLabel => 'DATA DE NASCIMENTO';
+
+  @override
+  String get registerDateOfBirthHint => 'Selecione a sua data de nascimento';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'Deve ter pelo menos $minAge anos para utilizar esta aplicação.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';
@@ -2539,6 +2610,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsDeletePasswordHint => 'Digite sua senha atual';
 
   @override
+  String get settingsDeleteReauthLabel => 'VERIFIQUE SUA IDENTIDADE';
+
+  @override
+  String get settingsDeleteReauthApple => 'Verificar com a Apple';
+
+  @override
+  String get settingsDeleteReauthGoogle => 'Verificar com o Google';
+
+  @override
+  String get settingsDeleteReauthSuccess => 'Identidade verificada';
+
+  @override
   String get settingsDeleteIrreversibleConfirm =>
       'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
 
@@ -2563,6 +2646,36 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsDeleteCancelButton => 'Cancelar exclusão';
+
+  @override
+  String get settingsRestrictProcessing => 'Restringir processamento';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Manter dados mas parar todo o processamento (RGPD Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Os seus dados serão mantidos mas deixarão de ser processados. Não poderá enviar cartas, cápsulas ou interagir com conteúdo até levantar a restrição. Pode levantá-la a qualquer momento.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Processamento restringido. Os seus dados estão armazenados mas não são processados.';
+
+  @override
+  String get settingsLiftRestriction => 'Levantar restrição';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Retomar o processamento normal dos seus dados';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'Isto retomará o processamento normal dos seus dados. Poderá voltar a enviar cartas, cápsulas e interagir com conteúdo.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restrição levantada. A sua conta está totalmente ativa novamente.';
 
   @override
   String get settingsDeleteCancelled =>
@@ -2817,6 +2930,26 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get followingEmpty => 'Não segue ninguém ainda';
+
+  @override
+  String get analyticsConsentTitle => 'Ajude-nos a melhorar';
+
+  @override
+  String get analyticsConsentBody =>
+      'Utilizamos dados de uso anónimos para compreender como a aplicação é utilizada. Nenhum dado pessoal é recolhido. Pode alterar esta opção a qualquer momento nas Definições.';
+
+  @override
+  String get analyticsConsentAccept => 'Aceitar';
+
+  @override
+  String get analyticsConsentDecline => 'Não, obrigado';
+
+  @override
+  String get settingsAnalyticsToggle => 'Dados de utilização';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Permitir dados de uso anónimos para ajudar a melhorar a aplicação';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -4346,6 +4479,34 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get userProfileEmptyLetters => 'Nenhuma carta pública ainda';
 
   @override
+  String get profileTabOpened => 'Abertas';
+
+  @override
+  String get profileTabSealed => 'Seladas';
+
+  @override
+  String get profileSealedLabel => 'Selada';
+
+  @override
+  String get profileSealedStill => 'Esta carta ainda está selada ⏳';
+
+  @override
+  String get profileSealedReady => 'Esta carta está pronta para ser aberta! ✨';
+
+  @override
+  String get profileSealedAvailable => 'Disponível para abrir!';
+
+  @override
+  String get profileSealedEmptyTitle => 'Nenhuma carta selada';
+
+  @override
+  String get profileSealedEmptySubtitle =>
+      'Cartas seladas recebidas\naparecerão aqui';
+
+  @override
+  String get userProfileSealedEmptyTitle => 'Nenhuma carta selada ainda';
+
+  @override
   String get searchTitle => 'Buscar pessoas';
 
   @override
@@ -4523,6 +4684,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsDataSection => 'DADOS E PRIVACIDADE';
 
   @override
+  String get settingsExportData => 'Exportar meus dados';
+
+  @override
+  String get settingsExportDataSubtitle =>
+      'Baixe todos os seus dados em um arquivo ZIP';
+
+  @override
   String get settingsExportLetters => 'Exportar minhas cartas';
 
   @override
@@ -4592,22 +4760,27 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   }
 
   @override
-  String get settingsExportTitle => 'Exportar cartas';
+  String get settingsExportTitle => 'Exportar seus dados';
 
   @override
   String get settingsExportBody =>
-      'Suas cartas abertas serão exportadas em formato PDF. Isso pode levar alguns minutos.';
+      'Todos os seus dados — perfil, cartas, cápsulas, comentários, curtidas, seguidores e medalhas — serão exportados em um arquivo ZIP com arquivos JSON e anexos de mídia.';
 
   @override
   String get settingsExportButton => 'Exportar como ZIP';
 
   @override
   String get settingsExportZipSubtitle =>
-      'Um PDF por carta, mais áudio e imagem manuscrita quando houver.';
+      'Formato legível por máquina (JSON) para portabilidade de dados. Pode levar alguns minutos.';
 
   @override
   String settingsExportSuccess(int count) {
     return '$count cartas exportadas.';
+  }
+
+  @override
+  String settingsExportCompleteSuccess(int items, int media) {
+    return '$items itens e $media arquivos de mídia exportados.';
   }
 
   @override
@@ -4678,7 +4851,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get aboutSecurityBody =>
-      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são protegidos com criptografia de ponta e armazenados na infraestrutura Google Cloud Platform.';
+      'Desenvolvido em conformidade com a LGPD (Lei nº 13.709/2018) e o Marco Civil da Internet (Lei nº 12.965/2014). Seus dados são transmitidos por conexão segura (TLS) e armazenados na infraestrutura Google Cloud Platform, que utiliza criptografia em repouso.';
 
   @override
   String get aboutComplianceTitle => 'Conformidade Legal';
@@ -5061,7 +5234,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get termsSection2Body =>
-      'Para utilizar a Plataforma, o usuário deverá: (i) ter capacidade civil plena, nos termos do art. 3º do Código Civil Brasileiro (Lei nº 10.406/2002), ou ser assistido por responsável legal quando menor de 16 anos; (ii) fornecer dados verídicos no cadastro, sob pena de cancelamento imediato da conta, nos termos do art. 7º, inciso VI, do Marco Civil da Internet; (iii) manter a confidencialidade de suas credenciais de acesso, sendo responsável por todas as atividades realizadas em sua conta.';
+      'Para utilizar a Plataforma, o usuário deverá: (i) ter pelo menos 13 anos de idade (ou a idade mínima exigida pela legislação aplicável no país de residência do usuário — por exemplo, 16 anos em determinados Estados-Membros da UE nos termos do art. 8 do GDPR); usuários abaixo da idade mínima aplicável só poderão usar a Plataforma com consentimento parental ou de responsável legal verificável; (ii) fornecer dados verídicos no cadastro, sob pena de cancelamento imediato da conta; (iii) manter a confidencialidade de suas credenciais de acesso, sendo responsável por todas as atividades realizadas em sua conta. Durante o cadastro, o usuário deverá informar sua data de nascimento e confirmar que atende ao requisito de idade mínima.';
 
   @override
   String get termsSection3Title =>
@@ -5069,21 +5242,21 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get termsSection3Body =>
-      'O usuário se compromete a utilizar a Plataforma em conformidade com a legislação vigente, especialmente: (i) a Lei nº 12.965/2014 (Marco Civil da Internet); (ii) a Lei nº 13.709/2018 (LGPD); (iii) o Código Penal Brasileiro no que tange a crimes contra a honra (arts. 138 a 140); (iv) a Lei nº 7.716/1989 (Lei de Crimes de Preconceito); e (v) o Estatuto da Criança e do Adolescente (ECA — Lei nº 8.069/1990). É expressamente vedado ao usuário publicar conteúdo que: (a) seja difamatório, calunioso ou injurioso; (b) incite violência, ódio ou discriminação de qualquer natureza; (c) viole direitos de propriedade intelectual de terceiros; (d) constitua assédio, cyberbullying ou perseguição; (e) envolva pornografia infantil ou conteúdo sexual envolvendo menores de idade.';
+      'O usuário se compromete a utilizar a Plataforma em conformidade com todas as leis aplicáveis em sua jurisdição, incluindo, mas não se limitando a: (i) no Brasil — Lei nº 12.965/2014 (Marco Civil da Internet), Lei nº 13.709/2018 (LGPD), o Código Penal Brasileiro no que tange a crimes contra a honra (arts. 138 a 140), Lei nº 7.716/1989 (Lei de Crimes de Preconceito) e o Estatuto da Criança e do Adolescente (ECA — Lei nº 8.069/1990); (ii) na União Europeia — o Regulamento Geral de Proteção de Dados (GDPR), o Regulamento de Serviços Digitais (Regulamento UE 2022/2065) e as leis nacionais aplicáveis de cada Estado-Membro; (iii) nos Estados Unidos — leis federais incluindo o Communications Decency Act (47 U.S.C. § 230), o Children\'s Online Privacy Protection Act (COPPA) e leis estaduais aplicáveis incluindo o California Consumer Privacy Act (CCPA/CPRA); (iv) em qualquer outra jurisdição — todas as leis locais aplicáveis que regem conduta online, proteção de dados, propriedade intelectual e moderação de conteúdo. É expressamente vedado ao usuário publicar conteúdo que: (a) seja difamatório, calunioso ou injurioso; (b) incite violência, ódio ou discriminação de qualquer natureza; (c) viole direitos de propriedade intelectual de terceiros; (d) constitua assédio, cyberbullying ou perseguição; (e) envolva material de abuso sexual infantil (CSAM) ou conteúdo sexual envolvendo menores de idade; (f) viole qualquer lei ou regulamento aplicável na jurisdição do usuário.';
 
   @override
   String get termsSection4Title => '4. DA RESPONSABILIDADE CIVIL DA EMPRESA';
 
   @override
   String get termsSection4Body =>
-      'A Empresa, na qualidade de provedora de aplicação, não se responsabiliza pelo conteúdo gerado pelos usuários (\"UGC — User Generated Content\"), nos termos do art. 19 do Marco Civil da Internet. A responsabilidade civil da Empresa somente será configurada mediante descumprimento de ordem judicial específica determinando a remoção de conteúdo. A Empresa adota mecanismos de moderação e denúncia, sem que isso implique assunção de responsabilidade editorial sobre o conteúdo dos usuários.';
+      'A Empresa, na qualidade de provedora de aplicação, não se responsabiliza pelo conteúdo gerado pelos usuários (\"UGC — User Generated Content\"), nos termos do art. 19 do Marco Civil da Internet (Brasil) e em consonância com a Seção 230 do Communications Decency Act (EUA) e o Regulamento de Serviços Digitais (UE). A responsabilidade civil da Empresa somente será configurada mediante descumprimento de ordem judicial específica determinando a remoção de conteúdo ou, na UE, ao tomar conhecimento efetivo de conteúdo ilegal e não agir com celeridade. A Empresa adota mecanismos de moderação e denúncia, sem que isso implique assunção de responsabilidade editorial sobre o conteúdo dos usuários.\n\nA PLATAFORMA É FORNECIDA \"NO ESTADO EM QUE SE ENCONTRA\" E \"CONFORME DISPONÍVEL\", SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS OU IMPLÍCITAS, INCLUINDO, MAS NÃO SE LIMITANDO A, GARANTIAS IMPLÍCITAS DE COMERCIALIZAÇÃO, ADEQUAÇÃO A UM PROPÓSITO ESPECÍFICO E NÃO VIOLAÇÃO. NA MÁXIMA EXTENSÃO PERMITIDA PELA LEGISLAÇÃO APLICÁVEL, OS OPERADORES NÃO SERÃO RESPONSÁVEIS POR QUAISQUER DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS, CONSEQUENTES OU PUNITIVOS, OU POR QUALQUER PERDA DE LUCROS, DADOS OU CLIENTELA, DECORRENTES DE OU RELACIONADOS AO USO DA PLATAFORMA. A RESPONSABILIDADE TOTAL AGREGADA DOS OPERADORES NÃO EXCEDERÁ O VALOR PAGO AOS OPERADORES NOS 12 MESES ANTERIORES À RECLAMAÇÃO, OU USD 100, O QUE FOR MAIOR. NADA NESTES TERMOS EXCLUI OU LIMITA A RESPONSABILIDADE POR MORTE OU LESÃO PESSOAL CAUSADA POR NEGLIGÊNCIA, FRAUDE OU QUALQUER OUTRA RESPONSABILIDADE QUE NÃO POSSA SER EXCLUÍDA OU LIMITADA NOS TERMOS DA LEGISLAÇÃO APLICÁVEL.';
 
   @override
   String get termsSection5Title => '5. DA PROPRIEDADE INTELECTUAL';
 
   @override
   String get termsSection5Body =>
-      'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, nos termos da Lei nº 9.610/1998 (Lei de Direitos Autorais). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, irrevogável, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma, podendo revogar tal licença mediante a exclusão do conteúdo ou encerramento da conta. A marca, logotipo, design e código-fonte do Whenote são de titularidade exclusiva da Empresa e protegidos pela Lei nº 9.279/1996 (Lei da Propriedade Industrial).';
+      'O usuário é e permanece titular dos direitos autorais sobre o conteúdo que cria na Plataforma, em conformidade com a legislação de direitos autorais aplicável (incluindo a Lei nº 9.610/1998 no Brasil, a Convenção de Berna e o U.S. Copyright Act). Ao publicar conteúdo no Feed Público, o usuário concede à Empresa licença não exclusiva, gratuita e mundial para reproduzir, distribuir e exibir tal conteúdo exclusivamente no âmbito da Plataforma. Esta licença é revogável a qualquer momento mediante a exclusão do conteúdo ou encerramento da conta; após a revogação, a Empresa cessará a exibição do conteúdo em prazo razoável. A marca, logotipo, design e código-fonte do Whenote são de titularidade exclusiva dos Operadores e protegidos pela legislação de propriedade intelectual aplicável.';
 
   @override
   String get termsSection6Title => '6. DA VIGÊNCIA E RESCISÃO';
@@ -5101,15 +5274,22 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'O Whenote empreende todos os esforços para garantir a entrega de todas as cartas e cápsulas nas datas escolhidas pelo remetente. Em caso de descontinuação planejada dos serviços, a Empresa se compromete a: (i) notificar todos os usuários cadastrados por e-mail e notificação no app com no mínimo 90 (noventa) dias de antecedência do encerramento definitivo; (ii) durante o período de aviso, disponibilizar a exportação de todos os dados do usuário (cartas, cápsulas, perfil, mídia) pelo app ou por e-mail; (iii) entregar todas as cartas bloqueadas cuja data de abertura caia dentro do período de aviso; (iv) após o período de 90 dias, excluir permanente e irreversivelmente todos os dados dos usuários dos seus servidores. A Empresa poderá estabelecer um Fundo de Continuidade — uma reserva financeira suficiente para manter a infraestrutura essencial (Firebase, armazenamento, funções de entrega) por pelo menos 2 (dois) anos mesmo que o app deixe de gerar receita. Quando estabelecido, a existência e o status deste fundo serão documentados nestes Termos. Este compromisso constitui uma garantia de produto, não uma obrigação legal, e poderá ser ajustado conforme a capacidade financeira da Empresa evolua.';
 
   @override
-  String get termsSection8Title => '8. DAS DISPOSIÇÕES GERAIS';
+  String get termsSection8Title => '8. RESOLUÇÃO DE DISPUTAS';
 
   @override
   String get termsSection8Body =>
-      'Estes Termos são regidos pelas leis do Estado da Flórida, Estados Unidos. Fica eleito o foro de Miami-Dade County, FL, EUA para dirimir quaisquer controvérsias decorrentes deste instrumento. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 1 de maio de 2026.';
+      'Para usuários residentes nos Estados Unidos: qualquer disputa decorrente destes Termos será resolvida por arbitragem vinculante administrada pela American Arbitration Association (AAA) segundo suas Regras de Arbitragem do Consumidor, conduzida em inglês, em Miami-Dade County, FL, EUA. Você e os Operadores concordam em renunciar a qualquer direito de participar de ação coletiva, arbitragem coletiva ou processo representativo. Você pode optar por não aderir a esta cláusula de arbitragem enviando notificação por escrito para juridico@whenote.app dentro de 30 dias do primeiro uso da Plataforma. Pedidos de tutela de urgência e disputas que se qualifiquem para juizado de pequenas causas estão isentos de arbitragem. Para usuários residentes na União Europeia ou Espaço Econômico Europeu: qualquer disputa será submetida aos tribunais competentes do país de residência habitual do usuário, em conformidade com o Regulamento (UE) nº 1215/2012 (Bruxelas I Reformulado). Nada nestes Termos limita seus direitos sob as leis obrigatórias de proteção ao consumidor do seu Estado-Membro. Para usuários residentes no Brasil: qualquer disputa será submetida ao foro do domicílio do usuário, nos termos do art. 101, inciso I, do Código de Defesa do Consumidor (Lei nº 8.078/1990). Para usuários residentes em qualquer outra jurisdição: as disputas serão submetidas aos tribunais da residência habitual do usuário, salvo se a lei local permitir a eleição de foro alternativo, caso em que os tribunais de Miami-Dade County, FL, EUA serão aplicáveis.';
+
+  @override
+  String get termsSection9Title => '9. DAS DISPOSIÇÕES GERAIS';
+
+  @override
+  String get termsSection9Body =>
+      'Estes Termos são regidos pelas leis do Estado da Flórida, Estados Unidos, sem consideração a princípios de conflito de leis. No entanto, esta escolha de lei não priva consumidores na União Europeia, Brasil, Reino Unido ou qualquer outra jurisdição da proteção conferida por disposições obrigatórias de suas leis locais de proteção ao consumidor, que se aplicarão na medida em que ofereçam maior proteção. A nulidade de qualquer cláusula não afeta a validade das demais. Dúvidas e notificações devem ser encaminhadas para: juridico@whenote.app. Última atualização: 2 de maio de 2026.';
 
   @override
   String get privacyIntro =>
-      'Esta Política de Privacidade (\"Política\") descreve como a Yuri Matos de Lima e Diego Ricardo Martins Rocha (\"Operadores\", \"nós\", \"nos\", \"nosso\") coletam, trata, armazena e compartilha os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (d) o Marco Civil da Internet (Lei nº 12.965/2014); e (e) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). A Empresa atua como Controladora de Dados (LGPD art. 5º VI / GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 10 de abril de 2026.';
+      'Esta Política de Privacidade (\"Política\") descreve como Yuri Matos de Lima e Diego Ricardo Martins Rocha (\"Operadores\", \"nós\", \"nos\", \"nosso\") coletam, tratam, armazenam e compartilham os dados pessoais dos usuários da plataforma e do aplicativo móvel Whenote (\"Plataforma\"). Esta Política tem alcance global e está em conformidade com: (a) a Lei Geral de Proteção de Dados — LGPD (Lei nº 13.709/2018); (b) o Regulamento Geral de Proteção de Dados da União Europeia — GDPR (Regulamento EU 2016/679); (c) o Regulamento Geral de Proteção de Dados do Reino Unido — UK GDPR, conforme retido pelo European Union (Withdrawal) Act 2018, e o UK Data Protection Act 2018; (d) a Lei de Privacidade do Consumidor da Califórnia e a Lei de Direitos de Privacidade da Califórnia — CCPA/CPRA (California Civil Code §§ 1798.100–1798.199.100); (e) o Marco Civil da Internet (Lei nº 12.965/2014); e (f) a Lei de Proteção da Privacidade Online das Crianças dos EUA — COPPA (16 CFR Part 312). Os Operadores atuam como Controladores de Dados (LGPD art. 5º VI / GDPR art. 4(7) / UK GDPR art. 4(7)) e como \"Business\" nos termos da CCPA. Data de vigência: 2 de maio de 2026.';
 
   @override
   String get privacySection1Title => '1. DEFINIÇÕES';
@@ -5123,7 +5303,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection2Body =>
-      'Coletamos as seguintes categorias de dados pessoais:\n\n(a) Dados de Cadastro: nome completo, nome de exibição, endereço de e-mail, nome de usuário, foto de perfil (opcional) e texto biográfico (opcional).\n\n(b) Conteúdo Gerado pelo Usuário: cartas (texto, título, estado emocional), imagens de cartas manuscritas (capturadas pela câmera), mensagens de voz (até 1 minuto, capturadas pelo microfone), cápsulas do tempo (texto, tema, fotos), comentários em cartas públicas e links opcionais de música.\n\n(c) Dados de Localização Precisa (opt-in): quando você opta por anexar uma localização a uma carta ou cápsula, coletamos suas coordenadas GPS precisas (latitude e longitude) e o momento da captura. Você também pode ativar um requisito de proximidade (aproximadamente 10 metros) para o destinatário abrir a carta. A coleta de localização é sempre opcional e solicitada por carta ou cápsula — nunca coletamos localização em segundo plano.\n\n(d) Dados Técnicos e de Dispositivo: endereço IP, identificador do dispositivo, sistema operacional, versão do app, token de notificação push (Firebase Cloud Messaging), plataforma do dispositivo (Android/iOS/web), idioma preferido e logs de acesso nos termos do art. 15 do Marco Civil da Internet.\n\n(e) Dados de Analytics: eventos de uso (cartas criadas, abertas, compartilhadas; cápsulas criadas, abertas; visualizações do feed; curtidas, comentários, follows; visualizações de perfil; alterações de tema e idioma), visualizações de tela e relatórios de falhas/erros, coletados via Firebase Analytics e Firebase Crashlytics.\n\n(f) Dados Sociais: relações de seguidores/seguindo, bloqueios entre usuários, curtidas em cartas públicas e comentários.\n\n(g) Dados de Cobrança: quando os recursos de assinatura estão habilitados, armazenamos seu identificador de cliente Stripe, identificador de assinatura, nível de assinatura (free/plus/pro) e status da assinatura. Dados de cartão de pagamento são processados e armazenados exclusivamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(h) Dados de Moderação: denúncias de conteúdo enviadas por usuários (motivo, detalhe, conteúdo alvo), resultados de análise de moderação por IA (categorias sinalizadas e pontuações), registros de revisão humana de moderação e logs de incidentes de moderação.\n\n(i) Dados de Comunicação: mensagens de feedback do produto (incluindo metadados de plataforma e idioma do app) e solicitações de suporte.\n\n(j) Dados de Gamificação: registros de desbloqueio de badges e histórico de notificações no app.\n\nPara fins da CCPA, as categorias de PI coletadas nos últimos 12 meses incluem: identificadores (nome, e-mail, nome de usuário, ID do dispositivo); atividade de rede de internet/eletrônica (eventos de uso, logs de acesso); dados de geolocalização (GPS preciso quando opt-in); informações de áudio/visuais (mensagens de voz, fotos); e informações profissionais ou pessoais inferidas do conteúdo que você cria.';
+      'Coletamos as seguintes categorias de dados pessoais:\n\n(a) Dados de Cadastro: nome completo, nome de exibição, endereço de e-mail, nome de usuário, foto de perfil (opcional) e texto biográfico (opcional).\n\n(b) Conteúdo Gerado pelo Usuário: cartas (texto, título, estado emocional), imagens de cartas manuscritas (capturadas pela câmera), mensagens de voz (até 1 minuto, capturadas pelo microfone), cápsulas do tempo (texto, tema, fotos), comentários em cartas públicas e links opcionais de música.\n\n(c) Dados de Localização Precisa (opt-in): quando você opta por anexar uma localização a uma carta ou cápsula, coletamos suas coordenadas GPS precisas (latitude e longitude) e o momento da captura. Você também pode ativar um requisito de proximidade (aproximadamente 10 metros) para o destinatário abrir a carta. A coleta de localização é sempre opcional e solicitada por carta ou cápsula — nunca coletamos localização em segundo plano. Uma Avaliação de Impacto à Proteção de Dados (DPIA) nos termos do art. 35 do GDPR foi conduzida para o tratamento de dados de localização precisa, e está disponível mediante solicitação ao nosso DPO.\n\n(d) Dados Técnicos e de Dispositivo: endereço IP, identificador do dispositivo, sistema operacional, versão do app, token de notificação push (Firebase Cloud Messaging), plataforma do dispositivo (Android/iOS/web), idioma preferido e logs de acesso nos termos do art. 15 do Marco Civil da Internet.\n\n(e) Dados de Analytics: eventos de uso (cartas criadas, abertas, compartilhadas; cápsulas criadas, abertas; visualizações do feed; curtidas, comentários, follows; visualizações de perfil; alterações de tema e idioma), visualizações de tela e relatórios de falhas/erros, coletados via Firebase Analytics e Firebase Crashlytics.\n\n(f) Dados Sociais: relações de seguidores/seguindo, bloqueios entre usuários, curtidas em cartas públicas e comentários.\n\n(g) Dados de Cobrança: quando os recursos de assinatura estão habilitados, armazenamos seu identificador de cliente Stripe, identificador de assinatura, nível de assinatura (free/plus/pro) e status da assinatura. Dados de cartão de pagamento são processados e armazenados exclusivamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(h) Dados de Moderação: denúncias de conteúdo enviadas por usuários (motivo, detalhe, conteúdo alvo), resultados de análise de moderação por IA (categorias sinalizadas e pontuações), registros de revisão humana de moderação e logs de incidentes de moderação.\n\n(i) Dados de Comunicação: mensagens de feedback do produto (incluindo metadados de plataforma e idioma do app) e solicitações de suporte.\n\n(j) Dados de Gamificação: registros de desbloqueio de badges e histórico de notificações no app.\n\nPara fins da CCPA, as categorias de PI coletadas nos últimos 12 meses incluem: identificadores (nome, e-mail, nome de usuário, ID do dispositivo); atividade de rede de internet/eletrônica (eventos de uso, logs de acesso); dados de geolocalização (GPS preciso quando opt-in); informações de áudio/visuais (mensagens de voz, fotos); e informações profissionais ou pessoais inferidas do conteúdo que você cria.';
 
   @override
   String get privacySection3Title => '3. COMO COLETAMOS DADOS';
@@ -5159,7 +5339,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection7Body =>
-      'Não vendemos, alugamos ou comercializamos seus dados pessoais. Para fins da CCPA: não vendemos nem compartilhamos (conforme definido na CCPA § 1798.140(ad) e (ah)) informações pessoais de consumidores nos últimos 12 meses, e não temos conhecimento efetivo de venda ou compartilhamento de PI de consumidores menores de 16 anos. Os dados são compartilhados com as seguintes categorias de prestadores de serviço/operadores, cada um vinculado por acordos de processamento de dados:\n\n(a) Google LLC / Firebase: infraestrutura em nuvem (banco de dados Firestore, Cloud Storage para arquivos, Cloud Functions para lógica do servidor), serviços de autenticação, notificações push (FCM), analytics (Firebase Analytics), relatórios de falhas (Crashlytics) e atestação de dispositivo (App Check). O Google trata dados como Operador sob nossas instruções. Compromissos de privacidade do Google: https://firebase.google.com/support/privacy.\n\n(b) OpenAI, Inc.: conteúdo textual é enviado à API de Moderação da OpenAI exclusivamente para análise de segurança de conteúdo. Apenas o texto do conteúdo sendo moderado é transmitido — nenhum identificador de usuário, imagem ou dado de voz é enviado. A política de uso de dados da OpenAI para clientes da API estabelece que inputs da API não são usados para treinar modelos.\n\n(c) Twilio Inc. (SendGrid): endereços de e-mail de destinatários externos são processados para enviar e-mails de convite quando uma carta é endereçada a alguém que ainda não possui conta. Apenas o e-mail do destinatário, um nome de exibição do remetente e um título da carta são incluídos.\n\n(d) Stripe, Inc.: quando os recursos de assinatura/pagamento estão ativos, o Stripe processa dados de cartão de pagamento, identificadores de cliente e status de assinatura. Os dados do cartão são coletados diretamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(e) Google Fonts: o app pode carregar fontes tipográficas dos servidores do Google, o que envolve o envio do seu endereço IP para o Google.\n\n(f) Autoridades públicas: podemos compartilhar dados com autoridades governamentais quando exigido por ordem judicial ou requisição legal fundamentada.\n\n(g) Transações corporativas: em caso de fusão, aquisição ou reestruturação, seus dados poderão ser transferidos à entidade sucessora, que ficará vinculada a esta Política.';
+      'Não vendemos, alugamos ou comercializamos seus dados pessoais. Para fins da CCPA: não vendemos nem compartilhamos (conforme definido na CCPA § 1798.140(ad) e (ah)) informações pessoais de consumidores nos últimos 12 meses, e não temos conhecimento efetivo de venda ou compartilhamento de PI de consumidores menores de 16 anos. Os dados são compartilhados com as seguintes categorias de prestadores de serviço/operadores, cada um vinculado por acordos de processamento de dados (DPAs) nos termos do art. 28 do GDPR e art. 39 da LGPD. Cópias destes DPAs estão disponíveis mediante solicitação em dpo@whenote.app:\n\n(a) Google LLC / Firebase / Google Workspace: infraestrutura em nuvem (banco de dados Firestore, Cloud Storage para arquivos, Cloud Functions para lógica do servidor), serviços de autenticação, emails transacionais (verificação de email, redefinição de senha) via Google Workspace SMTP Relay, notificações push (FCM), analytics (Firebase Analytics), relatórios de falhas (Crashlytics) e atestação de dispositivo (App Check). O Google trata dados como Operador sob nossas instruções. Compromissos de privacidade do Google: https://firebase.google.com/support/privacy.\n\n(b) OpenAI, Inc.: conteúdo textual é enviado à API de Moderação da OpenAI exclusivamente para análise de segurança de conteúdo. Apenas o texto do conteúdo sendo moderado é transmitido — nenhum identificador de usuário, imagem ou dado de voz é enviado. A política de uso de dados da OpenAI para clientes da API estabelece que inputs da API não são usados para treinar modelos.\n\n(c) Twilio Inc. (SendGrid): endereços de e-mail de destinatários externos são processados para enviar e-mails de convite quando uma carta é endereçada a alguém que ainda não possui conta. Apenas o e-mail do destinatário, um nome de exibição do remetente e um título da carta são incluídos.\n\n(d) Stripe, Inc.: quando os recursos de assinatura/pagamento estão ativos, o Stripe processa dados de cartão de pagamento, identificadores de cliente e status de assinatura. Os dados do cartão são coletados diretamente pelo Stripe e nunca passam pelos nossos servidores.\n\n(e) Google Fonts: o app pode carregar fontes tipográficas dos servidores do Google, o que envolve o envio do seu endereço IP para o Google.\n\n(f) Autoridades públicas: podemos compartilhar dados com autoridades governamentais quando exigido por ordem judicial ou requisição legal fundamentada.\n\n(g) Transações corporativas: em caso de fusão, aquisição ou reestruturação, seus dados poderão ser transferidos à entidade sucessora, que ficará vinculada a esta Política.';
 
   @override
   String get privacySection8Title =>
@@ -5188,7 +5368,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection11Body =>
-      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) a exclusão é irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
+      'Você pode excluir sua conta a qualquer momento em Configurações > Dados e Privacidade > Excluir Conta. Antes da exclusão, você deverá se reautenticar por segurança. Serão oferecidos dois modos:\n\n(a) Excluir Tudo: remove permanentemente seu perfil, todas as cartas (enviadas e recebidas), cápsulas, comentários, curtidas, follows, bloqueios, denúncias, feedback, badges, notificações e todos os arquivos enviados (fotos, mensagens de voz, imagens manuscritas). Seu registro de autenticação no Firebase também é excluído.\n\n(b) Anonimizar: preserva cartas e cápsulas para seus destinatários, mas substitui seu nome por \"Usuário removido\" e remove suas informações identificáveis (ID de usuário, dados de localização, mídia pessoal). Seu perfil, conexões sociais, comentários e curtidas são excluídos.\n\nEm ambos os modos: (i) assinaturas Stripe ativas são canceladas; (ii) um log de auditoria não reversível é registrado (identificador hasheado + timestamp, sem PII) para fins de compliance; (iii) após a confirmação, sua conta entra em um período de carência de 15 dias durante o qual você pode cancelar a solicitação de exclusão em Configurações; expirado esse período, a exclusão é executada de forma permanente e irreversível. Cartas bloqueadas que você já enviou podem continuar a ser entregues aos seus destinatários conforme nossos Termos de Uso — uma carta enviada é um presente confiado ao destinatário.';
 
   @override
   String get privacySection12Title => '12. PORTABILIDADE E EXPORTAÇÃO DE DADOS';
@@ -5202,7 +5382,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection13Body =>
-      'O Whenote não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Durante o cadastro, os usuários devem confirmar que têm 13 anos ou mais. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos sem consentimento parental verificável, excluiremos prontamente tais dados. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@whenote.app para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma.';
+      'O Whenote não é direcionado a crianças menores de 13 anos. Em conformidade com a COPPA (16 CFR Part 312), não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Na União Europeia e no Reino Unido, a idade mínima para consentimento ao tratamento de dados é de 16 anos (ou a idade inferior definida por cada Estado-Membro nos termos do art. 8 do GDPR, mas nunca inferior a 13). Durante o cadastro, os usuários devem informar sua data de nascimento e confirmar que atendem ao requisito de idade mínima aplicável à sua jurisdição. Se tomarmos conhecimento de que coletamos dados de uma criança abaixo da idade mínima aplicável sem consentimento parental verificável, excluiremos prontamente tais dados e a conta associada. Pais ou responsáveis que acreditam que seu filho forneceu dados pessoais a nós podem entrar em contato pelo e-mail privacidade@whenote.app para solicitar a exclusão. Para usuários de 13 a 17 anos, recomendamos orientação dos pais ao usar a Plataforma. Estamos comprometidos em cumprir os padrões em evolução de verificação de idade, incluindo o UK Age Appropriate Design Code (AADC) e frameworks similares.';
 
   @override
   String get privacySection14Title => '14. MEDIDAS DE SEGURANÇA';
@@ -5216,7 +5396,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection15Body =>
-      'A Plataforma não utiliza cookies tradicionais de navegador. No entanto, as seguintes tecnologias coletam dados automaticamente: (a) Firebase Analytics: coleta eventos de uso anônimos, visualizações de tela e propriedades do dispositivo usando identificadores móveis. Você pode redefinir seu identificador de publicidade nas configurações do dispositivo. O período de retenção do Firebase Analytics é de 14 meses. (b) Firebase Crashlytics: coleta relatórios de falhas incluindo estado do dispositivo, versão do app e rastreamento de pilha para nos ajudar a corrigir bugs. (c) Firebase App Check: verifica a integridade do dispositivo para proteção contra abusos automatizados. Estas tecnologias são essenciais para a operação, segurança e melhoria da Plataforma. Não utilizamos nenhuma tecnologia de rastreamento para publicidade ou rastreamento comportamental entre sites/apps. Respeitamos o sinal Global Privacy Control (GPC) como solicitação válida de opt-out nos termos da CCPA.';
+      'A Plataforma não utiliza cookies tradicionais de navegador. No entanto, as seguintes tecnologias coletam dados automaticamente: (a) Firebase Analytics: coleta eventos de uso, visualizações de tela e propriedades do dispositivo usando identificadores móveis. Na União Europeia e no Reino Unido, identificadores de dispositivos móveis podem ser considerados equivalentes a cookies nos termos da Diretiva ePrivacy (2002/58/CE) e do UK Privacy and Electronic Communications Regulations (PECR). Quando exigido, obtemos seu consentimento antes de ativar a coleta de analytics. Você pode redefinir seu identificador de publicidade nas configurações do dispositivo ou desativar analytics nas configurações do app. O período de retenção do Firebase Analytics é de 14 meses. (b) Firebase Crashlytics: coleta relatórios de falhas incluindo estado do dispositivo, versão do app e rastreamento de pilha para nos ajudar a corrigir bugs. O Crashlytics é classificado como tecnologia estritamente necessária para a estabilidade e segurança da Plataforma. (c) Firebase App Check: verifica a integridade do dispositivo para proteção contra abusos automatizados. Estas tecnologias são essenciais para a operação, segurança e melhoria da Plataforma. Não utilizamos nenhuma tecnologia de rastreamento para publicidade ou rastreamento comportamental entre sites/apps.';
 
   @override
   String get privacySection16Title => '16. ALTERAÇÕES NESTA POLÍTICA';
@@ -5230,7 +5410,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get privacySection17Body =>
-      'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nÚltima atualização: 1 de maio de 2026.';
+      'Se você tem dúvidas sobre esta Política, deseja exercer seus direitos ou precisa reportar uma preocupação de privacidade, entre em contato:\n\n• Encarregado de Proteção de Dados (DPO): dpo@whenote.app\n• Solicitações de privacidade (português): privacidade@whenote.app\n• Solicitações de privacidade (inglês): privacy@whenote.app\n• Departamento jurídico: juridico@whenote.app\n• Suporte geral: suporte@whenote.app\n\nRepresentante na UE/EEE (GDPR art. 27): Yuri Matos de Lima, Oviedo, Espanha — eu-representative@whenote.app. Este representante é designado para ser contactado por autoridades supervisoras e titulares de dados na UE/EEE em todas as questões relacionadas ao tratamento de dados pessoais.\n\nBrasil — Você pode registrar reclamação junto à ANPD: https://www.gov.br/anpd\nUE/EEE — Você pode apresentar reclamação à autoridade supervisora de proteção de dados local.\nReino Unido — Você pode apresentar reclamação ao Information Commissioner\'s Office (ICO): https://ico.org.uk/make-a-complaint\nCalifórnia — Você pode contatar o Procurador-Geral da Califórnia: https://oag.ca.gov/privacy\n\nYuri Matos de Lima & Diego Ricardo Martins Rocha\nÚltima atualização: 2 de maio de 2026.';
 
   @override
   String get letterPrivacyPublicLabel => 'Pública';
@@ -5260,6 +5440,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get feedReadFullLetter => 'Ler carta completa';
 
   @override
+  String get feedOpenLetter => 'Abrir carta';
+
+  @override
+  String get feedCloseLetter => 'Fechar';
+
+  @override
   String get feedCardToAnonymous => 'Para: alguém especial';
 
   @override
@@ -5287,11 +5473,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get registerAcceptTermsAnd => ' e a ';
 
   @override
-  String get registerConfirmAge => 'Confirmo que tenho 13 anos ou mais';
-
-  @override
   String get registerMustAcceptTerms =>
       'Você precisa aceitar os termos e confirmar sua idade para continuar';
+
+  @override
+  String get socialSignInAgeGateTitle => 'Antes de continuar';
+
+  @override
+  String get socialSignInAgeGateBody =>
+      'Para criar sua conta, confirme o seguinte:';
+
+  @override
+  String get socialSignInContinue => 'Continuar';
+
+  @override
+  String get registerDateOfBirthLabel => 'DATA DE NASCIMENTO';
+
+  @override
+  String get registerDateOfBirthHint => 'Selecione sua data de nascimento';
+
+  @override
+  String registerAgeUnder(int minAge) {
+    return 'Você precisa ter pelo menos $minAge anos para usar este aplicativo.';
+  }
 
   @override
   String get registerSectionUsername => 'USERNAME';
@@ -5354,6 +5558,18 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsDeletePasswordHint => 'Digite sua senha atual';
 
   @override
+  String get settingsDeleteReauthLabel => 'VERIFIQUE SUA IDENTIDADE';
+
+  @override
+  String get settingsDeleteReauthApple => 'Verificar com a Apple';
+
+  @override
+  String get settingsDeleteReauthGoogle => 'Verificar com o Google';
+
+  @override
+  String get settingsDeleteReauthSuccess => 'Identidade verificada';
+
+  @override
   String get settingsDeleteIrreversibleConfirm =>
       'Entendo que esta ação é irreversível e todos os meus dados serão processados de acordo com minha escolha acima.';
 
@@ -5378,6 +5594,36 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get settingsDeleteCancelButton => 'Cancelar exclusão';
+
+  @override
+  String get settingsRestrictProcessing => 'Restringir processamento';
+
+  @override
+  String get settingsRestrictProcessingSubtitle =>
+      'Manter dados mas parar todo o processamento (LGPD Art. 18)';
+
+  @override
+  String get settingsRestrictProcessingConfirm =>
+      'Seus dados serão mantidos mas não serão mais processados. Você não poderá enviar cartas, cápsulas ou interagir com conteúdo até suspender a restrição. Você pode suspendê-la a qualquer momento.';
+
+  @override
+  String get settingsRestrictProcessingSuccess =>
+      'Processamento restringido. Seus dados estão armazenados mas não são processados.';
+
+  @override
+  String get settingsLiftRestriction => 'Suspender restrição';
+
+  @override
+  String get settingsLiftRestrictionSubtitle =>
+      'Retomar o processamento normal dos seus dados';
+
+  @override
+  String get settingsLiftRestrictionConfirm =>
+      'Isso retomará o processamento normal dos seus dados. Você poderá voltar a enviar cartas, cápsulas e interagir com conteúdo.';
+
+  @override
+  String get settingsLiftRestrictionSuccess =>
+      'Restrição suspensa. Sua conta está totalmente ativa novamente.';
 
   @override
   String get settingsDeleteCancelled =>
@@ -5632,4 +5878,24 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get followingEmpty => 'Não segue ninguém ainda';
+
+  @override
+  String get analyticsConsentTitle => 'Ajude-nos a melhorar';
+
+  @override
+  String get analyticsConsentBody =>
+      'Usamos dados de uso anônimos para entender como o app é usado. Nenhum dado pessoal é coletado. Você pode mudar isso a qualquer momento nas Configurações.';
+
+  @override
+  String get analyticsConsentAccept => 'Aceitar';
+
+  @override
+  String get analyticsConsentDecline => 'Não, obrigado';
+
+  @override
+  String get settingsAnalyticsToggle => 'Dados de uso';
+
+  @override
+  String get settingsAnalyticsDescription =>
+      'Permitir dados de uso anônimos para ajudar a melhorar o app';
 }

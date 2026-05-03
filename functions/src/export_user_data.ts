@@ -3,7 +3,7 @@ import {getStorage} from "firebase-admin/storage";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
-import {simpleHash, storagePathFromUrl} from "./delete_account";
+import {hashUid, storagePathFromUrl} from "./delete_account";
 
 const db = () => getFirestore();
 const bucket = () => getStorage().bucket();
@@ -44,7 +44,7 @@ export const exportUserData = onCall(
     const buffer = Buffer.from(jsonBundle, "utf-8");
 
     /* ── 3. Upload to Storage ────────────────────────────── */
-    const uidHash = simpleHash(uid);
+    const uidHash = hashUid(uid);
     const timestamp = Date.now();
     const exportPath = `exports/${uidHash}_${timestamp}.json`;
 
@@ -86,7 +86,7 @@ export const exportUserData = onCall(
 
     /* ── 6. Log to privacyRequestLogs ────────────────────── */
     await firestore.collection("privacyRequestLogs").add({
-      uid: uid,
+      uid: hashUid(uid),
       type: "export_pre_deletion",
       status: "completed",
       metadata: {

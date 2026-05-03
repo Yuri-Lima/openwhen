@@ -32,10 +32,23 @@ class AppUser {
   /// Defaults to `true` for existing users (no field in Firestore → skip guide).
   final bool hasCompletedFirstAction;
 
-  /// Account lifecycle: `active` | `pending_deletion`.
-  /// When `pending_deletion`, the user can still log in but cannot send
-  /// new letters/capsules. A scheduled Cloud Function will execute the
-  /// actual deletion after the grace period expires.
+  /// Date of birth — required at registration for COPPA / GDPR Art. 8 compliance.
+  /// Nullable for backwards compatibility with existing users.
+  final DateTime? dateOfBirth;
+
+  /// Analytics consent: 'granted' | 'denied' | null (legacy/pending).
+  /// Stored in Firestore for audit trail; also cached in SharedPreferences
+  /// for fast access before login.
+  final String? analyticsConsent;
+
+  /// When the user gave or changed analytics consent.
+  final DateTime? analyticsConsentDate;
+
+  /// Account lifecycle: `active` | `pending_deletion` | `restricted`.
+  /// - `pending_deletion`: user can log in but cannot send content; scheduled deletion pending.
+  /// - `restricted`: GDPR Art. 18 restriction of processing — data is kept but no
+  ///   processing beyond storage occurs (no sending, no moderation, no analytics).
+  ///   User can lift the restriction at any time.
   final String accountStatus;
 
   /// When the user requested account deletion (null if not requested).
@@ -65,7 +78,10 @@ class AppUser {
     this.stripeCustomerId,
     this.stripeSubscriptionId,
     this.subscriptionStatus,
+    this.dateOfBirth,
     this.hasCompletedFirstAction = true,
+    this.analyticsConsent,
+    this.analyticsConsentDate,
     this.accountStatus = 'active',
     this.deletionRequestedAt,
     this.deletionMode,
@@ -92,7 +108,14 @@ class AppUser {
       stripeCustomerId: data['stripeCustomerId'] as String?,
       stripeSubscriptionId: data['stripeSubscriptionId'] as String?,
       subscriptionStatus: data['subscriptionStatus'] as String?,
+      dateOfBirth: data['dateOfBirth'] != null
+          ? (data['dateOfBirth'] as Timestamp).toDate()
+          : null,
       hasCompletedFirstAction: data['hasCompletedFirstAction'] as bool? ?? true,
+      analyticsConsent: data['analyticsConsent'] as String?,
+      analyticsConsentDate: data['analyticsConsentDate'] != null
+          ? (data['analyticsConsentDate'] as Timestamp).toDate()
+          : null,
       accountStatus: data['accountStatus'] as String? ?? 'active',
       deletionRequestedAt: data['deletionRequestedAt'] != null
           ? (data['deletionRequestedAt'] as Timestamp).toDate()
@@ -106,6 +129,9 @@ class AppUser {
 
   /// Whether this account is pending deletion (grace period active).
   bool get isPendingDeletion => accountStatus == 'pending_deletion';
+
+  /// Whether processing is restricted (GDPR Art. 18).
+  bool get isRestricted => accountStatus == 'restricted';
 
   /// Whether the user can perform write actions (send letters, capsules, etc.).
   /// Blocked when account is pending deletion.
@@ -138,7 +164,12 @@ class AppUser {
       if (stripeCustomerId != null) 'stripeCustomerId': stripeCustomerId,
       if (stripeSubscriptionId != null) 'stripeSubscriptionId': stripeSubscriptionId,
       if (subscriptionStatus != null) 'subscriptionStatus': subscriptionStatus,
+      if (dateOfBirth != null)
+        'dateOfBirth': Timestamp.fromDate(dateOfBirth!),
       'hasCompletedFirstAction': hasCompletedFirstAction,
+      if (analyticsConsent != null) 'analyticsConsent': analyticsConsent,
+      if (analyticsConsentDate != null)
+        'analyticsConsentDate': Timestamp.fromDate(analyticsConsentDate!),
       'accountStatus': accountStatus,
       if (deletionRequestedAt != null)
         'deletionRequestedAt': Timestamp.fromDate(deletionRequestedAt!),

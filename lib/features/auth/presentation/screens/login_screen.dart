@@ -6,11 +6,13 @@ import '../../../../shared/widgets/owl_logo.dart' show OwlSealOpeningAnimation;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../core/services/analytics_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../core/utils/firebase_locale_helper.dart';
+import '../../../../core/utils/age_verification.dart';
 import '../auth_error_messages.dart';
 import '../providers/auth_provider.dart';
 
@@ -118,11 +120,242 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     _shakeCtrl.forward(from: 0);
   }
 
+  /// Shows an age-gate dialog with Terms checkbox + Date of Birth picker
+  /// before social sign-in.
+  /// Returns the [DateTime] date of birth if confirmed, or `null` if cancelled.
+  Future<DateTime?> _showSocialAgeGate() async {
+    final l10n = AppLocalizations.of(context)!;
+    bool acceptedTerms = false;
+    DateTime? dateOfBirth;
+    String? dateError;
+
+    final result = await showDialog<DateTime?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            Widget buildCheck({
+              required bool value,
+              required ValueChanged<bool?> onChanged,
+              required Widget child,
+            }) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      value: value,
+                      onChanged: onChanged,
+                      activeColor: context.pal.accent,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => onChanged(!value),
+                      child: child,
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return AlertDialog(
+              backgroundColor: context.pal.card,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                l10n.socialSignInAgeGateTitle,
+                style: GoogleFonts.dmSerifDisplay(
+                  fontSize: 20,
+                  color: context.pal.ink,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.socialSignInAgeGateBody,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 13,
+                      color: context.pal.inkSoft,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  buildCheck(
+                    value: acceptedTerms,
+                    onChanged: (v) =>
+                        setDialogState(() => acceptedTerms = v ?? false),
+                    child: Text.rich(
+                      TextSpan(
+                        text: l10n.registerAcceptTermsPrefix,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          color: context.pal.inkSoft,
+                          height: 1.4,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: l10n.settingsTerms,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 12,
+                              color: context.pal.accent,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                          TextSpan(text: l10n.registerAcceptTermsAnd),
+                          TextSpan(
+                            text: l10n.settingsPrivacy,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 12,
+                              color: context.pal.accent,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Date of birth picker
+                  Text(
+                    l10n.registerDateOfBirthLabel,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 10,
+                      color: context.pal.inkFaint,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  GestureDetector(
+                    onTap: () async {
+                      final now = DateTime.now();
+                      final picked = await showDatePicker(
+                        context: ctx,
+                        initialDate: dateOfBirth ?? DateTime(now.year - 18, now.month, now.day),
+                        firstDate: DateTime(1900),
+                        lastDate: now,
+                        helpText: l10n.registerDateOfBirthLabel,
+                        builder: (c, child) {
+                          return Theme(
+                            data: Theme.of(c).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: context.pal.accent,
+                                onSurface: context.pal.ink,
+                                surface: context.pal.card,
+                              ),
+                              dialogBackgroundColor: context.pal.card,
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (picked != null) {
+                        setDialogState(() {
+                          dateOfBirth = picked;
+                          dateError = null;
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: context.pal.bg,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: dateError != null
+                              ? Colors.red.withOpacity(0.6)
+                              : context.pal.border,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today, size: 16, color: context.pal.inkSoft),
+                          const SizedBox(width: 10),
+                          Text(
+                            dateOfBirth != null
+                                ? DateFormat.yMMMd(Localizations.localeOf(ctx).toString()).format(dateOfBirth!)
+                                : l10n.registerDateOfBirthHint,
+                            style: GoogleFonts.dmSans(
+                              fontSize: 14,
+                              color: dateOfBirth != null ? context.pal.ink : context.pal.inkFaint,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (dateError != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      dateError!,
+                      style: GoogleFonts.dmSans(fontSize: 11, color: Colors.red),
+                    ),
+                  ],
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, null),
+                  child: Text(
+                    MaterialLocalizations.of(ctx).cancelButtonLabel,
+                    style: GoogleFonts.dmSans(color: context.pal.inkSoft),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: (acceptedTerms && dateOfBirth != null)
+                      ? () {
+                          final ageErr = validateAge(dateOfBirth!);
+                          if (ageErr != null) {
+                            setDialogState(() {
+                              dateError = l10n.registerAgeUnder(getMinimumAgeForLocale());
+                            });
+                            return;
+                          }
+                          Navigator.pop(ctx, dateOfBirth);
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.pal.accent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    l10n.socialSignInContinue,
+                    style: GoogleFonts.dmSans(fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    return result;
+  }
+
   Future<void> _signInWithApple() async {
+    final dateOfBirth = await _showSocialAgeGate();
+    if (dateOfBirth == null || !mounted) return;
+
     final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     try {
-      await ref.read(authNotifierProvider.notifier).signInWithApple();
+      await ref.read(authNotifierProvider.notifier).signInWithApple(dateOfBirth: dateOfBirth);
       if (!mounted) return;
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
@@ -152,10 +385,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   Future<void> _signInWithGoogle() async {
+    final dateOfBirth = await _showSocialAgeGate();
+    if (dateOfBirth == null || !mounted) return;
+
     final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     try {
-      await ref.read(authNotifierProvider.notifier).signInWithGoogle();
+      await ref.read(authNotifierProvider.notifier).signInWithGoogle(dateOfBirth: dateOfBirth);
       if (!mounted) return;
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
