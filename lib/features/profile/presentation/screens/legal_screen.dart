@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_urls.dart';
 import '../../../../shared/widgets/owl_logo.dart';
 import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -185,10 +186,10 @@ class LegalScreen extends StatelessWidget {
             children: [
               Text(l10n.aboutContacts, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
-              _buildContact(context, l10n.aboutContactSupport, 'suporte@whenote.app'),
-              _buildContact(context, l10n.aboutContactPrivacy, 'privacidade@whenote.app'),
-              _buildContact(context, l10n.aboutContactLegal, 'juridico@whenote.app'),
-              _buildContact(context, l10n.aboutContactDpo, 'dpo@whenote.app'),
+              _buildContact(context, l10n.aboutContactSupport, AppUrls.supportEmail),
+              _buildContact(context, l10n.aboutContactPrivacy, AppUrls.privacyEmail),
+              _buildContact(context, l10n.aboutContactLegal, AppUrls.legalEmail),
+              _buildContact(context, l10n.aboutContactDpo, AppUrls.dpoEmail),
             ],
           ),
         ),
@@ -259,7 +260,7 @@ class LegalScreen extends StatelessWidget {
               Text(l10n.helpNotFoundBody,
                 style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.inkSoft)),
               const SizedBox(height: 12),
-              _buildContact(context, l10n.aboutContactSupport, 'suporte@whenote.app'),
+              _buildContact(context, l10n.aboutContactSupport, AppUrls.supportEmail),
               _buildContact(context, l10n.helpResponseTime, l10n.helpResponseTimeValue),
             ],
           ),

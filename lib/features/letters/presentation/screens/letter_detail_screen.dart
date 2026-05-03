@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/constants/app_urls.dart';
 import '../../../../core/linking/share_link_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -78,7 +79,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   Future<void> _shareToInstagramStory(BuildContext triggerContext) async {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
-    final deepLink = 'https://whenote.app/letter/${widget.docId}';
+    final deepLink = AppUrls.letterUrl(widget.docId);
 
     if (kIsWeb) {
       await Share.share(
@@ -652,7 +653,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
       icon = Icons.link;
       text = l10n.shareLinkPending;
       final token = widget.data['shareToken'] as String?;
-      final url = token != null ? 'https://whenote.app/open/$token' : null;
+      final url = token != null ? AppUrls.openUrl(token) : null;
       actions = [
         if (url != null) ...[
           IconButton(

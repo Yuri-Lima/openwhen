@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/constants/app_urls.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -620,7 +621,7 @@ Future<void> _shareCapsuleInstagram(
   required String locale,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  final deepLink = 'https://whenote.app/capsule/$docId';
+  final deepLink = AppUrls.capsuleUrl(docId);
 
   if (kIsWeb) {
     await Share.share(

@@ -4,6 +4,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {defineSecret} from "firebase-functions/params";
 import * as logger from "firebase-functions/logger";
 import {hashUid, storagePathFromUrl} from "./delete_account";
+import {DEFAULT_FROM_EMAIL} from "./config/app_urls";
 
 const db = () => getFirestore();
 const bucket = () => getStorage().bucket();
@@ -323,7 +324,7 @@ async function sendExportEmail(params: ExportEmailParams): Promise<void> {
     return;
   }
 
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromEmail = DEFAULT_FROM_EMAIL;
   const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const isPt = params.locale.startsWith("pt");

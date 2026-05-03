@@ -2,6 +2,7 @@ import {onDocumentWritten} from "firebase-functions/v2/firestore";
 import {defineSecret} from "firebase-functions/params";
 import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
+import {DEFAULT_FROM_EMAIL, PRIVACY_URL, TERMS_URL} from "./config/app_urls";
 
 const sendgridApiKey = defineSecret("SENDGRID_API_KEY");
 
@@ -188,9 +189,9 @@ function buildPolicyEmailHtml(params: {
                 &copy; 2026 Whenote &middot; Write today. Feel tomorrow.
               </p>
               <p style="font-size:11px;color:#7A726A;margin:0;">
-                <a href="https://whenote.app/privacy.html" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
+                <a href="${PRIVACY_URL}" style="color:#B8B0A8;text-decoration:none;">Privacy</a>
                 &nbsp;&middot;&nbsp;
-                <a href="https://whenote.app/terms.html" style="color:#B8B0A8;text-decoration:none;">Terms</a>
+                <a href="${TERMS_URL}" style="color:#B8B0A8;text-decoration:none;">Terms</a>
               </p>
             </td>
           </tr>
@@ -212,7 +213,7 @@ async function sendEmail(params: {
     logger.warn("policy_email: SENDGRID_API_KEY missing; skip");
     return;
   }
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "noreply@whenote.app";
+  const fromEmail = DEFAULT_FROM_EMAIL;
   const fromName = process.env.SENDGRID_FROM_NAME || "Whenote";
 
   const body = {
@@ -283,7 +284,7 @@ export const sendPolicyUpdateEmails = onDocumentWritten(
 
     const effectiveDate = after.effectiveDate?.toDate()
       ?.toISOString()?.substring(0, 10) || "—";
-    const changesUrl = after.changesUrl || "https://whenote.app/privacy.html";
+    const changesUrl = after.changesUrl || PRIVACY_URL;
 
     let totalSent = 0;
     let totalFailed = 0;

@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/constants/app_urls.dart';
 import '../../core/constants/firestore_collections.dart';
 import '../../l10n/app_localizations.dart';
 import '../theme/whenote_palette.dart';
 
 const int kFeedbackMaxMessageLength = 4000;
-
-const String _kSupportEmail = 'suporte@whenote.app';
 
 String _feedbackPlatformLabel() {
   if (kIsWeb) return 'web';
@@ -126,7 +125,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
     final body = Uri.encodeComponent(
       '${l10n.feedbackEmailBodyPrefix(_typeLabel(l10n))}\n\n$message',
     );
-    final uri = Uri.parse('mailto:$_kSupportEmail?subject=$subject&body=$body');
+    final uri = Uri.parse('mailto:${AppUrls.supportEmail}?subject=$subject&body=$body');
     try {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.platformDefault);

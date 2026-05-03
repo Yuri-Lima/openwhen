@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/constants/app_urls.dart';
 import '../../../../core/constants/feed_config.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/config/system_config_provider.dart';
@@ -1191,7 +1192,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
     final data = widget.data;
-    final deepLink = 'https://whenote.app/letter/${widget.docId}';
+    final deepLink = AppUrls.letterUrl(widget.docId);
     final openedAt = data['openedAt'] != null
         ? (data['openedAt'] as Timestamp).toDate()
         : DateTime.now();

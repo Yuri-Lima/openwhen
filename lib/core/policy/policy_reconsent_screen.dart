@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 
 import '../../features/profile/presentation/screens/legal_screen.dart' show LegalScreen, LegalType;
 import '../../shared/theme/whenote_palette.dart';
+import '../constants/app_urls.dart';
 import '../constants/firestore_collections.dart';
 import 'policy_constants.dart';
 import 'policy_update_provider.dart';
@@ -246,7 +247,7 @@ class _PolicyReConsentScreenState extends State<PolicyReConsentScreen> {
   Widget _buildViewFullLink(AppLocalizations l10n, WhenotePalette palette) {
     final url = widget.policyUpdate.changesUrl.isNotEmpty
         ? widget.policyUpdate.changesUrl
-        : 'https://whenote.app/privacy.html';
+        : AppUrls.privacyUrl;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: RichText(

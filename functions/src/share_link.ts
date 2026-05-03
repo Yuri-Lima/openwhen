@@ -3,6 +3,7 @@ import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
 import {HttpsError, onCall, onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import {openUrl} from "./config/app_urls";
 
 /**
  * Generates a URL-safe share token (12 chars, ~72 bits of entropy).
@@ -58,7 +59,7 @@ export const generateShareLink = onCall(
         );
       }
       return {
-        url: `https://whenote.app/open/${data.shareToken}`,
+        url: openUrl(data.shareToken),
         shareToken: data.shareToken,
       };
     }
@@ -123,7 +124,7 @@ export const generateShareLink = onCall(
 
     logger.info("share_link_generated", {letterId, uid});
     return {
-      url: `https://whenote.app/open/${token}`,
+      url: openUrl(token),
       shareToken: token,
     };
   }
@@ -406,7 +407,7 @@ export const revokeShareLink = onCall(
       logger.info("share_link_regenerated", {letterId, uid});
       return {
         revoked: true,
-        newUrl: `https://whenote.app/open/${newToken}`,
+        newUrl: openUrl(newToken),
       };
     }
 
