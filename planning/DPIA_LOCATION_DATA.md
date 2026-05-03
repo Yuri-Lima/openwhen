@@ -79,7 +79,7 @@ Sim, pelas seguintes razões:
 | R5 | Retenção indefinida | A localização é parte do conteúdo da carta e tem o mesmo ciclo de vida. Na deleção de conta, as cartas (e localização) são eliminadas ou anonimizadas conforme o modo escolhido. | BAIXO |
 
 ### Medidas adicionais implementadas
-- **Info.plist:** Apenas `NSLocationWhenInUseUsageDescription` (sem "Always"). O app nunca pede acesso contínuo.
+- **Info.plist:** `NSLocationWhenInUseUsageDescription` e `NSLocationAlwaysAndWhenInUseUsageDescription` (ambas com o mesmo texto). A chave "Always" é exigida pela Apple quando qualquer dependência referencia `CLLocationManager`, mas o app só pede permissão `whenInUse` em runtime — nunca solicita acesso contínuo em background.
 - **Moderação de media:** Cloud Function `moderateUploadedFile` verifica uploads mas não processa coordenadas GPS (não são imagens/áudio).
 - **Hash em audit logs:** UIDs pseudonimizados com HMAC-SHA-256 nos logs de deleção, impedindo correlação com localização.
 
