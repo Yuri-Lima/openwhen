@@ -864,6 +864,60 @@ class AppLocalizationsPt extends AppLocalizations {
       'Carta criada! Compartilhe o link com o destinatário. 💌';
 
   @override
+  String get writeLetterGenerateLink => 'Gerar link partilhável';
+
+  @override
+  String get writeLetterShareViaLinkLabel => 'Partilhar via link';
+
+  @override
+  String get writeLetterShareViaLinkHint => 'Um link será gerado após selar';
+
+  @override
+  String get writeLetterShareLinkTitle => 'O seu link está pronto!';
+
+  @override
+  String get writeLetterShareLinkHint =>
+      'Partilhe este link com o destinatário por WhatsApp, SMS ou qualquer canal.';
+
+  @override
+  String get writeLetterShareLinkCopy => 'Copiar';
+
+  @override
+  String get writeLetterShareLinkShare => 'Partilhar';
+
+  @override
+  String get writeLetterShareLinkCopied => 'Link copiado!';
+
+  @override
+  String get writeLetterShareLinkSubject =>
+      'Alguém enviou-lhe uma carta no Whenote';
+
+  @override
+  String get shareLinkPending =>
+      'Link partilhado — a aguardar que alguém reclame esta carta';
+
+  @override
+  String get shareLinkClaimed =>
+      'Carta reclamada! O destinatário recebeu a sua carta';
+
+  @override
+  String get shareLinkRevoked => 'Link de partilha foi revogado';
+
+  @override
+  String get writeLetterPrivateTitle => 'Carta privada';
+
+  @override
+  String get writeLetterPrivateHint =>
+      'Apenas você e o destinatário terão acesso';
+
+  @override
+  String get writeLetterPublicTitle => 'Permitir publicação no feed';
+
+  @override
+  String get writeLetterPublicHint =>
+      'O destinatário poderá partilhar no feed após abrir';
+
+  @override
   String get writeLetterSnackEmailInvalid =>
       'Insira um email válido (ex: nome@exemplo.com)';
 
@@ -3887,6 +3941,59 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get writeLetterSnackSentExternal =>
       'Carta criada! Compartilhe o link com o destinatário. 💌';
+
+  @override
+  String get writeLetterGenerateLink => 'Gerar link compartilhável';
+
+  @override
+  String get writeLetterShareViaLinkLabel => 'Compartilhar via link';
+
+  @override
+  String get writeLetterShareViaLinkHint => 'Um link será gerado após selar';
+
+  @override
+  String get writeLetterShareLinkTitle => 'Seu link está pronto!';
+
+  @override
+  String get writeLetterShareLinkHint =>
+      'Compartilhe este link com o destinatário por WhatsApp, SMS ou qualquer canal.';
+
+  @override
+  String get writeLetterShareLinkCopy => 'Copiar';
+
+  @override
+  String get writeLetterShareLinkShare => 'Compartilhar';
+
+  @override
+  String get writeLetterShareLinkCopied => 'Link copiado!';
+
+  @override
+  String get writeLetterShareLinkSubject =>
+      'Alguém enviou uma carta para você no Whenote';
+
+  @override
+  String get shareLinkPending =>
+      'Link compartilhado — aguardando alguém reivindicar esta carta';
+
+  @override
+  String get shareLinkClaimed =>
+      'Carta reivindicada! O destinatário recebeu sua carta';
+
+  @override
+  String get shareLinkRevoked => 'Link de compartilhamento foi revogado';
+
+  @override
+  String get writeLetterPrivateTitle => 'Carta privada';
+
+  @override
+  String get writeLetterPrivateHint => 'Só você e o destinatário terão acesso';
+
+  @override
+  String get writeLetterPublicTitle => 'Permitir publicação no feed';
+
+  @override
+  String get writeLetterPublicHint =>
+      'O destinatário poderá compartilhar no feed após abrir';
 
   @override
   String get writeLetterSnackEmailInvalid =>

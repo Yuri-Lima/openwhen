@@ -863,6 +863,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'Letter created! Share the link with the recipient. 💌';
 
   @override
+  String get writeLetterGenerateLink => 'Generate shareable link';
+
+  @override
+  String get writeLetterShareViaLinkLabel => 'Share via link';
+
+  @override
+  String get writeLetterShareViaLinkHint =>
+      'A link will be generated after sealing';
+
+  @override
+  String get writeLetterShareLinkTitle => 'Your link is ready!';
+
+  @override
+  String get writeLetterShareLinkHint =>
+      'Share this link with the recipient via WhatsApp, SMS, or any channel.';
+
+  @override
+  String get writeLetterShareLinkCopy => 'Copy';
+
+  @override
+  String get writeLetterShareLinkShare => 'Share';
+
+  @override
+  String get writeLetterShareLinkCopied => 'Link copied!';
+
+  @override
+  String get writeLetterShareLinkSubject =>
+      'Someone sent you a letter on Whenote';
+
+  @override
+  String get shareLinkPending =>
+      'Link shared — waiting for someone to claim this letter';
+
+  @override
+  String get shareLinkClaimed =>
+      'Letter claimed! The recipient has received your letter';
+
+  @override
+  String get shareLinkRevoked => 'Share link was revoked';
+
+  @override
+  String get writeLetterPrivateTitle => 'Private letter';
+
+  @override
+  String get writeLetterPrivateHint =>
+      'Only you and the recipient will have access';
+
+  @override
+  String get writeLetterPublicTitle => 'Allow feed publication';
+
+  @override
+  String get writeLetterPublicHint =>
+      'The recipient can share to the feed after opening';
+
+  @override
   String get writeLetterSnackEmailInvalid =>
       'Please enter a valid email address (e.g. name@example.com)';
 

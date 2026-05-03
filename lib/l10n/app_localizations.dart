@@ -1667,6 +1667,102 @@ abstract class AppLocalizations {
   /// **'Carta criada! Compartilhe o link com o destinatário. 💌'**
   String get writeLetterSnackSentExternal;
 
+  /// No description provided for @writeLetterGenerateLink.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Gerar link compartilhável'**
+  String get writeLetterGenerateLink;
+
+  /// No description provided for @writeLetterShareViaLinkLabel.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar via link'**
+  String get writeLetterShareViaLinkLabel;
+
+  /// No description provided for @writeLetterShareViaLinkHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Um link será gerado após selar'**
+  String get writeLetterShareViaLinkHint;
+
+  /// No description provided for @writeLetterShareLinkTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Seu link está pronto!'**
+  String get writeLetterShareLinkTitle;
+
+  /// No description provided for @writeLetterShareLinkHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhe este link com o destinatário por WhatsApp, SMS ou qualquer canal.'**
+  String get writeLetterShareLinkHint;
+
+  /// No description provided for @writeLetterShareLinkCopy.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Copiar'**
+  String get writeLetterShareLinkCopy;
+
+  /// No description provided for @writeLetterShareLinkShare.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Compartilhar'**
+  String get writeLetterShareLinkShare;
+
+  /// No description provided for @writeLetterShareLinkCopied.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link copiado!'**
+  String get writeLetterShareLinkCopied;
+
+  /// No description provided for @writeLetterShareLinkSubject.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Alguém enviou uma carta para você no Whenote'**
+  String get writeLetterShareLinkSubject;
+
+  /// No description provided for @shareLinkPending.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link compartilhado — aguardando alguém reivindicar esta carta'**
+  String get shareLinkPending;
+
+  /// No description provided for @shareLinkClaimed.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carta reivindicada! O destinatário recebeu sua carta'**
+  String get shareLinkClaimed;
+
+  /// No description provided for @shareLinkRevoked.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Link de compartilhamento foi revogado'**
+  String get shareLinkRevoked;
+
+  /// No description provided for @writeLetterPrivateTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Carta privada'**
+  String get writeLetterPrivateTitle;
+
+  /// No description provided for @writeLetterPrivateHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Só você e o destinatário terão acesso'**
+  String get writeLetterPrivateHint;
+
+  /// No description provided for @writeLetterPublicTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Permitir publicação no feed'**
+  String get writeLetterPublicTitle;
+
+  /// No description provided for @writeLetterPublicHint.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'O destinatário poderá compartilhar no feed após abrir'**
+  String get writeLetterPublicHint;
+
   /// No description provided for @writeLetterSnackEmailInvalid.
   ///
   /// In pt_BR, this message translates to:
