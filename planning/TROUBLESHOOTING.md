@@ -430,4 +430,39 @@ await FirebaseFunctions.instance.httpsCallable('backfillSearchTokens').call();
 
 ---
 
-*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting. **Debug connection lost ~20s após launch** → secção **10**: App Check nativo em retry-storm; flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist`; futuramente registar app no Firebase Console App Check + actualizar firebase-ios-sdk >= 12.12.0. **Utilizador não aparece na busca** → secção **11**: campo `searchTokens` ausente em contas legacy (criadas antes de abril 2026); corrigir com CF `backfillSearchTokens` ou editar perfil; checklist de migração de schema para prevenir recorrência.
+## 12. Share via Link — link não abre o app / claim falha
+
+### O que acontece
+
+O destinatário clica num link `whenote.app/open/{token}` e:
+- O browser abre a landing page em vez de abrir o app (iOS/Android)
+- O claim retorna ALREADY_CLAIMED, SELF_CLAIM ou NOT_FOUND
+- Após instalar o app, a carta não aparece no cofre
+
+### Diagnóstico
+
+| Sintoma | O que verificar |
+|---------|-----------------|
+| Link abre no browser, não no app (iOS) | AASA em `.well-known/apple-app-site-association` não inclui `/open/*` |
+| Link abre no browser, não no app (Android) | Intent filter em `AndroidManifest.xml` não tem `pathPrefix="/open"` |
+| Claim retorna NOT_FOUND | Token inválido ou carta eliminada; verificar `shareToken` no doc |
+| Claim retorna ALREADY_CLAIMED | Carta já tem `receiverUid` preenchido por outro utilizador |
+| Claim retorna SELF_CLAIM | Remetente tentou reclamar a própria carta |
+| Carta não aparece após install + claim | `PendingDeepLink.pendingShareToken` não persistiu; verificar `deep_link_coordinator.dart` |
+| Landing page mostra "link inativo" | Campo `shareRevoked: true` no documento da carta |
+| Landing page mostra "Too many requests" | Rate limiting no `getSharePreview` (60 req/min/IP); aguardar 1 minuto |
+| Email trigger dispara em cartas por link | Guard em `external_letters.ts` não verifica `deliveryMode === 'link'` |
+
+### Ficheiros relevantes
+
+- Cloud Functions: `functions/src/share_link.ts`
+- Deep link: `lib/core/linking/deep_link_coordinator.dart`, `lib/core/linking/pending_deep_link.dart`
+- Landing page: `hosting/public/open/index.html`
+- UI remetente: `lib/features/letters/presentation/screens/letter_detail_screen.dart`
+- Intent filters: `android/app/src/main/AndroidManifest.xml`
+- AASA: `hosting/public/.well-known/apple-app-site-association`
+- Firebase Hosting: `firebase.json` (rewrites `/open/**` e `/api/share-preview`)
+
+---
+
+*Português (resumo):* falhas ao **enviar carta** → verificar regras Firestore deployadas e blocos `letters` / `users` / `users/{uid}/badgeUnlocks` em [`firestore.rules`](../firestore.rules). **Moderação (admin)** a fechar / `SIGABRT` → secção **2**: `addPostFrameCallback` **e** callables admin **em série** (não disparar cinco HTTPS callables em paralelo); `SKIP_AI_MODERATION` só afecta **comentários**, não o admin. **`SIGABRT` ao comentar** → secção 4 (Xcode `bt all`, APNs Development no Firebase, `SKIP_AI_MODERATION`, bundle alinhado ao plist, entitlement `aps-environment` em `Runner.entitlements`). **Email bounce** → secção **8**: verificar secrets, webhook URL e logs das Cloud Functions. **Emails de auth em spam / sem branding** → secção **9**: SMTP Google Workspace Relay (`smtp-relay.gmail.com`) + Action URL customizada + deploy Hosting. **Debug connection lost ~20s após launch** → secção **10**: App Check nativo em retry-storm; flag `FirebaseAppCheckTokenAutoRefreshEnabled = NO` no `Info.plist`; futuramente registar app no Firebase Console App Check + actualizar firebase-ios-sdk >= 12.12.0. **Utilizador não aparece na busca** → secção **11**: campo `searchTokens` ausente em contas legacy (criadas antes de abril 2026); corrigir com CF `backfillSearchTokens` ou editar perfil; checklist de migração de schema para prevenir recorrência. **Share via Link não abre app / claim falha** → secção **12**: verificar AASA (iOS), intent filters (Android), estados do claim (NOT_FOUND, ALREADY_CLAIMED, SELF_CLAIM), persistência do `pendingShareToken` e guard de `deliveryMode` em `external_letters.ts`.

@@ -146,6 +146,9 @@ StreamBuilder<QuerySnapshot>(
 | Drafts — list | `.where('senderUid').orderBy('expiresAt').get()` | `draft_service.dart` L69-73 | ⚠️ Sem `.limit()` — bounded pelo soft-limit de 10 drafts/user (`draftCount`); risco baixo mas considerar `.limit(15)` como safety net |
 | Drafts — stream | `.where('senderUid').orderBy('expiresAt').snapshots()` | `draft_service.dart` L90-93 | ⚠️ Listener sem `.limit()` — mesmo bounded implícito de 10; considerar `.limit(15)` |
 | Drafts — cleanup | `.where('senderUid').where('expiresAt', isLessThan: now).get()` | `draft_service.dart` L142-145 | ✅ Compound query + batch delete; chamado uma vez no app start |
+| Share Link — lookup | `.where('shareToken', '==', token).limit(1)` | `functions/src/share_link.ts` (`claimShareLink`, `getSharePreview`) | ✅ Server-side (Cloud Functions), `limit(1)`, auto-indexed on single field |
+| Share Link — total count | `.where('senderUid', '==', uid).where('shareMode', '==', 'link').count()` | `functions/src/share_link.ts` (`generateShareLink`) | ✅ Server-side, anti-abuse limit 500. Composite index: `senderUid+shareMode` |
+| Share Link — active count | `.where('senderUid', '==', uid).where('shareMode', '==', 'link').where('shareRevoked', '==', false).count()` | `functions/src/share_link.ts` (`generateShareLink`) | ✅ Server-side, functional limit 100. Composite index: `senderUid+shareMode+shareRevoked` |
 
 ---
 

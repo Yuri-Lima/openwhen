@@ -37,6 +37,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 | Feed em 3 camadas                                                                  | P1         | Concluído | Alto           | Explorar / Destaques / Seguindo; filtros emocionais com até 3 chips fixados; ver `[ARCHITECTURE.md](ARCHITECTURE.md)` secção “Feed”                                                   |
 | Carta multimodal (OCR em foto; transcrição de áudio)                               | P1         | Pendente  | Médio          | **Nota:** moderação de imagens e áudio já implementada (ver [MODERATION.md](MODERATION.md)); esta linha refere-se à feature de **OCR visível** e **transcrição para texto** como UX do utilizador. Vídeo→carta fica para fase posterior.                                                                                                       |
 | Multilíngue (pt-BR, en, es)                                                        | P1         | Concluído | Alto           | Também no checklist 🟡; expansão para mais locales → Fase 3                                                                                                                           |
+| **Share via Link** (link partilhável para quem recebe carta sem ter conta)         | P1         | Concluído | Médio          | Landing page web + infraestrutura de link partilhável; crescimento orgânico                                                                                                               |
 | **Nox Card** (card da coruja por nível — sem valor exato; animação compartilhável) | P1         | Pendente  | Alto           | Viralidade (TikTok / Instagram); reforça marca; integração com **Whenote Gift** para níveis; depende de **Stories/Reels** e nome do mascote (TBD) — ver secção "Contexto de negócio" acima |
 
 
@@ -71,7 +72,7 @@ Retenção, descoberta e hábito de uso. Itens **concluídos** alinhados a `[MVP
 
 **Mês 2 — Pós primeiros usuários**
 
-- Landing page web para quem recebe carta sem ter conta
+- ~~Landing page web para quem recebe carta sem ter conta~~ ✅ Concluído 2026-05-03 — Infraestrutura de link partilhável (Share via Link) implementada
 - Feed com identidade visual própria — envelopes que se abrem ao rolar
 - Sistema de sugestões por datas especiais (aniversários, Natal etc)
 

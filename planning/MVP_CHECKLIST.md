@@ -56,7 +56,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## 🟡 MÊS 2 — pós primeiros 100 usuários
 
-- [ ] **Landing page para destinatário sem conta** — receber link da carta, ver prévia bloqueada, cadastrar para abrir; maior funil de conversão orgânico do app · **Yuri**
+- [x] **Landing page para destinatário sem conta** — Share via link com preview emocional, deep link + claim automático. Cloud Functions `generateShareLink`, `getSharePreview`, `claimShareLink`, `revokeShareLink`. · Yuri · ✅ 2026-05-03
 - [ ] **Follow Request para contas privadas** — conta privada existe mas qualquer pessoa segue sem pedir permissão; `followRequests/{id}` + notificação + aceite/recusa · **Yuri**
 - [ ] **Silenciar conta** — opção intermediária entre seguir e bloquear · **Diego** · `user_profile_screen.dart`
 - [ ] **Feed com visual de envelope** — envelopes que se abrem ao rolar; diferencia visualmente do Instagram · **Yuri**
@@ -258,6 +258,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`ROADMAP.md`](ROADMAP.md) (secção "Co
 - [x] Aviso de conteúdo ofensivo ao escrever — Camada 1 (cliente)
 - [x] Detecção de bounce de email (SendGrid webhook) + banner reenvio
 - [x] Exportar cartas (PDF / ZIP)
+- [x] Compartilhar carta via link (gerar, claim, revogar)
 
 ### Cápsulas do tempo
 - [x] Fluxo criar cápsula (Tema → Perguntas → Detalhes)
@@ -297,6 +298,8 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`ROADMAP.md`](ROADMAP.md) (secção "Co
 - [x] Busca de usuários com `searchTokens` (escala)
 - [x] `ensureUserFirestoreProfile` + FCM token handling robusto
 - [x] `privacyRequestLogs` — log unificado de solicitações de privacidade
+- [x] Landing page para share via link (whenote.app/open/{token})
+- [x] Deep link handling para /open/{token} (Android + iOS)
 
 ### Bugfixes registrados
 - [x] Analytics login — `logLogin()` só após sucesso

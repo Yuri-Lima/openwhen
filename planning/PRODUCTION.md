@@ -114,6 +114,13 @@ O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) 
 
 **Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.com` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
 
+### Share via Link — Firebase Hosting
+
+- Landing page em `hosting/public/open/index.html` para partilha via link (preview da carta + botão para abrir/instalar app)
+- Rewrite `/api/share-preview` → Cloud Function `getSharePreview` (preview sanitizado)
+- Rewrite `/open/**` → `/open/index.html` (SPA catch-all para deep links)
+- Deploy: `firebase deploy --only hosting`
+
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
 ### Firestore — custo e padrões
@@ -128,6 +135,15 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 - [x] **TTL Policy configurada (2026-05-03):** Google Cloud Console → Firestore → Time to live (TTL). Collection group: `drafts`, Timestamp field: `expiresAt`, Status: **Serving**. Documentos cuja `expiresAt` tenha passado são automaticamente deletados pelo Firestore (normalmente dentro de 24 horas). Sem custo adicional, sem Cloud Functions.
 - [x] **Firestore Rules para `drafts`:** regras deployadas com proteção de campos imutáveis (`senderUid`, `createdAt`, `expiresAt`). Leitura/escrita/delete só pelo owner.
+
+### Share via Link — Índices Firestore
+
+3 novos índices compostos para suportar queries de share link:
+- `senderUid` + `shareMode` — listar cartas partilhadas por link de um remetente
+- `senderUid` + `shareMode` + `shareRevoked` — filtrar links ativos/revogados
+- Auto-index para `shareToken` — lookup direto pelo token na landing page / claim
+
+Deploy: `firebase deploy --only firestore:indexes`
 
 ### Manutenção periódica
 
@@ -211,6 +227,16 @@ Configuração inicial feita em 2026-04-12 (SendGrid). **Migrado para Google Wor
 | `lib/features/auth/presentation/screens/register_screen.dart` | Fix: `popUntil` pós-registro |
 | `planning/EMAIL_SETUP.md` | Guia completo de configuração |
 
+### Share via Link — Cloud Functions
+
+4 novas Cloud Functions em `functions/src/share_link.ts`:
+- `generateShareLink` (callable) — gera shareToken e retorna URL
+- `getSharePreview` (HTTP público) — preview sanitizado para landing page, rate limiting 60 req/min/IP
+- `claimShareLink` (callable) — vincula carta ao destinatário (Firestore transaction)
+- `revokeShareLink` (callable) — revoga ou regenera link
+
+Deploy: `firebase deploy --only functions`
+
 ### Nota (futuro): filas e workers
 
 Não é requisito atual. Se um dia aparecerem **trabalhos pesados ou longos**, **filas com requisitos fortes** (ordem, retries elaborados, throughput alto) ou **integração fora do ecossistema Firebase/GCP**, vale relembrar: no Google Cloud o caminho habitual é **Pub/Sub** + subscribers (Cloud Functions ou Cloud Run), **Cloud Tasks** para tarefas adiadas com retries, e **Cloud Scheduler** para cron. **RabbitMQ** (ou outra fila AMQP) e **workers** dedicados só fazem sentido quando houver necessidade explícita ou equipa/infra já orientada a isso — acrescentam operação e integração extra face ao stack atual.
@@ -271,6 +297,11 @@ flowchart LR
 - [ ] `firebase deploy` de **Firestore rules**, **Storage rules** e **índices** (`firestore:indexes` se aplicável) validado em staging e repetido para produção (secção [4](#4-firebase-produção)).
 - [ ] Documento **`systemConfig/app`** em Firestore criado/revisado (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, etc.) conforme [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] **Cloud Functions:** variáveis de runtime (Stripe, moderação) configuradas no Google Cloud; `firebase deploy --only functions` após alterar envs quando necessário (secção [5](#5-cloud-functions--billing-stripe-e-moderação-por-ia)).
+- [ ] Índices Firestore para share link deployados (`firebase deploy --only firestore:indexes`)
+- [ ] Landing page `/open/index.html` deployada no Firebase Hosting (`firebase deploy --only hosting`)
+- [ ] AASA atualizado com path `/open/*` (Universal Links iOS)
+- [ ] Cloud Functions de share link deployadas (`generateShareLink`, `getSharePreview`, `claimShareLink`, `revokeShareLink`)
+- [ ] Testar fluxo end-to-end: gerar link → landing page → claim
 
 ### C½. Migração de schema Firestore (campos novos)
 
@@ -359,6 +390,13 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 **Problemas com envio de carta ou ecrã admin moderação:** [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
+### Share via Link
+
+- Testar gerar link, copiar, partilhar via WhatsApp/iMessage
+- Testar claim com app instalado (Universal Link) e sem app (landing page → install → claim)
+- Testar revogação de link (gerar → revogar → confirmar que link antigo não funciona)
+- Testar rate limiting da landing page (`getSharePreview`: 60 req/min/IP)
+
 ### Regressão web (opcional)
 
 - `flutter run -d chrome` — avatar (galeria), abertura de cápsula e feed continuam funcionando; FCM no web exige configuração extra (VAPID / service worker) e pode estar limitado.
@@ -367,6 +405,7 @@ Checklist para validar iOS/Android em **regressão** ao publicar releases (fluxo
 
 ## 10. Histórico de alterações deste guia
 
+- **2026-05-03:** Share via Link — documentação de deploy: Cloud Functions (`share_link.ts`), Firebase Hosting (landing page `/open/`), índices Firestore compostos, checklist de deploy e QA adicionados.
 - **2026-05-01:** Firebase Hosting — `firebase deploy --only hosting` concluído; `support.html` e rota `/support` em produção (`whenote.app/support`).
 - **2026-04:** Página de suporte (`support.html`) adicionada ao Firebase Hosting; App Store Connect iOS 1.0 configurado (metadata, pricing, age ratings); checklist F expandida com itens pendentes (screenshots, build, test account, deploy hosting).
 - **2026-04:** DEVICE_TESTING.md absorvido na secção [9](#9-testes-em-dispositivo-real-qa); referências cruzadas atualizadas; secção "Histórico" renumerada para §10.

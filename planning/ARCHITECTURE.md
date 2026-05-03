@@ -42,6 +42,8 @@ lib/
 │   │   └── firestore_collections.dart # Constantes nomeadas (subset; outras coleções usadas inline)
 │   ├── export/
 │   │   └── complete_export_service.dart # Export completo GDPR Art. 20: ZIP com JSONs + media
+│   ├── linking/
+│   │   └── share_link_service.dart      # Flutter wrapper para callables de share (generateShareLink, claimShareLink, revokeShareLink)
 │   ├── utils/
 │   │   ├── email_normalization.dart   # normalizeReceiverEmailForMatching (must match server)
 │   │   ├── validators.dart            # Validators.isValidEmail — regex reutilizável (B1)
@@ -109,6 +111,10 @@ lib/
         ├── voice_letter_tile.dart     # Reprodução in-app (just_audio) — detalhe e abertura da carta
         └── location_share_tile.dart   # Tile escuro: toque copia link Maps (detalhe carta/cápsula)
 ```
+
+**Ficheiros fora de `lib/` relevantes:**
+- `functions/src/share_link.ts` — 4 Cloud Functions para share via link (`generateShareLink`, `getSharePreview`, `claimShareLink`, `revokeShareLink`).
+- `hosting/public/open/index.html` — Landing page para share links (`whenote.app/open/{token}`).
 
 **Assets na raiz do repositório:** `assets/icons/` — SVGs do kit (`currentColor`); `assets/branding/app_icon.png` — ícone mestre 1024×1024 para **flutter_launcher_icons** (Android `mipmap-*`, iOS `AppIcon.appiconset`). Após alterar a PNG: `dart run flutter_launcher_icons`.
 
@@ -205,6 +211,8 @@ Lido por [`lib/core/config/system_config_provider.dart`](../lib/core/config/syst
 
 **Envio (Firestore):** o cliente confirma o envio numa **transação** — cria o documento em `letters`, incrementa `lettersSentCount` no remetente e cria documentos em `users/{uid}/badgeUnlocks/{badgeId}` quando aplicável ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)). Falhas de regras em qualquer passo revertem a transação. Diagnóstico: [`planning/TROUBLESHOOTING.md`](TROUBLESHOOTING.md) — secção “Send letter”.
 
+**Modos de entrega:** além de email (`deliveryMode: “email”`, destinatário externo sem conta) e `@username` (destinatário com conta), existe um terceiro modo: **link** (`shareMode: “link”`, `deliveryMode: “link”`). O remetente gera um link partilhável via `generateShareLink`; o destinatário abre a landing page (`whenote.app/open/{token}`) e faz claim da carta ao autenticar-se (`claimShareLink`). O link pode ser revogado ou regenerado pelo remetente (`revokeShareLink`).
+
 Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o documento pode incluir:
 
 | Campo | Tipo / notas |
@@ -217,6 +225,12 @@ Além de título, mensagem, destinatário, datas, `emotionalState`, etc., o docu
 | `inviteEmailStatus` | String opcional — estado da entrega do email de convite: `sent`, `delivered`, `bounced`, `dropped`, `deferred`, `send_failed`. Escrito por Cloud Functions (Admin SDK), protegido nas Firestore rules contra escrita do cliente. Enum `InviteEmailStatus` em Dart. |
 | `inviteEmailStatusUpdatedAt` | Timestamp opcional — última atualização do estado pelo webhook SendGrid. |
 | `lastResendAt` | Timestamp opcional — timestamp do último reenvio via `resendExternalInviteEmail`; usado para rate limiting (cooldown 5 min). |
+| `shareToken` | String opcional — token único do link (12 chars base64url, indexado). |
+| `shareMode` | String opcional — `"link"` se enviado por link. |
+| `shareCreatedAt` | Timestamp opcional — quando o link foi gerado. |
+| `shareClaimedAt` | Timestamp opcional — quando o destinatário fez claim. |
+| `shareClaimedBy` | String opcional — UID de quem fez claim. |
+| `shareRevoked` | Boolean opcional — se o link foi revogado. |
 
 ### Entrega de email externo (SendGrid webhook)
 
@@ -247,8 +261,25 @@ Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed W
 | `createCheckoutSession` | Callable | Stripe Checkout (billing) | `functions/src/billing/` | ⏳ Desactivado (`BILLING_ENABLED=false`) |
 | `createPortalSession` | Callable | Stripe Customer Portal (billing) | `functions/src/billing/` | ⏳ Desactivado |
 | `stripeWebhook` | HTTP | Webhook Stripe (subscription events) | `functions/src/billing/` | ⏳ Desactivado |
+| `generateShareLink` | Callable | Gera link partilhável para carta | `functions/src/share_link.ts` | ✅ Deployed |
+| `getSharePreview` | HTTP público | Preview sanitizado para landing page (rate limited) | `functions/src/share_link.ts` | ✅ Deployed |
+| `claimShareLink` | Callable | Destinatário vincula carta ao seu uid (transaction) | `functions/src/share_link.ts` | ✅ Deployed |
+| `revokeShareLink` | Callable | Remetente revoga ou regenera link | `functions/src/share_link.ts` | ✅ Deployed |
 
 **Nota:** função `commitLetterSend` é uma **transação Firestore no cliente** ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)), não uma Cloud Function.
+
+### Firebase Hosting — rotas relevantes
+
+| URL | Destino |
+|-----|---------|
+| `whenote.app/open/{token}` | Landing page para share via link (rewrite → `/open/index.html`) |
+| `whenote.app/api/share-preview` | Rewrite → Cloud Function `getSharePreview` |
+
+### Deep links
+
+| Padrão | Descrição |
+|--------|-----------|
+| `/open/{token}` | Share link claim (Android intent filter + iOS AASA + `PendingDeepLink`) |
 
 ### Cápsula (`capsules`) — campos principais
 
