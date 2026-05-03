@@ -1,7 +1,7 @@
 # Plano — Lista de Seguidores / Seguindo
 
 **Data:** 2026-04-12
-**Status:** 🟡 Planejado
+**Status:** ✅ Concluído (implementado — ver MVP_CHECKLIST.md)
 
 ---
 

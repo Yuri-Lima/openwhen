@@ -389,7 +389,7 @@ Quando a feature for activada, actualizar:
 
 - [ ] **Termos de Uso:** nova secção sobre envio físico, responsabilidades, política de reembolso/devolução, itens proibidos
 - [ ] **Política de Privacidade:** recolha de endereço físico do destinatário (dado pessoal sensível); base legal (consentimento ou execução contratual); partilha com parceiro logístico; retenção e eliminação do endereço após entrega
-- [ ] **Stripe KYC:** actualizar descrição do negócio para incluir "tangible goods" (ver [`BUSINESS.md`](BUSINESS.md))
+- [ ] **Stripe KYC:** actualizar descrição do negócio para incluir "tangible goods" (ver [`ROADMAP.md`](ROADMAP.md) secção "Contexto de negócio")
 - [ ] **Páginas web públicas:** `terms.html` e `privacy.html` actualizados
 
 ### 7.6. Protecção de Dados do Destinatário

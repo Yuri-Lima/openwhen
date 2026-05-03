@@ -263,7 +263,7 @@ Quando um utilizador envia uma carta a um email externo sem conta, a Cloud Funct
 - Banner UI: [`lib/features/letters/presentation/screens/letter_detail_screen.dart`](../lib/features/letters/presentation/screens/letter_detail_screen.dart)
 - Validação: [`lib/core/utils/validators.dart`](../lib/core/utils/validators.dart)
 - Config produção: [PRODUCTION.md](PRODUCTION.md) (secção "SendGrid — webhook de email bounce")
-- Plano completo: [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md)
+- Plano: removido (feature concluída) — ver [`CHANGELOG.md`](CHANGELOG.md) e [`PRODUCTION.md`](PRODUCTION.md) secção "SendGrid"
 
 ---
 

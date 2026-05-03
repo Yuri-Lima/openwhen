@@ -1,6 +1,6 @@
 # Whenote — Estratégia de Monetização e Custos Firebase
 
-> Complementa [`BUSINESS.md`](BUSINESS.md). Foco prático: quanto custa, quando monetizar, como precificar.
+> Complementa [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio"). Foco prático: quanto custa, quando monetizar, como precificar.
 > Última atualização: 13/04/2026
 
 ---
@@ -169,9 +169,9 @@ Não. A taxa de conversão de um app com < 1.000 usuários ativos é < 1%. Cobra
 Cartas de texto são ilimitadas no grátis — não há incentivo para criar múltiplas contas. O premium é sobre a experiência da carta específica, não sobre quantidade.
 
 **"O que acontece com cartas de usuários que cancelam o plano?"**
-Cartas já enviadas permanecem. Quem cancelou perde acesso a novos recursos premium mas todas as cartas enviadas continuam funcionando. Política de continuidade no `CONTINGENCY_PLAN.md`.
+Cartas já enviadas permanecem. Quem cancelou perde acesso a novos recursos premium mas todas as cartas enviadas continuam funcionando. Política de continuidade em [`LEGAL.md`](LEGAL.md) (secção 1).
 
 ---
 
 *Documento criado em 13/04/2026 · Diego Rocha & Claude · Whenote*
-*Relacionado: [`BUSINESS.md`](BUSINESS.md) · [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md) · [`ROADMAP.md`](ROADMAP.md)*
+*Relacionado: [`ROADMAP.md`](ROADMAP.md) · [`DELAWARE.md`](DELAWARE.md)*

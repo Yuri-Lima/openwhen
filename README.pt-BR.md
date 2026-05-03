@@ -13,7 +13,7 @@
 
 *Cartas temporizadas, cápsulas do tempo e uma camada social emocional — com QR Code físico ligando o mundo real ao app.*
 
-[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md) · [Negócio](planning/BUSINESS.md)
+[Roadmap](planning/ROADMAP.md) · [Checklist MVP](planning/MVP_CHECKLIST.md) · [Arquitetura](planning/ARCHITECTURE.md)
 
 </div>
 
@@ -222,7 +222,7 @@ whenote/
 - **Público:** ~18–35 anos, uso intenso de Instagram/TikTok
 - **Monetização:** Freemium agora; **pay-per-feature** após **~10k usuários**
 
-Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
+Narrativa completa: **[planning/ROADMAP.md](planning/ROADMAP.md)** (secção "Contexto de negócio")
 
 ---
 
@@ -252,7 +252,7 @@ Narrativa completa: **[planning/BUSINESS.md](planning/BUSINESS.md)**
 | [planning/MVP_CHECKLIST.md](planning/MVP_CHECKLIST.md) | Acompanhamento do MVP |
 | [planning/ARCHITECTURE.md](planning/ARCHITECTURE.md) | Stack, pastas, Firestore |
 | [planning/DESIGN_SYSTEM.md](planning/DESIGN_SYSTEM.md) | Cores, tipografia, temas das cápsulas |
-| [planning/BUSINESS.md](planning/BUSINESS.md) | Estratégia para investidores |
+| [planning/MONETIZACAO.md](planning/MONETIZACAO.md) | Estratégia de monetização e custos Firebase |
 | [planning/CHANGELOG.md](planning/CHANGELOG.md) | Estilo Keep a Changelog |
 | [planning/PRODUCTION.md](planning/PRODUCTION.md) | Checklist de produção (`dart-define`, Firebase, Meta/Instagram, lojas) |
 | [planning/TROUBLESHOOTING.md](planning/TROUBLESHOOTING.md) | Diagnóstico: carta, regras, ecrã admin |

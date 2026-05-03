@@ -1,7 +1,7 @@
 # Plano de Implementação — Consentimento de Analytics (EU/UK)
 
 **Data:** 2026-05-02
-**Status:** Aprovação pendente
+**Status:** ✅ Implementado (ver CHANGELOG.md e MVP_CHECKLIST.md)
 **Prioridade:** Alta (compliance legal)
 
 ---

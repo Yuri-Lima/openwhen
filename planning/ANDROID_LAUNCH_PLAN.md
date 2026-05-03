@@ -4,7 +4,7 @@
 
 **Objetivo:** Publicar o Whenote na Google Play Store (produção pública ou closed/open testing).
 
-**Referências:** [PRODUCTION.md](PRODUCTION.md) (checklist A–G, QA secção 9), [MVP_CHECKLIST.md](MVP_CHECKLIST.md), [LEGAL.md](LEGAL.md), [BUSINESS.md](BUSINESS.md).
+**Referências:** [PRODUCTION.md](PRODUCTION.md) (checklist A–G, QA secção 9), [MVP_CHECKLIST.md](MVP_CHECKLIST.md), [LEGAL.md](LEGAL.md), [ROADMAP.md](ROADMAP.md).
 
 ---
 

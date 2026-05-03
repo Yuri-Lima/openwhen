@@ -224,7 +224,7 @@ Quando um utilizador envia uma carta a um email sem conta, a Cloud Function `onL
 - **Validação no cliente:** `lib/core/utils/validators.dart` (regex reutilizável); mensagens ARB com exemplo de formato.
 - **Firestore rules:** campos de email delivery (`inviteEmailStatus*`, `inviteEmailSentAt`, `receiverEmailNormalized`, `deliveryMode`, `lastResendAt`) protegidos contra escrita do cliente; `delete` restrito ao sender.
 
-Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed Webhook) + secrets Firebase. Ver [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+Configuração manual necessária: painel SendGrid (Event Webhook URL + Signed Webhook) + secrets Firebase. Ver [`PRODUCTION.md`](PRODUCTION.md) secção "SendGrid — webhook de email bounce".
 
 ### Inventário de Cloud Functions
 
@@ -336,7 +336,7 @@ Para detalhes visuais, ver [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md).
 
 ## Extensões futuras — pagamentos (planejado)
 
-O produto **Whenote Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md) e [`BUSINESS.md`](BUSINESS.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
+O produto **Whenote Gift** prevê integração com **Stripe Connect** (retenção e repasse do valor associado à carta; detalhes de modelo e fases em [`ROADMAP.md`](ROADMAP.md)). O backend atual centra-se em **Firebase**; a camada de pagamentos será um serviço adicional (API Stripe, webhooks, idempotência) — desenho concreto na fase de implementação.
 
 ### Subscrição (tiers Amanhã / Brisa / Horizonte)
 

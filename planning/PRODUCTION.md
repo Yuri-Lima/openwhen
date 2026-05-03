@@ -135,7 +135,7 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 ## 5. Cloud Functions — billing (Stripe) e moderação por IA
 
 - **Stripe:** variáveis de **runtime** no Google Cloud (tabela em **[`functions/README.md`](../functions/README.md)**). No **cliente**, billing só com `--dart-define=BILLING_ENABLED=true` quando Stripe e funções estiverem prontos.
-- **Descrição do produto para onboarding Stripe (KYC):** texto curto/long em inglês (e referência em PT) em **[`planning/BUSINESS.md`](BUSINESS.md)** — secção *“Texto para onboarding Stripe”* — alinhado a assinaturas (tiers **Amanhã** / **Brisa** / **Horizonte**), Checkout + Portal, e serviços digitais apenas.
+- **Descrição do produto para onboarding Stripe (KYC):** texto curto/long em inglês (e referência em PT) em **[`planning/ROADMAP.md`](ROADMAP.md)** — secção *”Texto para onboarding Stripe (KYC)”* — alinhado a assinaturas (tiers **Amanhã** / **Brisa** / **Horizonte**), Checkout + Portal, e serviços digitais apenas.
 - **Moderação por IA:** `OPENAI_API_KEY` e opcionalmente `MODERATION_PROVIDER` nas mesmas Functions; o cliente chama `moderateContent` quando `aiModerationEnabled` é `true` em **`systemConfig/app`**. Sem chave, o servidor aplica fallback conforme `aiModerationFailClosed` e regista incidentes em `moderationIncidents`. Superadmin vê provedor e estado das credenciais via `adminGetModerationInfo` (app **Configurações → Moderação**). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md), [functions/README.md](../functions/README.md).
 - **Região:** alinhar `FUNCTIONS_REGION` no build Flutter com a região deployada (`us-central1` por defeito).
 
@@ -157,7 +157,7 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
 5. ✅ **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
 6. ✅ **`preferredLanguage`:** campo sincronizado com Firestore via `locale_provider.dart` quando o utilizador muda o idioma; incluído na criação de conta. Webhook faz fallback: `preferredLanguage` → `language` (2 chars) → `"en"`.
 
-Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo") e [`EMAIL_VALIDATION_PLAN.md`](EMAIL_VALIDATION_PLAN.md).
+Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo").
 
 **Webhook URL:** `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
 **Webhook ID (SendGrid):** `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
@@ -173,7 +173,7 @@ Configuração inicial feita em 2026-04-12 (SendGrid). **Migrado para Google Wor
 | **Google Workspace SMTP Relay** | ✅ Configurado | `smtp-relay.gmail.com:587` STARTTLS |
 | **Sender address** | ✅ `noreply@whenote.com` | Remetente dos emails de auth |
 | **SMTP username** | ✅ `yurilima@whenote.com` | Conta Workspace com 2FA ativa |
-| **SMTP password** | ✅ App Password | `vpjt xycl yqvt kcmv` (gerada em myaccount.google.com → App Passwords, nome "Firebase SMTP") |
+| **SMTP password** | ✅ App Password | ⚠️ **Não documentar aqui** — gerada em myaccount.google.com → App Passwords (nome "Firebase SMTP"). Configurar no Firebase Console → Authentication → Templates → SMTP Settings. |
 | **Workspace Admin** | ✅ Relay ativado | Admin Console → Apps → Gmail → Routing → "Firebase Auth SMTP Relay" |
 | **Action URL (global)** | ✅ Configurada | `https://whenote.app/auth/action.html` (aplica-se a todos os templates) |
 | **Sender name** | ✅ "Whenote" | Nos 3 templates: verification, password reset, email change |
@@ -294,7 +294,7 @@ flowchart LR
 
 ### F. Lojas e conformidade
 
-- [x] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [BUSINESS.md](BUSINESS.md) se aplicável.
+- [x] URLs de **política de privacidade** e **termos de utilização** prontas e indicadas nas fichas (Play Console e App Store Connect); texto de negócio/alinhamento em [ROADMAP.md](ROADMAP.md) se aplicável.
 - [ ] **Google Play:** formulário Data safety, classificação de conteúdo, ícones e screenshots conforme políticas atuais.
 - [x] **App Store Connect — metadata iOS 1.0:** descrição, keywords, texto promocional, subtítulo, URLs (suporte `whenote.app/support` + marketing `whenote.app`), copyright, categorias (Social Networking + Lifestyle), age ratings 4+ (UGC = YES), pricing Free 175 países, contacto de revisão preenchido.
 - [ ] **App Store — screenshots:** mínimo 3 para iPhone 6.5" (obrigatório para submissão).

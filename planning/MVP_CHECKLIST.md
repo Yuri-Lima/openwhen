@@ -4,7 +4,6 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 **Legenda:** 🔴 crítico/bloqueador · 🟡 importante · 🟢 pós-MVP · ✅ concluído
 
-> **Documento de auditoria completa:** [`AUDIT_ABRIL_2026.md`](AUDIT_ABRIL_2026.md)
 > **Estratégia de monetização e custos Firebase:** [`MONETIZACAO.md`](MONETIZACAO.md)
 > **Abertura da empresa (Delaware holding):** [`DELAWARE.md`](DELAWARE.md)
 > **Nova feature — Aniversário + Notificações:** [`ANIVERSARIO_NOTIFICACAO.md`](ANIVERSARIO_NOTIFICACAO.md)
@@ -69,7 +68,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 ## 🟢 MÊS 3+ — para crescimento e investidores
 
 - [ ] **Cápsulas Coletivas (grupos)** — grupos de até 50 pessoas com data de abertura coletiva; admin cria e convida por link; todos contribuem em segredo; abertura simultânea com notificação push; monetização: admin paga R$14,99/grupo ou R$4,99/mês · **Yuri + Diego** · ver [`CAPSULAS_COLETIVAS.md`](CAPSULAS_COLETIVAS.md) · ~8–10 semanas
-- [ ] **Nox Card** — card da coruja por nível de uso, animação compartilhável; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 e [`BUSINESS.md`](BUSINESS.md)
+- [ ] **Nox Card** — card da coruja por nível de uso, animação compartilhável; ver [`ROADMAP.md`](ROADMAP.md) Fase 2 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 - [ ] **Análise Firebase completa** — documentar estimativas por DAU em [`MONETIZACAO.md`](MONETIZACAO.md) ✅ (ver documento)
 - [ ] **Ativar monetização** — apenas após ~10K usuários; ver [`MONETIZACAO.md`](MONETIZACAO.md)
 - [ ] **Abertura da empresa Delaware** — ver [`DELAWARE.md`](DELAWARE.md) para timing e passo a passo
@@ -183,7 +182,7 @@ Use este arquivo para acompanhamento diário. Marque `[x]` quando concluído.
 
 ## Futuro — Gift When & Nox Card
 
-Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
+Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 
 **Whenote Gift (Presente Selado)**
 - [ ] Pesquisa legal concluída (*money transmission* EUA e requisitos locais)
@@ -199,7 +198,7 @@ Ver [`ROADMAP.md`](ROADMAP.md) Fase 2/4 e [`BUSINESS.md`](BUSINESS.md)
 
 ## Futuro — Whenote Physical
 
-Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`BUSINESS.md`](BUSINESS.md)
+Ver [`ROADMAP.md`](ROADMAP.md) Fase 4 e [`ROADMAP.md`](ROADMAP.md) (secção "Contexto de negócio")
 
 - [ ] Parceiros de impressão/fulfillment (Lob, Stannp, gráficas BR)
 - [ ] Design do template de carta impressa premium

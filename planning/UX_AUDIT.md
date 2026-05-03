@@ -126,7 +126,7 @@ Precisa de uma primeira carta enviada com sucesso e uma notificação que o faç
 - Status: Bloqueador — antes de qualquer lançamento
 
 **#4 — Email quebrado**
-- Registado em: `EMAIL_VALIDATION_PLAN.md` ✅ Concluído (2026-04-11)
+- ✅ Concluído (2026-04-11) — ver `CHANGELOG.md`
 - Status: Verificação de email implementada; recuperação de senha em investigação
 
 **#5 — Busca não funciona**
