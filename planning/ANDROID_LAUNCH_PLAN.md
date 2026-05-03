@@ -37,7 +37,7 @@ Itens que devem estar resolvidos antes de gerar o build de release.
 |------|--------|-----------------|------------|
 | **Moderação de cartas (Camada 2 — IA no envio)** | ✅ Implementado (12 abr 2026) | Text moderation (letters + capsules) e media moderation (images + audio) implementados. Ver MODERATION.md para detalhes. | MODERATION.md |
 | **Sign in with Apple** | ✅ Implementado (28 abr 2026) | `OAuthProvider('apple.com')` com nonce SHA-256. Entitlements configurados. Visível só iOS. | MVP_CHECKLIST.md §Importante |
-| **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@whenote.app`. | PRODUCTION.md §Email |
+| **DNS do remetente de email (Firebase Auth)** | ⏳ DNS pendente | Adicionar 4 registros DNS no Cloudflare para trocar remetente para `noreply@whenote.com`. | PRODUCTION.md §Email |
 | **Deploy da action page de email** | ✅ Concluído | `firebase deploy --only hosting` para publicar `hosting/public/auth/action.html`. | PRODUCTION.md §Email |
 | **Verificação de email no cadastro** | ✅ Implementado | `sendEmailVerification()` no registo + guard `requireVerifiedEmail()` bloqueia cartas/comentários/cápsulas até verificação. Soft-block (login permitido). | MVP_CHECKLIST.md §Email |
 
@@ -447,7 +447,7 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 3. [ ] **BLOQUEADOR:** Completar 3 verificações do Play Console (identidade → device → telefone)
 4. [ ] Configurar Developer Profile e Website no Play Console
 5. [ ] Gerar keystore e configurar `key.properties`
-6. [ ] Adicionar 4 registros DNS no Cloudflare (email Firebase Auth — `noreply@whenote.app`)
+6. [ ] Adicionar 4 registros DNS no Cloudflare (email Firebase Auth — `noreply@whenote.com`)
 7. [ ] Executar deploys Firebase (`rules`, `functions`, `hosting`)
 8. [ ] Gerar AAB de release
 9. [ ] QA em dispositivo real
@@ -477,7 +477,7 @@ Seguir o protocolo de [PRODUCTION.md](PRODUCTION.md) (secção 9), com atenção
 Semana 1 (AGORA — maio 2026):
 ├── Yuri: ⚡ Completar verificação de identidade no Play Console (upload documento)
 ├── Yuri: ⚡ Instalar app Play Console no celular (verificar device)
-├── Yuri: Adicionar 4 registros DNS no Cloudflare (email noreply@whenote.app)
+├── Yuri: Adicionar 4 registros DNS no Cloudflare (email noreply@whenote.com)
 ├── Diego: Criar Feature Graphic (1024×500)
 └── Diego: Começar a capturar screenshots (8 telas, pt-BR primeiro)
 

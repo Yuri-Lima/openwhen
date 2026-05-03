@@ -9,6 +9,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/) on
 
 ## [Unreleased]
 
+### Changed
+
+- **Migração para nova conta SendGrid (2026-05-03):** conta SendGrid recriada. Nova API key (`whenote-cloud-functions`), novo Event Webhook (ID `0754af3e-9ac0-443e-99aa-6b4837ffe82d`), Signed Webhook habilitado. Remetente atualizado de `noreply@whenote.app` para `noreply@whenote.com`. Secrets Firebase (`SENDGRID_API_KEY`, `SENDGRID_WEBHOOK_VERIFICATION_KEY`) precisam de atualização + redeploy de functions.
+
 ### Added
 
 - **Rascunhos de carta (Drafts):** nova coleção Firestore `drafts` com auto-save (debounce 5 s), TTL Policy no campo `expiresAt` (30 dias, deleção automática server-side). `DraftService` com CRUD, limpeza client-side de expirados, limite de 10 drafts/utilizador (`draftCount` no user doc), e migração one-time do SharedPreferences legado. `DraftsScreen` com listagem, emoji badges, barra de countdown (cores por urgência), swipe-to-delete com confirmação. Navegação via FAB ("Rascunhos") e ícone no header do WriteLetterScreen. 10 chaves i18n (en/pt/pt-BR/es) com plurais ICU. Novos ficheiros: `draft_model.dart`, `draft_service.dart`, `drafts_screen.dart`, `emotional_state.dart` (extraído para resolver dependência circular). Regras Firestore para `drafts/{draftId}` com proteção de campos imutáveis.

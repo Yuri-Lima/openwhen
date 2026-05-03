@@ -40,7 +40,7 @@ Pelo uso de Cloud Functions, o plano **Blaze é obrigatório**. O plano inclui q
 1. **Listeners sem `.limit()`** — um stream que lê 10.000 documentos a cada rebuild pode custar mais em 1 dia do que 1.000 usuários normais em 1 mês. Revisar: feed (Explorar), notificações, cofre.
 2. **Moderação por IA (OpenAI)** — a cada carta enviada, `moderateContent` chama a API da OpenAI. Com 1.000 cartas/dia, o custo OpenAI (~$0,002/chamada = ~$2/dia = ~$60/mês) supera o Firebase.
 3. **Storage de áudio** — voz de 1 min em OGG ≈ 500KB. 10.000 cartas com voz = 5GB de Storage. Implementar TTL para áudios de cartas já abertas.
-4. **Bounces de email via SendGrid** — custo por email enviado. Revisar se o plano gratuito do SendGrid (100 emails/dia) é suficiente para o beta.
+4. **Bounces de email via SendGrid** — custo por email enviado. Conta trial (nova, criada 2026-05-03) com 100 emails/dia gratuitos. Revisar se é suficiente para o beta.
 
 ### Ação obrigatória antes de lançar
 

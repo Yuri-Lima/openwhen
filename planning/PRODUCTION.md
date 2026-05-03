@@ -112,7 +112,7 @@ Revalidar após mudanças de política da Meta (ver notas em [ARCHITECTURE.md](A
 
 O domínio **`whenote.app`** está registado na **Cloudflare** (DNS gerido lá) e conectado ao **Firebase Hosting**. Serve as páginas públicas (`privacy.html`, `terms.html`, `support.html`), o `assetlinks.json` (Android App Links) e resolve deep links (`/letter/...`, `/capsule/...`). Se necessário reconfigurar: Firebase Console → Hosting → Custom domain; Cloudflare → DNS → registos CNAME/A conforme instruções do Firebase.
 
-**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.app` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
+**Emails:** 7 endereços do domínio (`privacy@`, `privacidade@`, `suporte@`, `dpo@`, `juridico@`, `info@`, `noreply@`) estão configurados via **Cloudflare Email Routing** e redirecionam para `y.m.lima19@gmail.com`. O `noreply@whenote.com` é também o remetente padrão do SendGrid (Cloud Functions). Configuração: Cloudflare Dashboard → Email → Email Routing → Custom addresses.
 
 Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configuration).
 
@@ -158,14 +158,14 @@ Para que o app receba notificações de bounce/dropped dos emails de convite par
    - URL: `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
    - Eventos: Bounced, Dropped, Deferred, Delivered
    - **Signed Event Webhook** habilitado (verification key copiada para o passo 2)
-   - Webhook ID: `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
+   - Webhook ID: `0754af3e-9ac0-443e-99aa-6b4837ffe82d`
 5. ✅ **Deploy rules:** `firebase deploy --only firestore:rules` (campos imutáveis protegidos)
 6. ✅ **`preferredLanguage`:** campo sincronizado com Firestore via `locale_provider.dart` quando o utilizador muda o idioma; incluído na criação de conta. Webhook faz fallback: `preferredLanguage` → `language` (2 chars) → `"en"`.
 
 Cloud Functions envolvidas: `onSendGridWebhook` (webhook HTTP), `onLetterCreatedSendExternalInviteEmail` (trigger Firestore), `resendExternalInviteEmail` (callable com rate limiting). Detalhes: [ARCHITECTURE.md](ARCHITECTURE.md) (secção "Entrega de email externo").
 
 **Webhook URL:** `https://us-central1-whenote-923f5.cloudfunctions.net/onSendGridWebhook`
-**Webhook ID (SendGrid):** `a25e23d6-27fd-4b54-bca3-e82e7857cb43`
+**Webhook ID (SendGrid):** `0754af3e-9ac0-443e-99aa-6b4837ffe82d`
 
 ### Email de autenticação (SMTP + templates + página de ação)
 
