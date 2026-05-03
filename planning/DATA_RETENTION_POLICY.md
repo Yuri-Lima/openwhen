@@ -230,6 +230,33 @@ deleteUserAccount(uid, mode: 'delete_all' | 'anonymize')
 
 > **Nota:** O export server-side em JSON (sem ZIP) é um fallback automático pré-deleção. O export completo em ZIP conforme prometido na Política de Privacidade é o client-side, acessível a qualquer momento via Settings.
 
+### ⚠️ Risco conhecido: export de grande volume (> 1 GB)
+
+**Prioridade:** Alta — obrigação legal (GDPR Art. 20 / LGPD Art. 18 V)
+
+**Problema:** O export completo (client-side) gera um ZIP em memória no dispositivo do utilizador. Para contas com grande volume de conteúdo (centenas de cartas com áudio .m4a, manuscritos .jpg, cápsulas com múltiplas fotos), o ficheiro resultante pode facilmente ultrapassar 1 GB. Isto causa:
+
+1. **Out-of-memory crash** — o ZIP é montado inteiramente em RAM antes de ser partilhado via `share_plus`; dispositivos com pouca memória disponível podem terminar o processo
+2. **Timeout de signed URLs** — o download de centenas de ficheiros de media do Firebase Storage pode demorar mais do que o tempo de vida das signed URLs
+3. **UX inviável** — o utilizador fica preso num loading de vários minutos sem feedback granular, sem possibilidade de pausa/retoma
+4. **Limite de partilha** — `share_plus` e os share sheets do iOS/Android podem não suportar ficheiros muito grandes
+
+**Obrigação legal:** A portabilidade de dados é um direito do titular e não pode ser condicionada a limites técnicos. O utilizador tem de conseguir exportar todos os seus dados, independentemente do volume.
+
+**Estratégias a avaliar (por ordem de complexidade):**
+
+1. **Export por partes (chunked ZIP)** — dividir o export em múltiplos ZIPs (ex: um por mês/ano, ou por tipo: "cartas", "cápsulas", "perfil"), cada um dentro de um limite razoável (ex: 200 MB). UI com lista de partes para download individual.
+
+2. **Export server-side com link temporário** — mover a geração do ZIP para uma Cloud Function (ou Cloud Run para contornar o limite de 540s das CF). O servidor gera o ZIP, faz upload para Storage e envia link por email. Vantagem: sem limitação de memória do dispositivo. Desvantagem: custo de processamento e storage temporário.
+
+3. **Streaming ZIP** — usar uma biblioteca de ZIP por streaming (ex: `archive` package no Dart) que escreve diretamente para um ficheiro temporário no disco em vez de montar tudo em RAM. Reduz o problema de memória mas não resolve o de tamanho.
+
+4. **Export híbrido** — JSONs gerados client-side (leve), media servida via signed URLs individuais num manifesto HTML/JSON que o utilizador pode descarregar a seu ritmo (semelhante ao Google Takeout).
+
+5. **Compressão agressiva + limite de qualidade** — reduzir qualidade de imagens/áudio no export (ex: fotos em 720p em vez de original). Nota: pode levantar questões sobre integridade dos dados exportados.
+
+**Status:** 🔲 Por implementar — necessário antes de atingir escala significativa de utilizadores com conteúdo pesado.
+
 ---
 
 ## 6. Retenção de Dados por Categoria
