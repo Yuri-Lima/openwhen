@@ -31,6 +31,7 @@ import '../../../../shared/utils/location_prompt_flow.dart';
 import '../../../../core/utils/email_normalization.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/auth/email_verification_guard.dart';
+import '../../../../shared/widgets/email_verification_sheet.dart';
 import '../../../../core/moderation/banned_lexical_words.dart';
 import '../../../../core/moderation/send_moderation_helper.dart';
 import '../../../../core/linking/share_link_service.dart';
@@ -1072,6 +1073,26 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
         debugPrint('[LetterSend] failed step=${step.name} $e\n$st');
       }
       if (mounted) {
+        // If Firestore rejected with permission-denied during commit,
+        // check whether the cause is an unverified email and show the
+        // verification sheet instead of a generic error snackbar.
+        final isPermissionDenied =
+            e is FirebaseException && e.code == 'permission-denied';
+        final emailNotVerified =
+            FirebaseAuth.instance.currentUser?.emailVerified != true;
+
+        if (isPermissionDenied &&
+            step == LetterSendStep.commitFirestore &&
+            emailNotVerified) {
+          setState(() => _isLoading = false);
+          final verified = await showEmailVerificationSheet(context);
+          if (verified == true && mounted) {
+            // Retry the send automatically after successful verification.
+            _saveLetter();
+          }
+          return;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(_letterSendErrorMessage(l10n, step, e))),
         );
