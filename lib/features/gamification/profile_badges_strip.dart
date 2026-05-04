@@ -105,8 +105,46 @@ _BadgeColors _colorsForBadge(String badgeId) {
 // Main widget – shows ALL badges (unlocked + locked)
 // ──────────────────────────────────────────────────────────────────
 
-class ProfileBadgesStrip extends StatelessWidget {
+class ProfileBadgesStrip extends StatefulWidget {
   const ProfileBadgesStrip({super.key});
+
+  @override
+  State<ProfileBadgesStrip> createState() => _ProfileBadgesStripState();
+}
+
+class _ProfileBadgesStripState extends State<ProfileBadgesStrip>
+    with SingleTickerProviderStateMixin {
+  bool _expanded = false;
+
+  late final AnimationController _animCtrl = AnimationController(
+    duration: const Duration(milliseconds: 300),
+    vsync: this,
+  );
+
+  late final Animation<double> _expandAnim = CurvedAnimation(
+    parent: _animCtrl,
+    curve: Curves.easeInOut,
+  );
+
+  late final Animation<double> _rotateAnim = Tween<double>(
+    begin: 0,
+    end: 0.5, // 180°
+  ).animate(_expandAnim);
+
+  @override
+  void dispose() {
+    _animCtrl.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() => _expanded = !_expanded);
+    if (_expanded) {
+      _animCtrl.forward();
+    } else {
+      _animCtrl.reverse();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,32 +172,82 @@ class ProfileBadgesStrip extends StatelessWidget {
           unlockDates[doc.id] = ts?.toDate();
         }
 
+        final pal = context.pal;
+        final unlockedCount = unlockedIds.length;
+        final totalCount = BadgeId.all.length;
+
         return Padding(
           padding: const EdgeInsets.only(top: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.profileBadgesTitle,
-                style: GoogleFonts.dmSans(
-                  fontSize: 10,
-                  color: context.pal.inkFaint,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.5,
+              // ── Collapsible header ──
+              GestureDetector(
+                onTap: _toggle,
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  children: [
+                    Text(
+                      l10n.profileBadgesTitle,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 10,
+                        color: pal.inkFaint,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    // Unlocked count pill
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: pal.inkFaint.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '$unlockedCount/$totalCount',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 9,
+                          color: pal.inkSoft,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    RotationTransition(
+                      turns: _rotateAnim,
+                      child: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 18,
+                        color: pal.inkFaint,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: BadgeId.all.map((id) {
-                  final unlocked = unlockedIds.contains(id);
-                  return _BadgeShield(
-                    badgeId: id,
-                    unlocked: unlocked,
-                    unlockedAt: unlockDates[id],
-                  );
-                }).toList(),
+
+              // ── Animated badge grid ──
+              SizeTransition(
+                sizeFactor: _expandAnim,
+                axisAlignment: -1.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: BadgeId.all.map((id) {
+                      final unlocked = unlockedIds.contains(id);
+                      return _BadgeShield(
+                        badgeId: id,
+                        unlocked: unlocked,
+                        unlockedAt: unlockDates[id],
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ],
           ),
