@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
@@ -1061,7 +1062,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     return Column(
       children: [
         // Apple — only on iOS
-        if (Platform.isIOS)
+        if (!kIsWeb && Platform.isIOS)
           GestureDetector(
             onTap: _isLoading ? null : _signInWithApple,
             child: Container(
@@ -1088,7 +1089,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ),
             ),
           ),
-        if (Platform.isIOS) const SizedBox(height: 12),
+        if (!kIsWeb && Platform.isIOS) const SizedBox(height: 12),
         // Google — all platforms
         GestureDetector(
           onTap: _isLoading ? null : _signInWithGoogle,

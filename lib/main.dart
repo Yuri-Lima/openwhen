@@ -578,6 +578,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   border: Border(top: BorderSide(color: p.border)),
                 ),
                 child: BottomNavigationBar(
+                  backgroundColor: p.bottomNavBg,
+                  selectedItemColor: p.bottomNavSelected,
+                  unselectedItemColor: p.bottomNavUnselected,
+                  type: BottomNavigationBarType.fixed,
                   currentIndex: tabIndex == 0 ? 0 : tabIndex == 1 ? 2 : 3,
                   onTap: (i) {
                     if (i == 1) {
