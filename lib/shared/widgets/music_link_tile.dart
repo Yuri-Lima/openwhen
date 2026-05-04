@@ -45,7 +45,7 @@ class MusicLinkTileDark extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF1A1714),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
         ),
         child: Row(
           children: [
@@ -53,9 +53,9 @@ class MusicLinkTileDark extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.15),
+                color: accentColor.withValues(alpha:0.15),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: accentColor.withOpacity(0.35)),
+                border: Border.all(color: accentColor.withValues(alpha:0.35)),
               ),
               child: Icon(Icons.music_note_rounded, size: 22, color: accentColor),
             ),
@@ -70,12 +70,12 @@ class MusicLinkTileDark extends StatelessWidget {
                   ),
                   Text(
                     l10n.musicLinkSubtitle,
-                    style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.4)),
+                    style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withValues(alpha:0.4)),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.open_in_new_rounded, color: Colors.white.withOpacity(0.35), size: 20),
+            Icon(Icons.open_in_new_rounded, color: Colors.white.withValues(alpha:0.35), size: 20),
           ],
         ),
       ),

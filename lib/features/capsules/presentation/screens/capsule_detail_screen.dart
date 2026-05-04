@@ -138,10 +138,10 @@ class CapsuleDetailScreen extends StatelessWidget {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -164,14 +164,14 @@ class CapsuleDetailScreen extends StatelessWidget {
                             children: [
                               Text(
                                 '$emoji $themeLabel',
-                                style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.45)),
+                                style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withValues(alpha:0.45)),
                               ),
                               if (isPublic) ...[
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: context.pal.accent.withOpacity(0.2),
+                                    color: context.pal.accent.withValues(alpha:0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -203,7 +203,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                       color: const Color(0xFFF2E8D5),
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 24, offset: const Offset(0, 8)),
+                        BoxShadow(color: Colors.black.withValues(alpha:0.25), blurRadius: 24, offset: const Offset(0, 8)),
                       ],
                     ),
                     child: Column(
@@ -222,7 +222,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 9,
                             letterSpacing: 3,
-                            color: themeColor.withOpacity(0.9),
+                            color: themeColor.withValues(alpha:0.9),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -350,7 +350,7 @@ class CapsuleDetailScreen extends StatelessWidget {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
+                                  color: Colors.black.withValues(alpha:0.3),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -425,7 +425,7 @@ class CapsuleDetailScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF1A1714),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
         ),
         child: Row(
           children: [
@@ -433,13 +433,13 @@ class CapsuleDetailScreen extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: destructive ? Colors.red.withOpacity(0.12) : Colors.white.withOpacity(0.05),
+                color: destructive ? Colors.red.withValues(alpha:0.12) : Colors.white.withValues(alpha:0.05),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: destructive ? Colors.red.withOpacity(0.35) : Colors.white.withOpacity(0.1),
+                  color: destructive ? Colors.red.withValues(alpha:0.35) : Colors.white.withValues(alpha:0.1),
                 ),
               ),
-              child: Icon(icon, size: 22, color: destructive ? Colors.red.shade300 : Colors.white.withOpacity(0.6)),
+              child: Icon(icon, size: 22, color: destructive ? Colors.red.shade300 : Colors.white.withValues(alpha:0.6)),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -456,12 +456,12 @@ class CapsuleDetailScreen extends StatelessWidget {
                   ),
                   Text(
                     subtitle,
-                    style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withOpacity(0.35)),
+                    style: GoogleFonts.dmSans(fontSize: 12, color: Colors.white.withValues(alpha:0.35)),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.25)),
+            Icon(Icons.chevron_right, color: Colors.white.withValues(alpha:0.25)),
           ],
         ),
       ),
@@ -580,7 +580,7 @@ Future<void> _openCapsuleShareSheet(
             ),
           ),
           ListTile(
-            leading: Icon(Icons.camera_alt_outlined, color: Colors.white.withOpacity(0.85)),
+            leading: Icon(Icons.camera_alt_outlined, color: Colors.white.withValues(alpha:0.85)),
             title: Text(l10n.storyShareInstagramOption, style: GoogleFonts.dmSans(color: Colors.white)),
             onTap: () {
               Navigator.pop(ctx);
@@ -595,7 +595,7 @@ Future<void> _openCapsuleShareSheet(
             },
           ),
           ListTile(
-            leading: Icon(Icons.text_fields, color: Colors.white.withOpacity(0.85)),
+            leading: Icon(Icons.text_fields, color: Colors.white.withValues(alpha:0.85)),
             title: Text(l10n.storyShareTextOption, style: GoogleFonts.dmSans(color: Colors.white)),
             onTap: () {
               Navigator.pop(ctx);

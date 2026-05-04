@@ -1520,6 +1520,66 @@ class AppLocalizationsPt extends AppLocalizations {
   String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
 
   @override
+  String get badgeHintFirstLetterSent =>
+      'Envie sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstLetterOpened =>
+      'Abra sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstPublic => 'Compartilhe uma carta no feed público.';
+
+  @override
+  String get badgeHintLettersSentFive => 'Envie 5 cartas para desbloquear.';
+
+  @override
+  String get badgeHintLettersSentTen => 'Envie 10 cartas para desbloquear.';
+
+  @override
+  String get badgeHintVoiceLetter =>
+      'Envie uma carta com áudio para desbloquear.';
+
+  @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recebida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Você recebeu sua primeira carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived =>
+      'Receba sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Você completou seu perfil.';
+
+  @override
+  String get badgeHintProfileComplete =>
+      'Preencha nome, username, bio e avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 dias seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc =>
+      'Você usou o app por 3 dias consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Use o app por 3 dias seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 curtidas';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Uma carta sua recebeu 10 curtidas.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Receba 10 curtidas em uma carta.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -3049,7 +3109,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get draftsEmpty =>
-      'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será guardada aqui automaticamente.';
+      'Sem rascunhos.\nGuarde uma carta como rascunho para continuar depois.';
 
   @override
   String get draftsUntitled => 'Sem título';
@@ -3081,6 +3141,28 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get homeDraftsSubtitle => 'Continue uma carta que começou';
+
+  @override
+  String get draftSaveDialogTitle => 'Guardar rascunho?';
+
+  @override
+  String get draftSaveDialogMessage =>
+      'Tem alterações não guardadas. Deseja guardar esta carta como rascunho?';
+
+  @override
+  String get draftSaveDialogSave => 'Guardar rascunho';
+
+  @override
+  String get draftSaveDialogDiscard => 'Descartar';
+
+  @override
+  String get draftSaveDialogCancel => 'Cancelar';
+
+  @override
+  String get draftSavedSnackbar => 'Rascunho guardado';
+
+  @override
+  String get draftSaveErrorSnackbar => 'Não foi possível guardar o rascunho';
 }
 
 /// The translations for Portuguese, as used in Brazil (`pt_BR`).
@@ -4596,6 +4678,66 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get badgeVoiceLetterDesc => 'Você enviou uma carta com áudio.';
+
+  @override
+  String get badgeHintFirstLetterSent =>
+      'Envie sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstLetterOpened =>
+      'Abra sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstPublic => 'Compartilhe uma carta no feed público.';
+
+  @override
+  String get badgeHintLettersSentFive => 'Envie 5 cartas para desbloquear.';
+
+  @override
+  String get badgeHintLettersSentTen => 'Envie 10 cartas para desbloquear.';
+
+  @override
+  String get badgeHintVoiceLetter =>
+      'Envie uma carta com áudio para desbloquear.';
+
+  @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recebida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Você recebeu sua primeira carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived =>
+      'Receba sua primeira carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Você completou seu perfil.';
+
+  @override
+  String get badgeHintProfileComplete =>
+      'Preencha nome, username, bio e avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 dias seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc =>
+      'Você usou o app por 3 dias consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Use o app por 3 dias seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 curtidas';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Uma carta sua recebeu 10 curtidas.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Receba 10 curtidas em uma carta.';
 
   @override
   String get profileStatLetters => 'Cartas';
@@ -6127,7 +6269,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get draftsEmpty =>
-      'Sem rascunhos.\nQuando começar a escrever uma carta e sair, ela será salva aqui automaticamente.';
+      'Sem rascunhos.\nSalve uma carta como rascunho para continuar depois.';
 
   @override
   String get draftsUntitled => 'Sem título';
@@ -6159,4 +6301,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get homeDraftsSubtitle => 'Continue uma carta que começou';
+
+  @override
+  String get draftSaveDialogTitle => 'Salvar rascunho?';
+
+  @override
+  String get draftSaveDialogMessage =>
+      'Você tem alterações não salvas. Deseja salvar esta carta como rascunho?';
+
+  @override
+  String get draftSaveDialogSave => 'Salvar rascunho';
+
+  @override
+  String get draftSaveDialogDiscard => 'Descartar';
+
+  @override
+  String get draftSaveDialogCancel => 'Cancelar';
+
+  @override
+  String get draftSavedSnackbar => 'Rascunho salvo';
+
+  @override
+  String get draftSaveErrorSnackbar => 'Não foi possível salvar o rascunho';
 }

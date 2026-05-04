@@ -73,7 +73,7 @@ class _LetterEmotionalPrimerScreenState
                     center: Alignment.center,
                     radius: 1.1,
                     colors: [
-                      p.accent.withOpacity(0.08),
+                      p.accent.withValues(alpha:0.08),
                       Colors.transparent,
                     ],
                   ),
@@ -99,8 +99,8 @@ class _LetterEmotionalPrimerScreenState
                             shape: BoxShape.circle,
                             gradient: RadialGradient(
                               colors: [
-                                p.accent.withOpacity(0.12),
-                                p.accent.withOpacity(0.04),
+                                p.accent.withValues(alpha:0.12),
+                                p.accent.withValues(alpha:0.04),
                                 Colors.transparent,
                               ],
                             ),
@@ -113,7 +113,7 @@ class _LetterEmotionalPrimerScreenState
                             shape: BoxShape.circle,
                             color: p.accentWarm,
                             border: Border.all(
-                                color: p.accent.withOpacity(0.25), width: 1.5),
+                                color: p.accent.withValues(alpha:0.25), width: 1.5),
                           ),
                           child: Icon(
                             Icons.mail_outline_rounded,
@@ -146,7 +146,7 @@ class _LetterEmotionalPrimerScreenState
                       textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.45),
+                        color: Colors.white.withValues(alpha:0.45),
                         fontWeight: FontWeight.w300,
                         height: 1.6,
                       ),
@@ -161,7 +161,7 @@ class _LetterEmotionalPrimerScreenState
                         onPressed: _isProcessing ? null : _handleOpenNow,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: p.accent,
-                          disabledBackgroundColor: p.accent.withOpacity(0.4),
+                          disabledBackgroundColor: p.accent.withValues(alpha:0.4),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -174,7 +174,7 @@ class _LetterEmotionalPrimerScreenState
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.white.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha:0.8),
                                 ),
                               )
                             : Text(
@@ -198,7 +198,7 @@ class _LetterEmotionalPrimerScreenState
                         onPressed: _handleViewLater,
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                              color: Colors.white.withOpacity(0.15)),
+                              color: Colors.white.withValues(alpha:0.15)),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -208,7 +208,7 @@ class _LetterEmotionalPrimerScreenState
                           l10n.letterEmotionalPrimerViewLater,
                           style: GoogleFonts.dmSans(
                             fontSize: 15,
-                            color: Colors.white.withOpacity(0.55),
+                            color: Colors.white.withValues(alpha:0.55),
                           ),
                         ),
                       ),
@@ -230,13 +230,13 @@ class _LetterEmotionalPrimerScreenState
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha:0.08),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.arrow_back,
                     size: 18,
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha:0.5),
                   ),
                 ),
               ),

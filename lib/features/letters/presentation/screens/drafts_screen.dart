@@ -224,7 +224,7 @@ class _DraftCard extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: (emotionColor ?? p.accent).withOpacity(0.12),
+                        color: (emotionColor ?? p.accent).withValues(alpha:0.12),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       alignment: Alignment.center,

@@ -181,11 +181,11 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white.withOpacity(0.08)),
+                          border: Border.all(color: Colors.white.withValues(alpha:0.08)),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -195,7 +195,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                         children: [
                           Text(l10n.commentsTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.white, fontStyle: FontStyle.italic)),
                           Text(widget.letterTitle, maxLines: 1, overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withOpacity(0.3))),
+                            style: GoogleFonts.dmSans(fontSize: 11, color: Colors.white.withValues(alpha:0.3))),
                         ],
                       ),
                     ),
@@ -282,14 +282,14 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                                     const Spacer(),
                                     Text(
                                       formatDayMonth(createdAt, locale),
-                                      style: GoogleFonts.dmSans(fontSize: 11, color: isMe ? Colors.white.withOpacity(0.3) : context.pal.inkFaint),
+                                      style: GoogleFonts.dmSans(fontSize: 11, color: isMe ? Colors.white.withValues(alpha:0.3) : context.pal.inkFaint),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   data['message'] ?? '',
-                                  style: GoogleFonts.dmSans(fontSize: 14, color: isMe ? Colors.white.withOpacity(0.8) : context.pal.inkSoft, height: 1.5),
+                                  style: GoogleFonts.dmSans(fontSize: 14, color: isMe ? Colors.white.withValues(alpha:0.8) : context.pal.inkSoft, height: 1.5),
                                 ),
                               ],
                             ),
@@ -367,7 +367,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                     decoration: BoxDecoration(
                       color: context.pal.accent,
                       shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: context.pal.accent.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                      boxShadow: [BoxShadow(color: context.pal.accent.withValues(alpha:0.3), blurRadius: 8, offset: const Offset(0, 2))],
                     ),
                     child: _isLoading
                         ? const Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))

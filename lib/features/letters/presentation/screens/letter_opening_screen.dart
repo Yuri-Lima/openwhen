@@ -247,8 +247,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     colors: [
-                      glowColor.withOpacity(_glowAnim.value),
-                      glowColor.withOpacity(_glowAnim.value * 0.2),
+                      glowColor.withValues(alpha:_glowAnim.value),
+                      glowColor.withValues(alpha:_glowAnim.value * 0.2),
                       Colors.transparent,
                     ],
                     radius: 0.7,
@@ -278,8 +278,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                           color: const Color(0xFFF2E8D5),
                           borderRadius: BorderRadius.circular(4),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 48, offset: const Offset(0, 20)),
-                            BoxShadow(color: glowColor.withOpacity(0.15), blurRadius: 32),
+                            BoxShadow(color: Colors.black.withValues(alpha:0.5), blurRadius: 48, offset: const Offset(0, 20)),
+                            BoxShadow(color: glowColor.withValues(alpha:0.15), blurRadius: 32),
                           ],
                         ),
                         child: ClipRRect(
@@ -325,10 +325,10 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                             decoration: BoxDecoration(
                               color: const Color(0xFF1A1714),
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                              border: Border.all(color: Colors.white.withValues(alpha:0.1)),
                               boxShadow: [
-                                BoxShadow(color: glowColor.withOpacity(0.28), blurRadius: 44, offset: const Offset(0, 14)),
-                                BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 22),
+                                BoxShadow(color: glowColor.withValues(alpha:0.28), blurRadius: 44, offset: const Offset(0, 14)),
+                                BoxShadow(color: Colors.black.withValues(alpha:0.45), blurRadius: 22),
                               ],
                             ),
                             child: Stack(
@@ -348,7 +348,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                         shape: BoxShape.circle,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: glowColor.withOpacity(0.42),
+                                            color: glowColor.withValues(alpha:0.42),
                                             blurRadius: 28 + _glowAnim.value * 28,
                                             spreadRadius: 0,
                                           ),
@@ -363,12 +363,12 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: glowColor.withOpacity(0.12),
+                                            color: glowColor.withValues(alpha:0.12),
                                           ),
                                           child: Icon(
                                             Icons.lock_rounded,
                                             size: 30,
-                                            color: Colors.white.withOpacity(0.85),
+                                            color: Colors.white.withValues(alpha:0.85),
                                           ),
                                         ),
                                       ),
@@ -386,9 +386,9 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
-                              color: glowColor.withOpacity(0.15),
+                              color: glowColor.withValues(alpha:0.15),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: glowColor.withOpacity(0.3)),
+                              border: Border.all(color: glowColor.withValues(alpha:0.3)),
                             ),
                             child: Text(openText,
                               style: GoogleFonts.dmSans(fontSize: 11, color: glowColor, fontWeight: FontWeight.w500)),
@@ -410,10 +410,10 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
                 child: Container(
                   width: 36, height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: Colors.white.withValues(alpha:0.08),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.5)),
+                  child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.5)),
                 ),
               ),
             ),
@@ -429,13 +429,13 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(l10n.letterDetailHeaderFrom, style: TextStyle(fontSize: 9, letterSpacing: 4, color: accentColor.withOpacity(0.8))),
+        Text(l10n.letterDetailHeaderFrom, style: TextStyle(fontSize: 9, letterSpacing: 4, color: accentColor.withValues(alpha:0.8))),
         const SizedBox(height: 8),
         Text(d['senderName'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFF160D04))),
         const SizedBox(height: 4),
         Text(l10n.letterDetailTo(d['receiverName'] ?? ''), style: GoogleFonts.dmSans(fontSize: 12, fontStyle: FontStyle.italic, color: const Color(0xFF7A5C3A))),
         const SizedBox(height: 16),
-        Container(width: 24, height: 1, color: accentColor.withOpacity(0.5)),
+        Container(width: 24, height: 1, color: accentColor.withValues(alpha:0.5)),
         const SizedBox(height: 8),
         Text(d['title'] ?? '', style: GoogleFonts.dmSerifDisplay(fontSize: 17, color: const Color(0xFF160D04), fontStyle: FontStyle.italic)),
         const SizedBox(height: 16),
@@ -449,8 +449,8 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
               icon: Icon(Icons.music_note_rounded, color: accentColor, size: 22),
               label: Text(l10n.musicLinkTitle, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF4A2E14))),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: accentColor.withOpacity(0.55)),
-                backgroundColor: accentColor.withOpacity(0.06),
+                side: BorderSide(color: accentColor.withValues(alpha:0.55)),
+                backgroundColor: accentColor.withValues(alpha:0.06),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
@@ -473,7 +473,7 @@ class _LetterOpeningScreenState extends State<LetterOpeningScreen>
         Align(
           alignment: Alignment.centerRight,
           child: Text(l10n.letterOpeningWrittenOpenedToday(formatShortDate(createdAt, locale)),
-            style: TextStyle(fontSize: 8, letterSpacing: 2, color: accentColor.withOpacity(0.5))),
+            style: TextStyle(fontSize: 8, letterSpacing: 2, color: accentColor.withValues(alpha:0.5))),
         ),
         const SizedBox(height: 32),
         SizedBox(
@@ -522,7 +522,7 @@ class _ParticlePainter extends CustomPainter {
     for (final p in particles) {
       final pos = center + p.position;
       final opacity = (p.life * p.life).clamp(0.0, 1.0);
-      final paint = Paint()..color = p.color.withOpacity(opacity);
+      final paint = Paint()..color = p.color.withValues(alpha:opacity);
       final s = p.size * math.min(p.life, 1.0);
 
       switch (p.type) {
@@ -582,11 +582,11 @@ class _EnvelopePainter extends CustomPainter {
     final w = size.width;
     final h = size.height;
     final line = Paint()
-      ..color = Colors.white.withOpacity(0.07)
+      ..color = Colors.white.withValues(alpha:0.07)
       ..strokeWidth = 1;
 
     final texture = Paint()
-      ..color = Colors.black.withOpacity(0.07)
+      ..color = Colors.black.withValues(alpha:0.07)
       ..strokeWidth = 0.35;
     for (double y = 4; y < h * 0.5; y += 4.2) {
       canvas.drawLine(Offset(6, y), Offset(w - 6, y), texture);
@@ -622,12 +622,12 @@ class _EnvelopePainter extends CustomPainter {
 class _PaperPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final line = Paint()..color = Colors.black.withOpacity(0.04)..strokeWidth = 1;
+    final line = Paint()..color = Colors.black.withValues(alpha:0.04)..strokeWidth = 1;
     for (double y = 28; y < size.height; y += 28) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
     }
     canvas.drawLine(const Offset(36, 0), Offset(36, size.height),
-      Paint()..color = const Color(0xFFC0392B).withOpacity(0.12)..strokeWidth = 1);
+      Paint()..color = const Color(0xFFC0392B).withValues(alpha:0.12)..strokeWidth = 1);
   }
   @override bool shouldRepaint(_) => false;
 }
@@ -646,6 +646,6 @@ class _PulsingHintState extends State<_PulsingHint> with SingleTickerProviderSta
   Widget build(BuildContext context) => FadeTransition(
     opacity: _opacity,
     child: Text(widget.text,
-      style: TextStyle(fontSize: 10, letterSpacing: 3.5, color: widget.color.withOpacity(0.5))),
+      style: TextStyle(fontSize: 10, letterSpacing: 3.5, color: widget.color.withValues(alpha:0.5))),
   );
 }

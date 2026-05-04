@@ -116,7 +116,7 @@ class _AnalyticsConsentBannerState extends State<_AnalyticsConsentBanner>
             ),
             boxShadow: [
               BoxShadow(
-                color: palette.shadow.withOpacity(0.15),
+                color: palette.shadow.withValues(alpha:0.15),
                 blurRadius: 12,
                 offset: const Offset(0, -4),
               ),

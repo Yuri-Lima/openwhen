@@ -27,6 +27,7 @@ import '../../../letters/data/letter_repository_actions.dart';
 import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
 import '../../../../shared/social/instagram_stories_share_service.dart';
 import '../../../../shared/social/story_share_content.dart';
+import '../../../gamification/badge_unlock_service.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -263,7 +264,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                               ],
                             ),
                             const SizedBox(height: 4),
-                            Text(l10n.feedPublicHeader, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withOpacity(0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
+                            Text(l10n.feedPublicHeader, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
                           ],
                         ),
                         Row(
@@ -303,9 +304,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: selected ? context.pal.accent : Colors.white.withOpacity(0.08),
+                                      color: selected ? context.pal.accent : Colors.white.withValues(alpha:0.08),
                                       borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(color: selected ? context.pal.accent : Colors.white.withOpacity(0.08)),
+                                      border: Border.all(color: selected ? context.pal.accent : Colors.white.withValues(alpha:0.08)),
                                     ),
                                     child: Text(
                                       _filterLabelForId(filterId, l10n),
@@ -313,7 +314,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                       style: GoogleFonts.dmSans(
                                         fontSize: 11,
                                         height: 1.0,
-                                        color: selected ? context.pal.white : Colors.white.withOpacity(0.4),
+                                        color: selected ? context.pal.white : Colors.white.withValues(alpha:0.4),
                                         fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
                                       ),
                                     ),
@@ -334,14 +335,14 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(7),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.12),
+                                    color: Colors.white.withValues(alpha:0.12),
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: Colors.white.withOpacity(0.2)),
+                                    border: Border.all(color: Colors.white.withValues(alpha:0.2)),
                                   ),
                                   child: Icon(
                                     Icons.tune,
                                     size: 18,
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: Colors.white.withValues(alpha:0.9),
                                   ),
                                 ),
                               ),
@@ -531,11 +532,11 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     Widget btn = Container(
       width: 36, height: 36,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: Colors.white.withValues(alpha:0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha:0.08)),
       ),
-      child: Icon(icon, size: 18, color: Colors.white.withOpacity(0.5)),
+      child: Icon(icon, size: 18, color: Colors.white.withValues(alpha:0.5)),
     );
     if (onTap != null) {
       btn = Semantics(
@@ -711,10 +712,10 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
 
   Color _bg(BuildContext ctx) => widget.isFeatured ? ctx.pal.headerGradient.first : ctx.pal.card;
   Color _text(BuildContext ctx) => widget.isFeatured ? Colors.white : ctx.pal.ink;
-  Color _textSoft(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.6) : ctx.pal.inkSoft;
-  Color _textFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.4) : ctx.pal.inkFaint;
-  Color _textMuted(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.25) : ctx.pal.inkFaint;
-  Color _iconFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withOpacity(0.5) : ctx.pal.inkFaint;
+  Color _textSoft(BuildContext ctx) => widget.isFeatured ? Colors.white.withValues(alpha:0.6) : ctx.pal.inkSoft;
+  Color _textFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withValues(alpha:0.4) : ctx.pal.inkFaint;
+  Color _textMuted(BuildContext ctx) => widget.isFeatured ? Colors.white.withValues(alpha:0.25) : ctx.pal.inkFaint;
+  Color _iconFaint(BuildContext ctx) => widget.isFeatured ? Colors.white.withValues(alpha:0.5) : ctx.pal.inkFaint;
 
   @override
   void initState() {
@@ -771,7 +772,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                           decoration: widget.isFeatured
                               ? BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: context.pal.accent.withOpacity(0.4)),
+                                  border: Border.all(color: context.pal.accent.withValues(alpha:0.4)),
                                 )
                               : null,
                           child: ClipOval(
@@ -780,7 +781,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                               name: '?',
                               size: 38,
                               backgroundColor: widget.isFeatured
-                                  ? context.pal.accent.withOpacity(0.35)
+                                  ? context.pal.accent.withValues(alpha:0.35)
                                   : context.pal.accentWarm,
                               textColor: widget.isFeatured ? Colors.white : context.pal.accent,
                             ),
@@ -823,7 +824,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                                 decoration: widget.isFeatured
                                     ? BoxDecoration(
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: context.pal.accent.withOpacity(0.4)),
+                                        border: Border.all(color: context.pal.accent.withValues(alpha:0.4)),
                                       )
                                     : null,
                                 child: ClipOval(
@@ -832,7 +833,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                                     name: senderName,
                                     size: 38,
                                     backgroundColor: widget.isFeatured
-                                        ? context.pal.accent.withOpacity(0.35)
+                                        ? context.pal.accent.withValues(alpha:0.35)
                                         : context.pal.accentWarm,
                                     textColor: widget.isFeatured ? Colors.white : context.pal.accent,
                                   ),
@@ -985,9 +986,9 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: context.pal.accent.withOpacity(0.2),
+                      color: context.pal.accent.withValues(alpha:0.2),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: context.pal.accent.withOpacity(0.3)),
+                      border: Border.all(color: context.pal.accent.withValues(alpha:0.3)),
                     ),
                     child: Text(l10n.feedCardFeatured,
                       style: GoogleFonts.dmSans(
@@ -1032,7 +1033,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                _bg(context).withOpacity(0.0),
+                                _bg(context).withValues(alpha:0.0),
                                 _bg(context),
                               ],
                             ),
@@ -1106,6 +1107,8 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                         } else {
                           await FirebaseFirestore.instance.collection(FirestoreCollections.likes).add({'letterId': widget.docId, 'userUid': uid, 'createdAt': Timestamp.now()});
                           await FirebaseFirestore.instance.collection(FirestoreCollections.letters).doc(widget.docId).update({'likeCount': FieldValue.increment(1)});
+                          // Check "10 likes" badge for the letter author.
+                          BadgeUnlockHooks.afterLetterLiked(letterDocId: widget.docId);
                         }
                       },
                       child: Padding(
@@ -1243,7 +1246,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(height: 1, color: widget.isFeatured ? Colors.white.withOpacity(0.08) : context.pal.border),
+            Divider(height: 1, color: widget.isFeatured ? Colors.white.withValues(alpha:0.08) : context.pal.border),
             ...docs.map((doc) {
               final c = doc.data() as Map<String, dynamic>;
               final message = c['message'] as String? ?? '';
@@ -1263,7 +1266,7 @@ class _FeedCardState extends State<_FeedCard> with SingleTickerProviderStateMixi
                             style: GoogleFonts.dmSans(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: widget.isFeatured ? Colors.white.withOpacity(0.8) : context.pal.ink,
+                              color: widget.isFeatured ? Colors.white.withValues(alpha:0.8) : context.pal.ink,
                             ),
                           ),
                           TextSpan(
@@ -1345,7 +1348,7 @@ class _FeedPaperLetter extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
+            color: Colors.black.withValues(alpha:0.25),
             blurRadius: 24,
             offset: const Offset(0, 6),
           ),
@@ -1382,7 +1385,7 @@ class _FeedPaperLetter extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 9,
                         letterSpacing: 4,
-                        color: accentColor.withOpacity(0.8),
+                        color: accentColor.withValues(alpha:0.8),
                       )),
                     const SizedBox(height: 8),
                     // Nome do remetente
@@ -1401,7 +1404,7 @@ class _FeedPaperLetter extends StatelessWidget {
                       )),
                     const SizedBox(height: 16),
                     // Divider
-                    Container(width: 24, height: 1, color: accentColor.withOpacity(0.5)),
+                    Container(width: 24, height: 1, color: accentColor.withValues(alpha:0.5)),
                     const SizedBox(height: 8),
                     // Título
                     Text(data['title'] ?? '',
@@ -1439,7 +1442,7 @@ class _FeedPaperLetter extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 8,
                           letterSpacing: 2,
-                          color: accentColor.withOpacity(0.5),
+                          color: accentColor.withValues(alpha:0.5),
                         ),
                       ),
                     ),
@@ -1470,8 +1473,8 @@ class _FeedPaperLetter extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                             decoration: BoxDecoration(
-                              color: accentColor.withOpacity(0.12),
-                              border: Border.all(color: accentColor.withOpacity(0.4)),
+                              color: accentColor.withValues(alpha:0.12),
+                              border: Border.all(color: accentColor.withValues(alpha:0.4)),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: isSharing
@@ -1515,7 +1518,7 @@ class _FeedPaperLinesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final line = Paint()
-      ..color = Colors.black.withOpacity(0.04)
+      ..color = Colors.black.withValues(alpha:0.04)
       ..strokeWidth = 1;
     for (double y = 28; y < size.height; y += 28) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), line);
@@ -1525,7 +1528,7 @@ class _FeedPaperLinesPainter extends CustomPainter {
       const Offset(36, 0),
       Offset(36, size.height),
       Paint()
-        ..color = const Color(0xFFC0392B).withOpacity(0.12)
+        ..color = const Color(0xFFC0392B).withValues(alpha:0.12)
         ..strokeWidth = 1,
     );
   }

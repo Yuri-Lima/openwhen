@@ -67,7 +67,11 @@ service cloud.firestore {
             'first_public',
             'letters_sent_five',
             'letters_sent_ten',
-            'voice_letter'
+            'voice_letter',
+            'first_letter_received',
+            'profile_complete',
+            'three_day_streak',
+            'letter_liked_by_ten'
           ]
           && request.resource.data.keys().hasOnly(['unlockedAt'])
           && (

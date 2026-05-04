@@ -1524,6 +1524,66 @@ class AppLocalizationsEs extends AppLocalizations {
   String get badgeVoiceLetterDesc => 'Enviaste una carta con audio.';
 
   @override
+  String get badgeHintFirstLetterSent =>
+      'Envía tu primera carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstLetterOpened =>
+      'Abre tu primera carta para desbloquear.';
+
+  @override
+  String get badgeHintFirstPublic => 'Comparte una carta en el feed público.';
+
+  @override
+  String get badgeHintLettersSentFive => 'Envía 5 cartas para desbloquear.';
+
+  @override
+  String get badgeHintLettersSentTen => 'Envía 10 cartas para desbloquear.';
+
+  @override
+  String get badgeHintVoiceLetter =>
+      'Envía una carta con audio para desbloquear.';
+
+  @override
+  String get badgeFirstLetterReceivedTitle => 'Carta recibida';
+
+  @override
+  String get badgeFirstLetterReceivedDesc => 'Recibiste tu primera carta.';
+
+  @override
+  String get badgeHintFirstLetterReceived =>
+      'Recibe tu primera carta para desbloquear.';
+
+  @override
+  String get badgeProfileCompleteTitle => 'Perfil completo';
+
+  @override
+  String get badgeProfileCompleteDesc => 'Completaste tu perfil.';
+
+  @override
+  String get badgeHintProfileComplete =>
+      'Completa nombre, username, bio y avatar.';
+
+  @override
+  String get badgeThreeDayStreakTitle => '3 días seguidos';
+
+  @override
+  String get badgeThreeDayStreakDesc =>
+      'Usaste la app por 3 días consecutivos.';
+
+  @override
+  String get badgeHintThreeDayStreak => 'Usa la app por 3 días seguidos.';
+
+  @override
+  String get badgeLetterLikedByTenTitle => '10 likes';
+
+  @override
+  String get badgeLetterLikedByTenDesc => 'Una carta tuya recibió 10 likes.';
+
+  @override
+  String get badgeHintLetterLikedByTen => 'Recibe 10 likes en una carta.';
+
+  @override
   String get profileStatLetters => 'Cartas';
 
   @override
@@ -3061,7 +3121,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get draftsEmpty =>
-      'Sin borradores.\nCuando empieces a escribir una carta y salgas, se guardará aquí automáticamente.';
+      'Sin borradores.\nGuarda una carta como borrador para continuarla después.';
 
   @override
   String get draftsUntitled => 'Sin título';
@@ -3093,4 +3153,26 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeDraftsSubtitle => 'Continúa una carta que empezaste';
+
+  @override
+  String get draftSaveDialogTitle => '¿Guardar borrador?';
+
+  @override
+  String get draftSaveDialogMessage =>
+      'Tienes cambios sin guardar. ¿Deseas guardar esta carta como borrador?';
+
+  @override
+  String get draftSaveDialogSave => 'Guardar borrador';
+
+  @override
+  String get draftSaveDialogDiscard => 'Descartar';
+
+  @override
+  String get draftSaveDialogCancel => 'Cancelar';
+
+  @override
+  String get draftSavedSnackbar => 'Borrador guardado';
+
+  @override
+  String get draftSaveErrorSnackbar => 'No se pudo guardar el borrador';
 }

@@ -46,18 +46,18 @@ class _OwlLogoThemedPainter extends CustomPainter {
     final rrect = RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, w, h), Radius.circular(w * 0.07));
     canvas.drawRRect(rrect, Paint()..color = envColor);
     canvas.drawRRect(rrect, Paint()
-      ..color = color.withOpacity(0.20)
+      ..color = color.withValues(alpha:0.20)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8);
 
     // Abas com variações sutis da cor
     canvas.drawPath(Path()..moveTo(0,0)..lineTo(w/2,h*0.52)..lineTo(w,0)..close(), Paint()..color = envDark);
-    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(0,h*0.2)..close(), Paint()..color = envDark.withOpacity(0.85));
-    canvas.drawPath(Path()..moveTo(w,h)..lineTo(w/2,h*0.52)..lineTo(w,h*0.2)..close(), Paint()..color = envDark.withOpacity(0.80));
-    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = envDark.withOpacity(0.90));
+    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(0,h*0.2)..close(), Paint()..color = envDark.withValues(alpha:0.85));
+    canvas.drawPath(Path()..moveTo(w,h)..lineTo(w/2,h*0.52)..lineTo(w,h*0.2)..close(), Paint()..color = envDark.withValues(alpha:0.80));
+    canvas.drawPath(Path()..moveTo(0,h)..lineTo(w/2,h*0.52)..lineTo(w,h)..close(), Paint()..color = envDark.withValues(alpha:0.90));
 
     // Linhas sutis
-    final lp = Paint()..color = color.withOpacity(0.12)..strokeWidth = 0.5..style = PaintingStyle.stroke;
+    final lp = Paint()..color = color.withValues(alpha:0.12)..strokeWidth = 0.5..style = PaintingStyle.stroke;
     canvas.drawLine(Offset(0,0), Offset(w/2,h*0.52), lp);
     canvas.drawLine(Offset(w,0), Offset(w/2,h*0.52), lp);
 
@@ -66,7 +66,7 @@ class _OwlLogoThemedPainter extends CustomPainter {
     final lacreRadius = w * 0.18;
     canvas.drawCircle(lacreCenter, lacreRadius, Paint()..color = const Color(0xFFC9A84C));
     canvas.drawCircle(lacreCenter, lacreRadius, Paint()
-      ..color = const Color(0xFFB8943E).withOpacity(0.6)
+      ..color = const Color(0xFFB8943E).withValues(alpha:0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8);
     canvas.drawCircle(lacreCenter, lacreRadius * 0.85, Paint()..color = const Color(0xFFB8943E));
@@ -76,9 +76,9 @@ class _OwlLogoThemedPainter extends CustomPainter {
     final eyeY = lacreCenter.dy - lacreRadius * 0.05;
     for (final eyeX in [lacreCenter.dx - lacreRadius*0.38, lacreCenter.dx + lacreRadius*0.38]) {
       final eye = Offset(eyeX, eyeY);
-      canvas.drawCircle(eye, eyeRadius, Paint()..color = Colors.white.withOpacity(0.9));
+      canvas.drawCircle(eye, eyeRadius, Paint()..color = Colors.white.withValues(alpha:0.9));
       canvas.drawCircle(eye, eyeRadius, Paint()
-        ..color = Colors.white.withOpacity(0.3)
+        ..color = Colors.white.withValues(alpha:0.3)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.8);
       canvas.drawCircle(eye, eyeRadius * 0.5, Paint()..color = const Color(0xFFB8943E));
@@ -91,11 +91,11 @@ class _OwlLogoThemedPainter extends CustomPainter {
         ..lineTo(lacreCenter.dx, lacreCenter.dy + lacreRadius*0.38)
         ..lineTo(lacreCenter.dx + lacreRadius*0.12, lacreCenter.dy + lacreRadius*0.15)
         ..close(),
-      Paint()..color = Colors.white.withOpacity(0.5),
+      Paint()..color = Colors.white.withValues(alpha:0.5),
     );
 
     // Plumas — cor do tema suave
-    final pp = Paint()..color = Colors.white.withOpacity(0.3);
+    final pp = Paint()..color = Colors.white.withValues(alpha:0.3);
     final leftEye = Offset(lacreCenter.dx - lacreRadius*0.38, eyeY);
     final rightEye = Offset(lacreCenter.dx + lacreRadius*0.38, eyeY);
     canvas.drawPath(

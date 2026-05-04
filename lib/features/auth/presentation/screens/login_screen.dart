@@ -276,7 +276,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: dateError != null
-                              ? Colors.red.withOpacity(0.6)
+                              ? Colors.red.withValues(alpha:0.6)
                               : context.pal.border,
                         ),
                       ),
@@ -482,7 +482,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     hintText: l10n.forgotPasswordHint,
                     hintStyle: GoogleFonts.dmSans(
                       fontSize: 14,
-                      color: context.pal.inkSoft.withOpacity(0.5),
+                      color: context.pal.inkSoft.withValues(alpha:0.5),
                     ),
                     prefixIcon: Icon(
                       Icons.mail_outline,
@@ -636,7 +636,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: context.pal.inkFaint.withOpacity(0.6)),
+              Icon(icon, size: 18, color: context.pal.inkFaint.withValues(alpha:0.6)),
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
@@ -661,7 +661,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   child: Icon(
                     _showPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                     size: 18,
-                    color: context.pal.inkFaint.withOpacity(0.6),
+                    color: context.pal.inkFaint.withValues(alpha:0.6),
                   ),
                 ),
             ],
@@ -693,8 +693,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          context.pal.accent.withOpacity(0.12),
-                          context.pal.accent.withOpacity(0.03),
+                          context.pal.accent.withValues(alpha:0.12),
+                          context.pal.accent.withValues(alpha:0.03),
                           Colors.transparent,
                         ],
                       ),
@@ -721,16 +721,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                 color: const Color(0xFF1F1B18),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.07),
+                                  color: Colors.white.withValues(alpha:0.07),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.4),
+                                    color: Colors.black.withValues(alpha:0.4),
                                     blurRadius: 32,
                                     offset: const Offset(0, 16),
                                   ),
                                   BoxShadow(
-                                    color: context.pal.accent.withOpacity(0.2),
+                                    color: context.pal.accent.withValues(alpha:0.2),
                                     blurRadius: 30,
                                     offset: const Offset(0, 0),
                                   ),
@@ -784,7 +784,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             : l10n.loginHeroCreateAccount,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha:0.2),
                           fontWeight: FontWeight.w300,
                           letterSpacing: 3,
                         ),
@@ -1159,7 +1159,7 @@ class _EnvelopePainter extends CustomPainter {
 
     // Linhas diagonais do envelope
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha:0.05)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 

@@ -40,7 +40,7 @@ class OwlSealArt {
 
   static void drawSealShadow(Canvas canvas, Offset center, double radius) {
     final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.28)
+      ..color = Colors.black.withValues(alpha:0.28)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawOval(
       Rect.fromCenter(
@@ -68,7 +68,7 @@ class OwlSealArt {
     canvas.drawCircle(center, radius, wax);
 
     final innerEdge = Paint()
-      ..color = Colors.black.withOpacity(0.18)
+      ..color = Colors.black.withValues(alpha:0.18)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.8, radius * 0.06);
     canvas.drawCircle(center, radius * 0.88, innerEdge);
@@ -78,8 +78,8 @@ class OwlSealArt {
         center + Offset(-radius * 0.42, -radius * 0.38),
         radius * 0.55,
         [
-          Colors.white.withOpacity(0.45),
-          Colors.white.withOpacity(0.08),
+          Colors.white.withValues(alpha:0.45),
+          Colors.white.withValues(alpha:0.08),
           Colors.transparent,
         ],
         [0.0, 0.45, 1.0],
@@ -87,7 +87,7 @@ class OwlSealArt {
     canvas.drawCircle(center + Offset(-radius * 0.18, -radius * 0.15), radius * 0.65, highlight);
 
     final rim = Paint()
-      ..color = Colors.white.withOpacity(0.12)
+      ..color = Colors.white.withValues(alpha:0.12)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.6;
     canvas.drawCircle(center, radius * 0.995, rim);
@@ -115,12 +115,12 @@ class OwlSealArt {
     }
 
     for (final eye in [leftEye, rightEye]) {
-      canvas.drawCircle(eye, eyeRadius, Paint()..color = Colors.white.withOpacity(0.95));
+      canvas.drawCircle(eye, eyeRadius, Paint()..color = Colors.white.withValues(alpha:0.95));
       canvas.drawCircle(
         eye,
         eyeRadius,
         Paint()
-          ..color = Colors.white.withOpacity(0.35)
+          ..color = Colors.white.withValues(alpha:0.35)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.8,
       );
@@ -135,7 +135,7 @@ class OwlSealArt {
       canvas.drawCircle(
         clamped + Offset(-eyeRadius * 0.14, -eyeRadius * 0.12),
         eyeRadius * 0.14,
-        Paint()..color = Colors.white.withOpacity(0.72),
+        Paint()..color = Colors.white.withValues(alpha:0.72),
       );
     }
 
@@ -146,11 +146,11 @@ class OwlSealArt {
       ..lineTo(lacreCenter.dx, lacreCenter.dy + lacreRadius * 0.38)
       ..lineTo(lacreCenter.dx + lacreRadius * 0.12, lacreCenter.dy + lacreRadius * 0.15)
       ..close();
-    canvas.drawPath(bicoPath, Paint()..color = Colors.white.withOpacity(0.5));
+    canvas.drawPath(bicoPath, Paint()..color = Colors.white.withValues(alpha:0.5));
     canvas.drawPath(
       bicoPath,
       Paint()
-        ..color = Colors.black.withOpacity(0.12)
+        ..color = Colors.black.withValues(alpha:0.12)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 0.35,
     );
@@ -158,7 +158,7 @@ class OwlSealArt {
     _drawOwlChestBib(canvas, lacreCenter, lacreRadius);
 
     if (showSidePlumes) {
-      final plumaPaint = Paint()..color = Colors.white.withOpacity(0.26);
+      final plumaPaint = Paint()..color = Colors.white.withValues(alpha:0.26);
       canvas.drawPath(
         Path()
           ..moveTo(leftEye.dx - eyeRadius, eyeY - eyeRadius)
@@ -192,7 +192,7 @@ class OwlSealArt {
     final r = eyeRadius;
 
     final rim = Paint()
-      ..color = const Color(0xFF9A8478).withOpacity(0.42)
+      ..color = const Color(0xFF9A8478).withValues(alpha:0.42)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.75, r * 0.1)
       ..strokeCap = StrokeCap.round;
@@ -200,7 +200,7 @@ class OwlSealArt {
     canvas.drawArc(oval, -math.pi / 2 - 0.62, 1.24, false, rim);
 
     final softRim = Paint()
-      ..color = const Color(0xFFD4C4B8).withOpacity(0.35)
+      ..color = const Color(0xFFD4C4B8).withValues(alpha:0.35)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.45, r * 0.055)
       ..strokeCap = StrokeCap.round;
@@ -213,7 +213,7 @@ class OwlSealArt {
     );
 
     final lash = Paint()
-      ..color = const Color(0xFF6B5A52).withOpacity(0.4)
+      ..color = const Color(0xFF6B5A52).withValues(alpha:0.4)
       ..strokeWidth = math.max(0.35, r * 0.045)
       ..strokeCap = StrokeCap.round;
     for (var i = -2; i <= 2; i++) {
@@ -236,9 +236,9 @@ class OwlSealArt {
     double eyeY,
     double eyeRadius,
   ) {
-    final tuft = Paint()..color = Colors.white.withOpacity(0.38);
+    final tuft = Paint()..color = Colors.white.withValues(alpha:0.38);
     final stroke = Paint()
-      ..color = Colors.black.withOpacity(0.08)
+      ..color = Colors.black.withValues(alpha:0.08)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.35;
 
@@ -272,8 +272,8 @@ class OwlSealArt {
           c + Offset(0, r * 0.18),
           r * 0.45,
           [
-            Colors.white.withOpacity(0.22),
-            Colors.white.withOpacity(0.05),
+            Colors.white.withValues(alpha:0.22),
+            Colors.white.withValues(alpha:0.05),
           ],
         ),
     );
@@ -308,9 +308,9 @@ class OwlSealArt {
     final a = reveal.clamp(0.0, 1.0);
     final bodyPaint = Paint()
       ..color = Color.lerp(const Color(0xFFEDE5D8), const Color(0xFFC4B8A8), 0.35)!
-          .withOpacity(0.92 * a);
+          .withValues(alpha:0.92 * a);
     final wingPaint = Paint()
-      ..color = Colors.white.withOpacity(0.88 * a);
+      ..color = Colors.white.withValues(alpha:0.88 * a);
 
     final bodyRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
@@ -357,7 +357,7 @@ class OwlSealArt {
     canvas.drawPath(rightWing, wingPaint);
 
     final feather = Paint()
-      ..color = Colors.black.withOpacity(0.1 * a)
+      ..color = Colors.black.withValues(alpha:0.1 * a)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.35, r * 0.028);
     canvas.drawLine(
@@ -372,7 +372,7 @@ class OwlSealArt {
     );
 
     final stroke = Paint()
-      ..color = Colors.black.withOpacity(0.12 * a)
+      ..color = Colors.black.withValues(alpha:0.12 * a)
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.5, r * 0.04);
     canvas.drawPath(leftWing, stroke);
@@ -591,7 +591,7 @@ class _OwlLogoPainter extends CustomPainter {
     _drawEnvelopeFlaps(canvas, w, h);
 
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.06)
+      ..color = Colors.white.withValues(alpha:0.06)
       ..strokeWidth = 0.5
       ..style = PaintingStyle.stroke;
     canvas.drawLine(Offset.zero, Offset(w / 2, h * 0.52), linePaint);
@@ -619,13 +619,13 @@ class _OwlLogoPainter extends CustomPainter {
     canvas.drawRRect(rrect, base);
 
     final borderPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha:0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8;
     canvas.drawRRect(rrect, borderPaint);
 
     final linePaint = Paint()
-      ..color = Colors.black.withOpacity(0.12)
+      ..color = Colors.black.withValues(alpha:0.12)
       ..strokeWidth = 0.35;
     for (double y = 6; y < h - 4; y += 5.5) {
       canvas.drawLine(Offset(4, y), Offset(w - 4, y), linePaint);

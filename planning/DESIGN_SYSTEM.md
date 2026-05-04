@@ -64,6 +64,37 @@ Definidos em `CreateCapsuleScreen` (`kCapsuleThemes`). Cada tema tem **5 pergunt
 
 ---
 
+## Conquistas (escudos / brasões)
+
+Implementação em [`profile_badges_strip.dart`](../lib/features/gamification/profile_badges_strip.dart). Cada conquista é renderizada como um **escudo** desenhado com `CustomPainter` (`_ShieldPainter`) usando curvas Bézier — formato de brasão largo no topo e pontiagudo na base.
+
+### Cores por categoria
+
+| Categoria | Cor | Conquistas |
+|-----------|-----|------------|
+| Dourado (marcos) | `#F59E0B` fill/stroke/icon | 1.ª carta enviada, 1.ª abertura, 1.ª recebida |
+| Roxo (social) | `#8B5CF6` | 1.ª no feed, 10 curtidas |
+| Verde (volume) | `#10B981` | 5 cartas, 10 cartas |
+| Coral (especial) | `#E24B4A` | Voz |
+| Azul (engajamento) | `#3B82F6` | Perfil completo |
+| Amber (dedicação) | `#EF9F27` | 3 dias seguidos |
+| Bloqueado | `pal.inkFaint` (tema) | Conquistas não desbloqueadas |
+
+### Estados
+
+- **Desbloqueado:** fill translúcido (`alpha 0x33`), stroke semitransparente (`alpha 0xAA`), ícone opaco. Label em `pal.inkSoft`.
+- **Bloqueado:** fill e stroke derivados de `pal.inkFaint` com alphas baixos. Borda tracejada (dash 4 + gap 3 no `PathMetrics`). Ícone translúcido. Label "???".
+
+### Adaptação por tema
+
+As cores dos escudos desbloqueados são saturadas e fixas (funcionam sobre qualquer fundo). As cores bloqueadas e os labels adaptam-se ao tema via `_BadgeColors.lockedFrom(pal)`, `pal.inkSoft` e `pal.inkFaint` — funcionam nos 4 temas (Classic, Dark, Midnight, Sepia).
+
+### Interação
+
+Tap abre `showModalBottomSheet` com: escudo ampliado (64×76), título em `DM Serif Display`, descrição ou dica de desbloqueio em `DM Sans`, e data formatada (`DateFormat.yMMMd` localizado). Fundo do sheet: `pal.card` com borda na cor do escudo (desbloqueado) ou `pal.border` (bloqueado).
+
+---
+
 ## Regra de produto — Carta vs Cápsula
 
 | | Carta | Cápsula |

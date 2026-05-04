@@ -469,7 +469,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
               child: Row(children: [
                 GestureDetector(
                   onTap: () => _step > 0 ? _goStep(_step - 1) : Navigator.of(context).pop(),
-                  child: Container(width: 38, height: 38, decoration: BoxDecoration(color: Colors.white.withOpacity(0.08), borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 16)),
+                  child: Container(width: 38, height: 38, decoration: BoxDecoration(color: Colors.white.withValues(alpha:0.08), borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 16)),
                 ),
                 const SizedBox(width: 16),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -493,7 +493,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
                 height: 3,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(2),
-                  color: i < _step ? p.accent : i == _step ? p.accent.withOpacity(0.6) : Colors.white.withOpacity(0.15),
+                  color: i < _step ? p.accent : i == _step ? p.accent.withValues(alpha:0.6) : Colors.white.withValues(alpha:0.15),
                 ),
               )))),
             ),
@@ -560,7 +560,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
               decoration: BoxDecoration(
-                color: !_collectiveMode ? p.accent.withOpacity(0.12) : p.card,
+                color: !_collectiveMode ? p.accent.withValues(alpha:0.12) : p.card,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: !_collectiveMode ? p.accent : p.border, width: !_collectiveMode ? 2 : 1),
               ),
@@ -576,7 +576,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
               decoration: BoxDecoration(
-                color: _collectiveMode ? p.accent.withOpacity(0.12) : p.card,
+                color: _collectiveMode ? p.accent.withValues(alpha:0.12) : p.card,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: _collectiveMode ? p.accent : p.border, width: _collectiveMode ? 2 : 1),
               ),
@@ -664,7 +664,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isSelected ? t.color.withOpacity(0.08) : p.card,
+              color: isSelected ? t.color.withValues(alpha:0.08) : p.card,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: isSelected ? t.color : p.border, width: isSelected ? 2 : 1),
             ),
@@ -672,7 +672,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
               Container(
                 width: 52, height: 52,
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.white.withOpacity(0.15) : t.color.withOpacity(0.10),
+                  color: isSelected ? Colors.white.withValues(alpha:0.15) : t.color.withValues(alpha:0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
@@ -739,7 +739,7 @@ class _CreateCapsuleScreenState extends ConsumerState<CreateCapsuleScreen> with 
         decoration: BoxDecoration(
           color: p.accentWarm,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: t.color.withOpacity(0.3), width: 1.5),
+          border: Border.all(color: t.color.withValues(alpha:0.3), width: 1.5),
         ),
         child: TextField(
           controller: _messageCtrl,

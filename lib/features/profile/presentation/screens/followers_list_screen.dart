@@ -63,10 +63,10 @@ class _FollowersListScreenState extends State<FollowersListScreen>
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha:0.08),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+            child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
           ),
         ),
         bottom: TabBar(
@@ -74,7 +74,7 @@ class _FollowersListScreenState extends State<FollowersListScreen>
           indicatorColor: context.pal.accent,
           indicatorWeight: 2.5,
           labelColor: context.pal.white,
-          unselectedLabelColor: Colors.white.withOpacity(0.4),
+          unselectedLabelColor: Colors.white.withValues(alpha:0.4),
           labelStyle: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600),
           unselectedLabelStyle: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w400),
           tabs: [

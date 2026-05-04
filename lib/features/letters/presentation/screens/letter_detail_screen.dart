@@ -210,10 +210,10 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                       child: Container(
                         width: 36, height: 36,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha:0.08),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withOpacity(0.6)),
+                        child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -227,7 +227,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                               style: GoogleFonts.dmSans(
                                 fontSize: 9,
                                 letterSpacing: 3,
-                                color: Colors.white.withOpacity(0.35),
+                                color: Colors.white.withValues(alpha:0.35),
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
@@ -259,10 +259,10 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                         child: Container(
                           width: 36, height: 36,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.08),
+                            color: Colors.white.withValues(alpha:0.08),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.qr_code, size: 18, color: Colors.white.withOpacity(0.6)),
+                          child: Icon(Icons.qr_code, size: 18, color: Colors.white.withValues(alpha:0.6)),
                         ),
                       ),
                   ],
@@ -283,7 +283,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                       color: const Color(0xFFF2E8D5),
                       borderRadius: BorderRadius.circular(4),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 32, offset: const Offset(0, 8)),
+                        BoxShadow(color: Colors.black.withValues(alpha:0.4), blurRadius: 32, offset: const Offset(0, 8)),
                       ],
                     ),
                     child: Column(
@@ -308,7 +308,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(l10n.letterDetailHeaderFrom,
-                                    style: TextStyle(fontSize: 9, letterSpacing: 4, color: context.pal.accent.withOpacity(0.8))),
+                                    style: TextStyle(fontSize: 9, letterSpacing: 4, color: context.pal.accent.withValues(alpha:0.8))),
                                   const SizedBox(height: 8),
                                   Text(_senderDisplayName(l10n),
                                     style: GoogleFonts.dmSerifDisplay(fontSize: 22, color: const Color(0xFF160D04))),
@@ -316,7 +316,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                                   Text(l10n.letterDetailTo(widget.data['receiverName'] ?? ''),
                                     style: GoogleFonts.dmSans(fontSize: 12, fontStyle: FontStyle.italic, color: const Color(0xFF7A5C3A))),
                                   const SizedBox(height: 20),
-                                  Container(width: 32, height: 1, color: context.pal.accent.withOpacity(0.4)),
+                                  Container(width: 32, height: 1, color: context.pal.accent.withValues(alpha:0.4)),
                                   const SizedBox(height: 12),
                                   Text(widget.data['title'] ?? '',
                                     style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: const Color(0xFF160D04), fontStyle: FontStyle.italic)),
@@ -333,10 +333,10 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                                           style: GoogleFonts.dmSerifDisplay(fontSize: 16, fontStyle: FontStyle.italic, color: const Color(0xFF4A2E14))),
                                         const SizedBox(height: 4),
                                         Text(l10n.letterDetailWrittenOn(formatShortDate(createdAt, locale)),
-                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withOpacity(0.5))),
+                                          style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withValues(alpha:0.5))),
                                         if (_isOpened)
                                           Text(l10n.letterDetailOpenedOn(formatShortDate(openedAt, locale)),
-                                            style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withOpacity(0.5))),
+                                            style: TextStyle(fontSize: 9, letterSpacing: 2, color: context.pal.accent.withValues(alpha:0.5))),
                                       ],
                                     ),
                                   ),
@@ -427,8 +427,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                             child: _buildTile(
                               icon: Icons.qr_code,
                               iconColor: context.pal.accent,
-                              iconBg: context.pal.accent.withOpacity(0.15),
-                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              iconBg: context.pal.accent.withValues(alpha:0.15),
+                              iconBorder: context.pal.accent.withValues(alpha:0.3),
                               title: l10n.letterDetailQrTitle,
                               subtitle: l10n.letterDetailQrSubtitle,
                             ),
@@ -443,8 +443,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                             child: _buildTile(
                               icon: Icons.share_outlined,
                               iconColor: context.pal.accent,
-                              iconBg: context.pal.accent.withOpacity(0.15),
-                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              iconBg: context.pal.accent.withValues(alpha:0.15),
+                              iconBorder: context.pal.accent.withValues(alpha:0.3),
                               title: l10n.letterDetailShareTitle,
                               subtitle: l10n.letterDetailShareSubtitle,
                               trailing: _sharingStory
@@ -464,8 +464,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                             child: _buildTile(
                               icon: Icons.picture_as_pdf_outlined,
                               iconColor: context.pal.accent,
-                              iconBg: context.pal.accent.withOpacity(0.15),
-                              iconBorder: context.pal.accent.withOpacity(0.3),
+                              iconBg: context.pal.accent.withValues(alpha:0.15),
+                              iconBorder: context.pal.accent.withValues(alpha:0.3),
                               title: l10n.letterDetailExportPdfTitle,
                               subtitle: l10n.letterDetailExportPdfSubtitle,
                               trailing: _exportingPdf
@@ -493,9 +493,9 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
   Widget _buildVisibilityTile(AppLocalizations l10n) {
     final isPublic = _isPublic;
     final icon = isPublic ? Icons.public_rounded : Icons.lock_outline_rounded;
-    final iconColor = isPublic ? const Color(0xFF10B981) : Colors.white.withOpacity(0.5);
-    final iconBg = isPublic ? const Color(0xFF10B981).withOpacity(0.15) : Colors.white.withOpacity(0.05);
-    final iconBorder = isPublic ? const Color(0xFF10B981).withOpacity(0.3) : Colors.white.withOpacity(0.1);
+    final iconColor = isPublic ? const Color(0xFF10B981) : Colors.white.withValues(alpha:0.5);
+    final iconBg = isPublic ? const Color(0xFF10B981).withValues(alpha:0.15) : Colors.white.withValues(alpha:0.05);
+    final iconBorder = isPublic ? const Color(0xFF10B981).withValues(alpha:0.3) : Colors.white.withValues(alpha:0.1);
     final title = isPublic ? l10n.letterPrivacyPublicLabel : l10n.letterPrivacyPrivateLabel;
     final subtitle = isPublic ? l10n.letterPrivacyPublicSubtitle : l10n.letterPrivacyPrivateSubtitle;
 
@@ -508,8 +508,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isPublic
-                ? const Color(0xFF10B981).withOpacity(0.3)
-                : Colors.white.withOpacity(0.08),
+                ? const Color(0xFF10B981).withValues(alpha:0.3)
+                : Colors.white.withValues(alpha:0.08),
           ),
         ),
         child: Row(
@@ -536,13 +536,13 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                   Text(title,
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
-                      color: isPublic ? const Color(0xFF10B981) : Colors.white.withOpacity(0.8),
+                      color: isPublic ? const Color(0xFF10B981) : Colors.white.withValues(alpha:0.8),
                       fontWeight: FontWeight.w500,
                     )),
                   Text(subtitle,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.35),
+                      color: Colors.white.withValues(alpha:0.35),
                     )),
                 ],
               ),
@@ -552,8 +552,8 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: isPublic
-                    ? const Color(0xFF10B981).withOpacity(0.12)
-                    : Colors.white.withOpacity(0.06),
+                    ? const Color(0xFF10B981).withValues(alpha:0.12)
+                    : Colors.white.withValues(alpha:0.06),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -562,7 +562,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                   fontSize: 11,
                   color: isPublic
                       ? const Color(0xFF10B981)
-                      : Colors.white.withOpacity(0.4),
+                      : Colors.white.withValues(alpha:0.4),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -588,7 +588,7 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFF1A1714),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha:0.08)),
       ),
       child: Row(
         children: [
@@ -609,18 +609,18 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
                 Text(title,
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: muted ? Colors.white.withOpacity(0.8) : Colors.white,
+                    color: muted ? Colors.white.withValues(alpha:0.8) : Colors.white,
                     fontWeight: FontWeight.w500,
                   )),
                 Text(subtitle,
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
-                    color: Colors.white.withOpacity(muted ? 0.3 : 0.4),
+                    color: Colors.white.withValues(alpha:muted ? 0.3 : 0.4),
                   )),
               ],
             ),
           ),
-          trailing ?? Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.3)),
+          trailing ?? Icon(Icons.chevron_right, color: Colors.white.withValues(alpha:0.3)),
         ],
       ),
     );
@@ -764,12 +764,12 @@ class _LetterDetailScreenState extends State<LetterDetailScreen> {
 class _PaperLinesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black.withOpacity(0.04)..strokeWidth = 1;
+    final paint = Paint()..color = Colors.black.withValues(alpha:0.04)..strokeWidth = 1;
     for (double y = 28; y < size.height; y += 28) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
     canvas.drawLine(const Offset(36, 0), Offset(36, size.height),
-      Paint()..color = const Color(0xFFC0392B).withOpacity(0.12)..strokeWidth = 1);
+      Paint()..color = const Color(0xFFC0392B).withValues(alpha:0.12)..strokeWidth = 1);
   }
   @override
   bool shouldRepaint(_) => false;

@@ -135,6 +135,7 @@ Detalhes de projeto, CLI e emuladores: [README.md](../README.md#firebase-configu
 
 - [x] **TTL Policy configurada (2026-05-03):** Google Cloud Console → Firestore → Time to live (TTL). Collection group: `drafts`, Timestamp field: `expiresAt`, Status: **Serving**. Documentos cuja `expiresAt` tenha passado são automaticamente deletados pelo Firestore (normalmente dentro de 24 horas). Sem custo adicional, sem Cloud Functions.
 - [x] **Firestore Rules para `drafts`:** regras deployadas com proteção de campos imutáveis (`senderUid`, `createdAt`, `expiresAt`). Leitura/escrita/delete só pelo owner.
+- [x] **Save manual (2026-05-04):** auto-save removido; saves só ocorrem por ação explícita do utilizador (botão na AppBar ou dialog ao sair). Reduz writes Firestore desnecessários (~1 write/5s → 0 writes automáticos).
 
 ### Share via Link — Índices Firestore
 

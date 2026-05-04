@@ -50,8 +50,8 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    context.pal.accent.withOpacity(0.15),
-                    context.pal.accent.withOpacity(0.05),
+                    context.pal.accent.withValues(alpha:0.15),
+                    context.pal.accent.withValues(alpha:0.05),
                     Colors.transparent,
                   ],
                 ),
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: context.pal.accent.withOpacity(0.08),
+                  color: context.pal.accent.withValues(alpha:0.08),
                 ),
               ),
             ),
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
                     l10n.splashTagline,
                     style: GoogleFonts.dmSans(
                       fontSize: 13,
-                      color: Colors.white.withOpacity(0.35),
+                      color: Colors.white.withValues(alpha:0.35),
                       fontWeight: FontWeight.w300,
                       letterSpacing: 1.5,
                     ),

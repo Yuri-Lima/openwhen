@@ -182,7 +182,7 @@ Coleções também usadas no código (strings / queries):
 | `reports` | Denúncias de utilizadores (UGC) — schema fixo em `firestore.rules` |
 | `moderationIncidents` | Alertas operacionais da moderação por IA (agregados por tipo + hora UTC); escrita só Admin SDK / Cloud Functions; leitura no app via `adminListModerationIncidents` |
 | `systemConfig` | Documento `app`: feature flags remotas (`reportsEnabled`, `aiModerationEnabled`, `aiModerationFailClosed`, …); leitura autenticada, escrita só admin/backend |
-| `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
+| `drafts` | Rascunhos de carta — TTL Policy Firestore no campo `expiresAt` (30 dias); deleção automática server-side. Limite: 10/utilizador (`draftCount` no user doc). Save manual (botão na AppBar) + dialog ao sair com conteúdo não salvo. Service: [`draft_service.dart`](../lib/features/letters/domain/draft_service.dart) |
 | `accountCreationLogs` | Auditoria anti-abuse — IP, provider, emailDomain, timestamp de cada criação de conta. Escrita: Admin SDK (Cloud Function `onUserCreated`). Leitura/escrita pelo cliente: **bloqueada** nas Firestore Rules. Usado para rate limiting (5 contas/IP/24h). Índice composto: `ip ASC, createdAt ASC`. |
 
 ### Busca de utilizadores
@@ -212,7 +212,7 @@ Lido por [`lib/core/config/system_config_provider.dart`](../lib/core/config/syst
 
 ### Carta (`letters`) — campos relevantes (subset)
 
-**Envio (Firestore):** o cliente confirma o envio numa **transação** — cria o documento em `letters`, incrementa `lettersSentCount` no remetente e cria documentos em `users/{uid}/badgeUnlocks/{badgeId}` quando aplicável ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)). Falhas de regras em qualquer passo revertem a transação. Diagnóstico: [`planning/TROUBLESHOOTING.md`](TROUBLESHOOTING.md) — secção “Send letter”.
+**Envio (Firestore):** o cliente confirma o envio numa **transação** — cria o documento em `letters`, incrementa `lettersSentCount` no remetente e cria documentos em `users/{uid}/badgeUnlocks/{badgeId}` quando aplicável ([`letter_send_service.dart`](../lib/features/letters/data/letter_send_service.dart)). Após a transação, chama `afterLetterReceivedByUser` para o destinatário (fire-and-forget). Falhas de regras em qualquer passo revertem a transação. Diagnóstico: [`planning/TROUBLESHOOTING.md`](TROUBLESHOOTING.md) — secção “Send letter”. Para detalhes completos do sistema de conquistas, ver secção [Gamificação](#gamificação-conquistas--badges) abaixo.
 
 **Modos de entrega:** além de email (`deliveryMode: “email”`, destinatário externo sem conta) e `@username` (destinatário com conta), existe um terceiro modo: **link** (`shareMode: “link”`, `deliveryMode: “link”`). O remetente gera um link partilhável via `generateShareLink`; o destinatário abre a landing page (`whenote.app/open/{token}`) e faz claim da carta ao autenticar-se (`claimShareLink`). O link pode ser revogado ou regenerado pelo remetente (`revokeShareLink`).
 
@@ -340,6 +340,26 @@ Alinhados ao fluxo em `create_capsule_screen.dart`:
   - **Texto longo por comentário:** cada linha do preview usa `Text.rich` com no máximo **4 linhas** e `TextOverflow.ellipsis` até o utilizador expandir **esse** comentário (toque em **Ler mais** — mesma string `feedReadMore` que o corpo da carta). IDs expandidos ficam em `_expandedCommentPreviewIds` (`Set<String>` de IDs de documento em `comments`).
   - **Quando mostrar “Ler mais”:** heurística no cliente — mensagem com mais de **120** caracteres **ou** com **4** ou mais linhas (`\n`). Não mede overflow com `TextPainter`.
   - **Lista completa:** ícone de comentário no card abre [`CommentsScreen`](../lib/features/feed/presentation/screens/comments_screen.dart) (stream sem este limite de linhas por item).
+
+### Gamificação (conquistas / badges)
+
+Código em [`lib/features/gamification/`](../lib/features/gamification/). O sistema atribui conquistas ao utilizador quando certos marcos são atingidos. Cada conquista é um documento em `users/{uid}/badgeUnlocks/{badgeId}` com campo `unlockedAt` (server timestamp).
+
+**Badge IDs (10):** definidos em [`badge_id.dart`](../lib/features/gamification/badge_id.dart) — `first_letter_sent`, `first_letter_opened`, `first_public`, `letters_sent_five`, `letters_sent_ten`, `voice_letter`, `first_letter_received`, `profile_complete`, `three_day_streak`, `letter_liked_by_ten`. A Firestore rules allowlist em `firestore.rules` (secção `badgeUnlocks`) deve coincidir exatamente com esta lista.
+
+**Lógica de desbloqueio:** [`badge_unlock_service.dart`](../lib/features/gamification/badge_unlock_service.dart) contém `unlockBadgeIfMissing(uid, badgeId)` (idempotente) e `BadgeUnlockHooks` com hooks estáticos:
+
+| Hook | Chamado em | Trigger |
+|------|-----------|---------|
+| (inline na transação) | `letter_send_service.dart` | Enviar carta → `first_letter_sent`, `letters_sent_five`, `letters_sent_ten`, `voice_letter` |
+| `afterLetterOpenedByReceiver` | `letter_opening_screen.dart` | Abrir 1.ª carta recebida → `first_letter_opened` |
+| `afterLetterMadePublic` | (chamada onde carta é tornada pública) | Publicar no feed → `first_public` |
+| `afterLetterReceivedByUser` | `letter_send_service.dart` (pós-transação) | Receber 1.ª carta → `first_letter_received`; incrementa `lettersReceivedCount` |
+| `afterProfileSaved` | `edit_profile_screen.dart` | Perfil com nome + username + bio + photoUrl preenchidos → `profile_complete` |
+| `onSessionStart` | `main.dart` (`HomeScreen.initState`) | Streak ≥ 3 dias → `three_day_streak`; campos `lastActiveDate` (ISO string) e `currentStreak` (int) no user doc |
+| `afterLetterLiked` | `feed_screen.dart` | `likeCount ≥ 10` na carta → `letter_liked_by_ten` para o autor |
+
+**UI — escudos no perfil:** [`profile_badges_strip.dart`](../lib/features/gamification/profile_badges_strip.dart) renderiza todas as 10 conquistas como escudos (formato de brasão via `_ShieldPainter`, `CustomPainter` com Bézier). Cores por categoria: dourado (marcos), roxo (social), verde (volume), coral (voz), azul (engajamento), amber (dedicação). Conquistas bloqueadas: borda tracejada, ícone translúcido, "???". Cores adaptam ao tema ativo via `_BadgeColors.lockedFrom(pal)` e `pal.inkSoft`/`pal.inkFaint`. Tap abre bottom sheet com escudo ampliado, título, descrição ou dica de desbloqueio, e data formatada com `DateFormat.yMMMd`.
 
 ---
 

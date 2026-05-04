@@ -290,7 +290,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: Row(
             children: [
               Icon(icon, size: 18,
-                  color: context.pal.inkFaint.withOpacity(0.6)),
+                  color: context.pal.inkFaint.withValues(alpha:0.6)),
               const SizedBox(width: 10),
               if (prefixText != null)
                 Text(
@@ -329,7 +329,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                     size: 18,
-                    color: context.pal.inkFaint.withOpacity(0.6),
+                    color: context.pal.inkFaint.withValues(alpha:0.6),
                   ),
                 ),
               if (suffix != null) suffix,
@@ -409,7 +409,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: selected
-                        ? context.pal.accent.withOpacity(0.15)
+                        ? context.pal.accent.withValues(alpha:0.15)
                         : context.pal.bg,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -471,8 +471,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          context.pal.accent.withOpacity(0.12),
-                          context.pal.accent.withOpacity(0.03),
+                          context.pal.accent.withValues(alpha:0.12),
+                          context.pal.accent.withValues(alpha:0.03),
                           Colors.transparent,
                         ],
                       ),
@@ -496,17 +496,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 color: const Color(0xFF1F1B18),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withOpacity(0.07),
+                                  color: Colors.white.withValues(alpha:0.07),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.4),
+                                    color: Colors.black.withValues(alpha:0.4),
                                     blurRadius: 32,
                                     offset: const Offset(0, 16),
                                   ),
                                   BoxShadow(
                                     color:
-                                        context.pal.accent.withOpacity(0.2),
+                                        context.pal.accent.withValues(alpha:0.2),
                                     blurRadius: 30,
                                   ),
                                 ],
@@ -533,7 +533,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     boxShadow: [
                                       BoxShadow(
                                         color: context.pal.accent
-                                            .withOpacity(0.4),
+                                            .withValues(alpha:0.4),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
@@ -576,7 +576,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         l10n.loginHeroCreateAccount,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: context.pal.ink.withOpacity(0.4),
+                          color: context.pal.ink.withValues(alpha:0.4),
                           fontWeight: FontWeight.w300,
                           letterSpacing: 3,
                         ),
@@ -709,7 +709,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: _dateOfBirthError != null
-                              ? Colors.red.withOpacity(0.6)
+                              ? Colors.red.withValues(alpha:0.6)
                               : context.pal.border,
                         ),
                       ),
@@ -788,7 +788,7 @@ class _EnvelopePainter extends CustomPainter {
     canvas.drawPath(abPath, paint);
 
     final linePaint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withValues(alpha:0.05)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
