@@ -36,6 +36,7 @@ class _DraftsScreenState extends State<DraftsScreen> {
       final drafts = await _draftService.listDrafts(_uid);
       if (mounted) setState(() { _drafts = drafts; _loading = false; });
     } catch (e) {
+      debugPrint('[DraftsScreen] _loadDrafts error: $e');
       if (mounted) setState(() { _drafts = []; _loading = false; });
     }
   }
