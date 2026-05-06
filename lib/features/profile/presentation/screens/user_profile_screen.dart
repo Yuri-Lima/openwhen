@@ -31,11 +31,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     with SingleTickerProviderStateMixin {
   final _currentUid = FirebaseAuth.instance.currentUser?.uid;
   late final TabController _tabController;
+  late final Stream<QuerySnapshot> _blockCheckStream;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    final uid = _currentUid;
+    _blockCheckStream = (uid == null || uid == widget.userId)
+        ? const Stream<QuerySnapshot>.empty()
+        : FirebaseFirestore.instance
+              .collection('blocks')
+              .where('blockedBy', isEqualTo: uid)
+              .where('blockedUid', isEqualTo: widget.userId)
+              .limit(1)
+              .snapshots();
   }
 
   @override
@@ -50,6 +60,64 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
     if (value is num) return value.toInt();
     if (value is String) return int.tryParse(value) ?? 0;
     return 0;
+  }
+
+  Future<void> _showBlockConfirmDialog(BuildContext context, bool isBlocked, String? blockDocId) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (isBlocked) {
+      // Unblock directly
+      if (blockDocId != null) {
+        await FirebaseFirestore.instance.collection('blocks').doc(blockDocId).delete();
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.profileUnblockSuccess, style: GoogleFonts.dmSans(fontSize: 13))),
+        );
+      }
+      return;
+    }
+
+    // Show confirmation dialog for blocking
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.pal.card,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          l10n.profileBlockUser,
+          style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic),
+        ),
+        content: Text(
+          l10n.profileBlockConfirm,
+          style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.inkSoft),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.actionCancel, style: GoogleFonts.dmSans(color: context.pal.inkSoft)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.profileBlockUser, style: GoogleFonts.dmSans(color: const Color(0xFFEF4444), fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !mounted) return;
+
+    await FirebaseFirestore.instance.collection('blocks').add({
+      'blockedBy': _currentUid,
+      'blockedUid': widget.userId,
+      'createdAt': Timestamp.now(),
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.profileBlockSuccess, style: GoogleFonts.dmSans(fontSize: 13))),
+      );
+    }
   }
 
   Future<void> _toggleFollow(bool isFollowing) async {
@@ -138,6 +206,53 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen>
                                     child: Icon(Icons.arrow_back, size: 18, color: Colors.white.withValues(alpha:0.6)),
                                   ),
                                 ),
+                                const Spacer(),
+                                if (_currentUid != null && _currentUid != widget.userId)
+                                  StreamBuilder<QuerySnapshot>(
+                                    stream: _blockCheckStream,
+                                    builder: (context, blockSnap) {
+                                      final isBlocked = (blockSnap.data?.docs ?? []).isNotEmpty;
+                                      return PopupMenuButton<String>(
+                                        icon: Container(
+                                          width: 36, height: 36,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(alpha:0.08),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(Icons.more_vert, size: 18, color: Colors.white.withValues(alpha:0.6)),
+                                        ),
+                                        color: context.pal.card,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        onSelected: (action) {
+                                          if (action == 'block') {
+                                            _showBlockConfirmDialog(context, isBlocked, blockSnap.data?.docs.firstOrNull?.id);
+                                          }
+                                        },
+                                        itemBuilder: (ctx) => [
+                                          PopupMenuItem(
+                                            value: 'block',
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  isBlocked ? Icons.check_circle_outline : Icons.block_outlined,
+                                                  size: 18,
+                                                  color: isBlocked ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  isBlocked ? l10n.profileUnblockUser : l10n.profileBlockUser,
+                                                  style: GoogleFonts.dmSans(
+                                                    fontSize: 14,
+                                                    color: isBlocked ? context.pal.ink : const Color(0xFFEF4444),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
                               ],
                             ),
                             const SizedBox(height: 20),

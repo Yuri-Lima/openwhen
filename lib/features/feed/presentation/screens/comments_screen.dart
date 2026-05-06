@@ -37,6 +37,34 @@ class CommentsScreen extends ConsumerStatefulWidget {
 class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   final _commentController = TextEditingController();
   bool _isLoading = false;
+  late final Stream<QuerySnapshot> _blocksStream;
+
+  /// Cache de photoUrl por uid — evita N+1 reads no Firestore para avatares.
+  final Map<String, String?> _avatarCache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    _blocksStream = uid == null
+        ? const Stream<QuerySnapshot>.empty()
+        : FirebaseFirestore.instance
+              .collection('blocks')
+              .where('blockedBy', isEqualTo: uid)
+              .snapshots();
+  }
+
+  /// Busca photoUrl com cache — cada uid é lido no máximo uma vez.
+  Future<String?> _getAvatarUrl(String uid) async {
+    if (_avatarCache.containsKey(uid)) return _avatarCache[uid];
+    final doc = await FirebaseFirestore.instance
+        .collection(FirestoreCollections.users)
+        .doc(uid)
+        .get();
+    final url = (doc.data()?['photoUrl'] as String?);
+    _avatarCache[uid] = url;
+    return url;
+  }
 
   @override
   void dispose() {
@@ -204,9 +232,18 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
               ),
             ),
           ),
-          // Lista de comentários
+          // Lista de comentários (com filtragem de bloqueados)
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
+              stream: _blocksStream,
+              builder: (context, blocksSnap) {
+                final blockedUids = <String>{};
+                for (final d in blocksSnap.data?.docs ?? []) {
+                  final m = d.data() as Map<String, dynamic>;
+                  final uid = m['blockedUid'] as String?;
+                  if (uid != null && uid.isNotEmpty) blockedUids.add(uid);
+                }
+                return StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection(FirestoreCollections.comments)
                   .where('letterId', isEqualTo: widget.letterId)
@@ -217,7 +254,12 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final docs = snapshot.data?.docs ?? [];
+                final allDocs = snapshot.data?.docs ?? [];
+                final docs = allDocs.where((d) {
+                  final data = d.data() as Map<String, dynamic>;
+                  final authorUid = data['userUid'] as String?;
+                  return authorUid == null || !blockedUids.contains(authorUid);
+                }).toList();
                 if (docs.isEmpty) {
                   return Center(
                     child: Column(
@@ -251,16 +293,11 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          StreamBuilder<DocumentSnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection(FirestoreCollections.users)
-                                .doc(data['userUid'] as String? ?? '')
-                                .snapshots(),
-                            builder: (context, userSnap) {
-                              final map = userSnap.data?.data() as Map<String, dynamic>?;
-                              final photoUrl = map?['photoUrl'] as String?;
+                          FutureBuilder<String?>(
+                            future: _getAvatarUrl(data['userUid'] as String? ?? ''),
+                            builder: (context, avatarSnap) {
                               return UserAvatar(
-                                photoUrl: photoUrl,
+                                photoUrl: avatarSnap.data,
                                 name: data['userName'] as String? ?? 'U',
                                 size: 36,
                                 backgroundColor: isMe ? context.pal.accent : context.pal.accentWarm,
@@ -323,6 +360,8 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
                     );
                   },
                 );
+              },
+            );
               },
             ),
           ),

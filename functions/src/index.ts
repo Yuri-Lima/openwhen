@@ -49,6 +49,7 @@ export {onSendGridWebhook} from "./sendgrid_webhook";
 export {sendPolicyUpdateEmails} from "./send_policy_update_emails";
 
 export {checkUsernameAvailable} from "./check_username";
+export {checkCanSendLetter} from "./check_can_send_letter";
 export {onUserCreated} from "./on_user_created";
 
 export {

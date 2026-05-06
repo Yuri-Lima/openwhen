@@ -216,8 +216,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         iconColor: const Color(0xFF6366F1),
                         iconBg: const Color(0xFFEEF2FF),
                         label: l10n.settingsWhoCanSend,
-                        subtitle: l10n.settingsWhoCanSendValue,
-                        onTap: () {},
+                        subtitle: _letterPermissionLabel(data?['letterPermission'] as String?, l10n),
+                        onTap: () => _showLetterPermissionSheet(context, data?['letterPermission'] as String?),
                         showArrow: true,
                       ),
                     ]),
@@ -1245,6 +1245,141 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         );
       }
     }
+  }
+
+  String _letterPermissionLabel(String? value, AppLocalizations l10n) {
+    switch (value) {
+      case 'followers':
+        return l10n.settingsWhoCanSendFollowers;
+      case 'nobody':
+        return l10n.settingsWhoCanSendNobody;
+      default:
+        return l10n.settingsWhoCanSendEveryone;
+    }
+  }
+
+  void _showLetterPermissionSheet(BuildContext context, String? current) {
+    final l10n = AppLocalizations.of(context)!;
+    final currentValue = current ?? 'everyone';
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.pal.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 36, height: 4,
+                decoration: BoxDecoration(
+                  color: context.pal.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              l10n.settingsWhoCanSend,
+              style: GoogleFonts.dmSerifDisplay(
+                fontSize: 20,
+                color: context.pal.ink,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildPermissionOption(
+              context: context,
+              icon: Icons.public,
+              iconColor: const Color(0xFF10B981),
+              iconBg: const Color(0xFFD1FAE5),
+              label: l10n.settingsWhoCanSendEveryone,
+              subtitle: l10n.settingsWhoCanSendEveryoneSubtitle,
+              value: 'everyone',
+              currentValue: currentValue,
+              l10n: l10n,
+            ),
+            _buildDivider(),
+            _buildPermissionOption(
+              context: context,
+              icon: Icons.people_outline,
+              iconColor: const Color(0xFF3B82F6),
+              iconBg: const Color(0xFFEFF6FF),
+              label: l10n.settingsWhoCanSendFollowers,
+              subtitle: l10n.settingsWhoCanSendFollowersSubtitle,
+              value: 'followers',
+              currentValue: currentValue,
+              l10n: l10n,
+            ),
+            _buildDivider(),
+            _buildPermissionOption(
+              context: context,
+              icon: Icons.block_outlined,
+              iconColor: const Color(0xFFEF4444),
+              iconBg: const Color(0xFFFEF2F2),
+              label: l10n.settingsWhoCanSendNobody,
+              subtitle: l10n.settingsWhoCanSendNobodySubtitle,
+              value: 'nobody',
+              currentValue: currentValue,
+              l10n: l10n,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPermissionOption({
+    required BuildContext context,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    required String label,
+    required String subtitle,
+    required String value,
+    required String currentValue,
+    required AppLocalizations l10n,
+  }) {
+    final isActive = value == currentValue;
+    return InkWell(
+      onTap: () {
+        _updateField('letterPermission', value);
+        Navigator.pop(context);
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 32, height: 32,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 17, color: iconColor),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                  const SizedBox(height: 2),
+                  Text(subtitle, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft)),
+                ],
+              ),
+            ),
+            if (isActive) _activePill(l10n),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showBlockedUsers(BuildContext context) {

@@ -1802,6 +1802,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsWhoCanSendValue => 'Everyone';
 
   @override
+  String get settingsWhoCanSendEveryone => 'Everyone';
+
+  @override
+  String get settingsWhoCanSendEveryoneSubtitle => 'Any user can send you letters';
+
+  @override
+  String get settingsWhoCanSendFollowers => 'People I follow';
+
+  @override
+  String get settingsWhoCanSendFollowersSubtitle => 'Only people you follow back can send letters';
+
+  @override
+  String get settingsWhoCanSendNobody => 'Nobody';
+
+  @override
+  String get settingsWhoCanSendNobodySubtitle => 'No one can send you letters';
+
+  @override
+  String get profileBlockUser => 'Block user';
+
+  @override
+  String get profileBlockConfirm => 'Are you sure you want to block this user? They won\'t be able to send you letters or interact with your content.';
+
+  @override
+  String get profileBlockSuccess => 'User blocked';
+
+  @override
+  String get profileUnblockUser => 'Unblock user';
+
+  @override
+  String get profileUnblockSuccess => 'User unblocked';
+
+  @override
+  String get profileReportUser => 'Report user';
+
+  @override
+  String get letterSendBlockedError => 'This user is not receiving letters at the moment';
+
+  @override
+  String get letterSendFollowersOnlyError => 'This user only accepts letters from their connections';
+
+  @override
   String get settingsNotificationsSection => 'NOTIFICATIONS';
 
   @override

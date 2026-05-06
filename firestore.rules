@@ -116,7 +116,18 @@ service cloud.firestore {
         resource.data.receiverUid == request.auth.uid ||
         (resource.data.isPublic == true && resource.data.status == 'opened')
       );
-      allow create: if signedIn() && emailVerified() && request.resource.data.senderUid == request.auth.uid;
+      allow create: if signedIn() && emailVerified()
+        && request.resource.data.senderUid == request.auth.uid
+        && (
+          // Share-via-link letters have no receiverUid yet
+          !request.resource.data.keys().hasAny(['receiverUid'])
+          || request.resource.data.receiverUid == null
+          || request.resource.data.receiverUid == ''
+          // Receiver doc doesn't exist yet (invite scenario) — allow
+          || !exists(/databases/$(database)/documents/users/$(request.resource.data.receiverUid))
+          // If receiver exists, their letterPermission must not be 'nobody'
+          || get(/databases/$(database)/documents/users/$(request.resource.data.receiverUid)).data.get('letterPermission', 'everyone') != 'nobody'
+        );
       allow update: if signedIn()
         && (resource.data.senderUid == request.auth.uid
             || resource.data.receiverUid == request.auth.uid)

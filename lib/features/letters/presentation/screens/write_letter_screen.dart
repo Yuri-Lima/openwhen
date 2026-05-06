@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/services/safe_callable.dart';
 import '../../domain/draft_model.dart';
 import '../../domain/draft_service.dart';
 import 'drafts_screen.dart';
@@ -863,6 +864,43 @@ class _WriteLetterScreenState extends ConsumerState<WriteLetterScreen> {
           );
         }
         return;
+      }
+
+      // ── Block & letterPermission check (via Cloud Function) ─────────
+      if (!_shareViaLink && _receiverUid != null && _receiverUid!.isNotEmpty) {
+        try {
+          final checkResult = await SafeCallable.call(
+            'checkCanSendLetter',
+            data: {'receiverUid': _receiverUid},
+            label: 'checkCanSendLetter',
+          );
+          final resultData = checkResult.data is Map<String, dynamic>
+              ? checkResult.data as Map<String, dynamic>
+              : <String, dynamic>{};
+          final canSend = resultData['canSend'] as bool? ?? true;
+          if (!canSend) {
+            final reason = resultData['reason'] as String? ?? 'blocked';
+            if (mounted) {
+              setState(() => _isLoading = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    reason == 'followers_only'
+                        ? l10n.letterSendFollowersOnlyError
+                        : l10n.letterSendBlockedError,
+                    style: GoogleFonts.dmSans(fontSize: 13),
+                  ),
+                  backgroundColor: context.pal.accent,
+                ),
+              );
+            }
+            return;
+          }
+        } catch (e) {
+          // Non-fatal: if the check fails, allow the send to proceed
+          // (Firestore rules are the ultimate safety net)
+          debugPrint('[checkCanSendLetter] Error: $e');
+        }
       }
 
       // ── AI moderation (before any Firestore writes) ──────────────────

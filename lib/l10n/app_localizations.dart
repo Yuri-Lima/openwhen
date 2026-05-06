@@ -3395,6 +3395,48 @@ abstract class AppLocalizations {
   /// **'Todos'**
   String get settingsWhoCanSendValue;
 
+  /// No description provided for @settingsWhoCanSendEveryone.
+  String get settingsWhoCanSendEveryone;
+
+  /// No description provided for @settingsWhoCanSendEveryoneSubtitle.
+  String get settingsWhoCanSendEveryoneSubtitle;
+
+  /// No description provided for @settingsWhoCanSendFollowers.
+  String get settingsWhoCanSendFollowers;
+
+  /// No description provided for @settingsWhoCanSendFollowersSubtitle.
+  String get settingsWhoCanSendFollowersSubtitle;
+
+  /// No description provided for @settingsWhoCanSendNobody.
+  String get settingsWhoCanSendNobody;
+
+  /// No description provided for @settingsWhoCanSendNobodySubtitle.
+  String get settingsWhoCanSendNobodySubtitle;
+
+  /// No description provided for @profileBlockUser.
+  String get profileBlockUser;
+
+  /// No description provided for @profileBlockConfirm.
+  String get profileBlockConfirm;
+
+  /// No description provided for @profileBlockSuccess.
+  String get profileBlockSuccess;
+
+  /// No description provided for @profileUnblockUser.
+  String get profileUnblockUser;
+
+  /// No description provided for @profileUnblockSuccess.
+  String get profileUnblockSuccess;
+
+  /// No description provided for @profileReportUser.
+  String get profileReportUser;
+
+  /// No description provided for @letterSendBlockedError.
+  String get letterSendBlockedError;
+
+  /// No description provided for @letterSendFollowersOnlyError.
+  String get letterSendFollowersOnlyError;
+
   /// No description provided for @settingsNotificationsSection.
   ///
   /// In pt_BR, this message translates to:
