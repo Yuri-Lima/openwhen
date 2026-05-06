@@ -1810,43 +1810,49 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsWhoCanSendEveryone => 'Todos';
 
   @override
-  String get settingsWhoCanSendEveryoneSubtitle => 'Qualquer usuário pode te enviar cartas';
+  String get settingsWhoCanSendEveryoneSubtitle =>
+      'Qualquer utilizador pode enviar-te cartas';
 
   @override
   String get settingsWhoCanSendFollowers => 'Pessoas que sigo';
 
   @override
-  String get settingsWhoCanSendFollowersSubtitle => 'Apenas pessoas que você segue de volta podem enviar';
+  String get settingsWhoCanSendFollowersSubtitle =>
+      'Apenas pessoas que segues de volta podem enviar';
 
   @override
   String get settingsWhoCanSendNobody => 'Ninguém';
 
   @override
-  String get settingsWhoCanSendNobodySubtitle => 'Ninguém pode te enviar cartas';
+  String get settingsWhoCanSendNobodySubtitle =>
+      'Ninguém pode enviar-te cartas';
 
   @override
-  String get profileBlockUser => 'Bloquear usuário';
+  String get profileBlockUser => 'Bloquear utilizador';
 
   @override
-  String get profileBlockConfirm => 'Tem certeza que deseja bloquear este usuário? Ele não poderá te enviar cartas ou interagir com seu conteúdo.';
+  String get profileBlockConfirm =>
+      'Tens a certeza que queres bloquear este utilizador? Ele não poderá enviar-te cartas ou interagir com o teu conteúdo.';
 
   @override
-  String get profileBlockSuccess => 'Usuário bloqueado';
+  String get profileBlockSuccess => 'Utilizador bloqueado';
 
   @override
-  String get profileUnblockUser => 'Desbloquear usuário';
+  String get profileUnblockUser => 'Desbloquear utilizador';
 
   @override
-  String get profileUnblockSuccess => 'Usuário desbloqueado';
+  String get profileUnblockSuccess => 'Utilizador desbloqueado';
 
   @override
-  String get profileReportUser => 'Denunciar usuário';
+  String get profileReportUser => 'Denunciar utilizador';
 
   @override
-  String get letterSendBlockedError => 'Este usuário não está recebendo cartas no momento';
+  String get letterSendBlockedError =>
+      'Este utilizador não está a receber cartas de momento';
 
   @override
-  String get letterSendFollowersOnlyError => 'Este usuário só aceita cartas de suas conexões';
+  String get letterSendFollowersOnlyError =>
+      'Este utilizador só aceita cartas das suas conexões';
 
   @override
   String get settingsNotificationsSection => 'NOTIFICAÇÕES';
@@ -5037,25 +5043,29 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsWhoCanSendEveryone => 'Todos';
 
   @override
-  String get settingsWhoCanSendEveryoneSubtitle => 'Qualquer usuário pode te enviar cartas';
+  String get settingsWhoCanSendEveryoneSubtitle =>
+      'Qualquer usuário pode te enviar cartas';
 
   @override
   String get settingsWhoCanSendFollowers => 'Pessoas que sigo';
 
   @override
-  String get settingsWhoCanSendFollowersSubtitle => 'Apenas pessoas que você segue de volta podem enviar';
+  String get settingsWhoCanSendFollowersSubtitle =>
+      'Apenas pessoas que você segue de volta podem enviar';
 
   @override
   String get settingsWhoCanSendNobody => 'Ninguém';
 
   @override
-  String get settingsWhoCanSendNobodySubtitle => 'Ninguém pode te enviar cartas';
+  String get settingsWhoCanSendNobodySubtitle =>
+      'Ninguém pode te enviar cartas';
 
   @override
   String get profileBlockUser => 'Bloquear usuário';
 
   @override
-  String get profileBlockConfirm => 'Tem certeza que deseja bloquear este usuário? Ele não poderá te enviar cartas ou interagir com seu conteúdo.';
+  String get profileBlockConfirm =>
+      'Tem certeza que deseja bloquear este usuário? Ele não poderá te enviar cartas ou interagir com seu conteúdo.';
 
   @override
   String get profileBlockSuccess => 'Usuário bloqueado';
@@ -5070,10 +5080,12 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get profileReportUser => 'Denunciar usuário';
 
   @override
-  String get letterSendBlockedError => 'Este usuário não está recebendo cartas no momento';
+  String get letterSendBlockedError =>
+      'Este usuário não está recebendo cartas no momento';
 
   @override
-  String get letterSendFollowersOnlyError => 'Este usuário só aceita cartas de suas conexões';
+  String get letterSendFollowersOnlyError =>
+      'Este usuário só aceita cartas de suas conexões';
 
   @override
   String get settingsNotificationsSection => 'NOTIFICAÇÕES';

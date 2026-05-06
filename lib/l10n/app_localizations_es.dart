@@ -1816,13 +1816,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsWhoCanSendEveryone => 'Todos';
 
   @override
-  String get settingsWhoCanSendEveryoneSubtitle => 'Cualquier usuario puede enviarte cartas';
+  String get settingsWhoCanSendEveryoneSubtitle =>
+      'Cualquier usuario puede enviarte cartas';
 
   @override
   String get settingsWhoCanSendFollowers => 'Personas que sigo';
 
   @override
-  String get settingsWhoCanSendFollowersSubtitle => 'Solo personas que sigues de vuelta pueden enviar';
+  String get settingsWhoCanSendFollowersSubtitle =>
+      'Solo personas que sigues de vuelta pueden enviar';
 
   @override
   String get settingsWhoCanSendNobody => 'Nadie';
@@ -1834,7 +1836,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileBlockUser => 'Bloquear usuario';
 
   @override
-  String get profileBlockConfirm => '¿Estás seguro de que quieres bloquear a este usuario? No podrá enviarte cartas ni interactuar con tu contenido.';
+  String get profileBlockConfirm =>
+      '¿Estás seguro de que quieres bloquear a este usuario? No podrá enviarte cartas ni interactuar con tu contenido.';
 
   @override
   String get profileBlockSuccess => 'Usuario bloqueado';
@@ -1849,10 +1852,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileReportUser => 'Reportar usuario';
 
   @override
-  String get letterSendBlockedError => 'Este usuario no está recibiendo cartas en este momento';
+  String get letterSendBlockedError =>
+      'Este usuario no está recibiendo cartas en este momento';
 
   @override
-  String get letterSendFollowersOnlyError => 'Este usuario solo acepta cartas de sus conexiones';
+  String get letterSendFollowersOnlyError =>
+      'Este usuario solo acepta cartas de sus conexiones';
 
   @override
   String get settingsNotificationsSection => 'NOTIFICACIONES';

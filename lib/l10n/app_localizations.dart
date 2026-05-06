@@ -3396,45 +3396,87 @@ abstract class AppLocalizations {
   String get settingsWhoCanSendValue;
 
   /// No description provided for @settingsWhoCanSendEveryone.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Todos'**
   String get settingsWhoCanSendEveryone;
 
   /// No description provided for @settingsWhoCanSendEveryoneSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Qualquer usuário pode te enviar cartas'**
   String get settingsWhoCanSendEveryoneSubtitle;
 
   /// No description provided for @settingsWhoCanSendFollowers.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Pessoas que sigo'**
   String get settingsWhoCanSendFollowers;
 
   /// No description provided for @settingsWhoCanSendFollowersSubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apenas pessoas que você segue de volta podem enviar'**
   String get settingsWhoCanSendFollowersSubtitle;
 
   /// No description provided for @settingsWhoCanSendNobody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ninguém'**
   String get settingsWhoCanSendNobody;
 
   /// No description provided for @settingsWhoCanSendNobodySubtitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Ninguém pode te enviar cartas'**
   String get settingsWhoCanSendNobodySubtitle;
 
   /// No description provided for @profileBlockUser.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Bloquear usuário'**
   String get profileBlockUser;
 
   /// No description provided for @profileBlockConfirm.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Tem certeza que deseja bloquear este usuário? Ele não poderá te enviar cartas ou interagir com seu conteúdo.'**
   String get profileBlockConfirm;
 
   /// No description provided for @profileBlockSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Usuário bloqueado'**
   String get profileBlockSuccess;
 
   /// No description provided for @profileUnblockUser.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Desbloquear usuário'**
   String get profileUnblockUser;
 
   /// No description provided for @profileUnblockSuccess.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Usuário desbloqueado'**
   String get profileUnblockSuccess;
 
   /// No description provided for @profileReportUser.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Denunciar usuário'**
   String get profileReportUser;
 
   /// No description provided for @letterSendBlockedError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este usuário não está recebendo cartas no momento'**
   String get letterSendBlockedError;
 
   /// No description provided for @letterSendFollowersOnlyError.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Este usuário só aceita cartas de suas conexões'**
   String get letterSendFollowersOnlyError;
 
   /// No description provided for @settingsNotificationsSection.

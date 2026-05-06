@@ -1375,7 +1375,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ],
               ),
             ),
-            if (isActive) _activePill(l10n),
+            if (isActive)
+              Icon(Icons.check_circle, size: 20, color: context.pal.accent),
           ],
         ),
       ),
