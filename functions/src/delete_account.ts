@@ -87,10 +87,14 @@ export async function executeAccountDeletion(
   let lockedLettersPreserved = 0;
   let lockedCapsulesPreserved = 0;
 
+  /* ── 0. Read user doc once (reused in step 1 + 13a) ────── */
+  const userSnap = await firestore.collection("users").doc(uid).get();
+  const userData = userSnap.data();
+  const usernameToDelete = (userData?.username as string | undefined)
+    ?.trim().toLowerCase();
+
   /* ── 1. Cancel Stripe subscription (best-effort) ──────── */
   try {
-    const userSnap = await firestore.collection("users").doc(uid).get();
-    const userData = userSnap.data();
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (userData?.stripeCustomerId && stripeKey) {
       const stripe = new Stripe(stripeKey);
@@ -318,7 +322,17 @@ export async function executeAccountDeletion(
     logger.warn("Storage cleanup best-effort failed", e);
   }
 
-  /* ── 13. Delete user document ──────────────────────────── */
+  /* ── 13a. Delete username reservation ────────────────────── */
+  try {
+    if (usernameToDelete) {
+      await firestore.collection("usernames").doc(usernameToDelete).delete();
+      logger.info(`deleteUserAccount: username reservation '${usernameToDelete}' deleted`);
+    }
+  } catch (e) {
+    logger.warn("Username reservation cleanup best-effort failed", e);
+  }
+
+  /* ── 13b. Delete user document ─────────────────────────── */
   await firestore.collection("users").doc(uid).delete();
 
   /* ── 14. Delete Firebase Auth user (optional) ──────────── */

@@ -16,6 +16,10 @@ class FirestoreCollections {
   static const String userNotifications = 'notifications';
   /// Rascunhos de cartas — expiram após 30 dias (TTL Policy no campo `expiresAt`).
   static const String drafts = 'drafts';
+  /// Reserva atómica de usernames — doc ID = username, campo uid = dono.
+  /// Garante unicidade via Firestore Security Rules (apenas `create`, sem `update`).
+  static const String usernames = 'usernames';
+
   static const String systemConfig = 'systemConfig';
   /// Logs de auditoria de deleção de conta (sem PII) — escrita só Cloud Function.
   static const String deletionAuditLogs = 'deletionAuditLogs';

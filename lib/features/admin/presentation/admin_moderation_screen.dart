@@ -32,6 +32,7 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
   bool _loadingIncidents = true;
   bool _loadingModerationInfo = true;
   bool _runningBackfill = false;
+  bool _runningUsernamesBackfill = false;
   AdminModerationInfo? _moderationInfo;
   String? _error;
 
@@ -170,6 +171,33 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
     if (mounted) setState(() => _runningBackfill = false);
   }
 
+  Future<void> _runUsernamesBackfill() async {
+    if (_runningUsernamesBackfill) return;
+    setState(() => _runningUsernamesBackfill = true);
+    try {
+      final result = await _admin.backfillUsernames();
+      if (!mounted) return;
+      final created = result['created'] ?? 0;
+      final processed = result['processed'] ?? 0;
+      final conflicts = result['conflicts'] ?? 0;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Usernames backfill: $created created, $processed processed, $conflicts conflicts'),
+          backgroundColor: Colors.green.shade700,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Usernames backfill failed: $e'),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+    }
+    if (mounted) setState(() => _runningUsernamesBackfill = false);
+  }
+
   String _ts(Map<String, dynamic> m) {
     final c = m['createdAt'];
     if (c is Timestamp) {
@@ -195,6 +223,7 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
             icon: const Icon(Icons.more_vert),
             onSelected: (value) {
               if (value == 'backfill_follows') _runBackfill();
+              if (value == 'backfill_usernames') _runUsernamesBackfill();
             },
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -208,6 +237,20 @@ class _AdminModerationScreenState extends ConsumerState<AdminModerationScreen>
                       const Icon(Icons.sync, size: 18),
                     const SizedBox(width: 12),
                     Text(_runningBackfill ? 'Backfill running...' : 'Backfill follow counters'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'backfill_usernames',
+                enabled: !_runningUsernamesBackfill,
+                child: Row(
+                  children: [
+                    if (_runningUsernamesBackfill)
+                      const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                    else
+                      const Icon(Icons.person_add, size: 18),
+                    const SizedBox(width: 12),
+                    Text(_runningUsernamesBackfill ? 'Backfill running...' : 'Backfill usernames'),
                   ],
                 ),
               ),

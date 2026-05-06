@@ -114,6 +114,16 @@ class AdminFunctionsService {
     return _asMap(result.data);
   }
 
+  /// One-shot: populates the `usernames` collection from existing user docs.
+  /// Ensures atomic username uniqueness for all pre-existing users.
+  Future<Map<String, dynamic>> backfillUsernames() async {
+    final result = await SafeCallable.call(
+      'backfillUsernames',
+      label: 'backfillUsernames',
+    );
+    return _asMap(result.data);
+  }
+
   Map<String, dynamic> _asMap(Object? data) {
     if (data is Map) {
       return Map<String, dynamic>.from(data);

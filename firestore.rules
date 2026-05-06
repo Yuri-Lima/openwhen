@@ -263,6 +263,22 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ── Reserva atómica de usernames ──────────────────────────────────
+    // Doc ID = username (lowercase). Garante unicidade: `create` falha se
+    // doc já existir, e `update` nunca é permitido.
+    // Backfill existente: Cloud Function `backfillUsernames`.
+    match /usernames/{usernameId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      // Só o dono pode apagar (para mudar de username).
+      allow delete: if signedIn()
+        && resource.data.uid == request.auth.uid;
+      // Nunca update — apagar + criar novo garante atomicidade via batch.
+      allow update: if false;
+    }
+
     // Config remota legível por utilizadores autenticados (escrita só Admin SDK / Functions)
     match /systemConfig/{docId} {
       allow read: if signedIn();

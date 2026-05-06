@@ -60,6 +60,7 @@ export {
 
 export {backfillFollowCounters} from "./backfill_follow_counters";
 export {backfillSearchTokens} from "./backfill_search_tokens";
+export {backfillUsernames} from "./backfill_usernames";
 
 setGlobalOptions({region: "us-central1"});
 

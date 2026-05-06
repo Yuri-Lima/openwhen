@@ -42,72 +42,19 @@ class AuthRepository {
       name: name,
     );
 
-    await _firestore.collection(FirestoreCollections.users).doc(user.uid).set({
-      'uid': user.uid,
-      'name': name,
-      'displayName': name,
-      'username': username,
-      'searchTokens': searchTokens,
-      'email': email,
-      'photoUrl': null,
-      'bio': null,
-      'isPrivate': false,
-      'createdAt': FieldValue.serverTimestamp(),
-      'lettersSentCount': 0,
-      'lettersReceivedCount': 0,
-      'lockedLettersCount': 0,
-      'openedLettersCount': 0,
-      'followersCount': 0,
-      'followingCount': 0,
-      'lettersCount': 0,
-      'language': 'pt-BR',
-      'preferredLanguage': 'pt',
-      'country': null,
-      'subscriptionTier': subscriptionTierId(SubscriptionTier.free),
-      'hasCompletedFirstAction': false,
-      'dateOfBirth': Timestamp.fromDate(dateOfBirth),
-      'acceptedTermsVersion': kCurrentTermsVersion,
-      'acceptedPrivacyVersion': kCurrentPrivacyVersion,
-      'termsAcceptedAt': FieldValue.serverTimestamp(),
-    });
+    // Batch atómico: reserva o username E cria o user doc ao mesmo tempo.
+    // Se o username já estiver reservado, o batch inteiro falha (Security
+    // Rules só permitem `create` em usernames/{id}, nunca `update`).
+    final batch = _firestore.batch();
 
-    // Send email verification — required before first login.
-    await applyFirebaseLocale();
-    await user.sendEmailVerification();
-  }
+    batch.set(
+      _firestore.collection(FirestoreCollections.usernames).doc(username),
+      {'uid': user.uid},
+    );
 
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
-    await _authService.loginWithEmail(email: email, password: password);
-    // Fire-and-forget: Marco Civil Art. 15 access log.
-    AccessLogService.logLogin(authMethod: 'email');
-  }
-
-  /// Sign in (or sign up) with Apple.
-  /// Creates a Firestore user document on first login.
-  /// [dateOfBirth] is collected from the age-gate dialog for new users.
-  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
-    final credential = await _authService.signInWithApple();
-    final user = credential.user!;
-    final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
-
-    if (isNewUser) {
-      final name = user.displayName ?? '';
-      final email = user.email ?? '';
-      final username = await _resolveUsername(name, user.uid);
-
-      final searchTokens = buildUserSearchTokens(
-        username: username,
-        displayName: name,
-        name: name,
-      );
-
-      await _firestore
-          .collection(FirestoreCollections.users)
-          .doc(user.uid)
-          .set({
+    batch.set(
+      _firestore.collection(FirestoreCollections.users).doc(user.uid),
+      {
         'uid': user.uid,
         'name': name,
         'displayName': name,
@@ -134,7 +81,46 @@ class AuthRepository {
         'acceptedTermsVersion': kCurrentTermsVersion,
         'acceptedPrivacyVersion': kCurrentPrivacyVersion,
         'termsAcceptedAt': FieldValue.serverTimestamp(),
-      });
+      },
+    );
+
+    try {
+      await batch.commit();
+    } catch (e) {
+      // Username já reservado ou outro erro — apagar o auth user orphan.
+      debugPrint('[AuthRepo] register batch failed, deleting auth user: $e');
+      await user.delete();
+      rethrow;
+    }
+
+    // Send email verification — required before first login.
+    await applyFirebaseLocale();
+    await user.sendEmailVerification();
+  }
+
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    await _authService.loginWithEmail(email: email, password: password);
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'email');
+  }
+
+  /// Sign in (or sign up) with Apple.
+  /// Creates a Firestore user document on first login.
+  /// [dateOfBirth] is collected from the age-gate dialog for new users.
+  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
+    final credential = await _authService.signInWithApple();
+    final user = credential.user!;
+    final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+
+    if (isNewUser) {
+      await _createOAuthUserDoc(
+        user: user,
+        dateOfBirth: dateOfBirth,
+        photoUrl: null,
+      );
     }
     // Fire-and-forget: Marco Civil Art. 15 access log.
     AccessLogService.logLogin(authMethod: 'apple');
@@ -149,27 +135,51 @@ class AuthRepository {
     final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
 
     if (isNewUser) {
-      final name = user.displayName ?? '';
-      final email = user.email ?? '';
-      final username = await _resolveUsername(name, user.uid);
-
-      final searchTokens = buildUserSearchTokens(
-        username: username,
-        displayName: name,
-        name: name,
+      await _createOAuthUserDoc(
+        user: user,
+        dateOfBirth: dateOfBirth,
+        photoUrl: user.photoURL,
       );
+    }
+    // Fire-and-forget: Marco Civil Art. 15 access log.
+    AccessLogService.logLogin(authMethod: 'google');
+  }
 
-      await _firestore
-          .collection(FirestoreCollections.users)
-          .doc(user.uid)
-          .set({
+  /// Cria user doc + reserva de username para signup via OAuth (Apple/Google).
+  /// Usa batch atómico — se o username já estiver reservado, tenta
+  /// outro candidato automaticamente via [_resolveUsername].
+  Future<void> _createOAuthUserDoc({
+    required User user,
+    required DateTime dateOfBirth,
+    String? photoUrl,
+  }) async {
+    final name = user.displayName ?? '';
+    final email = user.email ?? '';
+    final username = await _resolveUsername(name, user.uid);
+
+    final searchTokens = buildUserSearchTokens(
+      username: username,
+      displayName: name,
+      name: name,
+    );
+
+    final batch = _firestore.batch();
+
+    batch.set(
+      _firestore.collection(FirestoreCollections.usernames).doc(username),
+      {'uid': user.uid},
+    );
+
+    batch.set(
+      _firestore.collection(FirestoreCollections.users).doc(user.uid),
+      {
         'uid': user.uid,
         'name': name,
         'displayName': name,
         'username': username,
         'searchTokens': searchTokens,
         'email': email,
-        'photoUrl': user.photoURL,
+        'photoUrl': photoUrl,
         'bio': null,
         'isPrivate': false,
         'createdAt': FieldValue.serverTimestamp(),
@@ -189,10 +199,17 @@ class AuthRepository {
         'acceptedTermsVersion': kCurrentTermsVersion,
         'acceptedPrivacyVersion': kCurrentPrivacyVersion,
         'termsAcceptedAt': FieldValue.serverTimestamp(),
-      });
+      },
+    );
+
+    try {
+      await batch.commit();
+    } catch (e) {
+      // Username já reservado ou outro erro — apagar o auth user orphan.
+      debugPrint('[AuthRepo] OAuth batch failed, deleting auth user: $e');
+      await user.delete();
+      rethrow;
     }
-    // Fire-and-forget: Marco Civil Art. 15 access log.
-    AccessLogService.logLogin(authMethod: 'google');
   }
 
   Future<void> signOut() async {
@@ -253,8 +270,11 @@ class AuthRepository {
       );
       final data = result.data;
       return data is Map && data['available'] == true;
-    } catch (_) {
-      return false;
+    } catch (e) {
+      debugPrint('[AuthRepo] username availability check failed: $e');
+      // On error (network/App Check), assume available — the server-side
+      // registration will enforce uniqueness anyway.
+      return true;
     }
   }
 }

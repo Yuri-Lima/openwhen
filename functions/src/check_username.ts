@@ -99,12 +99,19 @@ export const checkUsernameAvailable = onCall(
     }
 
     const db = getFirestore();
-    const snap = await db
-      .collection("users")
-      .where("username", "==", username)
-      .limit(1)
-      .get();
 
-    return {available: snap.empty};
+    // Verificar ambas as fontes de verdade:
+    // 1. Collection `usernames` (reserva atómica — source of truth)
+    // 2. Collection `users` (fallback para users criados antes do backfill)
+    const [reservationSnap, usersSnap] = await Promise.all([
+      db.collection("usernames").doc(username).get(),
+      db.collection("users")
+        .where("username", "==", username)
+        .limit(1)
+        .get(),
+    ]);
+
+    const available = !reservationSnap.exists && usersSnap.empty;
+    return {available};
   }
 );

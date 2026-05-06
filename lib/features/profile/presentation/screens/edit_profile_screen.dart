@@ -92,7 +92,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (!mounted) return;
       setState(() {
         _checkingUsername = false;
-        if (available) {
+        if (available == null) {
+          // Check falhou (rede/App Check) — permitir prosseguir;
+          // o batch atómico no _save() garante unicidade server-side.
+          _usernameAvailable = true;
+          _usernameError = null;
+        } else if (available) {
           _usernameAvailable = true;
           _usernameError = null;
         } else {
@@ -120,7 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<bool> _isUsernameAvailable(String username) async {
+  Future<bool?> _isUsernameAvailable(String username) async {
     try {
       final result = await SafeCallable.call(
         'checkUsernameAvailable',
@@ -129,8 +134,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       final data = result.data;
       return data is Map && data['available'] == true;
-    } catch (_) {
-      return false;
+    } catch (e) {
+      debugPrint('[EditProfile] username availability check failed: $e');
+      return null; // null = erro (distinto de false = taken)
     }
   }
 
@@ -173,20 +179,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       name: name,
     );
 
-    final update = <String, dynamic>{
-      'displayName': name,
-      'name': name,
-      'searchTokens': searchTokens,
-      'bio': bio,
-    };
-    if (usernameChanged) {
-      update['username'] = username;
-    }
+    try {
+      if (usernameChanged) {
+        // Batch atómico: apaga reserva antiga + cria nova + atualiza user doc.
+        // Se o novo username já estiver reservado, o batch inteiro falha.
+        final db = FirebaseFirestore.instance;
+        final batch = db.batch();
 
-    await FirebaseFirestore.instance
-        .collection(FirestoreCollections.users)
-        .doc(uid)
-        .update(update);
+        // Apagar reserva do username antigo
+        batch.delete(
+          db.collection(FirestoreCollections.usernames).doc(_originalUsername),
+        );
+
+        // Criar reserva do novo username
+        batch.set(
+          db.collection(FirestoreCollections.usernames).doc(username),
+          {'uid': uid},
+        );
+
+        // Atualizar user doc
+        batch.update(
+          db.collection(FirestoreCollections.users).doc(uid),
+          {
+            'displayName': name,
+            'name': name,
+            'username': username,
+            'searchTokens': searchTokens,
+            'bio': bio,
+          },
+        );
+
+        await batch.commit();
+        // Atualizar estado local para evitar duplo-delete se o pop atrasar.
+        _originalUsername = username;
+      } else {
+        // Sem mudança de username — update simples.
+        await FirebaseFirestore.instance
+            .collection(FirestoreCollections.users)
+            .doc(uid)
+            .update({
+          'displayName': name,
+          'name': name,
+          'searchTokens': searchTokens,
+          'bio': bio,
+        });
+      }
+    } catch (e) {
+      debugPrint('[EditProfile] save failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.editProfileErrorUsernameTaken)),
+        );
+        setState(() => _saving = false);
+      }
+      return;
+    }
 
     // Check if profile is now complete (name, username, bio, avatar).
     if (uid != null) {
