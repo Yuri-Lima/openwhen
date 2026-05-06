@@ -96,12 +96,39 @@ class _NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final d = doc.data();
     final read = d['read'] == true;
-    final title = d['title'] as String? ?? '';
-    final body = d['body'] as String? ?? '';
     final type = d['type'] as String? ?? '';
     final kind = d['kind'] as String? ?? '';
+    final actorName = d['actorName'] as String? ?? '';
+
+    // For engagement notifications, use device-locale strings instead of
+    // the server-stored copy (which may have been written in a different language).
+    String title;
+    String body;
+    if (type == 'engagement' && actorName.isNotEmpty) {
+      switch (kind) {
+        case 'follow':
+          title = l10n.notifFollowTitle(actorName);
+          body = l10n.notifFollowBody;
+          break;
+        case 'like':
+          title = l10n.notifLikeTitle(actorName);
+          body = l10n.notifLikeBody;
+          break;
+        case 'comment':
+          title = l10n.notifCommentTitle(actorName);
+          body = l10n.notifCommentBody;
+          break;
+        default:
+          title = d['title'] as String? ?? '';
+          body = d['body'] as String? ?? '';
+      }
+    } else {
+      title = d['title'] as String? ?? '';
+      body = d['body'] as String? ?? '';
+    }
 
     return Card(
       color: read ? context.pal.card : context.pal.card.withAlpha(240),

@@ -2231,6 +2231,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get moderationNotificationsEmpty => 'Sin notificaciones.';
 
   @override
+  String notifFollowTitle(String name) => '$name empezó a seguirte';
+
+  @override
+  String get notifFollowBody => 'Tienes una nueva conexión en Whenote.';
+
+  @override
+  String notifLikeTitle(String name) => 'A $name le gustó tu carta';
+
+  @override
+  String get notifLikeBody =>
+      'Abre la app para ver quién conecta con tus palabras.';
+
+  @override
+  String notifCommentTitle(String name) => '$name comentó en tu carta';
+
+  @override
+  String get notifCommentBody => 'Mira lo que escribieron.';
+
+  @override
   String get commentsModerationPendingReview =>
       'Tu comentario se envió a revisión. Te avisaremos cuando sea aprobado o rechazado.';
 

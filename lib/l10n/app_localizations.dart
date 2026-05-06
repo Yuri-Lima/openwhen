@@ -4151,6 +4151,42 @@ abstract class AppLocalizations {
   /// **'Nenhuma notificação.'**
   String get moderationNotificationsEmpty;
 
+  /// No description provided for @notifFollowTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{name} começou a seguir você'**
+  String notifFollowTitle(String name);
+
+  /// No description provided for @notifFollowBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Você tem uma nova conexão no Whenote.'**
+  String get notifFollowBody;
+
+  /// No description provided for @notifLikeTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{name} curtiu a sua carta'**
+  String notifLikeTitle(String name);
+
+  /// No description provided for @notifLikeBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Abra o app para ver quem se conectou com as suas palavras.'**
+  String get notifLikeBody;
+
+  /// No description provided for @notifCommentTitle.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'{name} comentou na sua carta'**
+  String notifCommentTitle(String name);
+
+  /// No description provided for @notifCommentBody.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Veja o que escreveram.'**
+  String get notifCommentBody;
+
   /// No description provided for @commentsModerationPendingReview.
   ///
   /// In pt_BR, this message translates to:

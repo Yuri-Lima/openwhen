@@ -2222,6 +2222,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';
 
   @override
+  String notifFollowTitle(String name) => '$name começou a seguir você';
+
+  @override
+  String get notifFollowBody => 'Você tem uma nova conexão no Whenote.';
+
+  @override
+  String notifLikeTitle(String name) => '$name curtiu a sua carta';
+
+  @override
+  String get notifLikeBody =>
+      'Abra o app para ver quem se conectou com as suas palavras.';
+
+  @override
+  String notifCommentTitle(String name) => '$name comentou na sua carta';
+
+  @override
+  String get notifCommentBody => 'Veja o que escreveram.';
+
+  @override
   String get commentsModerationPendingReview =>
       'O comentário foi enviado para revisão. Será notificado quando for aprovado ou rejeitado.';
 
@@ -5380,6 +5399,25 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
 
   @override
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';
+
+  @override
+  String notifFollowTitle(String name) => '$name começou a seguir você';
+
+  @override
+  String get notifFollowBody => 'Você tem uma nova conexão no Whenote.';
+
+  @override
+  String notifLikeTitle(String name) => '$name curtiu a sua carta';
+
+  @override
+  String get notifLikeBody =>
+      'Abra o app para ver quem se conectou com as suas palavras.';
+
+  @override
+  String notifCommentTitle(String name) => '$name comentou na sua carta';
+
+  @override
+  String get notifCommentBody => 'Veja o que escreveram.';
 
   @override
   String get commentsModerationPendingReview =>
