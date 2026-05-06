@@ -254,177 +254,276 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ]),
 
                     _buildSectionTitle(l10n.settingsNotificationsSection),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.notifications_active_outlined,
-                        iconColor: const Color(0xFFF59E0B),
-                        iconBg: const Color(0xFFFEF3C7),
-                        label: l10n.settingsNotifSystemAlert,
-                        subtitle: l10n.settingsNotifSystemAlertSubtitle,
-                        onTap: () async {
-                          await NotificationService.requestPermissionAndSync();
-                          if (!context.mounted) return;
-                          try {
-                            final s = await FirebaseMessaging.instance.getNotificationSettings();
-                            if (!context.mounted) return;
-                            final permL10n = AppLocalizations.of(context)!;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  permL10n.settingsNotifPermissionStatus(s.authorizationStatus.toString()),
-                                  style: GoogleFonts.dmSans(fontSize: 13),
-                                ),
+                    Material(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            leading: Container(
+                              width: 32, height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFEF3C7),
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            );
-                          } catch (_) {
-                            if (context.mounted) {
-                              final snackL10n = AppLocalizations.of(context)!;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    snackL10n.settingsNotifUpdated,
-                                    style: GoogleFonts.dmSans(fontSize: 13),
+                              child: const Icon(Icons.notifications_active_outlined, size: 17, color: Color(0xFFF59E0B)),
+                            ),
+                            title: Text(l10n.settingsNotifSystemAlert, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                            subtitle: Text(l10n.settingsNotifSystemAlertSubtitle, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft)),
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: TextButton.icon(
+                                    onPressed: () async {
+                                      await NotificationService.requestPermissionAndSync();
+                                      if (!context.mounted) return;
+                                      try {
+                                        final s = await FirebaseMessaging.instance.getNotificationSettings();
+                                        if (!context.mounted) return;
+                                        final permL10n = AppLocalizations.of(context)!;
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              permL10n.settingsNotifPermissionStatus(s.authorizationStatus.toString()),
+                                              style: GoogleFonts.dmSans(fontSize: 13),
+                                            ),
+                                          ),
+                                        );
+                                      } catch (_) {
+                                        if (context.mounted) {
+                                          final snackL10n = AppLocalizations.of(context)!;
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                snackL10n.settingsNotifUpdated,
+                                                style: GoogleFonts.dmSans(fontSize: 13),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    icon: Icon(Icons.phonelink_ring_outlined, size: 16, color: context.pal.accent),
+                                    label: Text(l10n.settingsNotifSystemAlertSubtitle, style: GoogleFonts.dmSans(fontSize: 12, color: context.pal.accent)),
                                   ),
                                 ),
-                              );
-                            }
-                          }
-                        },
+                              ),
+                              _buildDivider(),
+                              _buildToggleItem(
+                                icon: Icons.favorite_outline,
+                                iconColor: const Color(0xFFE91E8C),
+                                iconBg: const Color(0xFFFCE4F3),
+                                label: l10n.settingsNotifLikes,
+                                subtitle: l10n.settingsNotifLikesSubtitle,
+                                value: notifLike,
+                                onChanged: (v) => _updateField('notifLike', v),
+                              ),
+                              _buildDivider(),
+                              _buildToggleItem(
+                                icon: Icons.chat_bubble_outline,
+                                iconColor: const Color(0xFF3B82F6),
+                                iconBg: const Color(0xFFEFF6FF),
+                                label: l10n.settingsNotifComments,
+                                subtitle: l10n.settingsNotifCommentsSubtitle,
+                                value: notifComment,
+                                onChanged: (v) => _updateField('notifComment', v),
+                              ),
+                              _buildDivider(),
+                              _buildToggleItem(
+                                icon: Icons.person_add_outlined,
+                                iconColor: const Color(0xFF10B981),
+                                iconBg: const Color(0xFFD1FAE5),
+                                label: l10n.settingsNotifFollowers,
+                                subtitle: l10n.settingsNotifFollowersSubtitle,
+                                value: notifFollow,
+                                onChanged: (v) => _updateField('notifFollow', v),
+                              ),
+                              _buildDivider(),
+                              _buildToggleItem(
+                                icon: Icons.lock_open_outlined,
+                                iconColor: const Color(0xFFF59E0B),
+                                iconBg: const Color(0xFFFEF3C7),
+                                label: l10n.settingsNotifLetterUnlocked,
+                                subtitle: l10n.settingsNotifLetterUnlockedSubtitle,
+                                value: notifLetter,
+                                onChanged: (v) => _updateField('notifLetter', v),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      _buildDivider(),
-                      _buildToggleItem(
-                        icon: Icons.favorite_outline,
-                        iconColor: const Color(0xFFE91E8C),
-                        iconBg: const Color(0xFFFCE4F3),
-                        label: l10n.settingsNotifLikes,
-                        subtitle: l10n.settingsNotifLikesSubtitle,
-                        value: notifLike,
-                        onChanged: (v) => _updateField('notifLike', v),
-                      ),
-                      _buildDivider(),
-                      _buildToggleItem(
-                        icon: Icons.chat_bubble_outline,
-                        iconColor: const Color(0xFF3B82F6),
-                        iconBg: const Color(0xFFEFF6FF),
-                        label: l10n.settingsNotifComments,
-                        subtitle: l10n.settingsNotifCommentsSubtitle,
-                        value: notifComment,
-                        onChanged: (v) => _updateField('notifComment', v),
-                      ),
-                      _buildDivider(),
-                      _buildToggleItem(
-                        icon: Icons.person_add_outlined,
-                        iconColor: const Color(0xFF10B981),
-                        iconBg: const Color(0xFFD1FAE5),
-                        label: l10n.settingsNotifFollowers,
-                        subtitle: l10n.settingsNotifFollowersSubtitle,
-                        value: notifFollow,
-                        onChanged: (v) => _updateField('notifFollow', v),
-                      ),
-                      _buildDivider(),
-                      _buildToggleItem(
-                        icon: Icons.lock_open_outlined,
-                        iconColor: const Color(0xFFF59E0B),
-                        iconBg: const Color(0xFFFEF3C7),
-                        label: l10n.settingsNotifLetterUnlocked,
-                        subtitle: l10n.settingsNotifLetterUnlockedSubtitle,
-                        value: notifLetter,
-                        onChanged: (v) => _updateField('notifLetter', v),
-                      ),
-                    ]),
+                    ),
 
                     _buildSectionTitle(l10n.themeSection),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.brightness_auto_outlined,
-                        iconColor: const Color(0xFF6366F1),
-                        iconBg: const Color(0xFFEEF2FF),
-                        label: l10n.themeSystem,
-                        subtitle: l10n.themeSystemSubtitle,
-                        trailing: themeMode == AppThemeMode.system ? _activePill(l10n) : null,
-                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.system),
+                    Material(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            leading: Container(
+                              width: 32, height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEEF2FF),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.palette_outlined, size: 17, color: Color(0xFF6366F1)),
+                            ),
+                            title: Text(l10n.themeSection, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                            subtitle: Text(
+                              themeMode == AppThemeMode.system ? l10n.themeSystem
+                                : themeMode == AppThemeMode.classic ? l10n.themeClassic
+                                : themeMode == AppThemeMode.dark ? l10n.themeDark
+                                : themeMode == AppThemeMode.midnight ? l10n.themeMidnight
+                                : l10n.themeSepia,
+                              style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft),
+                            ),
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            children: [
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.brightness_auto_outlined,
+                                iconColor: const Color(0xFF6366F1),
+                                iconBg: const Color(0xFFEEF2FF),
+                                label: l10n.themeSystem,
+                                subtitle: l10n.themeSystemSubtitle,
+                                trailing: themeMode == AppThemeMode.system ? _activePill(l10n) : null,
+                                onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.system),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.wb_sunny_outlined,
+                                iconColor: const Color(0xFFF59E0B),
+                                iconBg: const Color(0xFFFEF3C7),
+                                label: l10n.themeClassic,
+                                subtitle: l10n.themeClassicSubtitle,
+                                trailing: themeMode == AppThemeMode.classic ? _activePill(l10n) : null,
+                                onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.classic),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.dark_mode_outlined,
+                                iconColor: const Color(0xFF64748B),
+                                iconBg: const Color(0xFFE2E8F0),
+                                label: l10n.themeDark,
+                                subtitle: l10n.themeDarkSubtitle,
+                                trailing: themeMode == AppThemeMode.dark ? _activePill(l10n) : null,
+                                onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.dark),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.nights_stay_outlined,
+                                iconColor: const Color(0xFF3B82F6),
+                                iconBg: const Color(0xFFEFF6FF),
+                                label: l10n.themeMidnight,
+                                subtitle: l10n.themeMidnightSubtitle,
+                                trailing: themeMode == AppThemeMode.midnight ? _activePill(l10n) : null,
+                                onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.midnight),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.menu_book_outlined,
+                                iconColor: const Color(0xFFB8860B),
+                                iconBg: const Color(0xFFF5E6D3),
+                                label: l10n.themeSepia,
+                                subtitle: l10n.themeSepiaSubtitle,
+                                trailing: themeMode == AppThemeMode.sepia ? _activePill(l10n) : null,
+                                onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.sepia),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.wb_sunny_outlined,
-                        iconColor: const Color(0xFFF59E0B),
-                        iconBg: const Color(0xFFFEF3C7),
-                        label: l10n.themeClassic,
-                        subtitle: l10n.themeClassicSubtitle,
-                        trailing: themeMode == AppThemeMode.classic ? _activePill(l10n) : null,
-                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.classic),
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.dark_mode_outlined,
-                        iconColor: const Color(0xFF64748B),
-                        iconBg: const Color(0xFFE2E8F0),
-                        label: l10n.themeDark,
-                        subtitle: l10n.themeDarkSubtitle,
-                        trailing: themeMode == AppThemeMode.dark ? _activePill(l10n) : null,
-                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.dark),
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.nights_stay_outlined,
-                        iconColor: const Color(0xFF3B82F6),
-                        iconBg: const Color(0xFFEFF6FF),
-                        label: l10n.themeMidnight,
-                        subtitle: l10n.themeMidnightSubtitle,
-                        trailing: themeMode == AppThemeMode.midnight ? _activePill(l10n) : null,
-                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.midnight),
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.menu_book_outlined,
-                        iconColor: const Color(0xFFB8860B),
-                        iconBg: const Color(0xFFF5E6D3),
-                        label: l10n.themeSepia,
-                        subtitle: l10n.themeSepiaSubtitle,
-                        trailing: themeMode == AppThemeMode.sepia ? _activePill(l10n) : null,
-                        onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.sepia),
-                      ),
-                    ]),
+                    ),
 
                     _buildSectionTitle(l10n.languageSection),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.translate,
-                        iconColor: const Color(0xFF6366F1),
-                        iconBg: const Color(0xFFEEF2FF),
-                        label: l10n.languageSystem,
-                        subtitle: l10n.languageSystemSubtitle,
-                        trailing: localePref == AppLocalePreference.system ? _activePill(l10n) : null,
-                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.system),
+                    Material(
+                      color: context.pal.card,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: context.pal.border),
+                        ),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            leading: Container(
+                              width: 32, height: 32,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFEEF2FF),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.translate, size: 17, color: Color(0xFF6366F1)),
+                            ),
+                            title: Text(l10n.languageSection, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                            subtitle: Text(
+                              localePref == AppLocalePreference.system ? l10n.languageSystem
+                                : localePref == AppLocalePreference.ptBr ? l10n.languagePt
+                                : localePref == AppLocalePreference.en ? l10n.languageEn
+                                : l10n.languageEs,
+                              style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft),
+                            ),
+                            tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            children: [
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.translate,
+                                iconColor: const Color(0xFF6366F1),
+                                iconBg: const Color(0xFFEEF2FF),
+                                label: l10n.languageSystem,
+                                subtitle: l10n.languageSystemSubtitle,
+                                trailing: localePref == AppLocalePreference.system ? _activePill(l10n) : null,
+                                onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.system),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.flag,
+                                iconColor: const Color(0xFF10B981),
+                                iconBg: const Color(0xFFD1FAE5),
+                                label: l10n.languagePt,
+                                trailing: localePref == AppLocalePreference.ptBr ? _activePill(l10n) : null,
+                                onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.ptBr),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.flag_outlined,
+                                iconColor: const Color(0xFF3B82F6),
+                                iconBg: const Color(0xFFEFF6FF),
+                                label: l10n.languageEn,
+                                trailing: localePref == AppLocalePreference.en ? _activePill(l10n) : null,
+                                onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.en),
+                              ),
+                              _buildDivider(),
+                              _buildMenuItem(
+                                icon: Icons.flag_outlined,
+                                iconColor: const Color(0xFFF59E0B),
+                                iconBg: const Color(0xFFFEF3C7),
+                                label: l10n.languageEs,
+                                trailing: localePref == AppLocalePreference.es ? _activePill(l10n) : null,
+                                onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.es),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.flag,
-                        iconColor: const Color(0xFF10B981),
-                        iconBg: const Color(0xFFD1FAE5),
-                        label: l10n.languagePt,
-                        trailing: localePref == AppLocalePreference.ptBr ? _activePill(l10n) : null,
-                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.ptBr),
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.flag_outlined,
-                        iconColor: const Color(0xFF3B82F6),
-                        iconBg: const Color(0xFFEFF6FF),
-                        label: l10n.languageEn,
-                        trailing: localePref == AppLocalePreference.en ? _activePill(l10n) : null,
-                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.en),
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
-                        icon: Icons.flag_outlined,
-                        iconColor: const Color(0xFFF59E0B),
-                        iconBg: const Color(0xFFFEF3C7),
-                        label: l10n.languageEs,
-                        trailing: localePref == AppLocalePreference.es ? _activePill(l10n) : null,
-                        onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.es),
-                      ),
-                    ]),
+                    ),
 
                     _buildSectionTitle(l10n.settingsDataSection),
                     _buildMenuCard([
