@@ -22,7 +22,6 @@ import '../../../../shared/widgets/owl_feedback_affordance.dart';
 import '../../../../shared/utils/date_formatter.dart';
 import 'comments_screen.dart';
 import '../../../profile/presentation/screens/user_profile_screen.dart';
-import '../../../letters/presentation/screens/letter_detail_screen.dart';
 import '../../../letters/data/letter_repository_actions.dart';
 import '../../../profile/presentation/screens/moderation_notifications_screen.dart';
 import '../../../../shared/social/instagram_stories_share_service.dart';

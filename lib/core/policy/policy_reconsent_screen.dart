@@ -6,9 +6,7 @@ import '../../l10n/app_localizations.dart';
 
 import '../../features/profile/presentation/screens/legal_screen.dart' show LegalScreen, LegalType;
 import '../../shared/theme/whenote_palette.dart';
-import '../constants/app_urls.dart';
 import '../constants/firestore_collections.dart';
-import 'policy_constants.dart';
 import 'policy_update_provider.dart';
 
 /// Full-screen blocking dialog shown when the user must accept updated policies.
@@ -245,9 +243,6 @@ class _PolicyReConsentScreenState extends State<PolicyReConsentScreen> {
   }
 
   Widget _buildViewFullLink(AppLocalizations l10n, WhenotePalette palette) {
-    final url = widget.policyUpdate.changesUrl.isNotEmpty
-        ? widget.policyUpdate.changesUrl
-        : AppUrls.privacyUrl;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: RichText(

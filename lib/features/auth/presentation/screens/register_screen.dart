@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/services/safe_callable.dart';
-import '../../../../shared/widgets/owl_logo.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../shared/theme/app_theme.dart';
@@ -101,7 +100,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!mounted) return;
       setState(() {
         _checkingUsername = false;
-        if (available) {
+        if (available == null) {
+          // Check failed (network/App Check error) — allow registration;
+          // the server will validate again at sign-up time.
+          _usernameAvailable = true;
+          _usernameError = null;
+        } else if (available) {
           _usernameAvailable = true;
           _usernameError = null;
         } else {
@@ -129,7 +133,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
-  Future<bool> _isUsernameAvailable(String username) async {
+  Future<bool?> _isUsernameAvailable(String username) async {
     try {
       final result = await SafeCallable.call(
         'checkUsernameAvailable',
@@ -138,8 +142,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
       final data = result.data;
       return data is Map && data['available'] == true;
-    } catch (_) {
-      return false;
+    } catch (e) {
+      debugPrint('[Register] username availability check failed: $e');
+      return null; // null = error (distinct from false = taken)
     }
   }
 
