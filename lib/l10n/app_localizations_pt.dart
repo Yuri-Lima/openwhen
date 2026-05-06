@@ -2222,20 +2222,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';
 
   @override
-  String notifFollowTitle(String name) => '$name começou a seguir você';
+  String notifFollowTitle(String name) {
+    return '$name começou a seguir você';
+  }
 
   @override
   String get notifFollowBody => 'Você tem uma nova conexão no Whenote.';
 
   @override
-  String notifLikeTitle(String name) => '$name curtiu a sua carta';
+  String notifLikeTitle(String name) {
+    return '$name curtiu a sua carta';
+  }
 
   @override
   String get notifLikeBody =>
       'Abra o app para ver quem se conectou com as suas palavras.';
 
   @override
-  String notifCommentTitle(String name) => '$name comentou na sua carta';
+  String notifCommentTitle(String name) {
+    return '$name comentou na sua carta';
+  }
 
   @override
   String get notifCommentBody => 'Veja o que escreveram.';
@@ -5401,20 +5407,26 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get moderationNotificationsEmpty => 'Nenhuma notificação.';
 
   @override
-  String notifFollowTitle(String name) => '$name começou a seguir você';
+  String notifFollowTitle(String name) {
+    return '$name começou a seguir você';
+  }
 
   @override
   String get notifFollowBody => 'Você tem uma nova conexão no Whenote.';
 
   @override
-  String notifLikeTitle(String name) => '$name curtiu a sua carta';
+  String notifLikeTitle(String name) {
+    return '$name curtiu a sua carta';
+  }
 
   @override
   String get notifLikeBody =>
       'Abra o app para ver quem se conectou com as suas palavras.';
 
   @override
-  String notifCommentTitle(String name) => '$name comentou na sua carta';
+  String notifCommentTitle(String name) {
+    return '$name comentou na sua carta';
+  }
 
   @override
   String get notifCommentBody => 'Veja o que escreveram.';

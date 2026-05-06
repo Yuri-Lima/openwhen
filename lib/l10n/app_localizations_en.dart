@@ -2218,20 +2218,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moderationNotificationsEmpty => 'No notifications yet.';
 
   @override
-  String notifFollowTitle(String name) => '$name started following you';
+  String notifFollowTitle(String name) {
+    return '$name started following you';
+  }
 
   @override
   String get notifFollowBody => 'You have a new connection on Whenote.';
 
   @override
-  String notifLikeTitle(String name) => '$name liked your letter';
+  String notifLikeTitle(String name) {
+    return '$name liked your letter';
+  }
 
   @override
   String get notifLikeBody =>
       'Open the app to see who\'s connecting with your words.';
 
   @override
-  String notifCommentTitle(String name) => '$name commented on your letter';
+  String notifCommentTitle(String name) {
+    return '$name commented on your letter';
+  }
 
   @override
   String get notifCommentBody => 'See what they had to say.';
