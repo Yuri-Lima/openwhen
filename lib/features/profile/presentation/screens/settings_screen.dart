@@ -70,24 +70,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  Widget _activePill(AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: context.pal.accentWarm,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        l10n.activeLabel,
-        style: GoogleFonts.dmSans(
-          fontSize: 11,
-          color: context.pal.accent,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -240,7 +222,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ]),
 
-                    _buildSectionTitle(l10n.settingsNotificationsSection),
+                    const SizedBox(height: 16),
                     Material(
                       color: context.pal.card,
                       borderRadius: BorderRadius.circular(16),
@@ -260,15 +242,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               ),
                               child: const Icon(Icons.notifications_active_outlined, size: 17, color: Color(0xFFF59E0B)),
                             ),
-                            title: Text(l10n.settingsNotifSystemAlert, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
+                            title: Text(l10n.settingsNotificationsSection, style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink)),
                             subtitle: Text(l10n.settingsNotifSystemAlertSubtitle, style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft)),
                             tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            childrenPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
                             children: [
+                              Divider(height: 1, color: context.pal.border),
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  padding: const EdgeInsets.only(top: 8, bottom: 4),
                                   child: TextButton.icon(
                                     onPressed: () async {
                                       await NotificationService.requestPermissionAndSync();
@@ -304,43 +287,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   ),
                                 ),
                               ),
-                              _buildDivider(),
-                              _buildToggleItem(
-                                icon: Icons.favorite_outline,
-                                iconColor: const Color(0xFFE91E8C),
-                                iconBg: const Color(0xFFFCE4F3),
+                              _buildCompactToggle(
                                 label: l10n.settingsNotifLikes,
-                                subtitle: l10n.settingsNotifLikesSubtitle,
                                 value: notifLike,
                                 onChanged: (v) => _updateField('notifLike', v),
                               ),
-                              _buildDivider(),
-                              _buildToggleItem(
-                                icon: Icons.chat_bubble_outline,
-                                iconColor: const Color(0xFF3B82F6),
-                                iconBg: const Color(0xFFEFF6FF),
+                              _buildCompactToggle(
                                 label: l10n.settingsNotifComments,
-                                subtitle: l10n.settingsNotifCommentsSubtitle,
                                 value: notifComment,
                                 onChanged: (v) => _updateField('notifComment', v),
                               ),
-                              _buildDivider(),
-                              _buildToggleItem(
-                                icon: Icons.person_add_outlined,
-                                iconColor: const Color(0xFF10B981),
-                                iconBg: const Color(0xFFD1FAE5),
+                              _buildCompactToggle(
                                 label: l10n.settingsNotifFollowers,
-                                subtitle: l10n.settingsNotifFollowersSubtitle,
                                 value: notifFollow,
                                 onChanged: (v) => _updateField('notifFollow', v),
                               ),
-                              _buildDivider(),
-                              _buildToggleItem(
-                                icon: Icons.lock_open_outlined,
-                                iconColor: const Color(0xFFF59E0B),
-                                iconBg: const Color(0xFFFEF3C7),
+                              _buildCompactToggle(
                                 label: l10n.settingsNotifLetterUnlocked,
-                                subtitle: l10n.settingsNotifLetterUnlockedSubtitle,
                                 value: notifLetter,
                                 onChanged: (v) => _updateField('notifLetter', v),
                               ),
@@ -350,7 +313,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ),
 
-                    _buildSectionTitle(l10n.themeSection),
+                    const SizedBox(height: 12),
                     Material(
                       color: context.pal.card,
                       borderRadius: BorderRadius.circular(16),
@@ -380,56 +343,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft),
                             ),
                             tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            childrenPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
                             children: [
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.brightness_auto_outlined,
-                                iconColor: const Color(0xFF6366F1),
-                                iconBg: const Color(0xFFEEF2FF),
+                              Divider(height: 1, color: context.pal.border),
+                              _buildCompactOption(
                                 label: l10n.themeSystem,
-                                subtitle: l10n.themeSystemSubtitle,
-                                trailing: themeMode == AppThemeMode.system ? _activePill(l10n) : null,
+                                isActive: themeMode == AppThemeMode.system,
                                 onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.system),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.wb_sunny_outlined,
-                                iconColor: const Color(0xFFF59E0B),
-                                iconBg: const Color(0xFFFEF3C7),
+                              _buildCompactOption(
                                 label: l10n.themeClassic,
-                                subtitle: l10n.themeClassicSubtitle,
-                                trailing: themeMode == AppThemeMode.classic ? _activePill(l10n) : null,
+                                isActive: themeMode == AppThemeMode.classic,
                                 onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.classic),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.dark_mode_outlined,
-                                iconColor: const Color(0xFF64748B),
-                                iconBg: const Color(0xFFE2E8F0),
+                              _buildCompactOption(
                                 label: l10n.themeDark,
-                                subtitle: l10n.themeDarkSubtitle,
-                                trailing: themeMode == AppThemeMode.dark ? _activePill(l10n) : null,
+                                isActive: themeMode == AppThemeMode.dark,
                                 onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.dark),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.nights_stay_outlined,
-                                iconColor: const Color(0xFF3B82F6),
-                                iconBg: const Color(0xFFEFF6FF),
+                              _buildCompactOption(
                                 label: l10n.themeMidnight,
-                                subtitle: l10n.themeMidnightSubtitle,
-                                trailing: themeMode == AppThemeMode.midnight ? _activePill(l10n) : null,
+                                isActive: themeMode == AppThemeMode.midnight,
                                 onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.midnight),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.menu_book_outlined,
-                                iconColor: const Color(0xFFB8860B),
-                                iconBg: const Color(0xFFF5E6D3),
+                              _buildCompactOption(
                                 label: l10n.themeSepia,
-                                subtitle: l10n.themeSepiaSubtitle,
-                                trailing: themeMode == AppThemeMode.sepia ? _activePill(l10n) : null,
+                                isActive: themeMode == AppThemeMode.sepia,
                                 onTap: () => ref.read(themeModeProvider.notifier).setMode(AppThemeMode.sepia),
                               ),
                             ],
@@ -438,7 +377,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ),
 
-                    _buildSectionTitle(l10n.languageSection),
+                    const SizedBox(height: 12),
                     Material(
                       color: context.pal.card,
                       borderRadius: BorderRadius.circular(16),
@@ -467,43 +406,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               style: GoogleFonts.dmSans(fontSize: 11, color: context.pal.inkSoft),
                             ),
                             tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            childrenPadding: const EdgeInsets.only(bottom: 8),
+                            childrenPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
                             children: [
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.translate,
-                                iconColor: const Color(0xFF6366F1),
-                                iconBg: const Color(0xFFEEF2FF),
+                              Divider(height: 1, color: context.pal.border),
+                              _buildCompactOption(
                                 label: l10n.languageSystem,
-                                subtitle: l10n.languageSystemSubtitle,
-                                trailing: localePref == AppLocalePreference.system ? _activePill(l10n) : null,
+                                isActive: localePref == AppLocalePreference.system,
                                 onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.system),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.flag,
-                                iconColor: const Color(0xFF10B981),
-                                iconBg: const Color(0xFFD1FAE5),
+                              _buildCompactOption(
                                 label: l10n.languagePt,
-                                trailing: localePref == AppLocalePreference.ptBr ? _activePill(l10n) : null,
+                                isActive: localePref == AppLocalePreference.ptBr,
                                 onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.ptBr),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.flag_outlined,
-                                iconColor: const Color(0xFF3B82F6),
-                                iconBg: const Color(0xFFEFF6FF),
+                              _buildCompactOption(
                                 label: l10n.languageEn,
-                                trailing: localePref == AppLocalePreference.en ? _activePill(l10n) : null,
+                                isActive: localePref == AppLocalePreference.en,
                                 onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.en),
                               ),
-                              _buildDivider(),
-                              _buildMenuItem(
-                                icon: Icons.flag_outlined,
-                                iconColor: const Color(0xFFF59E0B),
-                                iconBg: const Color(0xFFFEF3C7),
+                              _buildCompactOption(
                                 label: l10n.languageEs,
-                                trailing: localePref == AppLocalePreference.es ? _activePill(l10n) : null,
+                                isActive: localePref == AppLocalePreference.es,
                                 onTap: () => ref.read(localePreferenceProvider.notifier).setPreference(AppLocalePreference.es),
                               ),
                             ],
@@ -911,6 +834,70 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           Switch(value: value, onChanged: onChanged, activeColor: context.pal.accent),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactOption({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Icon(
+              isActive ? Icons.radio_button_checked : Icons.radio_button_off,
+              size: 18,
+              color: isActive ? context.pal.accent : context.pal.inkFaint,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.dmSans(
+                  fontSize: 14,
+                  color: isActive ? context.pal.ink : context.pal.inkSoft,
+                  fontWeight: isActive ? FontWeight.w500 : FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactToggle({
+    required String label,
+    required bool value,
+    required Function(bool) onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.dmSans(fontSize: 14, color: context.pal.ink),
+            ),
+          ),
+          SizedBox(
+            height: 28,
+            child: FittedBox(
+              child: Switch.adaptive(
+                value: value,
+                onChanged: onChanged,
+                activeColor: context.pal.accent,
+              ),
+            ),
+          ),
         ],
       ),
     );
