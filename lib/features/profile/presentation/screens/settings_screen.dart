@@ -175,24 +175,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     _buildSectionTitle(l10n.settingsMyAccount),
                     _buildMenuCard([
                       _buildMenuItem(
-                        icon: Icons.photo_camera_outlined,
-                        iconColor: const Color(0xFFEC4899),
-                        iconBg: const Color(0xFFFCE7F3),
-                        label: l10n.settingsProfilePhoto,
-                        subtitle: l10n.settingsProfilePhotoSubtitle,
-                        onTap: () {
-                          final uid = _user?.uid;
-                          if (uid != null) {
-                            AvatarUploadHelper.showAvatarOptions(context, uid);
-                          }
-                        },
-                      ),
-                      _buildDivider(),
-                      _buildMenuItem(
                         icon: Icons.person_outline,
                         iconColor: const Color(0xFF3B82F6),
                         iconBg: const Color(0xFFEFF6FF),
                         label: l10n.settingsEditProfile,
+                        subtitle: l10n.settingsProfilePhotoSubtitle,
                         onTap: () => _showEditProfile(context, data),
                       ),
                       _buildDivider(),
@@ -955,6 +942,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Center(child: Container(width: 36, height: 4, decoration: BoxDecoration(color: context.pal.border, borderRadius: BorderRadius.circular(2)))),
                   const SizedBox(height: 20),
                   Text(l10n.settingsEditProfileSheetTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 20, color: context.pal.ink, fontStyle: FontStyle.italic)),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        final uid = _user?.uid;
+                        if (uid != null) {
+                          AvatarUploadHelper.showAvatarOptions(context, uid);
+                        }
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 80, height: 80,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFCE7F3),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: context.pal.border, width: 2),
+                            ),
+                            child: const Icon(Icons.photo_camera_outlined, size: 28, color: Color(0xFFEC4899)),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(l10n.settingsProfilePhoto, style: GoogleFonts.dmSans(fontSize: 13, color: context.pal.accent, fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   _buildSheetField(nameCtrl, l10n.settingsEditProfileFieldName),
                   const SizedBox(height: 12),
