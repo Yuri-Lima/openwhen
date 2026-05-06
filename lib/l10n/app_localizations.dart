@@ -3170,7 +3170,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSection.
   ///
   /// In pt_BR, this message translates to:
-  /// **'TEMA DO APP'**
+  /// **'Tema do app'**
   String get themeSection;
 
   /// No description provided for @themeSystem.
@@ -3236,7 +3236,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageSection.
   ///
   /// In pt_BR, this message translates to:
-  /// **'IDIOMA'**
+  /// **'Idioma'**
   String get languageSection;
 
   /// No description provided for @languageSystem.
@@ -3482,7 +3482,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsNotificationsSection.
   ///
   /// In pt_BR, this message translates to:
-  /// **'NOTIFICAÇÕES'**
+  /// **'Notificações'**
   String get settingsNotificationsSection;
 
   /// No description provided for @settingsNotifSystemAlert.

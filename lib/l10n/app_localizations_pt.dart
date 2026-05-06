@@ -1688,7 +1688,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsTitle => 'Configurações';
 
   @override
-  String get themeSection => 'TEMA DO APP';
+  String get themeSection => 'Tema do app';
 
   @override
   String get themeSystem => 'Automático (sistema)';
@@ -1721,7 +1721,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get themeSepiaSubtitle => 'Tons quentes no papel';
 
   @override
-  String get languageSection => 'IDIOMA';
+  String get languageSection => 'Idioma';
 
   @override
   String get languageSystem => 'Automático (sistema)';
@@ -1855,7 +1855,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este utilizador só aceita cartas das suas conexões';
 
   @override
-  String get settingsNotificationsSection => 'NOTIFICAÇÕES';
+  String get settingsNotificationsSection => 'Notificações';
 
   @override
   String get settingsNotifSystemAlert => 'Permissões de alerta (sistema)';
@@ -4921,7 +4921,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get settingsTitle => 'Configurações';
 
   @override
-  String get themeSection => 'TEMA DO APP';
+  String get themeSection => 'Tema do app';
 
   @override
   String get themeSystem => 'Automático (sistema)';
@@ -4954,7 +4954,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   String get themeSepiaSubtitle => 'Tons quentes no papel';
 
   @override
-  String get languageSection => 'IDIOMA';
+  String get languageSection => 'Idioma';
 
   @override
   String get languageSystem => 'Automático (sistema)';
@@ -5088,7 +5088,7 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
       'Este usuário só aceita cartas de suas conexões';
 
   @override
-  String get settingsNotificationsSection => 'NOTIFICAÇÕES';
+  String get settingsNotificationsSection => 'Notificações';
 
   @override
   String get settingsNotifSystemAlert => 'Permissões de alerta (sistema)';

@@ -1682,7 +1682,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get themeSection => 'APP THEME';
+  String get themeSection => 'App theme';
 
   @override
   String get themeSystem => 'Automatic (system)';
@@ -1715,7 +1715,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeSepiaSubtitle => 'Warm paper tones';
 
   @override
-  String get languageSection => 'LANGUAGE';
+  String get languageSection => 'Language';
 
   @override
   String get languageSystem => 'Automatic (system)';
@@ -1849,7 +1849,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This user only accepts letters from their connections';
 
   @override
-  String get settingsNotificationsSection => 'NOTIFICATIONS';
+  String get settingsNotificationsSection => 'Notifications';
 
   @override
   String get settingsNotifSystemAlert => 'Alert permissions (system)';

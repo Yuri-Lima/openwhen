@@ -1693,7 +1693,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTitle => 'Configuración';
 
   @override
-  String get themeSection => 'TEMA DE LA APP';
+  String get themeSection => 'Tema de la app';
 
   @override
   String get themeSystem => 'Automático (sistema)';
@@ -1726,7 +1726,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get themeSepiaSubtitle => 'Tonos cálidos de papel';
 
   @override
-  String get languageSection => 'IDIOMA';
+  String get languageSection => 'Idioma';
 
   @override
   String get languageSystem => 'Automático (sistema)';
@@ -1860,7 +1860,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este usuario solo acepta cartas de sus conexiones';
 
   @override
-  String get settingsNotificationsSection => 'NOTIFICACIONES';
+  String get settingsNotificationsSection => 'Notificaciones';
 
   @override
   String get settingsNotifSystemAlert => 'Permisos de alerta (sistema)';
