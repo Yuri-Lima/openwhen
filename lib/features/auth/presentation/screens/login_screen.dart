@@ -350,22 +350,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   Future<void> _signInWithApple() async {
-    final dateOfBirth = await _showSocialAgeGate();
-    if (dateOfBirth == null || !mounted) return;
-
     final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     try {
-      await ref.read(authNotifierProvider.notifier).signInWithApple(dateOfBirth: dateOfBirth);
+      // 1) OAuth first — only then we know if user is new.
+      final isNewUser = await ref.read(authNotifierProvider.notifier).signInWithApple();
       if (!mounted) return;
+
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
         );
-      } else {
-        await AnalyticsService.logLogin(method: 'apple');
+        return;
       }
+
+      // 2) Only show age-gate for brand-new users.
+      if (isNewUser) {
+        final completed = await _handleNewOAuthUser();
+        if (!completed) return; // user cancelled → auth user was cleaned up
+      }
+
+      await AnalyticsService.logLogin(method: 'apple');
     } on SignInWithAppleAuthorizationException catch (e) {
       // User cancelled — do nothing.
       if (e.code == AuthorizationErrorCode.canceled) {
@@ -386,22 +392,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 
   Future<void> _signInWithGoogle() async {
-    final dateOfBirth = await _showSocialAgeGate();
-    if (dateOfBirth == null || !mounted) return;
-
     final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoading = true);
     try {
-      await ref.read(authNotifierProvider.notifier).signInWithGoogle(dateOfBirth: dateOfBirth);
+      // 1) OAuth first — only then we know if user is new.
+      final isNewUser = await ref.read(authNotifierProvider.notifier).signInWithGoogle();
       if (!mounted) return;
+
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
         );
-      } else {
-        await AnalyticsService.logLogin(method: 'google');
+        return;
       }
+
+      // 2) Only show age-gate for brand-new users.
+      if (isNewUser) {
+        final completed = await _handleNewOAuthUser();
+        if (!completed) return; // user cancelled → auth user was cleaned up
+      }
+
+      await AnalyticsService.logLogin(method: 'google');
     } catch (e) {
       // User cancelled — the google_sign_in plugin throws when user cancels.
       if (e.toString().contains('google-sign-in-cancelled')) {
@@ -413,6 +425,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       }
     }
     if (mounted) setState(() => _isLoading = false);
+  }
+
+  /// Shows the age-gate dialog for a new OAuth user and completes
+  /// their Firestore registration. Returns `true` if registration
+  /// was completed, `false` if the user cancelled (in which case
+  /// the orphan auth account is deleted so [isNewUser] stays correct
+  /// on the next attempt).
+  Future<bool> _handleNewOAuthUser() async {
+    final dateOfBirth = await _showSocialAgeGate();
+    if (dateOfBirth == null || !mounted) {
+      // User cancelled the age-gate — delete the orphan auth account
+      // so the next sign-in attempt still sees isNewUser == true.
+      await _deleteCurrentAuthUser();
+      return false;
+    }
+
+    await ref.read(authNotifierProvider.notifier).completeOAuthRegistration(
+      dateOfBirth: dateOfBirth,
+    );
+
+    if (!mounted) return false;
+    final authAsync = ref.read(authNotifierProvider);
+    if (authAsync.hasError) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
+      );
+      // Registration failed — clean up orphan auth user.
+      await _deleteCurrentAuthUser();
+      return false;
+    }
+    return true;
+  }
+
+  /// Deletes the current Firebase Auth user (orphan with no Firestore doc)
+  /// and signs out. Falls back to sign-out only if delete fails.
+  Future<void> _deleteCurrentAuthUser() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.delete();
+    } catch (_) {
+      // delete() can fail if the session is too old; sign-out as fallback.
+      await ref.read(authNotifierProvider.notifier).signOut();
+    }
   }
 
   void _showForgotPassword(BuildContext context) {

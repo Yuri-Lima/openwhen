@@ -44,14 +44,32 @@ class AuthNotifier extends StateNotifier<AsyncValue<void>> {
         ));
   }
 
-  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
+  /// Returns `true` when the user is new and needs age-gate + terms.
+  Future<bool> signInWithApple() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _repository.signInWithApple(dateOfBirth: dateOfBirth));
+    bool isNew = false;
+    state = await AsyncValue.guard(() async {
+      isNew = await _repository.signInWithApple();
+    });
+    return isNew;
   }
 
-  Future<void> signInWithGoogle({required DateTime dateOfBirth}) async {
+  /// Returns `true` when the user is new and needs age-gate + terms.
+  Future<bool> signInWithGoogle() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _repository.signInWithGoogle(dateOfBirth: dateOfBirth));
+    bool isNew = false;
+    state = await AsyncValue.guard(() async {
+      isNew = await _repository.signInWithGoogle();
+    });
+    return isNew;
+  }
+
+  /// Completes registration for a new OAuth user (creates Firestore doc).
+  Future<void> completeOAuthRegistration({required DateTime dateOfBirth}) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(
+      () => _repository.completeOAuthRegistration(dateOfBirth: dateOfBirth),
+    );
   }
 
   Future<void> signOut() async {

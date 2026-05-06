@@ -108,41 +108,62 @@ class AuthRepository {
   }
 
   /// Sign in (or sign up) with Apple.
-  /// Creates a Firestore user document on first login.
-  /// [dateOfBirth] is collected from the age-gate dialog for new users.
-  Future<void> signInWithApple({required DateTime dateOfBirth}) async {
+  /// Returns `true` when the user is new and still needs to complete
+  /// registration (age-gate + terms). The caller should then collect
+  /// `dateOfBirth` and call [completeOAuthRegistration].
+  Future<bool> signInWithApple() async {
     final credential = await _authService.signInWithApple();
-    final user = credential.user!;
-    final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+    final needsSetup = await _needsRegistration(credential);
 
-    if (isNewUser) {
-      await _createOAuthUserDoc(
-        user: user,
-        dateOfBirth: dateOfBirth,
-        photoUrl: null,
-      );
-    }
     // Fire-and-forget: Marco Civil Art. 15 access log.
     AccessLogService.logLogin(authMethod: 'apple');
+    return needsSetup;
   }
 
   /// Sign in (or sign up) with Google.
-  /// Creates a Firestore user document on first login.
-  /// [dateOfBirth] is collected from the age-gate dialog for new users.
-  Future<void> signInWithGoogle({required DateTime dateOfBirth}) async {
+  /// Returns `true` when the user is new and still needs to complete
+  /// registration (age-gate + terms). The caller should then collect
+  /// `dateOfBirth` and call [completeOAuthRegistration].
+  Future<bool> signInWithGoogle() async {
     final credential = await _authService.signInWithGoogle();
-    final user = credential.user!;
-    final isNewUser = credential.additionalUserInfo?.isNewUser ?? false;
+    final needsSetup = await _needsRegistration(credential);
 
-    if (isNewUser) {
-      await _createOAuthUserDoc(
-        user: user,
-        dateOfBirth: dateOfBirth,
-        photoUrl: user.photoURL,
-      );
-    }
     // Fire-and-forget: Marco Civil Art. 15 access log.
     AccessLogService.logLogin(authMethod: 'google');
+    return needsSetup;
+  }
+
+  /// Returns `true` if the user still needs to complete registration.
+  /// Handles both genuinely new users AND edge cases where the Auth
+  /// account exists but the Firestore user doc was lost (e.g. previous
+  /// registration crashed, manual deletion, etc.).
+  Future<bool> _needsRegistration(UserCredential credential) async {
+    if (credential.additionalUserInfo?.isNewUser ?? false) return true;
+
+    // Auth account exists — verify the Firestore doc is also present.
+    final uid = credential.user!.uid;
+    final doc = await _firestore
+        .collection(FirestoreCollections.users)
+        .doc(uid)
+        .get();
+    return !doc.exists;
+  }
+
+  /// Completes registration for a new OAuth user by creating the Firestore
+  /// user document. Must be called after [signInWithApple] or
+  /// [signInWithGoogle] returns `true`.
+  Future<void> completeOAuthRegistration({
+    required DateTime dateOfBirth,
+  }) async {
+    final user = _authService.currentUser;
+    if (user == null) {
+      throw StateError('completeOAuthRegistration called without a signed-in user');
+    }
+    await _createOAuthUserDoc(
+      user: user,
+      dateOfBirth: dateOfBirth,
+      photoUrl: user.photoURL,
+    );
   }
 
   /// Cria user doc + reserva de username para signup via OAuth (Apple/Google).
