@@ -387,8 +387,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-    if (mounted) setState(() => _isLoading = false);
   }
 
   Future<void> _signInWithGoogle() async {
@@ -401,9 +402,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
-        );
+        final errStr = authAsync.error.toString();
+        // User cancelled — silently ignore.
+        if (!errStr.contains('google-sign-in-cancelled')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.errorGeneric(errStr))),
+          );
+        }
         return;
       }
 
@@ -423,8 +428,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           SnackBar(content: Text(l10n.errorGeneric(e.toString()))),
         );
       }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-    if (mounted) setState(() => _isLoading = false);
   }
 
   /// Shows the age-gate dialog for a new OAuth user and completes
