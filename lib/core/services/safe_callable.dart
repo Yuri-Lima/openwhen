@@ -100,9 +100,16 @@ class SafeCallable {
           .getToken()
           .timeout(const Duration(seconds: 8));
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('[SafeCallable] App Check token fetch failed (non-fatal): $e');
-      }
+      // Log in ALL modes — App Check failures cause silent 401s that are
+      // extremely hard to diagnose in production.
+      debugPrint('[SafeCallable] App Check token fetch failed for '
+          '$functionName: $e');
+    }
+
+    if (appCheckToken == null || appCheckToken.isEmpty) {
+      debugPrint('[SafeCallable] WARNING: No App Check token for '
+          '$functionName — server may reject with 401 if enforceAppCheck '
+          'is enabled.');
     }
 
     if (kDebugMode) {

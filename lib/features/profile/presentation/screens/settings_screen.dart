@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../shared/theme/app_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -1211,8 +1212,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
       if (!context.mounted) return;
       Navigator.pop(context); // dismiss loading
+
+      // Extract a meaningful message from the error for diagnostics.
+      String detail = e.toString();
+      if (e is FirebaseFunctionsException) {
+        detail = '${e.code}: ${e.message}';
+      }
+      debugPrint('Account deletion error detail: $detail');
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsDeleteError)),
+        SnackBar(
+          content: Text('${l10n.settingsDeleteError}\n($detail)'),
+          duration: const Duration(seconds: 6),
+        ),
       );
     }
   }
