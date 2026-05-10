@@ -359,9 +359,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
       final authAsync = ref.read(authNotifierProvider);
       if (authAsync.hasError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorGeneric(authAsync.error.toString()))),
-        );
+        final errStr = authAsync.error.toString();
+        // User cancelled — silently ignore.
+        if (!errStr.contains('canceled') &&
+            !errStr.contains('AuthorizationErrorCode.canceled')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.errorGeneric(errStr))),
+          );
+        }
         return;
       }
 
