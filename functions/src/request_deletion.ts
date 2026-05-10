@@ -28,7 +28,11 @@ const MAX_REQUESTS_PER_MONTH = 3;
 export const requestAccountDeletion = onCall(
   {
     cors: true,
-    enforceAppCheck: true,
+    // enforceAppCheck disabled: iOS HTTP fallback (SafeCallable) cannot
+    // reliably obtain App Check tokens due to firebase-ios-sdk#15974.
+    // Security is maintained via Firebase Auth + re-authentication +
+    // rate limiting (MAX_REQUESTS_PER_MONTH).
+    enforceAppCheck: false,
     secrets: [sendgridApiKey],
   },
   async (request) => {
@@ -136,7 +140,7 @@ export const requestAccountDeletion = onCall(
  * ══════════════════════════════════════════════════════════════ */
 
 export const cancelAccountDeletion = onCall(
-  {cors: true, enforceAppCheck: true},
+  {cors: true, enforceAppCheck: false},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");

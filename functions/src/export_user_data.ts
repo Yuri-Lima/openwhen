@@ -24,7 +24,9 @@ export const exportUserData = onCall(
   {
     cors: true,
     timeoutSeconds: 300, // 5 min — export can be large
-    enforceAppCheck: true,
+    // enforceAppCheck disabled: iOS HTTP fallback (SafeCallable) cannot
+    // reliably obtain App Check tokens due to firebase-ios-sdk#15974.
+    enforceAppCheck: false,
     secrets: [sendgridApiKey],
   },
   async (request) => {

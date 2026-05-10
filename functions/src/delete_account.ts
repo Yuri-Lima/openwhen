@@ -41,7 +41,7 @@ export interface DeletionResult {
  * the token is fresh (Firebase validates this on its own for auth().deleteUser).
  */
 export const deleteUserAccount = onCall(
-  {cors: true, timeoutSeconds: 120, enforceAppCheck: true},
+  {cors: true, timeoutSeconds: 120, enforceAppCheck: false},
   async (request) => {
     if (!request.auth?.uid) {
       throw new HttpsError("unauthenticated", "Sign in required");
