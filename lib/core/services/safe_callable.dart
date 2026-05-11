@@ -89,7 +89,12 @@ class SafeCallable {
     );
 
     final user = FirebaseAuth.instance.currentUser;
-    final token = await user?.getIdToken();
+    // Force-refresh the ID token to guarantee a fresh, valid token.
+    final token = await user?.getIdToken(true);
+
+    debugPrint('[SafeCallable] $functionName → user=${user?.uid != null ? 'OK' : 'NULL'}, '
+        'token=${token != null ? '${token.length}chars' : 'NULL'}, '
+        'url=$url');
 
     // App Check token — required by enforceAppCheck on Cloud Functions.
     // getToken() contacts DeviceCheck/AppAttest — timeout guards against
@@ -112,10 +117,6 @@ class SafeCallable {
           'is enabled.');
     }
 
-    if (kDebugMode) {
-      debugPrint('[SafeCallable] HTTP POST $functionName (iOS fallback)');
-    }
-
     final response = await http.post(
       url,
       headers: {
@@ -133,6 +134,11 @@ class SafeCallable {
       final message = error is Map
           ? (error['message'] as String? ?? 'Callable $functionName failed')
           : 'HTTP ${response.statusCode}';
+
+      debugPrint('[SafeCallable] $functionName FAILED: '
+          'HTTP ${response.statusCode}, code=$code, msg=$message, '
+          'body=${response.body.length > 500 ? response.body.substring(0, 500) : response.body}');
+
       throw FirebaseFunctionsException(code: code, message: message);
     }
 
