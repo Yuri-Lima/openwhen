@@ -1,0 +1,7 @@
+"NSCameraUsageDescription" = "Whenote puede usar la cámara para tu foto de perfil.";
+"NSFaceIDUsageDescription" = "Whenote puede usar Face ID para autenticación segura y proteger el acceso a tu cuenta.";
+"NSLocationWhenInUseUsageDescription" = "Whenote usa tu ubicación para adjuntar el lugar al enviar cartas o cápsulas y, cuando está activado, para permitir la apertura solo cerca de ese punto.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Whenote usa tu ubicación para adjuntar el lugar al enviar cartas o cápsulas y, cuando está activado, para permitir la apertura solo cerca de ese punto.";
+"NSMicrophoneUsageDescription" = "Whenote usa el micrófono para grabar mensajes de voz en las cartas.";
+"NSPhotoLibraryUsageDescription" = "Whenote necesita acceso a tus fotos para definir la imagen de perfil.";
+"NSUserTrackingUsageDescription" = "Whenote utiliza el identificador de tu dispositivo para personalizar anuncios y medir el rendimiento de campañas. Puedes rechazarlo sin perder ninguna funcionalidad.";
