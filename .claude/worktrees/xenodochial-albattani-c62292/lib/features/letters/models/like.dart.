@@ -1,0 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Like {
+  final String id;
+  final String letterId;
+  final String userUid;
+  final DateTime createdAt;
+
+  Like({
+    required this.id,
+    required this.letterId,
+    required this.userUid,
+    required this.createdAt,
+  });
+
+  factory Like.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return Like(
+      id: doc.id,
+      letterId: data['letterId'] ?? '',
+      userUid: data['userUid'] ?? '',
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'letterId': letterId,
+      'userUid': userUid,
+      'createdAt': Timestamp.fromDate(createdAt),
+    };
+  }
+}

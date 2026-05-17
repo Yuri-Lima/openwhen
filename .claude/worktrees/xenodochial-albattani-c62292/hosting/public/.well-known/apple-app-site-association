@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "WGN6W58YD3.com.whenote.app",
+        "paths": ["/letter/*", "/capsule/*", "/open/*"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.WHENOTE-APP-2026",
+        "paths": ["/letter/*", "/capsule/*"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+/// Stable ids for [users/{uid}/badgeUnlocks/{badgeId}] — do not rename once shipped.
+abstract final class BadgeId {
+  static const firstLetterSent = 'first_letter_sent';
+  static const firstLetterOpened = 'first_letter_opened';
+  static const firstPublic = 'first_public';
+  static const lettersSentFive = 'letters_sent_five';
+  static const lettersSentTen = 'letters_sent_ten';
+  static const voiceLetter = 'voice_letter';
+  static const firstLetterReceived = 'first_letter_received';
+  static const profileComplete = 'profile_complete';
+  static const threeDayStreak = 'three_day_streak';
+  static const letterLikedByTen = 'letter_liked_by_ten';
+
+  static const List<String> all = [
+    firstLetterSent,
+    firstLetterOpened,
+    firstPublic,
+    lettersSentFive,
+    lettersSentTen,
+    voiceLetter,
+    firstLetterReceived,
+    profileComplete,
+    threeDayStreak,
+    letterLikedByTen,
+  ];
+}
