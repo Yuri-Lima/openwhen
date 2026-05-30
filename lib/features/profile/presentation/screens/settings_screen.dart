@@ -17,6 +17,7 @@ import '../../../../core/services/notification_service.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/theme/theme_provider.dart';
 import '../../../../shared/locale/locale_provider.dart';
+import '../../../../core/billing/billing_feature_flags.dart';
 import '../../../../core/billing/subscription_tier.dart';
 import '../../../../core/billing/subscription_tier_provider.dart';
 import '../../../../core/billing/tier_guard.dart';
@@ -175,22 +176,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ]),
 
-                    _buildSectionTitle(l10n.subscriptionSectionTitle),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.workspace_premium_outlined,
-                        iconColor: const Color(0xFFD97706),
-                        iconBg: const Color(0xFFFEF3C7),
-                        label: l10n.subscriptionScreenTitle,
-                        subtitle: '${l10n.subscriptionCurrentPlanLabel}: ${tierDisplayName(subTier, l10n)}',
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (_) => const SubscriptionPlansScreen(),
+                    // Subscription entry is hidden on iOS (App Store Review
+                    // Guideline 3.1.1 — no external-payment purchase UI until
+                    // native StoreKit IAP is implemented). See
+                    // kSubscriptionsUiEnabled.
+                    if (kSubscriptionsUiEnabled) ...[
+                      _buildSectionTitle(l10n.subscriptionSectionTitle),
+                      _buildMenuCard([
+                        _buildMenuItem(
+                          icon: Icons.workspace_premium_outlined,
+                          iconColor: const Color(0xFFD97706),
+                          iconBg: const Color(0xFFFEF3C7),
+                          label: l10n.subscriptionScreenTitle,
+                          subtitle: '${l10n.subscriptionCurrentPlanLabel}: ${tierDisplayName(subTier, l10n)}',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (_) => const SubscriptionPlansScreen(),
+                            ),
                           ),
                         ),
-                      ),
-                    ]),
+                      ]),
+                    ],
 
                     _buildSectionTitle(l10n.settingsPrivacySection),
                     _buildMenuCard([

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../features/profile/presentation/screens/subscription_plans_screen.dart';
+import 'billing_feature_flags.dart';
 import 'subscription_tier.dart';
 
 String tierDisplayName(SubscriptionTier tier, AppLocalizations l10n) {
@@ -23,6 +24,10 @@ Future<bool> ensureTierOrPrompt(
   required SubscriptionTier requiredTier,
 }) async {
   if (tierMeets(current, requiredTier)) return true;
+  // No purchase/upgrade UI on platforms where subscriptions are hidden (iOS —
+  // App Store Review Guideline 3.1.1). The feature stays gated but we never
+  // surface an external-payment call to action.
+  if (!kSubscriptionsUiEnabled) return false;
   final l10n = AppLocalizations.of(context)!;
   final planName = tierDisplayName(requiredTier, l10n);
   final go = await showDialog<bool>(
