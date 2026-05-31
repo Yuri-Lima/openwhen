@@ -110,10 +110,14 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     } catch (_) {}
   }
 
-  Future<void> _deleteLetterFromVault(String docId) async {
+  Future<void> _deleteLetterFromVault(String docId, {required bool isSender}) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      await deleteLetterDocument(docId);
+      if (isSender) {
+        await deleteLetterDocument(docId);
+      } else {
+        await softDeleteLetterForReceiver(docId);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -123,7 +127,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
     }
   }
 
-  void _confirmDeleteLetter(BuildContext context, String docId) {
+  void _confirmDeleteLetter(BuildContext context, String docId, {required bool isSender}) {
     final l10n = AppLocalizations.of(context)!;
     showDialog<void>(
       context: context,
@@ -135,7 +139,7 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
-              _deleteLetterFromVault(docId);
+              _deleteLetterFromVault(docId, isSender: isSender);
             },
             child: Text(l10n.actionDelete),
           ),
@@ -178,7 +182,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               ),
               onTap: () {
                 Navigator.pop(ctx);
-                _confirmDeleteLetter(context, docId);
+                final uid = FirebaseAuth.instance.currentUser?.uid;
+                final isSender = data['senderUid'] == uid;
+                _confirmDeleteLetter(context, docId, isSender: isSender);
               },
             ),
             ListTile(
@@ -375,7 +381,12 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
             ]) {
               allDocs[doc.id] = doc;
             }
-            final raw = allDocs.values.toList();
+            final raw = allDocs.values
+                .where((d) {
+                  final m = d.data() as Map<String, dynamic>;
+                  return m['receiverDeletedAt'] == null;
+                })
+                .toList();
             if (raw.isEmpty) {
               return _buildEmptyReceivedWithCta(l10n);
             }

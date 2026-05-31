@@ -50,3 +50,12 @@ Future<void> deleteLetterDocument(String docId) async {
       .doc(docId)
       .delete();
 }
+
+/// Soft-delete para o receiver: marca a carta como excluída sem apagar o
+/// documento (o sender continua a vê-la na aba Enviadas).
+Future<void> softDeleteLetterForReceiver(String docId) async {
+  await FirebaseFirestore.instance
+      .collection(FirestoreCollections.letters)
+      .doc(docId)
+      .update({'receiverDeletedAt': FieldValue.serverTimestamp()});
+}
