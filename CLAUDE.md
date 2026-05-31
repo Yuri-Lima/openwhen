@@ -14,25 +14,20 @@ Até ~abril/2026 o app carregava **todos** os documentos de `users` em várias t
 Erros `permission-denied` ao enviar, deploy de `firestore.rules`, ecrã **Moderação (admin)** a fechar / `SIGABRT` (não voltar a callables admin em paralelo; `SKIP_AI_MODERATION` só comentários): ver [`planning/TROUBLESHOOTING.md`](planning/TROUBLESHOOTING.md) §2 e §4.
 
 ## Branches Git
+Fluxo de branch única: trabalhar **sempre na `main`**. A branch `master` foi removida (local e remota) — não recriar.
+
 | Branch | Papel |
 |--------|-------|
-| `master` | Branch principal de trabalho local |
-| `main` | Branch sincronizada com `origin/main` |
+| `main` | Única branch de trabalho, sincronizada com `origin/main` |
 
 ---
 
 ## 🔀 Comandos Git Personalizados
 
-### "atualize master"
-Atualiza a branch `master` local com o que há em `origin/main`:
-```bash
-git checkout main && git pull origin main && git checkout master && git merge main
-```
-
 ### "atualize main"
-Atualiza a `main` local com a `master` e depois com `origin/main`:
+Atualiza a `main` local com o `origin/main`:
 ```bash
-git checkout main && git merge master && git pull origin main && git checkout master
+git checkout main && git pull origin main
 ```
 
 ---
@@ -42,7 +37,7 @@ git checkout main && git merge master && git pull origin main && git checkout ma
 ### Ao finalizar uma tarefa de desenvolvimento:
 1. **Claude DEVE** anotar o hash atual com `git rev-parse HEAD` antes de iniciar qualquer tarefa
 2. Após a tarefa estar funcionando, **sempre perguntar:**
-   > "✅ Deseja fazer um commit para salvar na master local?"
+   > "✅ Deseja fazer um commit para salvar na main local?"
 3. **Se sim:** `git add -A && git commit -m "feat/fix/docs: descrição"`
 4. **Se não:** `git reset --hard <hash_antes_da_tarefa>`
 
