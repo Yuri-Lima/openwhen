@@ -501,6 +501,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Se elimina de tu caja y del feed público si estaba compartida.';
 
   @override
+  String get vaultLetterDeleteMessageReceiver =>
+      'Al eliminarla, solo se quita de tu biblioteca. El remitente conserva su copia.';
+
+  @override
   String get vaultMenuHint =>
       'Consejo: toca ⋯ en una tarjeta para privacidad o eliminar.';
 

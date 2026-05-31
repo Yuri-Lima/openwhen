@@ -167,6 +167,7 @@
   "vaultLetterSheetFavoriteSoon": "Favorito (pronto)",
   "vaultLetterDeleteTitle": "¿Quitar carta?",
   "vaultLetterDeleteMessage": "Se elimina de tu caja y del feed público si estaba compartida.",
+  "vaultLetterDeleteMessageReceiver": "Al eliminarla, solo se quita de tu biblioteca. El remitente conserva su copia.",
   "vaultMenuHint": "Consejo: toca ⋯ en una tarjeta para privacidad o eliminar.",
   "vaultMenuHintGotIt": "Entendido",
   "vaultCountdownReady": "¡Lista para abrir!",

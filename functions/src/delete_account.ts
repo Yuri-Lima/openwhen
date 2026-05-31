@@ -120,9 +120,13 @@ export async function executeAccountDeletion(
   for (const doc of sentLetters.docs) {
     const data = doc.data();
 
-    if (isLockedWithFutureOpen(data)) {
+    if (isLockedWithFutureOpen(data) && !data.receiverDeletedAt) {
       // PRESERVE: locked letters are a promise to the recipient.
       // Voice is removed (can identify sender); handwritten stays anonymised.
+      // Exception: if the (single) recipient already soft-deleted the letter
+      // (receiverDeletedAt set), there is no one to keep the promise for, so we
+      // do NOT preserve it — falls through to normal delete/anonymise below
+      // (data minimisation, GDPR Art. 5(1)(c)).
       await anonymiseLockedLetter(doc.ref, data);
       lockedLettersPreserved++;
     } else if (mode === "delete_all") {
@@ -154,6 +158,9 @@ export async function executeAccountDeletion(
         receiverName: "Deleted user",
         receiverEmail: FieldValue.delete(),
         receiverEmailNormalized: FieldValue.delete(),
+        // Clear the receiver-side soft-delete marker — the receiver no longer
+        // exists, so this leftover timestamp serves no purpose.
+        receiverDeletedAt: FieldValue.delete(),
       });
     }
   }

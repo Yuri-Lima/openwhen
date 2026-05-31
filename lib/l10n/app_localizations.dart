@@ -995,6 +995,12 @@ abstract class AppLocalizations {
   /// **'A carta sai do seu cofre e do feed público, se estiver compartilhada.'**
   String get vaultLetterDeleteMessage;
 
+  /// No description provided for @vaultLetterDeleteMessageReceiver.
+  ///
+  /// In pt_BR, this message translates to:
+  /// **'Apagar remove a carta apenas da sua biblioteca. O remetente mantém a cópia dele.'**
+  String get vaultLetterDeleteMessageReceiver;
+
   /// No description provided for @vaultMenuHint.
   ///
   /// In pt_BR, this message translates to:

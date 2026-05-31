@@ -499,6 +499,10 @@ class AppLocalizationsPt extends AppLocalizations {
       'A carta sai do seu cofre e do feed público, se estiver compartilhada.';
 
   @override
+  String get vaultLetterDeleteMessageReceiver =>
+      'Apagar remove a carta apenas da sua biblioteca. O remetente mantém a cópia dele.';
+
+  @override
   String get vaultMenuHint =>
       'Dica: toque em ⋯ no card para mudar privacidade ou excluir.';
 
@@ -3731,6 +3735,10 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get vaultLetterDeleteMessage =>
       'A carta sai do seu cofre e do feed público, se estiver compartilhada.';
+
+  @override
+  String get vaultLetterDeleteMessageReceiver =>
+      'Apagar remove a carta apenas da sua biblioteca. O remetente mantém a cópia dele.';
 
   @override
   String get vaultMenuHint =>

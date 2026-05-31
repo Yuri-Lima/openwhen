@@ -496,6 +496,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This removes the letter from your vault and from the public feed if it was shared.';
 
   @override
+  String get vaultLetterDeleteMessageReceiver =>
+      'Deleting only removes this letter from your library. The sender keeps their copy.';
+
+  @override
   String get vaultMenuHint =>
       'Tip: tap ⋯ on a card to change privacy or delete.';
 

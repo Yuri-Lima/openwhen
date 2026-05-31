@@ -133,7 +133,9 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.vaultLetterDeleteTitle),
-        content: Text(l10n.vaultLetterDeleteMessage),
+        content: Text(isSender
+            ? l10n.vaultLetterDeleteMessage
+            : l10n.vaultLetterDeleteMessageReceiver),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.actionCancel)),
           TextButton(
