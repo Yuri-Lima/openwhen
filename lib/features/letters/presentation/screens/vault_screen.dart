@@ -280,40 +280,66 @@ class _VaultScreenState extends ConsumerState<VaultScreen>
               Positioned(top: -20, right: -20, child: Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, gradient: RadialGradient(colors: [context.pal.accent.withValues(alpha:0.1), Colors.transparent])))),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(children: [
-                      Text(l10n.vaultTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: context.pal.white, fontStyle: FontStyle.italic)),
-                      const SizedBox(width: 6),
-                      const OwlFeedbackAffordance(
-                        forDarkHeader: true,
-                        child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                child: Row(
+                  children: [
+                    if (Navigator.canPop(context)) ...[
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 18,
+                            color: Colors.white.withValues(alpha: 0.6),
+                          ),
+                        ),
                       ),
-                    ]),
-                    const SizedBox(height: 4),
-                    Text(l10n.vaultSubtitle, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
-                  ]),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha:0.08),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withValues(alpha:0.08)),
-                    ),
-                    child: Badge(
-                      isLabelVisible: _vaultFilters.isActiveForTab(_tabController.index),
-                      backgroundColor: context.pal.accent,
-                      smallSize: 7,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        tooltip: l10n.vaultFilterTitle,
-                        onPressed: _openVaultFilterSheet,
-                        icon: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withValues(alpha:0.85)),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            Text(l10n.vaultTitle, style: GoogleFonts.dmSerifDisplay(fontSize: 26, color: context.pal.white, fontStyle: FontStyle.italic)),
+                            const SizedBox(width: 6),
+                            const OwlFeedbackAffordance(
+                              forDarkHeader: true,
+                              child: OwlWatermark(width: 20, height: 24, opacity: 2.2),
+                            ),
+                          ]),
+                          const SizedBox(height: 4),
+                          Text(l10n.vaultSubtitle, style: GoogleFonts.dmSans(fontSize: 10, color: Colors.white.withValues(alpha:0.25), fontWeight: FontWeight.w300, letterSpacing: 2)),
+                        ],
                       ),
                     ),
-                  ),
-                ]),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha:0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withValues(alpha:0.08)),
+                      ),
+                      child: Badge(
+                        isLabelVisible: _vaultFilters.isActiveForTab(_tabController.index),
+                        backgroundColor: context.pal.accent,
+                        smallSize: 7,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          tooltip: l10n.vaultFilterTitle,
+                          onPressed: _openVaultFilterSheet,
+                          icon: Icon(Icons.tune_rounded, size: 18, color: Colors.white.withValues(alpha:0.85)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ]),
             const SizedBox(height: 16),

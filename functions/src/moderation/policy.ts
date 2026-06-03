@@ -1,7 +1,22 @@
 /**
  * Map OpenAI moderation result to allow/block (single policy module).
  */
-export function applyModerationPolicy(flagged: boolean): {allowed: boolean} {
+
+/** Hard block: harassment or hate category flagged by the provider. */
+export function isHarassmentOrHateCategory(
+  categories: Record<string, boolean> | undefined
+): boolean {
+  if (!categories) return false;
+  return categories.harassment === true || categories.hate === true;
+}
+
+export function applyModerationPolicy(
+  flagged: boolean,
+  categories?: Record<string, boolean>
+): {allowed: boolean} {
+  if (isHarassmentOrHateCategory(categories)) {
+    return {allowed: false};
+  }
   return {allowed: !flagged};
 }
 

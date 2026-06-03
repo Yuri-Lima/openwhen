@@ -65,6 +65,12 @@ class SendModerationHelper {
   static final double blockThreshold =
       double.tryParse(_kBlockRaw) ?? 0.70;
 
+  /// Hard block — no warning override (aligned with server policy.ts).
+  static bool _isHarassmentOrHateCategory(Map<String, bool>? categories) {
+    if (categories == null) return false;
+    return categories['harassment'] == true || categories['hate'] == true;
+  }
+
   // ── public API ───────────────────────────────────────────────────────
 
   /// Run AI moderation on [text] before saving a letter or capsule.
@@ -102,6 +108,15 @@ class SendModerationHelper {
         return SendModerationResult(
           decision: ModerationDecision.blocked,
           reason: r.reason ?? 'ai_blocked',
+          maxScore: r.maxScore,
+        );
+      }
+
+      // Harassment / hate: always blocked — no "send anyway" path.
+      if (_isHarassmentOrHateCategory(r.categories)) {
+        return SendModerationResult(
+          decision: ModerationDecision.blocked,
+          reason: 'ai_blocked_harassment_hate',
           maxScore: r.maxScore,
         );
       }

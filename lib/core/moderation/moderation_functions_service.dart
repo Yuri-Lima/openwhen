@@ -9,6 +9,8 @@ class ModerationCallResult {
     this.flagged,
     this.reviewId,
     this.maxScore,
+    this.categories,
+    this.categoryScores,
   });
 
   final bool allowed;
@@ -21,6 +23,12 @@ class ModerationCallResult {
   /// Highest category_score returned by the provider (0.0–1.0).
   /// Used by the client to classify severity against compile-time thresholds.
   final double? maxScore;
+
+  /// OpenAI `categories` booleans (e.g. harassment, hate).
+  final Map<String, bool>? categories;
+
+  /// OpenAI `category_scores` per category (0.0–1.0).
+  final Map<String, double>? categoryScores;
 }
 
 class ModerationFunctionsService {
@@ -47,7 +55,31 @@ class ModerationFunctionsService {
       flagged: data['flagged'] as bool?,
       reviewId: data['reviewId'] as String?,
       maxScore: (data['maxScore'] as num?)?.toDouble(),
+      categories: _parseCategories(data['categories']),
+      categoryScores: _parseCategoryScores(data['categoryScores']),
     );
+  }
+
+  static Map<String, bool>? _parseCategories(Object? raw) {
+    if (raw is! Map) return null;
+    final out = <String, bool>{};
+    for (final entry in raw.entries) {
+      if (entry.key is String && entry.value is bool) {
+        out[entry.key as String] = entry.value as bool;
+      }
+    }
+    return out.isEmpty ? null : out;
+  }
+
+  static Map<String, double>? _parseCategoryScores(Object? raw) {
+    if (raw is! Map) return null;
+    final out = <String, double>{};
+    for (final entry in raw.entries) {
+      if (entry.key is String && entry.value is num) {
+        out[entry.key as String] = (entry.value as num).toDouble();
+      }
+    }
+    return out.isEmpty ? null : out;
   }
 
   Map<String, dynamic> _asMap(Object? data) {
